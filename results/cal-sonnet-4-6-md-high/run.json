@@ -1,0 +1,18 @@
+{
+  "run_id": "cal-sonnet-4-6-md-high",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "high",
+  "input_format": "md",
+  "slice": "eval/slices/dev15.txt",
+  "n_cases": 15,
+  "counts": {
+    "resolved": 14,
+    "awaiting_human": 1,
+    "failed": 0
+  },
+  "cost_usd": 2.11597,
+  "cost_per_case_usd": 0.141065,
+  "wall_seconds": 1499.0,
+  "spend_total_after": 3.184368,
+  "failures": []
+}

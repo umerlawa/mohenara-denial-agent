@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000530",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "271 confirms EB*6 with DTP*357=20250930; DOS is 20251018 \u2014 18 days after coverage ended. CO-27 on all three lines under a CI (commercial) payer. Per 05-eligibility-terminated.md, CO-27 on a commercial claim is not an automatic write-off; hold-harmless binds only active members, so the patient owes the balance once standard overrides are cleared. No QMB, Medicaid, NSA, or ACA grace-period signal in any artifact.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1142,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 4940,
+    "cost_usd": 0.04970361,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "eligibility_terminated",
+      "explanation": "271 shows EB*6 with DTP*357=20250930; DOS 20251018 is 18 days post-termination. All three lines carry CO-27 under CI commercial payer."
+    },
+    "next_action": {
+      "path": "bill_patient",
+      "detail": "Verify no QMB/Medicaid/NSA override applies, then bill Susan Harris $150.57. The hold-harmless clause does not cover services rendered after her coverage ended 2025-09-30."
+    },
+    "evidence": [
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*6 IND 30, DTP*356=20240101, DTP*357=20250930 \u2014 coverage terminated before DOS",
+        "locator": "EB/DTP segments"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CAS*CO*27 on all three service lines; payer filing indicator CI (commercial)",
+        "locator": "CAS segments; CLP*...*CI"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "SBR*P*18*******CI \u2014 commercial primary; DOS 20251018",
+        "locator": "SBR segment; DTP*472*D8*20251018"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "27",
+      "rarc": "N30",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "citations": [
+      {
+        "source": "05-eligibility-terminated.md",
+        "rule": "CI + EB*6 + DTP*357 before DOS, CO-27 \u2192 bill_patient once overrides clear; hold-harmless reaches members only"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO on commercial is payer assertion, not automatic write-off; binding instrument is participation agreement hold-harmless"
+      }
+    ]
+  }
+}

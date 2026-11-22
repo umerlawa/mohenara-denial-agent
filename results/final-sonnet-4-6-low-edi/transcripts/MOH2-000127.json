@@ -1,0 +1,100 @@
+{
+  "case_id": "MOH2-000127",
+  "run_id": "final-sonnet-4-6-low-edi",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4633,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4948,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1012,
+    "output_tokens_details": {
+      "thinking_tokens": 268
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4948
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.04759161,
+  "cache_hit_rate": 0.865112,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All three lines carry PR-27. The 271 confirms EB*6 (inactive) with DTP*357 (termination) of 2025-06-30 and DOS of 2025-07-12 \u2014 service rendered 12 days after coverage ended. Payer is CI (commercial). PR group code on a commercial remit means patient owes the balance; no QMB, Medicaid, NSA, or ACA grace-period override is present.",
+    "resolution": {
+      "root_cause": {
+        "family": "eligibility_terminated",
+        "explanation": "Coverage ended 2025-06-30 (271 DTP*357); DOS 2025-07-12 is 12 days post-termination. Payer assigned PR-27 on all three lines, placing liability on the patient."
+      },
+      "next_action": {
+        "path": "bill_patient",
+        "detail": "Bill Patricia Thompson $138.54. No QMB, Medicaid, NSA, or ACA grace-period override applies. Confirm no successor plan is active for 2025-07-12 before issuing the patient statement."
+      },
+      "evidence": [
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*6 with DTP*357*D8*20250630 \u2014 coverage terminated June 30 2025",
+          "locator": "EB/DTP segment"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "DTP*291*D8*20250712 \u2014 inquiry was for the DOS, confirming no active coverage that day",
+          "locator": "DTP*291"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CAS*PR*27 on all three service lines; filing indicator CI (commercial)",
+          "locator": "CLP + CAS segments"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "SBR*P*18*******CI \u2014 commercial primary, no secondary payer listed",
+          "locator": "SBR segment"
+        }
+      ],
+      "denied_line_idxs": [
+        0,
+        1,
+        2
+      ],
+      "denial": {
+        "group": "PR",
+        "carc": "27",
+        "rarc": "N30",
+        "level": "line"
+      },
+      "citations": [
+        {
+          "source": "05-eligibility-terminated.md",
+          "rule": "CI + EB*6 + DTP*357 before DOS + PR-27 \u2192 bill_patient after overrides cleared"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "PR group code = patient liability; commercial CO-27 not automatic write-off but PR-27 is billable"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All three lines carry PR-27. The 271 confirms EB*6 (inactive) with DTP*357 (termination) of 2025-06-30 and DOS of 2025-07-12 \u2014 service rendered 12 days after coverage ended. Payer is CI (commercial). PR group code on a commercial remit means patient owes the balance; no QMB, Medicaid, NSA, or ACA grace-period override is present.\",\"resolution\":{\"root_cause\":{\"family\":\"eligibility_terminated\",\"explanation\":\"Coverage ended 2025-06-30 (271 DTP*357); DOS 2025-07-12 is 12 days post-termination. Payer assigned PR-27 on all three lines, placing liability on the patient.\"},\"next_action\":{\"path\":\"bill_patient\",\"detail\":\"Bill Patricia Thompson $138.54. No QMB, Medicaid, NSA, or ACA grace-period override applies. Confirm no successor plan is active for 2025-07-12 before issuing the patient statement.\"},\"evidence\":[{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*6 with DTP*357*D8*20250630 \u2014 coverage terminated June 30 2025\",\"locator\":\"EB/DTP segment\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"DTP*291*D8*20250712 \u2014 inquiry was for the DOS, confirming no active coverage that day\",\"locator\":\"DTP*291\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CAS*PR*27 on all three service lines; filing indicator CI (commercial)\",\"locator\":\"CLP + CAS segments\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"SBR*P*18*******CI \u2014 commercial primary, no secondary payer listed\",\"locator\":\"SBR segment\"}],\"denied_line_idxs\":[0,1,2],\"denial\":{\"group\":\"PR\",\"carc\":\"27\",\"rarc\":\"N30\",\"level\":\"line\"},\"citations\":[{\"source\":\"05-eligibility-terminated.md\",\"rule\":\"CI + EB*6 + DTP*357 before DOS + PR-27 \u2192 bill_patient after overrides cleared\"},{\"source\":\"00-group-codes.md\",\"rule\":\"PR group code = patient liability; commercial CO-27 not automatic write-off but PR-27 is billable\"}]}}"
+}

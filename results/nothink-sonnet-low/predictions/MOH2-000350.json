@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000350",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "All three lines denied OA-18 (exact duplicate) with MOA N111. The 835 carries payer claim control number 2606743684675 in CLP07, confirming prior adjudication. The current 837P was submitted 2026-02-20 with CLM05-3=1 (original), same provider/member/DOS/procedures as the previously adjudicated claim \u2014 triggering the duplicate edit. This is a true duplicate submission, not a repeat service. OA group code: not billable to patient. Do not resubmit.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 833,
+    "cache_read_input_tokens": 31309,
+    "cache_creation_input_tokens": 4981,
+    "cost_usd": 0.044629695,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "exact_duplicate",
+      "explanation": "All three lines carry OA-18. CLP07 = 2606743684675 confirms prior adjudication. This 837P (CLM05-3=1, submitted 2026-02-20) re-sent same provider/member/DOS/procedures as the already-adjudicated claim."
+    },
+    "next_action": {
+      "path": "do_not_resubmit",
+      "detail": "Check portal/IVR for the original claim's paid status and post it. Do not rebill. OA-18 edit is hard-coded and unappealable (N111 confirms no appeal rights). Do not bill patient \u2014 OA is never patient liability."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP07 = 2606743684675 \u2014 payer claim control number present, confirming prior adjudication.",
+        "locator": "CLP segment"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All three service lines carry OA-18 ($40.47, $96.76, $50.12); MOA N111 (no appeal right except duplicate claim/service issue).",
+        "locator": "CAS lines 1\u20133; MOA"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "CLM05-3 = 1 (original), submitted 2026-02-20; same member, DOS 2026-01-13, procedures 97110-GP/97140-GP/97530-GP.",
+        "locator": "CLM segment; DTP 472"
+      }
+    ],
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "denial": {
+      "group": "OA",
+      "carc": "18",
+      "rarc": "N111",
+      "level": "line"
+    },
+    "citations": [
+      {
+        "source": "04-exact-duplicate.md",
+        "rule": "True duplicate (one service billed twice) \u2192 do_not_resubmit; OA-18 edit hard-coded, unappealable; original claim's disposition governs."
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "OA = liability unstated, not billable to patient."
+      }
+    ]
+  }
+}

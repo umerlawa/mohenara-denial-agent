@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000300",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All three lines denied CO-119 + N435 (therapy threshold reached). Claim billed 97140:GP and 97110:GP without KX modifier. 271 confirms active Medicare Part B coverage on DOS. Chart note documents medical necessity (\"skilled services remain medically necessary\"). KX was a clerical omission; record supports the attestation. Medicare Part B does not accept frequency 7 \u2014 vehicle is clerical-error reopening.",
+  "usage": {
+    "input_tokens": 3,
+    "output_tokens": 1548,
+    "cache_read_input_tokens": 68922,
+    "cache_creation_input_tokens": 5967,
+    "cost_usd": 0.121516725,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "threshold_no_kx",
+      "explanation": "Three therapy lines (97140, 97110x2) denied CO-119/N435 \u2014 benefit threshold reached. KX modifier absent from all lines despite chart note documenting ongoing medical necessity."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Request clerical-error reopening with MAC (1-yr window) to append KX modifier to all three lines. Do not submit frequency 7 (Part B rejects it). Do not file a new original (duplicate edit)."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All lines carry CAS*CO*119 with MOA N435; $0 paid; CLP status 4 (denied)"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Lines billed as HC:97140:GP and HC:97110:GP \u2014 no KX modifier present"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "Documents skilled services medically necessary on DOS 2026-06-26, supporting KX attestation"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*1 active Medicare Part B coverage effective 2024-01-01, confirmed for DOS"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "119",
+      "rarc": "N435",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      1,
+      2,
+      3
+    ],
+    "citations": [
+      {
+        "source": "therapy-modifiers-and-threshold.md \u00a78.2",
+        "rule": "No KX with record justification \u2192 correct_and_resubmit via clerical-error reopening"
+      },
+      {
+        "source": "resubmission-and-frequency-codes.md \u00a76",
+        "rule": "Part B FFS does not accept CLM05-3=7; reopening is the vehicle"
+      }
+    ]
+  }
+}

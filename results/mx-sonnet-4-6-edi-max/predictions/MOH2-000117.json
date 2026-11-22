@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000117",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "The 835 shows CO-29 on both service lines. The 837P (ISA date Oct 15, 2025) was sent CLM05-3=1 (new original), ~9 months after the Jan 19, 2025 DOS; payer denied as untimely. However, the 277CA (Jan 27, 2025) carries STC A2:20 \u2014 the original claim was accepted by the clearinghouse 8 days after DOS, well within any commercial timely filing window. The CO-29 is disputable; appeal with the 277CA acceptance as proof of timely original filing.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 12431,
+    "cache_read_input_tokens": 31309,
+    "cache_creation_input_tokens": 4824,
+    "cost_usd": 0.23534907,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "max",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "timely_filing",
+      "explanation": "Both lines CO-29. The Oct 15, 2025 resubmission (CLM05-3=1) arrived ~9 months post-DOS; payer treated it as a late new original. The 277CA (STC A2:20, Jan 27, 2025) proves original acceptance 8 days after the Jan 19, 2025 DOS."
+    },
+    "next_action": {
+      "path": "appeal",
+      "detail": "Appeal citing the 277CA (STC*A2:20*20250127) as proof of timely original filing \u2014 accepted 8 days after DOS. Dispute the payer's receipt date; do not plead forgiveness. N211 is Medicare-specific; ERISA commercial appeal rights apply. Appeal clock runs from the Nov 1, 2025 remit."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CAS*CO*29 on both lines (97110:GP $91.91, 97140:GP $46.71); CLP07=2530598850660 confirms adjudication; MOA N211 at claim level.",
+        "locator": "CLP*PA24642236; SVC CAS segments; MOA***N211"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "CLM05-3=1 (new original frequency); ISA date 2025-10-15, ~9 months after DOS 2025-01-19 \u2014 payer treated this as a late new claim.",
+        "locator": "ISA date 251015; CLM*PA24642236*138.62***11:B:1"
+      },
+      {
+        "artifact": "ack_277ca.edi",
+        "fact": "STC*A2:20*20250127: claim TRC75364521 accepted by clearinghouse January 27, 2025 \u2014 8 days after DOS. This is proof of timely original filing.",
+        "locator": "STC*A2:20*20250127*WQ*138.62; TRN*2*TRC75364521"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*1 active coverage effective 2024-01-01, no termination date; member was covered on DOS 2025-01-19. Eligibility is not a factor.",
+        "locator": "EB*1*IND*30; DTP*356*D8*20240101"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "29",
+      "rarc": "N211",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1
+    ],
+    "citations": [
+      {
+        "source": "03-timely-filing.md",
+        "rule": "Proof of an accepted submission inside the window \u2192 appeal with the clearinghouse acceptance report; dispute the receipt date, don't plead forgiveness."
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO-29 with no exception \u2192 do_not_resubmit; an exception exists here (277CA A2:20 acceptance predates any plausible commercial filing window), so appeal is the correct path."
+      }
+    ]
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000350",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All three lines denied OA-18 (exact duplicate) with MOA N111 on an adjudicated claim (CLP07 present). One PT session, each CPT billed once \u2014 no repeat/bilateral service, so this is a true duplicate, not a missing-modifier false duplicate. OA is never patient liability; the duplicate edit is hard-coded and unappealable.",
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1904,
+    "cache_read_input_tokens": 92625,
+    "cache_creation_input_tokens": 7463,
+    "cost_usd": 0.14057625,
+    "model": "claude-opus-5",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "exact_duplicate",
+      "explanation": "835 shows CAS*OA*18 on all three service lines, $0 paid, claim status 4, MOA N111. CLP07 carries a payer claim control number, so the claim adjudicated and collided with an already-adjudicated prior claim for the same provider/member/DOS/procedures."
+    },
+    "next_action": {
+      "path": "do_not_resubmit",
+      "detail": "Do not resend. Check the original claim's status via Novitas portal/IVR and post its payment or denial \u2014 that disposition governs. If the duplicate edit itself looks wrong, use Telephone Reopenings; no redetermination, no new original claim. Never bill the patient."
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "denial": {
+      "group": "OA",
+      "carc": "18",
+      "rarc": "N111",
+      "level": "line"
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CAS*OA*18 on all three SVC lines (97110, 97140, 97530), $0 paid",
+        "locator": "SVC/CAS segments"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP07 = 2606743684675 \u2014 claim adjudicated, not front-end rejected",
+        "locator": "CLP*PA23982247*4*187.35*0**MB*2606743684675"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "Single 2026-01-13 PT session, each CPT furnished once; no repeat or bilateral service requiring a distinguishing modifier",
+        "locator": "treatment note"
+      },
+      {
+        "artifact": "reference",
+        "fact": "OA-18 true duplicate \u2192 do_not_resubmit; edit hard-coded and unappealable; OA never patient liability",
+        "locator": "04-exact-duplicate.md"
+      }
+    ],
+    "citations": [
+      {
+        "source": "04-exact-duplicate.md",
+        "rule": "True duplicate under OA-18 \u2192 do_not_resubmit; prior claim's disposition governs"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "OA states no liability \u2014 not billable to patient"
+      }
+    ]
+  }
+}

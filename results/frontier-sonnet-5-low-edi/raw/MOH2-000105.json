@@ -1,0 +1,95 @@
+{
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 9590,
+    "cache_read_input_tokens": 161332,
+    "output_tokens": 4039,
+    "output_tokens_details": {
+      "thinking_tokens": 684
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 9590,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 935,
+        "cache_read_input_tokens": 57302,
+        "cache_creation_input_tokens": 1001,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1001
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "All four lines carry CO-16 with claim-level MOA*N286 (missing/invalid referring provider ID). The 837P has no referring-provider (NM1*DN) loop at all. Claim was adjudicated (CLP07=2626660924906, MB, 277CA STC A2 accepted), so this is a clerical data defect on an adjudicated claim, not an unprocessable rejection \u2014 correct the referring provider and resubmit per reference 09/00.",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_referring_provider",
+        "explanation": "CO-16 on all lines with claim-level MOA N286 (missing/incomplete/invalid referring provider primary identifier); 837P contains no NM1*DN referring-provider segment at all."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Add the ordering/referring provider name and NPI (verified in NPI Registry/PECOS) to the claim. Claim adjudicated (CLP07 present, 277CA accepted) \u2014 submit via Part B clerical-error reopening, not a fresh original or appeal."
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "denial": {
+        "level": "line",
+        "group": "CO",
+        "carc": "16",
+        "rarc": "N286"
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CAS*CO*16 on all four SVC lines with claim-level MOA***N286",
+          "locator": "CAS segments; MOA segment"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "No NM1*DN (referring provider) loop present anywhere in the claim",
+          "locator": "HL*2 loop, absence of NM1*DN"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Claim adjudicated: CLP*PA28755879*4*310.83*0**MB*2626660924906*11*1 (payer claim control number present)",
+          "locator": "CLP segment"
+        },
+        {
+          "artifact": "ack_277ca.edi",
+          "fact": "STC*A2:20 \u2014 claim accepted into adjudication, not front-end rejected",
+          "locator": "STC segment"
+        }
+      ],
+      "citations": [
+        {
+          "source": "09-missing-referring-provider.md",
+          "rule": "CO-16 + N286: correct ordering/referring name+NPI, resubmit; not appealable, not patient-billable"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "Provider-side data defect on an adjudicated claim routes to reopening on Part B, not a new original"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"All four lines carry CO-16 with claim-level MOA*N286 (missing/invalid referring provider ID). The 837P has no referring-provider (NM1*DN) loop at all. Claim was adjudicated (CLP07=2626660924906, MB, 277CA STC A2 accepted), so this is a clerical data defect on an adjudicated claim, not an unprocessable rejection \u2014 correct the referring provider and resubmit per reference 09/00.\",\"resolution\":{\"root_cause\":{\"family\":\"missing_referring_provider\",\"explanation\":\"CO-16 on all lines with claim-level MOA N286 (missing/incomplete/invalid referring provider primary identifier); 837P contains no NM1*DN referring-provider segment at all.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Add the ordering/referring provider name and NPI (verified in NPI Registry/PECOS) to the claim. Claim adjudicated (CLP07 present, 277CA accepted) \u2014 submit via Part B clerical-error reopening, not a fresh original or appeal.\"},\"denied_line_idxs\":[0,1,2,3],\"denial\":{\"level\":\"line\",\"group\":\"CO\",\"carc\":\"16\",\"rarc\":\"N286\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CAS*CO*16 on all four SVC lines with claim-level MOA***N286\",\"locator\":\"CAS segments; MOA segment\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"No NM1*DN (referring provider) loop present anywhere in the claim\",\"locator\":\"HL*2 loop, absence of NM1*DN\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"Claim adjudicated: CLP*PA28755879*4*310.83*0**MB*2626660924906*11*1 (payer claim control number present)\",\"locator\":\"CLP segment\"},{\"artifact\":\"ack_277ca.edi\",\"fact\":\"STC*A2:20 \u2014 claim accepted into adjudication, not front-end rejected\",\"locator\":\"STC segment\"}],\"citations\":[{\"source\":\"09-missing-referring-provider.md\",\"rule\":\"CO-16 + N286: correct ordering/referring name+NPI, resubmit; not appealable, not patient-billable\"},{\"source\":\"00-group-codes.md\",\"rule\":\"Provider-side data defect on an adjudicated claim routes to reopening on Part B, not a new original\"}]}}",
+  "model": "claude-sonnet-5"
+}

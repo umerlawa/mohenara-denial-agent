@@ -1,0 +1,99 @@
+{
+  "case_id": "MOH2-000163",
+  "run_id": "final-opus-4-6-low-edi",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 4732,
+  "usage": {
+    "input_tokens": 3,
+    "cache_creation_input_tokens": 5941,
+    "cache_read_input_tokens": 68986,
+    "output_tokens": 1560,
+    "output_tokens_details": {
+      "thinking_tokens": 161
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5941
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.121703175,
+  "cache_hit_rate": 0.920673,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "Line 2 (97112:GP) billed 6 units but chart documents only 16 minutes of neuromuscular re-education, which equals 2 units under the 8-minute rule. Denied CO-151 + N362 (MUE exceeded). This is a unit keying error \u2014 correct and resubmit via clerical-error reopening (Part B does not accept frequency 7).",
+    "resolution": {
+      "root_cause": {
+        "family": "mue_exceeded",
+        "explanation": "97112 billed at 6 units; chart note documents 16 minutes = 2 units. Units exceed MUE due to keying error, triggering CO-151 + N362."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Request clerical-error reopening with Novitas (ICN 2608202939516). Correct line 2 units from 6 to 2. Part B does not accept frequency 7; use reopening.",
+        "resubmission_frequency_code": "7"
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Line 97112:GP denied $323.64 with CAS*CO*151*323.64 and LQ*HE*N362",
+          "locator": "SVC HC:97112:GP segment"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "97112 neuromuscular re-education documented at 16 minutes, supporting 2 units",
+          "locator": "97112 (16 min)"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Line 2 billed SV1*HC:97112:GP*323.64*UN*6 \u2014 6 units submitted",
+          "locator": "LX*2 SV1 segment"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Payer claim control number 2608202939516 in CLP07; claim adjudicated under MB",
+          "locator": "CLP*PA23679919*1*456.65*67.6*16.9*MB*2608202939516"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "151",
+        "rarc": "N362",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        1
+      ],
+      "citations": [
+        {
+          "source": "07-ncci-and-mue.md",
+          "rule": "CO-151 + N362 = MUE exceeded; keying/conversion error \u2192 correct_and_resubmit"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Part B FFS does not accept frequency 7; use clerical-error reopening"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"Line 2 (97112:GP) billed 6 units but chart documents only 16 minutes of neuromuscular re-education, which equals 2 units under the 8-minute rule. Denied CO-151 + N362 (MUE exceeded). This is a unit keying error \u2014 correct and resubmit via clerical-error reopening (Part B does not accept frequency 7).\",\"resolution\":{\"root_cause\":{\"family\":\"mue_exceeded\",\"explanation\":\"97112 billed at 6 units; chart note documents 16 minutes = 2 units. Units exceed MUE due to keying error, triggering CO-151 + N362.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Request clerical-error reopening with Novitas (ICN 2608202939516). Correct line 2 units from 6 to 2. Part B does not accept frequency 7; use reopening.\",\"resubmission_frequency_code\":\"7\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"Line 97112:GP denied $323.64 with CAS*CO*151*323.64 and LQ*HE*N362\",\"locator\":\"SVC HC:97112:GP segment\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"97112 neuromuscular re-education documented at 16 minutes, supporting 2 units\",\"locator\":\"97112 (16 min)\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Line 2 billed SV1*HC:97112:GP*323.64*UN*6 \u2014 6 units submitted\",\"locator\":\"LX*2 SV1 segment\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"Payer claim control number 2608202939516 in CLP07; claim adjudicated under MB\",\"locator\":\"CLP*PA23679919*1*456.65*67.6*16.9*MB*2608202939516\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"151\",\"rarc\":\"N362\",\"level\":\"line\"},\"denied_line_idxs\":[1],\"citations\":[{\"source\":\"07-ncci-and-mue.md\",\"rule\":\"CO-151 + N362 = MUE exceeded; keying/conversion error \u2192 correct_and_resubmit\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Part B FFS does not accept frequency 7; use clerical-error reopening\"}]}}"
+}

@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000061",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "All four lines deny OA-18 exact duplicate, but the claim itself contains two 97140 lines and two 97110 lines for the same DOS with no repeat-procedure modifier. Chart note documents four distinct treatment segments (two manual-therapy bouts, two exercise bouts) totaling 76 timed minutes, so these are legitimate repeat services misread as duplicates of each other, not a resent claim.",
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2734,
+    "cache_read_input_tokens": 104415,
+    "cache_creation_input_tokens": 8767,
+    "cost_usd": 0.0701485,
+    "model": "claude-sonnet-5",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "exact_duplicate",
+      "explanation": "Lines 1&3 (97140-GP-KX) and lines 2&4 (97110-GP-KX) repeat the same code twice on one DOS with no distinguishing modifier (e.g. 76), so the payer's duplicate edit collided the repeat lines against each other."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Medicare Part B FFS: file a clerical-error reopening (CLM05-3=7 not accepted) adding modifier 76 to the second occurrence of each repeated code (lines 3 and 4) to document distinct repeat therapy sessions; do not resend as a new original.",
+      "resubmission_frequency_code": "7"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "denial": {
+      "level": "line",
+      "group": "OA",
+      "carc": "18",
+      "rarc": null
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All 4 lines denied OA-18 exact duplicate, $0 paid, MOA N111",
+        "locator": "service lines 1-4"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Lines 1&3 both 97140-GP-KX, lines 2&4 both 97110-GP-KX, same DOS 2026-07-05, frequency 1 original",
+        "locator": "service lines"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "Four distinct timed segments documented: 97140 (15min), 97110 (31min), 97140 (14min), 97110 (16min), total 76 timed minutes",
+        "locator": "PT note 2026-07-05"
+      }
+    ],
+    "citations": [
+      {
+        "source": "04-exact-duplicate.md",
+        "rule": "False duplicate = legitimate repeat service billed without the modifier distinguishing it; disposition correct_and_resubmit, corrected line(s) only"
+      },
+      {
+        "source": "04-exact-duplicate.md",
+        "rule": "Medicare Part B/DME FFS: frequency 7 not accepted; modifier addition on adjudicated claim is a clerical-error reopening; modifier 76 is reopening-eligible"
+      }
+    ]
+  }
+}

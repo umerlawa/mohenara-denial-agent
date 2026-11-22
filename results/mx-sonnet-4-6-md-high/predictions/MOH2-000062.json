@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000062",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "271 confirms KEYSTONE coverage inactive (EB*6), end date 2025-05-31; DOS 2025-06-17 is 17 days post-termination. All four lines carry PR-27 under filing indicator CI. Group PR assigns the balance to the patient. No QMB, Medicaid, NSA (N830), or successor-payer override is present in any artifact. Bill the patient $204.23.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 4776,
+    "cache_read_input_tokens": 31309,
+    "cache_creation_input_tokens": 5061,
+    "cost_usd": 0.110019195,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "high",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "eligibility_terminated",
+      "explanation": "271 (ELG78719585) shows EB*6 (inactive), DTP*357 = 2025-05-31. DOS 2025-06-17 is after termination. All 4 lines PR-27, CI filing indicator, no successor payer on record."
+    },
+    "next_action": {
+      "path": "bill_patient",
+      "detail": "Send patient statement for $204.23. All 4 lines are PR-27 (patient liability). No override applies: not QMB, no Medicaid enrollment, no N830, no successor payer in 271. No resubmission warranted."
+    },
+    "denial": {
+      "group": "PR",
+      "carc": "27",
+      "rarc": null,
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "evidence": [
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*6 (inactive), eligibility end DTP*357 = 2025-05-31; DOS 2025-06-17 falls 17 days after termination.",
+        "locator": "ELG78719585"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All 4 lines adjusted PR-27, full billed amounts; $204.23 assigned to patient responsibility. MOA N30 at claim level.",
+        "locator": "PA27132865"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Filing indicator CI, payer responsibility P (primary only); no secondary payer submitted.",
+        "locator": "PA27132865"
+      }
+    ],
+    "citations": [
+      {
+        "source": "05-eligibility-terminated.md",
+        "rule": "CI + PR-27 + EB*6 + DTP*357 before DOS, no successor payer \u2192 bill_patient after overrides cleared"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "PR = patient responsibility; billable after QMB/Medicaid/NSA/ABN overrides checked and cleared"
+      }
+    ]
+  }
+}

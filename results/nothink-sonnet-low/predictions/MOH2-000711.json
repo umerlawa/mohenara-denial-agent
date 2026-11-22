@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000711",
+  "input_format": "md",
+  "status": "awaiting_human",
+  "rationale": "All three lines denied CO-119 + N435 (therapy threshold exceeded). GP modifier is present on all lines \u2014 this is not a missing-modifier case. The KX modifier is absent from all three lines. Per reference 08, the next action depends on whether the medical record justifies therapy past the KX threshold as of the DOS. The chart note documents medical necessity, but the operative question is whether the cumulative PT+SLP accumulator had already crossed $2,480 for CY2026 before this claim \u2014 and whether the treating provider/facility had documentation supporting continued medically necessary treatment dated on or before 2026-07-08. That documentation status is not in the artifacts.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 462,
+    "cache_read_input_tokens": 31309,
+    "cache_creation_input_tokens": 4993,
+    "cost_usd": 0.038557695,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "awaiting_human": {
+    "question": "As of 2026-07-08, did the provider have a signed plan-of-care or progress note \u2014 dated on or before that date \u2014 documenting that PT services remained medically necessary beyond the KX threshold ($2,480 PT+SLP combined for CY2026)?",
+    "why_needed": "CO-119 + N435 with no KX on the lines is a threshold denial. If qualifying documentation exists and was simply omitted from billing, the fix is a clerical-error reopening to append KX. If the documentation does not exist, KX would be a false attestation and the claim must be written off. The chart note in the record is dated the DOS and states 'skilled services remain medically necessary,' but a standalone treatment note may not satisfy the MAC's KX documentation requirement \u2014 the provider must confirm whether a formal justification (re-evaluation or updated plan of care) was on file.",
+    "blocks": [
+      "next_action.path"
+    ],
+    "asked_of": "provider"
+  }
+}

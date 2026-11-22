@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000117",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "CO-29 timely filing denial on both lines. However, the 277CA proves the payer received the claim on 2025-01-27 (status A2, accepted for adjudication) \u2014 only 8 days after DOS 2025-01-19. This is well within any commercial filing limit. The 837P interchange date of 2025-10-15 suggests a resubmission triggered the denial, but the original was timely. Per reference 03-timely-filing.md: proof of accepted submission inside the window \u2192 appeal disputing the receipt date.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 3477,
+    "cache_read_input_tokens": 31983,
+    "cache_creation_input_tokens": 4817,
+    "cost_usd": 0.14633602499999998,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "high",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "timely_filing",
+      "explanation": "CO-29 on both lines. Payer asserts filing limit expired, but 277CA shows claim received 2025-01-27 (A2 accepted for adjudication), only 8 days after DOS 2025-01-19. The later 837P dated 2025-10-15 likely triggered the denial; original submission was timely."
+    },
+    "next_action": {
+      "path": "appeal",
+      "detail": "Appeal disputing the receipt date. Attach the 277CA acceptance report (received 2025-01-27, status A2/code 20) as proof of timely filing. Do not plead forgiveness \u2014 assert the claim was received within the window."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Both lines denied CO-29 (timely filing expired); MOA N211 at claim level",
+        "locator": "CAS segment lines 1-2"
+      },
+      {
+        "artifact": "ack_277ca.edi",
+        "fact": "Claim received 2025-01-27 (DTP 050), status A2 accepted for adjudication, code 20 accepted for processing",
+        "locator": "received date 050; status code 20"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "DOS 2025-01-19; interchange date 2025-10-15 indicates a resubmission 9 months later",
+        "locator": "DTP 472; ISA date 251015"
+      },
+      {
+        "artifact": "reference",
+        "fact": "Proof of accepted submission inside the window \u2192 appeal with the clearinghouse acceptance report, dispute the receipt date",
+        "locator": "03-timely-filing.md remedy table"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "29",
+      "rarc": "N211",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      1,
+      2
+    ],
+    "citations": [
+      {
+        "source": "03-timely-filing.md",
+        "rule": "Proof of an accepted submission inside the window \u2192 appeal with the clearinghouse acceptance report: dispute the receipt date, don't plead forgiveness"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO = contractual obligation, provider liable, never bill patient"
+      }
+    ]
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "case_id": "MOH2-000511",
+  "run_id": "final-sonnet-4-6-low-edi",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4772,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5074,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1061,
+    "output_tokens_details": {
+      "thinking_tokens": 373
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5074
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.04891986,
+  "cache_hit_rate": 0.862151,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All three lines adjudicated and paid. CO-45 is the contractual fee-schedule write-off; PR-2 is standard Medicare Part B coinsurance. No denial codes present. Total paid $68.68 matches sum of SVC paid amounts. Routine AR for the $17.16 PR-2 balance; no denial to resolve.",
+    "resolution": {
+      "root_cause": {
+        "family": "none",
+        "explanation": "Claim paid in full at the Medicare fee schedule. CO-45 is the contractual write-off; PR-2 ($17.16) is patient coinsurance. No denial."
+      },
+      "next_action": {
+        "path": "none",
+        "detail": "Post the $68.68 payment. Bill the patient the $17.16 PR-2 coinsurance in the normal AR cycle. No corrective action required."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP*PA27837013*1*131.81*68.68 \u2014 status 1 (paid); all three SVC lines carry CAS*CO*45 (fee-schedule write-off) and CAS*PR*2 (coinsurance only)",
+          "locator": "CLP segment and three SVC/CAS blocks"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "No denial CARC (e.g., 4, 18, 29, 50, 119, 197) present on any line",
+          "locator": "All CAS segments"
+        },
+        {
+          "artifact": "ack_277ca.edi",
+          "fact": "STC*A2:20 \u2014 claim accepted by payer",
+          "locator": "STC segment HL*4"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*1 active coverage for DOS 20260727 under NOVITAS SOLUTIONS MEDICARE PART B FFS",
+          "locator": "EB segment with DTP*356*D8*20240101"
+        }
+      ],
+      "denied_line_idxs": [],
+      "citations": [
+        {
+          "source": "00-group-codes.md",
+          "rule": "CO = contractual write-off, not billable; PR = patient responsibility, billable in routine AR"
+        },
+        {
+          "source": "01-carc-rarc-index.md",
+          "rule": "CARC 45: fee schedule contractual write-off; CARC 2: coinsurance \u2014 PR only"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All three lines adjudicated and paid. CO-45 is the contractual fee-schedule write-off; PR-2 is standard Medicare Part B coinsurance. No denial codes present. Total paid $68.68 matches sum of SVC paid amounts. Routine AR for the $17.16 PR-2 balance; no denial to resolve.\",\"resolution\":{\"root_cause\":{\"family\":\"none\",\"explanation\":\"Claim paid in full at the Medicare fee schedule. CO-45 is the contractual write-off; PR-2 ($17.16) is patient coinsurance. No denial.\"},\"next_action\":{\"path\":\"none\",\"detail\":\"Post the $68.68 payment. Bill the patient the $17.16 PR-2 coinsurance in the normal AR cycle. No corrective action required.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP*PA27837013*1*131.81*68.68 \u2014 status 1 (paid); all three SVC lines carry CAS*CO*45 (fee-schedule write-off) and CAS*PR*2 (coinsurance only)\",\"locator\":\"CLP segment and three SVC/CAS blocks\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"No denial CARC (e.g., 4, 18, 29, 50, 119, 197) present on any line\",\"locator\":\"All CAS segments\"},{\"artifact\":\"ack_277ca.edi\",\"fact\":\"STC*A2:20 \u2014 claim accepted by payer\",\"locator\":\"STC segment HL*4\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*1 active coverage for DOS 20260727 under NOVITAS SOLUTIONS MEDICARE PART B FFS\",\"locator\":\"EB segment with DTP*356*D8*20240101\"}],\"denied_line_idxs\":[],\"citations\":[{\"source\":\"00-group-codes.md\",\"rule\":\"CO = contractual write-off, not billable; PR = patient responsibility, billable in routine AR\"},{\"source\":\"01-carc-rarc-index.md\",\"rule\":\"CARC 45: fee schedule contractual write-off; CARC 2: coinsurance \u2014 PR only\"}]}}"
+}

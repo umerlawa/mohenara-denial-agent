@@ -1,0 +1,86 @@
+{
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 8979,
+    "cache_read_input_tokens": 161073,
+    "output_tokens": 2922,
+    "output_tokens_details": {
+      "thinking_tokens": 420
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 8979,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 983,
+        "cache_read_input_tokens": 56718,
+        "cache_creation_input_tokens": 974,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 974
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "271 shows coverage ended 2025-05-31 (DTP*357), DOS is 2025-06-12 \u2014 after termination. Remit shows PR-27 (not CO) with filing indicator CI, and MOA N30. Per co27 table, CI/PR-27 with 271 confirming inactivity at DOS and no successor payer means bill_patient once overrides clear. No override facts present (no QMB, Medicaid, ACA grace period, or hold-harmless indication).",
+    "resolution": {
+      "root_cause": {
+        "family": "eligibility_terminated",
+        "explanation": "271 eligibility response shows coverage end date 2025-05-31, before the 2025-06-12 DOS. All four lines denied PR-27 with MOA N30 (patient ineligible for this service)."
+      },
+      "next_action": {
+        "path": "bill_patient",
+        "detail": "Bill patient Robert Wilson for $181.22. Group code is PR (patient responsibility), coverage was inactive on the DOS per the 271, and no override (QMB, Medicaid, ACA grace, hold-harmless) applies."
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "denial": {
+        "level": "line",
+        "group": "PR",
+        "carc": "27",
+        "rarc": "N30"
+      },
+      "evidence": [
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "Benefit inactive (EB*6), eligibility end (357) = 2025-05-31, before plan date/DOS 2025-06-12",
+          "locator": "eligibility_271"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All four service lines denied PR-27 (patient responsibility: expenses incurred after coverage terminated), filing indicator CI, claim-level MOA N30",
+          "locator": "remit_835 service lines"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "DOS billed as 2025-06-12, matching the date coverage had already lapsed",
+          "locator": "claim_837p"
+        }
+      ],
+      "citations": [
+        {
+          "source": "05-eligibility-terminated.md",
+          "rule": "CI, EB*6 + 357 before DOS, no successor: PR-27 -> bill_patient"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"271 shows coverage ended 2025-05-31 (DTP*357), DOS is 2025-06-12 \u2014 after termination. Remit shows PR-27 (not CO) with filing indicator CI, and MOA N30. Per co27 table, CI/PR-27 with 271 confirming inactivity at DOS and no successor payer means bill_patient once overrides clear. No override facts present (no QMB, Medicaid, ACA grace period, or hold-harmless indication).\",\"resolution\":{\"root_cause\":{\"family\":\"eligibility_terminated\",\"explanation\":\"271 eligibility response shows coverage end date 2025-05-31, before the 2025-06-12 DOS. All four lines denied PR-27 with MOA N30 (patient ineligible for this service).\"},\"next_action\":{\"path\":\"bill_patient\",\"detail\":\"Bill patient Robert Wilson for $181.22. Group code is PR (patient responsibility), coverage was inactive on the DOS per the 271, and no override (QMB, Medicaid, ACA grace, hold-harmless) applies.\"},\"denied_line_idxs\":[0,1,2,3],\"denial\":{\"level\":\"line\",\"group\":\"PR\",\"carc\":\"27\",\"rarc\":\"N30\"},\"evidence\":[{\"artifact\":\"eligibility_271.edi\",\"fact\":\"Benefit inactive (EB*6), eligibility end (357) = 2025-05-31, before plan date/DOS 2025-06-12\",\"locator\":\"eligibility_271\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"All four service lines denied PR-27 (patient responsibility: expenses incurred after coverage terminated), filing indicator CI, claim-level MOA N30\",\"locator\":\"remit_835 service lines\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"DOS billed as 2025-06-12, matching the date coverage had already lapsed\",\"locator\":\"claim_837p\"}],\"citations\":[{\"source\":\"05-eligibility-terminated.md\",\"rule\":\"CI, EB*6 + 357 before DOS, no successor: PR-27 -> bill_patient\"}]}}",
+  "model": "claude-sonnet-5"
+}

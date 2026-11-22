@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000638",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "All three lines carry CO-22 (another payer primary); claim-level MOA MA04 confirms Delaware Valley Mutual cannot pay as secondary without primary's adjudication data. The 271 for the DOS shows Novitas Medicare Part B FFS as EB*R with payer message \"PLAN IS PRIMARY PAYER FOR THIS MEMBER.\" Claim was filed to Delaware Valley Mutual with SBR payer responsibility P. Bill Medicare first, then Delaware Valley Mutual as secondary.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 7216,
+    "cache_read_input_tokens": 31309,
+    "cache_creation_input_tokens": 5046,
+    "cost_usd": 0.15021732000000002,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "high",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "cob_other_primary",
+      "explanation": "Claim filed to Delaware Valley Mutual as primary (SBR P); 271 for the DOS shows Novitas Medicare Part B FFS as EB*R with payer message 'PLAN IS PRIMARY PAYER FOR THIS MEMBER.' Delaware Valley Mutual denied CO-22 on all lines and issued MA04 at claim level \u2014 Medicare is primary."
+    },
+    "next_action": {
+      "path": "resubmit_other_payer",
+      "detail": "Submit new original claim (frequency 1) to Novitas Solutions Medicare Part B (payer ID 1846349352) as primary. After Medicare adjudicates, resubmit to Delaware Valley Mutual as secondary with Medicare's 835 adjudication data populated in the 2320/2430 SBR/AMT/CAS loops."
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "22",
+      "rarc": null,
+      "level": "line"
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Lines 1\u20133 all denied CO-22 ($122.51 total); claim-level MOA MA04 'secondary payment cannot be considered without primary payer identity.'",
+        "locator": "CAS CO-22 on all three service lines; MOA MA04"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*R: Novitas Solutions Medicare Part B FFS listed as other/additional payer for DOS 2026-06-04; payer message 'PLAN IS PRIMARY PAYER FOR THIS MEMBER.'",
+        "locator": "benefit R loop; payer message"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Delaware Valley Mutual billed with SBR payer responsibility P (primary); no Medicare adjudication data supplied.",
+        "locator": "SBR payer responsibility P"
+      }
+    ],
+    "citations": [
+      {
+        "source": "06-cob-other-primary.md",
+        "rule": "CARC 22 alone \u2192 resubmit_other_payer; bill the true primary, then rebill this payer as secondary carrying the primary's adjudication data."
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "CARC 22/109 (not MA04) \u2192 resubmit_other_payer; never appeal a disclaiming payer."
+      }
+    ]
+  }
+}

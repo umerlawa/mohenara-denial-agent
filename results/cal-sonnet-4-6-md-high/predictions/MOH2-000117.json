@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000117",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "Both lines carry CO-29. The Oct 2025 re-submission (837P dated 2025-10-15) was filed ~9 months post-DOS and exceeded the payer's commercial window. But the 277CA (ACK75364521, received 2025-01-27) shows an original claim accepted for adjudication just 8 days after the 2025-01-19 DOS \u2014 timely under any commercial limit. Per 03-timely-filing.md, a clearinghouse acceptance report stops the clock. N211 is a Medicare RARC misapplied to a CI claim; commercial appeal rights stand.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 5827,
+    "cache_read_input_tokens": 31309,
+    "cache_creation_input_tokens": 4817,
+    "cost_usd": 0.126354195,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "high",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "timely_filing",
+      "explanation": "CO-29 fired on the Oct 2025 re-submission (~9 months post-DOS). Original claim was received 2025-01-27 per 277CA A2 acceptance \u2014 8 days post-DOS, timely under any commercial limit. Filing clock stopped at that original payer receipt."
+    },
+    "next_action": {
+      "path": "appeal",
+      "detail": "Appeal with 277CA (ACK75364521, 2025-01-27, status A2) as proof of timely original receipt. Dispute the receipt date; do not plead hardship. N211 is a Medicare-specific RARC misapplied to this CI claim; commercial appeal rights are unaffected."
+    },
+    "denial": {
+      "group": "CO",
+      "carc": "29",
+      "rarc": "N211",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1
+    ],
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Lines 1\u20132 both CO-29 ($91.91 + $46.71 = $138.62), MOA N211 \u2014 timely filing expired, claim-level no-appeal remark",
+        "locator": "CAS CO 29 lines PA24642236L1/L2; MOA N211"
+      },
+      {
+        "artifact": "ack_277ca.edi",
+        "fact": "Status A2 (accepted for adjudication), received date 2025-01-27, amount $138.62 \u2014 original claim cleared front-end edits 8 days after 2025-01-19 DOS",
+        "locator": "received date 050 = 2025-01-27; ACK75364521"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Re-submission dated 2025-10-15, frequency 1 (original) \u2014 ~9 months post-DOS, past payer's commercial window, triggering the CO-29",
+        "locator": "BHT submission date 251015; CLM05-3 = 1"
+      },
+      {
+        "artifact": "reference",
+        "fact": "Proof of accepted submission inside the window \u2192 appeal with the clearinghouse acceptance report; N211 has also been applied in error (R3118CP)",
+        "locator": "03-timely-filing.md \u2014 remedy table, proof row; \u00a79.1 N211 carve-out"
+      }
+    ]
+  }
+}

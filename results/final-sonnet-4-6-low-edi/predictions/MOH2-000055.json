@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000055",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All three lines denied CO-29 (timely filing). DOS 2025-04-16; 837P ISA date 2025-08-10 = 116 days. Payer is commercial (CI), patient address Staten Island NY. NY Ins. Law \u00a73224-a sets a 120-day floor. 116 days &lt; 120 days \u2192 claim was filed within the NY state floor. MOA N211 is a Medicare-only no-appeal marker; it carries no force on a CI remit. Appeal disputing the filing date.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 2864,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 4579,
+    "cost_usd": 0.076627485,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "timely_filing",
+      "explanation": "CO-29 on all three lines. DOS 2025-04-16, 837P submitted 2025-08-10 = 116 days. NY state floor (subscriber in Staten Island NY) is 120 days; claim was filed within that floor."
+    },
+    "next_action": {
+      "path": "appeal",
+      "detail": "File redetermination/first-level appeal citing NY Ins. Law \u00a73224-a 120-day floor and the 8/10/2025 submission date (116 days from DOS). Attach the clearinghouse acceptance report as proof of receipt. N211 has no weight on a commercial remit."
+    },
+    "evidence": [
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "ISA date 2025-08-10; DOS 2025-04-16 = 116 days elapsed; filing indicator CI",
+        "locator": "ISA/DTP*472"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CAS*CO*29 on all three SVC lines; MOA N211; payer CI commercial",
+        "locator": "CLP + CAS segments"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*1 active coverage, DTP*356 2024-01-01, no termination date \u2014 coverage confirmed active on DOS",
+        "locator": "EB/DTP loop"
+      },
+      {
+        "artifact": "reference",
+        "fact": "NY state floor 120 days overrides contract terms; 116 days &lt; 120 days; proof of timely submission supports appeal",
+        "locator": "03-timely-filing.md \u2014 state floors table"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "29",
+      "rarc": "N211",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "citations": [
+      {
+        "source": "03-timely-filing.md",
+        "rule": "NY state floor 120 days overrides contract; proof of accepted submission inside window \u2192 appeal"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "N211 no-appeal marker applies only on Medicare FFS; not operative on CI remit"
+      }
+    ]
+  }
+}

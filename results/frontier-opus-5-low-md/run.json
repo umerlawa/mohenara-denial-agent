@@ -1,0 +1,23 @@
+{
+  "run_id": "frontier-opus-5-low-md",
+  "model": "claude-opus-5",
+  "effort": "low",
+  "thinking": "adaptive",
+  "input_format": "md",
+  "slice": "eval/slices/dev15.txt",
+  "n_cases": 15,
+  "counts": {
+    "resolved": 14,
+    "awaiting_human": 1,
+    "failed": 0
+  },
+  "cost_usd": 2.386498,
+  "cost_usd_successful_cases": 2.386498,
+  "cost_usd_failed_cases": 0.0,
+  "cost_per_case_usd": 0.1591,
+  "wall_seconds": 139.5,
+  "provider": "anthropic",
+  "provider_spend_after": 6.287195,
+  "spend_total_after": 49.509088,
+  "failures": []
+}

@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000263",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All three lines paid. CO-45 is the fee-schedule contractual write-off; PR-2 is standard Medicare Part B coinsurance. No denial CARC present. CLP status 1 (paid), payer issued EFT for $97.80. Claim adjudicated correctly; no rework warranted.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 802,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 5059,
+    "cost_usd": 0.044584485,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "none",
+      "explanation": "Claim paid. CO-45 = contractual fee-schedule reduction (write off); PR-2 = patient coinsurance. No denial code on any line."
+    },
+    "next_action": {
+      "path": "none",
+      "detail": "Post the $97.80 EFT (CLP07 2609312000161). Write off CO-45 amounts per participation agreement. Bill patient $24.44 PR-2 coinsurance in normal AR cycle."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP*PA23903812*1 \u2014 status 1 (paid); BPR amount $97.80 issued by EFT 20260403",
+        "locator": "CLP segment"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All three SVC lines carry only CAS*CO*45 (fee schedule reduction) and CAS*PR*2 (coinsurance); no denial CARC on any line",
+        "locator": "CAS segments under each SVC"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*1 (active coverage) for DOS 20260206 under Novitas Medicare Part B FFS \u2014 eligibility confirmed",
+        "locator": "EB*1 + DTP*356*D8*20240101"
+      }
+    ],
+    "denied_line_idxs": [],
+    "citations": [
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO = contractual write-off per participation agreement; PR = patient responsibility, billable in normal AR"
+      },
+      {
+        "source": "01-carc-rarc-index.md",
+        "rule": "CARC 45: contractual fee-schedule reduction; write off CO portion"
+      }
+    ]
+  }
+}

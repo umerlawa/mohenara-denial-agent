@@ -1,0 +1,37 @@
+{
+  "usage": {
+    "input_tokens": 3,
+    "cache_creation_input_tokens": 6533,
+    "cache_read_input_tokens": 68547,
+    "output_tokens": 1818,
+    "output_tokens_details": {
+      "thinking_tokens": 1188
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 6533
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "awaiting_human",
+    "rationale": "Lines 0\u20131 (97110, 97140) paid with routine CO-45/PR-2 adjustments. Line 2 (97530, 7 units) was fully denied CO-151 + N362 \u2014 MUE exceeded. Chart note documents 31 minutes for 97530 (~2 billable units), so 7 units is a keying error. Next action is correct_and_resubmit for MAI 1 or 2, but appeal for MAI 3. MAI cannot be assumed.",
+    "awaiting_human": {
+      "question": "What is the MAI (Medically Unlikely Edit Adjudication Indicator) for CPT 97530 in the CMS MUE table for DOS quarter Q1 2026?",
+      "why_needed": "CO-151 + N362 on service line 3 (97530, 7 units) is an MUE denial. Next action is correct_and_resubmit for MAI 1 or 2 (chart shows 31 min \u2248 2 units, clearly a keying error), but appeal for MAI 3. The MAI is absent from all artifacts and the reference library prohibits asserting a value that is not visible.",
+      "blocks": [
+        "next_action.path"
+      ],
+      "asked_of": "internal"
+    }
+  },
+  "result": "{\"status\":\"awaiting_human\",\"rationale\":\"Lines 0\u20131 (97110, 97140) paid with routine CO-45/PR-2 adjustments. Line 2 (97530, 7 units) was fully denied CO-151 + N362 \u2014 MUE exceeded. Chart note documents 31 minutes for 97530 (~2 billable units), so 7 units is a keying error. Next action is correct_and_resubmit for MAI 1 or 2, but appeal for MAI 3. MAI cannot be assumed.\",\"awaiting_human\":{\"question\":\"What is the MAI (Medically Unlikely Edit Adjudication Indicator) for CPT 97530 in the CMS MUE table for DOS quarter Q1 2026?\",\"why_needed\":\"CO-151 + N362 on service line 3 (97530, 7 units) is an MUE denial. Next action is correct_and_resubmit for MAI 1 or 2 (chart shows 31 min \u2248 2 units, clearly a keying error), but appeal for MAI 3. The MAI is absent from all artifacts and the reference library prohibits asserting a value that is not visible.\",\"blocks\":[\"next_action.path\"],\"asked_of\":\"internal\"}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

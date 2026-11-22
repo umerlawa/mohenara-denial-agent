@@ -1,0 +1,49 @@
+{
+  "case_id": "MOH2-000233",
+  "run_id": "cal-opus-4-6-md-high",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "high",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 7351,
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 8967,
+    "cache_read_input_tokens": 109642,
+    "output_tokens": 4093,
+    "output_tokens_details": {
+      "thinking_tokens": 2831
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 8967
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.234530725,
+  "cache_hit_rate": 0.924367,
+  "model_output": {
+    "status": "awaiting_human",
+    "rationale": "Lines 1-3 (97110-GP) denied CO-236 + N20: NCCI PTP edit fired against Column One code 97150 (paid). Chart note documents distinct encounter (different body region, unrelated goal, clearly demarcated). Whether a bypass modifier can clear the edit depends on the CCMI for the 97150/97110 pair in the Q2 2026 NCCI file \u2014 CCMI 1 allows correct_and_resubmit with modifier; CCMI 0 means write off. The 835 does not carry the CCMI.",
+    "awaiting_human": {
+      "question": "What is the Correct Coding Modifier Indicator (CCMI) for the 97150 (Column 1) / 97110 (Column 2) PTP pair in the CMS NCCI Practitioner edit file effective for DOS 2026-06-25 (Q2 2026)? Look this up at the CMS NCCI edit file page.",
+      "why_needed": "CCMI = 1 means a bypass modifier (59/XE/XS/XP/XU) can be appended and the claim resubmitted via reopening. CCMI = 0 means the edit is absolute, no modifier bypasses it, and the $173.46 denied is a write-off. The chart documentation supports distinctness, so only the CCMI gates the disposition.",
+      "blocks": [
+        "next_action.path"
+      ],
+      "asked_of": "internal"
+    }
+  },
+  "raw_text": "{\"status\":\"awaiting_human\",\"rationale\":\"Lines 1-3 (97110-GP) denied CO-236 + N20: NCCI PTP edit fired against Column One code 97150 (paid). Chart note documents distinct encounter (different body region, unrelated goal, clearly demarcated). Whether a bypass modifier can clear the edit depends on the CCMI for the 97150/97110 pair in the Q2 2026 NCCI file \u2014 CCMI 1 allows correct_and_resubmit with modifier; CCMI 0 means write off. The 835 does not carry the CCMI.\",\"awaiting_human\":{\"question\":\"What is the Correct Coding Modifier Indicator (CCMI) for the 97150 (Column 1) / 97110 (Column 2) PTP pair in the CMS NCCI Practitioner edit file effective for DOS 2026-06-25 (Q2 2026)? Look this up at the CMS NCCI edit file page.\",\"why_needed\":\"CCMI = 1 means a bypass modifier (59/XE/XS/XP/XU) can be appended and the claim resubmitted via reopening. CCMI = 0 means the edit is absolute, no modifier bypasses it, and the $173.46 denied is a write-off. The chart documentation supports distinctness, so only the CCMI gates the disposition.\",\"blocks\":[\"next_action.path\"],\"asked_of\":\"internal\"}}"
+}

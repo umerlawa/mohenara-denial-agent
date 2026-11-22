@@ -1,0 +1,98 @@
+{
+  "case_id": "MOH2-000147",
+  "run_id": "mx-opus-4-6-edi-max",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "max",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 5220,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5281,
+    "cache_read_input_tokens": 31983,
+    "output_tokens": 2972,
+    "output_tokens_details": {
+      "thinking_tokens": 2320
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5281
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.13563852499999998,
+  "cache_hit_rate": 0.858235,
+  "model_output": {
+    "rationale": "All 5 therapy lines (97530, 97140, 97116) denied CO-4 + N822. Lines carry KX but no discipline modifier (GP/GO/GN). Chart note confirms physical therapy plan of care \u2014 GP is required. Medicare Part B treats CO-4/N822 as unprocessable; remedy is a new original claim with the modifier appended, not an appeal or reopening.",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_therapy_modifier",
+        "explanation": "All therapy lines billed with KX only; GP modifier absent. Chart note confirms PT plan of care. CO-4 + N822 = required modifier missing on always-therapy CPTs."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Append modifier GP to all 5 lines (97530, 97140, 97116). Submit as a new original claim (CLM05-3 = 1). Do not appeal, do not send frequency 7. Filing deadline 2027-06-05 \u2014 act promptly."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All 5 SVC lines: CAS*CO*4 + LQ*HE*N822, $0 paid",
+          "locator": "CAS/LQ segments under each SVC"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Lines billed HC:97530:KX, HC:97140:KX, HC:97116:KX \u2014 no GP/GO/GN modifier present",
+          "locator": "SV1 segments lines 1-5"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "\"PT treatment note 2026-06-05\" \u2014 physical therapy plan of care, establishing GP as correct discipline modifier",
+          "locator": "First line"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*1 active coverage for DOS 20260605; no termination \u2014 eligibility is not at issue",
+          "locator": "EB*1*IND*30"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "4",
+        "rarc": "N822",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "citations": [
+        {
+          "source": "08-therapy-modifiers.md",
+          "rule": "CO-4 + N822 on always-therapy CPTs = missing_therapy_modifier; correct_and_resubmit as new original CLM05-3=1, not appeal or reopening"
+        }
+      ]
+    },
+    "status": "resolved"
+  },
+  "raw_text": "{\"rationale\":\"All 5 therapy lines (97530, 97140, 97116) denied CO-4 + N822. Lines carry KX but no discipline modifier (GP/GO/GN). Chart note confirms physical therapy plan of care \u2014 GP is required. Medicare Part B treats CO-4/N822 as unprocessable; remedy is a new original claim with the modifier appended, not an appeal or reopening.\",\"resolution\":{\"root_cause\":{\"family\":\"missing_therapy_modifier\",\"explanation\":\"All therapy lines billed with KX only; GP modifier absent. Chart note confirms PT plan of care. CO-4 + N822 = required modifier missing on always-therapy CPTs.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Append modifier GP to all 5 lines (97530, 97140, 97116). Submit as a new original claim (CLM05-3 = 1). Do not appeal, do not send frequency 7. Filing deadline 2027-06-05 \u2014 act promptly.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All 5 SVC lines: CAS*CO*4 + LQ*HE*N822, $0 paid\",\"locator\":\"CAS/LQ segments under each SVC\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Lines billed HC:97530:KX, HC:97140:KX, HC:97116:KX \u2014 no GP/GO/GN modifier present\",\"locator\":\"SV1 segments lines 1-5\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"\\\"PT treatment note 2026-06-05\\\" \u2014 physical therapy plan of care, establishing GP as correct discipline modifier\",\"locator\":\"First line\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*1 active coverage for DOS 20260605; no termination \u2014 eligibility is not at issue\",\"locator\":\"EB*1*IND*30\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"4\",\"rarc\":\"N822\",\"level\":\"line\"},\"denied_line_idxs\":[0,1,2,3,4],\"citations\":[{\"source\":\"08-therapy-modifiers.md\",\"rule\":\"CO-4 + N822 on always-therapy CPTs = missing_therapy_modifier; correct_and_resubmit as new original CLM05-3=1, not appeal or reopening\"}]},\"status\":\"resolved\"}"
+}

@@ -1,0 +1,89 @@
+{
+  "case_id": "MOH2-000117",
+  "run_id": "mx-sonnet-4-6-md-low",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 6295,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4817,
+    "cache_read_input_tokens": 31309,
+    "output_tokens": 3949,
+    "output_tokens_details": {
+      "thinking_tokens": 2982
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4817
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.095367195,
+  "cache_hit_rate": 0.866613,
+  "model_output": {
+    "status": "awaiting_human",
+    "rationale": "CO-29 timely filing denial. 837P envelope is dated 2025-10-15 (~9 months after DOS 2025-01-19), which would be late under most commercial filing limits. However, the 277CA carries received date 2025-01-27 \u2014 only 8 days post-DOS \u2014 and shares trace TRC75364521 with the October 837P. A 277CA cannot predate its 837P; one date is wrong. If a prior submission was accepted on or near 2025-01-27, that acceptance report is proof of timely filing and the CO-29 is appealable. Without that answer the disposition cannot be determined.",
+    "awaiting_human": {
+      "question": "Was a claim for DOS 2025-01-19 submitted to Liberty Bell Health Plans and accepted by the clearinghouse before 2025-10-15? The 277CA shows received date 2025-01-27 but the 837P envelope is dated 2025-10-15 \u2014 these cannot both be correct for the same transaction. Confirm: (a) is the 277CA date a data entry error (should it be ~2025-10-27?), or (b) was there an earlier submission accepted on 2025-01-27 with a separate clearinghouse acceptance report?",
+      "why_needed": "If a prior submission was accepted on 2025-01-27, that acceptance report is proof of timely filing and CO-29 is appealable. If the 277CA date is erroneous and the only submission was October 2025, the claim is likely genuinely late and must be written off.",
+      "blocks": [
+        "root_cause.family",
+        "next_action.path"
+      ],
+      "asked_of": "internal"
+    },
+    "resolution": {
+      "root_cause": {
+        "family": "timely_filing",
+        "explanation": "CO-29 on both lines; 837P submission date 2025-10-15 is ~9 months after DOS 2025-01-19. 277CA date 2025-01-27 contradicts the 837P envelope date \u2014 cannot confirm timely filing without clarification."
+      },
+      "next_action": {
+        "path": "none",
+        "detail": "Pending answer above: if prior timely submission confirmed \u2192 appeal CO-29 with acceptance report. If only submission was October 2025 \u2192 do_not_resubmit, write off $138.62."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Both lines carry CO-29; MOA N211. Billed $138.62, paid $0.",
+          "locator": "CAS lines 1-2; MOA segment"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "837P interchange envelope dated 2025-10-15, ~269 days after DOS 2025-01-19.",
+          "locator": "ISA date 251015"
+        },
+        {
+          "artifact": "ack_277ca.edi",
+          "fact": "277CA received date 2025-01-27, trace TRC75364521 \u2014 same trace as the October 837P. Chronologically impossible for one transaction.",
+          "locator": "DTP*050*D8*20250127; REF*D9*TRC75364521"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CO-29 genuinely late \u2192 do_not_resubmit; proof of clearinghouse acceptance inside the window \u2192 appeal.",
+          "locator": "03-timely-filing.md \u00a78 (proof accepted)"
+        }
+      ],
+      "citations": [
+        {
+          "source": "03-timely-filing.md",
+          "rule": "Proof of timely filing: clearinghouse acceptance report is strongest; if late and no exception \u2192 do_not_resubmit, CO = provider liable."
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"awaiting_human\",\"rationale\":\"CO-29 timely filing denial. 837P envelope is dated 2025-10-15 (~9 months after DOS 2025-01-19), which would be late under most commercial filing limits. However, the 277CA carries received date 2025-01-27 \u2014 only 8 days post-DOS \u2014 and shares trace TRC75364521 with the October 837P. A 277CA cannot predate its 837P; one date is wrong. If a prior submission was accepted on or near 2025-01-27, that acceptance report is proof of timely filing and the CO-29 is appealable. Without that answer the disposition cannot be determined.\",\"awaiting_human\":{\"question\":\"Was a claim for DOS 2025-01-19 submitted to Liberty Bell Health Plans and accepted by the clearinghouse before 2025-10-15? The 277CA shows received date 2025-01-27 but the 837P envelope is dated 2025-10-15 \u2014 these cannot both be correct for the same transaction. Confirm: (a) is the 277CA date a data entry error (should it be ~2025-10-27?), or (b) was there an earlier submission accepted on 2025-01-27 with a separate clearinghouse acceptance report?\",\"why_needed\":\"If a prior submission was accepted on 2025-01-27, that acceptance report is proof of timely filing and CO-29 is appealable. If the 277CA date is erroneous and the only submission was October 2025, the claim is likely genuinely late and must be written off.\",\"blocks\":[\"root_cause.family\",\"next_action.path\"],\"asked_of\":\"internal\"},\"resolution\":{\"root_cause\":{\"family\":\"timely_filing\",\"explanation\":\"CO-29 on both lines; 837P submission date 2025-10-15 is ~9 months after DOS 2025-01-19. 277CA date 2025-01-27 contradicts the 837P envelope date \u2014 cannot confirm timely filing without clarification.\"},\"next_action\":{\"path\":\"none\",\"detail\":\"Pending answer above: if prior timely submission confirmed \u2192 appeal CO-29 with acceptance report. If only submission was October 2025 \u2192 do_not_resubmit, write off $138.62.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"Both lines carry CO-29; MOA N211. Billed $138.62, paid $0.\",\"locator\":\"CAS lines 1-2; MOA segment\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"837P interchange envelope dated 2025-10-15, ~269 days after DOS 2025-01-19.\",\"locator\":\"ISA date 251015\"},{\"artifact\":\"ack_277ca.edi\",\"fact\":\"277CA received date 2025-01-27, trace TRC75364521 \u2014 same trace as the October 837P. Chronologically impossible for one transaction.\",\"locator\":\"DTP*050*D8*20250127; REF*D9*TRC75364521\"},{\"artifact\":\"reference\",\"fact\":\"CO-29 genuinely late \u2192 do_not_resubmit; proof of clearinghouse acceptance inside the window \u2192 appeal.\",\"locator\":\"03-timely-filing.md \u00a78 (proof accepted)\"}],\"citations\":[{\"source\":\"03-timely-filing.md\",\"rule\":\"Proof of timely filing: clearinghouse acceptance report is strongest; if late and no exception \u2192 do_not_resubmit, CO = provider liable.\"}]}}"
+}

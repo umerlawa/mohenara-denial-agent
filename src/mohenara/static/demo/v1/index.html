@@ -1,0 +1,887 @@
+<!-- Demo variant 1 — built to the supplied mockup.
+     A separate frontend on the same backend and the same API. Nothing here is
+     imported by the operator app and nothing here may change it.
+
+     The mockup's own note states the rule this file is organised around:
+     "The input renders PLAIN at upload — the system has not looked at it yet.
+      Annotations appear only after resolution, driven by the run's output."
+
+     Everything drawn comes from /api/demo/view, which anchors the model's own
+     quotations against the artifact bytes. This file contains no analysis of
+     EDI: it cannot decide a line is defective, only display that the model said
+     so, and where. A frontend that found the bad lines itself would look
+     identical and would keep looking confident on a case the model got wrong.
+
+     One deliberate departure from the mockup, explained on screen rather than
+     hidden: the banner and the corrected claim report the frequency code the
+     RUN produced. On this case that is not 7 -- see reference/runtime/
+     08-therapy-modifiers.md, which requires a new original claim for CO-4/N822
+     because an unprocessable claim was never adjudicated and has nothing to
+     replace. The mockup's fixed "frequency code 7" text is the one thing in it
+     that a live run contradicts. -->
+<meta charset="utf-8">
+<title>Mohenara</title>
+<style>
+  :root{
+    --bg:#1e1e1e; --panel:#252526; --border:#3c3c3c; --text:#d4d4d4;
+    --dim:#808080; --accent:#4fc1ff; --red:#f14c4c; --redbg:rgba(241,76,76,.12);
+    --green:#4ec9b0; --greenbg:rgba(78,201,176,.12); --yellow:#dcdcaa;
+    --chipred:#5a1d1d; --chipgreen:#1d4038;
+    --mono:'SF Mono',Menlo,Consolas,ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);
+       font-family:-apple-system,'Segoe UI',sans-serif;height:100vh;
+       display:flex;flex-direction:column;overflow:hidden}
+  header{display:flex;align-items:center;gap:14px;padding:10px 16px;
+         background:var(--panel);border-bottom:1px solid var(--border)}
+  .logo{font-weight:700;letter-spacing:.5px;color:#fff}
+  .logo span{color:var(--accent)}
+  .caseid{font-family:var(--mono);font-size:12px;color:var(--dim);background:#2d2d2d;
+          border:1px solid var(--border);border-radius:4px;padding:3px 8px}
+  .caseid input{background:transparent;border:0;color:var(--dim);font:inherit;width:112px;outline:none}
+  .caseid input:focus{color:var(--text)}
+  .spacer{flex:1}
+  .meta{font-family:var(--mono);font-size:12px;color:var(--dim)}
+  .meta b{color:var(--text);font-weight:600}
+  button{background:#0e639c;border:none;color:#fff;font-size:13px;font-weight:600;
+         padding:8px 20px;border-radius:4px;cursor:pointer}
+  button:hover{background:#1177bb}
+  button:disabled{background:#2d2d2d;color:var(--dim);cursor:default}
+  button.ghost{background:transparent;border:1px solid var(--border);color:var(--dim)}
+
+  main{flex:1;display:flex;min-height:0}
+  .pane{flex:1;display:flex;flex-direction:column;min-width:0}
+  .pane+.pane{border-left:1px solid var(--border)}
+  .tabs{display:flex;background:var(--panel);border-bottom:1px solid var(--border);
+        font-size:12px;overflow-x:auto}
+  .tab{padding:8px 16px;color:var(--dim);border-right:1px solid var(--border);
+       font-family:var(--mono);white-space:nowrap;cursor:pointer;border-top:1px solid transparent}
+  .tab.active{background:var(--bg);color:var(--text);border-top-color:var(--accent)}
+  .tab .dot{color:var(--red);margin-left:7px;font-size:15px;line-height:0}
+  .paneTitle{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--dim);
+             padding:6px 16px;background:#2a2a2a}
+  .code{flex:1;overflow:auto;padding:12px 0;font-family:var(--mono);
+        font-size:12.5px;line-height:1.7}
+  /* An empty intake centers its invitation; the placeholder's flex:1 needs
+     the container to BE a flex column, which a file listing must not be. */
+  .code:has(> .placeholder){display:flex;flex-direction:column}
+  .ln{display:flex;padding:0 16px;white-space:pre}
+  .ln .no{width:34px;color:#585858;user-select:none;flex-shrink:0}
+  .seg{color:var(--accent)} .num{color:#b5cea8} .name{color:var(--yellow)}
+  .denied{background:var(--redbg);border-left:3px solid var(--red)}
+  .fixed{background:var(--greenbg);border-left:3px solid var(--green)}
+  /* Supporting evidence is not a defect and must not be painted like one. */
+  .ctxline{background:rgba(128,128,128,.09);border-left:3px solid #4a4a4a}
+  .chip{margin:2px 16px 6px 50px;display:inline-block;font-size:11.5px;
+        font-family:-apple-system,'Segoe UI',sans-serif;padding:4px 10px;
+        border-radius:4px;max-width:90%}
+  .chip.red{background:var(--chipred);color:#ffb3b3;border:1px solid #7a2e2e}
+  .chip.green{background:var(--chipgreen);color:#9fe8d8;border:1px solid #2e6a5a}
+  .chip.grey{background:#2d2d2d;color:var(--dim);border:1px solid var(--border)}
+  .placeholder{flex:1;display:flex;flex-direction:column;align-items:center;
+               justify-content:center;gap:14px;color:var(--dim);font-size:13px}
+  .upCenter{background:transparent;border:1px solid var(--border);color:var(--text);
+            padding:9px 18px;font-size:13px;border-radius:5px;cursor:pointer}
+  .upCenter:hover{border-color:var(--accent)}
+  .dropHint{font-size:12px;color:var(--dim);max-width:320px;text-align:center}
+  #leftPane.drop #leftCode{outline:2px dashed var(--accent);outline-offset:-8px}
+  .pulse{width:10px;height:10px;border-radius:50%;background:var(--accent);
+         animation:pulse 1s infinite}
+  @keyframes pulse{50%{opacity:.2}}
+  #rationale{border-top:1px solid var(--border);background:var(--panel);padding:10px 16px;
+             font-size:12.5px;color:#c8c8c8;min-height:64px;max-height:96px;overflow:auto}
+  #rationale .label{font-size:10px;text-transform:uppercase;letter-spacing:1px;
+                    color:var(--dim);display:block;margin-bottom:4px}
+  .banner{margin:10px 16px;padding:8px 14px;border-radius:5px;background:var(--chipgreen);
+          border:1px solid #2e6a5a;color:#9fe8d8;font-size:13px;font-weight:600}
+  .banner.ask{background:#4a3a17;border-color:#7a6428;color:#f0d9a0}
+  .banner.bad{background:var(--chipred);border-color:#7a2e2e;color:#ffb3b3}
+  .cursor::after{content:'▋';animation:pulse .8s infinite;color:var(--accent)}
+  .hidden{display:none !important}
+  .card{margin:12px 16px;padding:12px 14px;background:var(--panel);
+        border:1px solid var(--border);border-radius:5px}
+  .card .k{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--dim)}
+  .card .v{font-size:13.5px;margin:4px 0 10px;line-height:1.5}
+  .card .v:last-child{margin-bottom:0}
+  .card code{font-family:var(--mono);color:var(--accent)}
+  .card.est{border-left:3px solid var(--green)}
+  .card.est .v{margin-bottom:2px}
+  .needsYou{margin:14px 16px;padding:14px 16px;border-radius:6px;cursor:pointer;
+            background:#4a3a17;border:1px solid #7a6428;color:#f0d9a0;
+            font-size:13.5px;line-height:1.55}
+  .needsYou b{display:block;font-size:11px;letter-spacing:1px;text-transform:uppercase;
+              margin-bottom:6px}
+  .needsYou .hint{color:#c9b070;font-size:12px;margin-top:8px}
+  .trail{margin:12px 16px;padding:12px 14px;background:var(--panel);
+         border:1px solid #2e6a5a;border-radius:5px}
+  .trail .k{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--green)}
+  .trail .q{color:var(--dim);font-size:12.5px;margin:8px 0 2px}
+  .trail .a{font-size:13px;line-height:1.5}
+  .trail .doc{font-family:var(--mono);font-size:11.5px;color:var(--accent)}
+  dialog{background:var(--panel);color:var(--text);border:1px solid var(--border);
+         border-radius:10px;padding:22px;max-width:560px;width:90%}
+  dialog::backdrop{background:rgba(0,0,0,.55)}
+  dialog h3{font-size:14px;margin-bottom:4px}
+  dialog .why{color:var(--dim);font-size:12.5px;margin-bottom:14px}
+  dialog textarea{width:100%;background:#1a1a1a;color:var(--text);
+                  border:1px solid var(--border);border-radius:6px;padding:10px;
+                  font:13px/1.5 inherit;min-height:90px;resize:vertical}
+  dialog .row{display:flex;gap:10px;align-items:center;margin-top:12px}
+  dialog input[type=file]{color:var(--dim);font-size:12px;flex:1}
+
+  /* Prose artifacts wrap; EDI stays exact with horizontal scroll. A chart
+     note is sentences, and sentences that vanish off the right edge read as
+     missing data. */
+  .wrapfile .ln{white-space:normal}
+  .wrapfile .ln span:last-child{white-space:pre-wrap;overflow-wrap:anywhere}
+
+  /* history slide-over */
+  .hist{position:fixed;top:59px;right:0;bottom:0;width:340px;background:var(--panel);
+        border-left:1px solid var(--border);z-index:40;display:flex;flex-direction:column}
+  .histHead{display:flex;align-items:center;justify-content:space-between;
+            padding:12px 16px;border-bottom:1px solid var(--border);
+            font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--dim)}
+  #histList{overflow:auto;flex:1}
+  .histRow{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;
+           border-bottom:1px solid #2e2e2e;font-size:13px}
+  .histRow:hover{background:#2b2b2b}
+  .hdot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+  .hdot.done{background:var(--green)}
+  .hdot.need{background:var(--red)}
+  .hdot.fail{background:#6a6a6a}
+  .hdot.run{background:var(--accent);animation:pulse 1s infinite}
+  .hlabel{flex:1;font-family:var(--mono);font-size:12px;overflow:hidden;
+          text-overflow:ellipsis;white-space:nowrap}
+  .hstate{color:var(--dim);font-size:11px}
+  .needsBtn{background:var(--chipred);border:1px solid #7a2e2e;color:#ffb3b3;
+            font-size:11px;font-weight:600;padding:4px 10px;border-radius:4px}
+  .needsBtn:hover{background:#6e2424}
+
+  /* mid-run displays. Everything in them is driven by real stream data. */
+  .live{flex:1;display:flex;flex-direction:column;align-items:center;
+        justify-content:center;gap:18px;padding:24px;color:var(--dim);font-size:13px}
+  .headline{font-size:16px;line-height:1.6;color:var(--text);max-width:560px;
+            text-align:center;min-height:52px}
+  .checklist{list-style:none;display:flex;flex-direction:column;gap:12px;
+             font-size:14px;min-width:320px}
+  .checklist li{display:flex;align-items:center;gap:12px;color:var(--dim)}
+  .checklist li .tick{width:18px;height:18px;border-radius:50%;
+                      border:2px solid var(--border);flex-shrink:0;display:flex;
+                      align-items:center;justify-content:center;font-size:11px}
+  .checklist li[data-done="1"]{color:var(--text)}
+  .checklist li[data-done="1"] .tick{border-color:var(--green);color:var(--green)}
+  .findList{list-style:none;display:flex;flex-direction:column;gap:10px;
+            max-width:600px;width:100%}
+  .findList li{background:var(--panel);border:1px solid var(--border);
+               border-left:3px solid var(--green);border-radius:5px;
+               padding:9px 13px;font-size:13px;color:var(--text)}
+  .findList li .dim{color:var(--dim);font-family:var(--mono);font-size:11px;margin-left:8px}
+</style>
+
+<header>
+  <div class="logo">MOHENARA</div>
+  <div class="caseid">
+    <input id="caseId" value="MOH2-000029" data-testid="case-input" aria-label="Claim ID"
+           spellcheck="false"><span id="caseMeta"></span>
+  </div>
+  <div class="spacer"></div>
+  <div class="meta">&#9201; <b id="timer" data-testid="timer">0.0s</b></div>
+  <input type="file" id="upFiles" class="hidden" multiple accept=".edi,.txt,.md"
+         data-testid="upload-input" aria-label="Case files">
+  <button id="resolveBtn" data-testid="run">Resolve case</button>
+  <button class="ghost hidden" id="stopBtn" data-testid="stop"
+          title="Stop this resolve" style="color:var(--red2,#ff8f8f);border-color:#7a2e2e">Stop</button>
+  <button class="ghost" id="newBtn" data-testid="new-case" title="Start a new case">+ New</button>
+  <button class="ghost" id="histBtn" data-testid="history" title="Past cases">&#8634;</button>
+</header>
+
+<main>
+  <div class="pane" id="leftPane">
+    <div class="tabs" id="leftTabs"></div>
+    <div class="paneTitle">Uploaded case — raw payer files, unprocessed</div>
+    <div class="code" id="leftCode" data-testid="raw">
+      <div class="placeholder">
+        <div>Resolve a case to load its artifacts</div>
+        <button class="upCenter" data-testid="upload" type="button"
+                title="Upload case files">&#8679; Upload case files</button>
+        <div class="dropHint">or drop them anywhere on this pane —
+          the files, or the whole case folder</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pane">
+    <div class="tabs" id="rightTabs"><div class="tab active">claim_837p.CORRECTED.edi</div></div>
+    <div class="paneTitle" id="rightTitle">What Mohenara produced — resubmission-ready corrected claim</div>
+    <div class="placeholder" id="ph">
+      <div id="phdot" class="hidden pulse"></div>
+      <div id="phtext">Awaiting resolution</div>
+    </div>
+    <div id="live" class="live hidden" data-testid="live-display"></div>
+    <div class="code hidden" id="rightCode"></div>
+    <div id="rationale" class="hidden">
+      <span class="label" id="rlabel">Model rationale — streaming live</span>
+      <span id="rtext" class="cursor" data-testid="rationale"></span>
+    </div>
+  </div>
+</main>
+
+<dialog id="askDialog" data-testid="answer-dialog">
+  <h3 id="askQ"></h3>
+  <div class="why" id="askWhy"></div>
+  <textarea id="askText" data-testid="answer-input"
+            placeholder="What you found out — a fact, a confirmation, a lookup result."></textarea>
+  <div class="row">
+    <input type="file" id="askFiles" multiple accept=".md,.edi,.txt,.pdf"
+           data-testid="answer-files" aria-label="Attach documents">
+  </div>
+  <div class="row" style="justify-content:flex-end">
+    <button class="ghost" id="askCancel" type="button">Cancel</button>
+    <button id="askGo" type="button" data-testid="submit-answer">Submit &amp; resume</button>
+  </div>
+</dialog>
+
+<div id="histPanel" class="hist hidden" data-testid="history-panel">
+  <div class="histHead">Past cases <button class="ghost" id="histClose">&#215;</button></div>
+  <div id="histList"></div>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+let JOB = null, ES = null, T0 = null, TICK = null, VIEW = null, ACTIVE = null;
+
+// The empty intake pane, captured from the markup so "+ New" restores exactly
+// what the page loaded with -- upload button and drop hint included.
+const EMPTY_LEFT = $('#leftCode').innerHTML;
+
+const esc = s => String(s ?? '').replace(/[&<>"]/g,
+  c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+// Presentation only: segment id, decimals, proper names. It reads no meaning
+// out of the line and decides nothing about it.
+function colorize(t){
+  return esc(t)
+    .replace(/^([A-Z0-9]{2,3})(?=\*)/, '<span class="seg">$1</span>')
+    .replace(/(\d+\.\d{2})/g, '<span class="num">$1</span>')
+    .replace(/\*([A-Z][A-Z &.,'-]{3,})(?=[*~])/g, '*<span class="name">$1</span>');
+}
+
+function startTimer(){
+  T0 = performance.now();
+  clearInterval(TICK);
+  TICK = setInterval(() => {
+    $('#timer').textContent = ((performance.now() - T0) / 1000).toFixed(1) + 's';
+  }, 100);
+}
+function stopTimer(){ clearInterval(TICK); }
+
+// ---- left pane -------------------------------------------------------------
+const ORDER = ['remit_835.edi','claim_837p.edi','ack_277ca.edi',
+               'eligibility_271.edi','eligibility_270.edi','chart_note.txt'];
+
+function artifactNames(){
+  const a = VIEW?.artifacts || {};
+  return ORDER.filter(n => n in a).concat(Object.keys(a).filter(n => !ORDER.includes(n)));
+}
+
+function marksBy(){
+  const by = {};
+  for (const m of (VIEW?.annotations?.anchored || [])){
+    ((by[m.artifact] ||= {})[m.line] ||= []).push(m);
+  }
+  return by;
+}
+
+function renderLeft(){
+  const names = artifactNames();
+  if (!names.length){
+    $('#leftCode').innerHTML = '<div class="placeholder">No artifacts</div>';
+    $('#leftTabs').innerHTML = ''; return;
+  }
+  const by = marksBy();
+  if (!ACTIVE || !names.includes(ACTIVE)) ACTIVE = names[0];
+
+  $('#leftTabs').innerHTML = names.map(n => {
+    const errs = Object.values(by[n] || {}).flat()
+      .filter(m => m.severity === 'error').length;
+    return `<div class="tab${n === ACTIVE ? ' active' : ''}" data-tab="${esc(n)}"
+              data-testid="tab">${esc(n)}${errs ? '<span class="dot">•</span>' : ''}</div>`;
+  }).join('');
+  $('#leftTabs').querySelectorAll('[data-tab]').forEach(t =>
+    t.onclick = () => { ACTIVE = t.dataset.tab; renderLeft(); });
+
+  // Every artifact stays in the DOM; only the active one is shown. Keeps the
+  // annotation count honest no matter which tab happens to be open.
+  $('#leftCode').innerHTML = names.map(name => {
+    const per = by[name] || {};
+    const rows = (VIEW.artifacts[name] || '').split('\n').map((text, i) => {
+      const n = i + 1, hits = per[n] || [];
+      const worst = hits.some(h => h.severity === 'error') ? 'error'
+                  : hits.length ? 'context' : null;
+      const cls = worst === 'error' ? ' denied' : worst ? ' ctxline' : '';
+      const attr = hits.length
+        ? ` data-testid="annotation" data-artifact="${esc(name)}" data-severity="${worst}"` : '';
+      const chips = hits.map(h =>
+        `<div class="chip ${h.severity === 'error' ? 'red' : 'grey'}" data-testid="chip"
+           data-artifact="${esc(name)}">${esc(h.chip)}</div>`).join('');
+      return `<div class="ln${cls}"${attr} data-line="${n}"><span class="no">${n}</span>` +
+             `<span>${colorize(text)}</span></div>` + chips;
+    }).join('');
+    const wrap = /\.edi$/i.test(name) ? '' : ' wrapfile';
+    return `<div data-file="${esc(name)}" class="${name === ACTIVE ? '' : 'hidden'}${wrap}">${rows}</div>`;
+  }).join('');
+}
+
+// ---- right pane ------------------------------------------------------------
+function renderRight(){
+  const c = VIEW.corrected, na = VIEW.next_action || {}, rc = VIEW.root_cause || {};
+  $('#ph').classList.add('hidden');
+  $('#rightCode').classList.remove('hidden');
+
+  let html = '';
+  if (c && c.text){
+    $('#rightTabs').innerHTML =
+      `<div class="tab active">${esc(c.artifact).replace(/\.edi$/, '.CORRECTED.edi')}</div>`;
+    $('#rightTitle').textContent =
+      'What Mohenara produced — resubmission-ready corrected claim';
+    const changed = new Map((c.changed || []).map(x => [x.line, x]));
+    html = '<div data-testid="corrected">' + c.text.split('\n').map((text, i) => {
+      const n = i + 1, ch = changed.get(n);
+      const row = `<div class="ln${ch ? ' fixed' : ''}"${ch ? ' data-testid="changed"' : ''}
+        data-line="${n}"><span class="no">${n}</span><span>${colorize(text)}</span></div>`;
+      return row + (ch && ch.why
+        ? `<div class="chip green" data-testid="change-why">${esc(ch.why)}</div>` : '');
+    }).join('') + '</div>';
+    if (c.dropped?.length){
+      html += `<div class="card" data-testid="dropped"><div class="k">Edits not applied</div>
+        <div class="v">${c.dropped.map(d => esc(d.reason)).join('; ')}</div></div>`;
+    }
+  } else {
+    // A decision, not a file. do_not_resubmit and bill_patient produce no claim.
+    $('#rightTabs').innerHTML = '<div class="tab active">resolution</div>';
+    $('#rightTitle').textContent = 'What Mohenara produced — resolution';
+    html = `<div class="card" data-testid="card">
+      <div class="k">Root cause</div>
+      <div class="v" data-testid="root-cause">${esc(rc.explanation || rc.family || '—')}</div>
+      <div class="k">Next action</div>
+      <div class="v" data-testid="next-action">${esc(na.detail || na.path || '—')}</div></div>`;
+  }
+
+  // The card always renders, under the file when there is one.
+  if (c && c.text){
+    html += `<div class="card" data-testid="card">
+      <div class="k">Root cause</div>
+      <div class="v" data-testid="root-cause">${esc(rc.explanation || rc.family || '—')}</div>
+      <div class="k">Next action</div>
+      <div class="v" data-testid="next-action">${esc(na.detail || na.path || '—')}</div>
+      ${c.note ? `<div class="k">Claim frequency</div>
+        <div class="v" data-testid="corrected-note">${esc(c.note)}</div>` : ''}
+    </div>`;
+  }
+  $('#rightCode').innerHTML = banner() + html + trail();
+}
+
+// The verification trail: what the model asked, what the human answered, and
+// that the resolution above incorporates it. Rendered only from the persisted
+// answer records -- the page invents nothing about who said what.
+function trail(){
+  const answers = VIEW.answers || [];
+  if (!answers.length) return '';
+  return `<div class="trail" data-testid="trail">
+    <div class="k">&#10003; Verified with human input</div>
+    ${answers.map(a => `
+      ${a.question ? `<div class="q">Asked: ${esc(a.question)}</div>` : ''}
+      <div class="a">Answered: ${esc(a.answer)}</div>
+      ${(a.documents || []).length
+        ? `<div class="doc">Documents: ${a.documents.map(esc).join(', ')}</div>` : ''}`).join('')}
+    <div class="q" style="margin-top:8px">The resolution above incorporates this input.</div>
+  </div>`;
+}
+
+// A parked case. The right pane shows the ground the model DID settle -- its
+// partial findings, from the same anchored-citation pipeline as everything
+// else -- and then the one thing it needs, as a button that opens the dialog.
+function renderParked(){
+  $('#ph').classList.add('hidden');
+  $('#rightCode').classList.remove('hidden');
+  $('#rightTabs').innerHTML = '<div class="tab active">established so far</div>';
+  $('#rightTitle').textContent = 'What Mohenara established — before asking';
+
+  const found = VIEW.partial_findings || [];
+  const cards = found.length
+    ? found.map(f => `<div class="card est" data-testid="established">
+        <div class="k">${esc(f.artifact || '')}${f.severity === 'error' ? ' — defect' : ''}</div>
+        <div class="v">${esc(f.chip || f.fact || '')}</div>
+        ${f.chip && f.fact && f.chip !== f.fact
+          ? `<div class="q" style="color:var(--dim);font-size:12px">${esc(f.fact)}</div>` : ''}
+      </div>`).join('')
+    : `<div class="card"><div class="v muted">This case parked before segment-level
+       findings were recorded.</div></div>`;
+
+  $('#rightCode').innerHTML = cards + `
+    <div class="needsYou" data-testid="needs-input" id="needsYou">
+      <b>Needs human input</b>
+      ${esc(VIEW.question || '')}
+      <div class="hint">Click to answer — type what you found out, or attach a document.</div>
+    </div>` + trail();
+  $('#needsYou').onclick = openDialog;
+}
+
+// ---- the answer dialog ------------------------------------------------------
+// The dialog answers the question it OPENED with. The page's current job can
+// change while the dialog sits there -- another submission, a history click --
+// and an answer that followed the page instead of the question once posted to
+// a job that never asked one. So the job id is captured at open and the
+// answer goes to that job, re-focusing the page on it first if it drifted.
+let DIALOG_JOB = null;
+function openDialog(){
+  DIALOG_JOB = JOB;
+  $('#askQ').textContent = VIEW.question || '';
+  $('#askWhy').textContent = VIEW.why_needed
+    ? `Why this matters: ${VIEW.why_needed}` : '';
+  $('#askText').value = '';
+  $('#askFiles').value = '';
+  $('#askDialog').showModal();
+}
+
+async function submitAnswer(){
+  const text = $('#askText').value.trim();
+  if (!text) { $('#askText').focus(); return; }
+  const files = {};
+  for (const f of $('#askFiles').files) files[f.name] = await f.text();
+  $('#askGo').disabled = true;
+  try{
+    const target = DIALOG_JOB || JOB;
+    const res = await fetch(`/api/queue/${target}/answer`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({answer: text,
+                            files: Object.keys(files).length ? files : null})});
+    if (!res.ok) throw new Error((await res.json().catch(() => ({}))).detail
+                                 || `answer failed (${res.status})`);
+    $('#askDialog').close();
+    if (JOB !== target){
+      JOB = target;
+      VIEW = await view();
+      renderHeader(); renderLeft();
+    }
+    // The resume streams like the first pass: same timer, same live display.
+    startTimer();
+    $('#stopBtn').classList.remove('hidden');
+    $('#rightTabs').innerHTML = '<div class="tab active">resuming</div>';
+    $('#rightTitle').textContent = 'Reworking with your answer';
+    startLive();
+    attachStream();
+  } catch(err){
+    $('#askWhy').textContent = err.message;
+  }
+  $('#askGo').disabled = false;
+}
+
+// The banner states what the run produced. The mockup hard-codes "frequency
+// code 7"; on a CO-4/N822 case a live run says the opposite, and the screen has
+// to follow the run rather than the mockup.
+function banner(){
+  const na = VIEW.next_action || {}, c = VIEW.corrected;
+  if (VIEW.job?.state === 'failed')
+    return `<div class="banner bad" data-testid="banner">Run failed</div>`;
+  if (VIEW.question)
+    return `<div class="banner ask" data-testid="banner">Needs a human answer — ${
+      esc(VIEW.question)}</div>`;
+  const freq = na.resubmission_frequency_code;
+  const bits = [];
+  if (c && c.changed?.length) bits.push(`${c.changed.length} segment${
+    c.changed.length > 1 ? 's' : ''} corrected`);
+  // The frequency line is about a RESUBMISSION. An outcome that produces no
+  // corrected claim -- an appeal, bill-the-patient, do-not-resubmit -- gets
+  // no frequency talk unless the model itself stated a code.
+  if (freq) bits.push(`frequency code ${esc(freq)}`);
+  else if (c && c.text) bits.push('new original claim (frequency 1)');
+  return `<div class="banner" data-testid="banner">&#10003; ${
+    c && c.text ? 'Corrected claim ready for resubmission' : esc(na.path || 'Resolved')
+  }${bits.length ? ' — ' + bits.join(', ') : ''}</div>`;
+}
+
+function renderHeader(){
+  const j = VIEW?.job || {};
+  const bits = [j.payer, j.billed_amount != null
+    ? `$${Number(j.billed_amount).toFixed(2)} denied` : null].filter(Boolean);
+  // The separator joins the meta to the claim ID beside it. An uploaded case
+  // leaves that box empty, and a separator with nothing on its left is noise.
+  const lead = $('#caseId').value.trim() ? ' · ' : '';
+  $('#caseMeta').textContent = bits.length ? lead + bits.join(' · ') : '';
+}
+
+function renderStream(text, done){
+  $('#rationale').classList.remove('hidden');
+  $('#rtext').textContent = text;
+  $('#rlabel').textContent = done ? 'Model rationale' : 'Model rationale — streaming live';
+  $('#rtext').classList.toggle('cursor', !done);
+  $('#rationale').scrollTop = 9e9;
+}
+
+// ---- mid-run displays -------------------------------------------------------
+//
+// Three switchable views of the phase between Resolve and the result, selected
+// by ?live=a|b|c. Every element in all three is driven by facts off the real
+// stream -- a state the server reported, characters the model actually wrote,
+// a finding whose JSON object is complete. Nothing advances on a timer; see
+// the note in jobs.py about progress bars.
+const LIVE = (() => {
+  const v = (new URLSearchParams(location.search).get('live') || 'a').toLowerCase();
+  return ['a','b','c'].includes(v) ? v : 'a';
+})();
+
+// Variant B's stages. The labels are pre-authored; each checks off when its
+// OBSERVED FACT first appears in a stream payload, and never before.
+const STAGES = [
+  {key:'received',  label:'Case received',                test: d => !!d.state},
+  {key:'read',      label:'Payer files read',             test: d => d.state && d.state !== 'queued'},
+  {key:'analyzing', label:'Analyzing against payer rules',test: d => ['resolving','needs_input','resolved','failed'].includes(d.state)},
+  {key:'drafting',  label:'Drafting determination',       test: d => (d.chars || 0) > 0},
+  {key:'evidence',  label:'Citing evidence',              test: d => (d.findings || []).length > 0},
+];
+let DONE_STAGES = new Set(), SHOWN_FINDINGS = 0;
+
+function startLive(){
+  DONE_STAGES = new Set(); SHOWN_FINDINGS = 0;
+  $('#ph').classList.add('hidden');
+  $('#rightCode').classList.add('hidden');
+  $('#rationale').classList.add('hidden');
+  const live = $('#live');
+  live.classList.remove('hidden');
+  live.dataset.variant = LIVE;
+  if (LIVE === 'a'){
+    live.innerHTML = `<div class="pulse"></div>
+      <div class="headline" data-testid="live-headline"></div>`;
+  } else if (LIVE === 'b'){
+    live.innerHTML = `<ul class="checklist" data-testid="live-checklist">${
+      STAGES.map(st => `<li data-stage="${st.key}" data-done="0">
+        <span class="tick"></span>${st.label}</li>`).join('')}</ul>`;
+  } else {
+    live.innerHTML = `<div class="pulse"></div>
+      <div>Findings, as each is established</div>
+      <ol class="findList" data-testid="live-findings"></ol>`;
+  }
+}
+
+function renderLiveTick(d){
+  if ($('#live').classList.contains('hidden')) return;
+  if (LIVE === 'a'){
+    // The latest of the model's own sentences, one at a time. Some models
+    // think out loud for most of the run before the structured output (and
+    // its rationale) even starts -- on those, the headline follows the live
+    // thinking until the rationale exists, then switches to it. Either way
+    // the swap happens because a real stream grew.
+    const text = ((d.rationale || '').trim()) || ((d.reasoning || '').trim());
+    if (text){
+      const parts = text.split(/\n+|(?<=[.!?])\s+/).filter(Boolean);
+      let cur = parts[parts.length - 1] || '';
+      // Thinking arrives as markdown; a heading marker or list bullet is
+      // structure, not a sentence the headline should carry.
+      cur = cur.replace(/^[#>\s]+/, '').replace(/^[-*•]\s+/, '')
+               .replace(/^\d+[.)]\s+/, '');
+      const el = $('[data-testid=live-headline]');
+      if (el && cur && el.textContent !== cur) el.textContent = cur;
+    }
+  } else if (LIVE === 'b'){
+    for (const st of STAGES){
+      if (!DONE_STAGES.has(st.key) && st.test(d)){
+        DONE_STAGES.add(st.key);
+        const li = $(`[data-stage=${st.key}]`);
+        if (li){ li.dataset.done = '1'; li.querySelector('.tick').textContent = '\u2713'; }
+      }
+    }
+  } else {
+    const found = d.findings || [];
+    const ol = $('[data-testid=live-findings]');
+    for (; ol && SHOWN_FINDINGS < found.length; SHOWN_FINDINGS++){
+      const f = found[SHOWN_FINDINGS];
+      const li = document.createElement('li');
+      li.innerHTML = `${esc(f.chip || f.fact || '')}<span class="dim">${esc(f.artifact || '')}</span>`;
+      ol.appendChild(li);
+    }
+  }
+}
+
+// ---- run -------------------------------------------------------------------
+async function view(){
+  const r = await fetch(`/api/demo/view/${JOB}`);
+  if (!r.ok) throw new Error('view failed');
+  return r.json();
+}
+
+function finish(v){
+  VIEW = v;
+  $('#live').classList.add('hidden');
+  $('#stopBtn').classList.add('hidden');
+  if (v.job?.state === 'cancelled'){
+    // Stopped by the operator: the artifacts stay up, the right pane says
+    // what happened, and the run button re-arms.
+    renderHeader(); renderLeft();
+    $('#rightCode').classList.add('hidden');
+    $('#rationale').classList.add('hidden');
+    $('#ph').classList.remove('hidden');
+    $('#phdot').classList.add('hidden');
+    $('#phtext').textContent = 'Stopped — nothing was resolved or submitted.';
+    $('#resolveBtn').disabled = false;
+    $('#resolveBtn').textContent = 'Resolve case';
+    return;
+  }
+  // Open the tab that carries the defect, so the shot lands on the evidence.
+  const by = marksBy();
+  const ranked = artifactNames().map(n => [n, Object.values(by[n] || {}).flat()
+    .filter(m => m.severity === 'error').length]).sort((a, b) => b[1] - a[1]);
+  if (ranked.length && ranked[0][1]) ACTIVE = ranked[0][0];
+  renderHeader(); renderLeft();
+  if (v.job?.state === 'needs_input'){
+    renderParked();
+    $('#resolveBtn').textContent = 'Awaiting input';
+  } else {
+    renderRight();
+    $('#resolveBtn').textContent = '✓ Resolved';
+  }
+  if (v.rationale) renderStream(v.rationale, true);
+}
+
+// One stream attach for both legs -- the first pass and the resume after an
+// answer. The server ends the stream at any terminal state.
+function attachStream(){
+  if (ES) ES.close();
+  ES = new EventSource(`/api/demo/stream/${JOB}`);
+  ES.onmessage = async (e) => {
+    const d = JSON.parse(e.data);
+    renderLiveTick(d);
+    if (d.done){
+      ES.close(); ES = null; stopTimer();
+      finish(await view());
+      $('#resolveBtn').disabled = false;
+    }
+  };
+  ES.onerror = () => {
+    if (ES){ ES.close(); ES = null; }
+    stopTimer(); $('#resolveBtn').disabled = false;
+    $('#stopBtn').classList.add('hidden');
+  };
+}
+
+async function submitDenial(denial){
+  const btn = $('#resolveBtn');
+  btn.disabled = true; btn.textContent = 'Resolving…';
+  try{
+    const res = await fetch('/api/batch', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({denials:[denial]})});
+    const body = await res.json();
+    if (!res.ok) throw new Error(body.detail || `submit failed (${res.status})`);
+    JOB = body[0].id;
+    startTimer();
+    $('#stopBtn').classList.remove('hidden');
+
+    // The input goes up immediately and PLAIN. There is nothing to annotate
+    // yet, and drawing anything here would be the frontend's own opinion.
+    VIEW = await view();
+    renderHeader(); renderLeft();
+    startLive();
+
+    attachStream();
+  } catch(err){
+    stopTimer();
+    $('#live').classList.add('hidden');
+    $('#ph').classList.remove('hidden');
+    $('#phdot').classList.add('hidden');
+    $('#phtext').textContent = err.message;
+    btn.disabled = false; btn.textContent = 'Resolve case';
+  }
+}
+
+async function run(){
+  if (STAGED){
+    const s = STAGED;
+    STAGED = null;
+    await submitDenial(s);
+    return;
+  }
+  const id = $('#caseId').value.trim();
+  if (!id) return;
+  await submitDenial({label: id, case_id: id, input_format: 'edi'});
+}
+
+// Upload STAGES the case: all selected files are ONE case -- an EDI artifact
+// set, or a single case.md/.txt rendering -- and they land in the left pane,
+// plain, with NOTHING submitted until Resolve case is clicked. Uploading used
+// to submit on the spot, which meant a stray drop started a billed resolve
+// nobody had asked for.
+let STAGED = null;
+async function stageCase(fileList){
+  const files = {};
+  for (const f of fileList) files[f.name.split('/').pop()] = await f.text();
+  const names = Object.keys(files);
+  if (!names.length) return;
+  const fmt = names.every(n => /\.md$/i.test(n)) ? 'md' : 'edi';
+  const label = names.length === 1 ? names[0] : `Uploaded case (${names.length} files)`;
+  STAGED = {label, input_format: fmt, files};
+  $('#caseId').value = '';
+  JOB = null; ACTIVE = null;
+  // The staged files render through the same left pane as a running case --
+  // plain, no annotations, because nothing has been said about them yet.
+  VIEW = {artifacts: files, annotations: {anchored: [], unanchored: []}};
+  renderHeader(); renderLeft();
+  $('#rightCode').classList.add('hidden');
+  $('#live').classList.add('hidden');
+  $('#rationale').classList.add('hidden');
+  $('#ph').classList.remove('hidden'); $('#phdot').classList.add('hidden');
+  $('#phtext').textContent =
+    `${names.length} file${names.length > 1 ? 's' : ''} staged — click Resolve case`;
+  $('#resolveBtn').disabled = false;
+  $('#resolveBtn').textContent = 'Resolve case';
+}
+
+// Replay: /demo?job=<id> reopens a run that already happened. Useful for
+// re-filming a take without paying for the resolve again, and it lets the
+// rendering be tested without a live call.
+async function replay(id){
+  JOB = id;
+  try{
+    const v = await view();
+    $('#caseId').value = v.job?.case_id || v.job?.label || '';
+    if (['resolved','needs_input','failed','cancelled'].includes(v.job?.state)) finish(v);
+    else {
+      VIEW = v; renderHeader(); renderLeft();
+      startTimer(); startLive(); attachStream();
+      $('#stopBtn').classList.remove('hidden');
+    }
+  } catch {
+    $('#phtext').textContent = `No such run: ${id}`;
+  }
+}
+
+// ---- history ----------------------------------------------------------------
+// Earlier cases from this deployment's queue, each a row the presenter can
+// reopen. Green dot: resolved, good to go. Red dot plus the "Needs input"
+// button: the model stopped on a question and is waiting for a person.
+async function openHistory(){
+  const panel = $('#histPanel');
+  panel.classList.remove('hidden');
+  let jobs = [];
+  try{ jobs = await (await fetch('/api/queue')).json(); } catch {}
+  jobs.sort((a, b) => (b.updated_at || '').localeCompare(a.updated_at || ''));
+  $('#histList').innerHTML = jobs.length ? jobs.map(j => {
+    const dot = j.state === 'resolved' ? 'done' : j.state === 'needs_input' ? 'need'
+              : (j.state === 'failed' || j.state === 'cancelled') ? 'fail' : 'run';
+    const right = j.state === 'needs_input'
+      ? `<button class="needsBtn" data-testid="hist-needs" data-id="${esc(j.id)}">Needs input</button>`
+      : `<span class="hstate">${esc(j.state === 'resolved' ? 'resolved'
+                                    : j.state === 'failed' ? 'failed' : 'working')}</span>`;
+    return `<div class="histRow" data-testid="hist-row" data-id="${esc(j.id)}">
+      <span class="hdot ${dot}"></span>
+      <span class="hlabel">${esc(j.case_id || j.label || j.id)}</span>${right}</div>`;
+  }).join('') : '<div class="histRow"><span class="hstate">No cases yet</span></div>';
+
+  $('#histList').querySelectorAll('[data-testid=hist-row]').forEach(r =>
+    r.onclick = async () => { panel.classList.add('hidden'); await replay(r.dataset.id); });
+  $('#histList').querySelectorAll('[data-testid=hist-needs]').forEach(b =>
+    b.onclick = async (e) => {
+      e.stopPropagation();
+      panel.classList.add('hidden');
+      await replay(b.dataset.id);
+      openDialog();
+    });
+}
+
+$('#resolveBtn').onclick = run;
+// Stop kills the in-flight resolve server-side; the stream then ends with the
+// cancelled state and finish() renders it. No spend continues past the click.
+$('#stopBtn').onclick = async () => {
+  if (!JOB) return;
+  $('#stopBtn').disabled = true;
+  try { await fetch(`/api/queue/${JOB}/cancel`, {method: 'POST'}); } catch {}
+  $('#stopBtn').disabled = false;
+};
+$('#askGo').onclick = submitAnswer;
+$('#askCancel').onclick = () => $('#askDialog').close();
+// The upload button lives inside the intake pane's replaceable markup, so the
+// click is delegated rather than bound to a node "+ New" will throw away.
+$('#leftCode').addEventListener('click', e => {
+  if (e.target.closest('[data-testid=upload]')) $('#upFiles').click();
+});
+$('#upFiles').onchange = async (e) => { await stageCase(e.target.files); e.target.value = ''; };
+
+// ---- drag and drop ----------------------------------------------------------
+// The left pane IS the intake, so the whole pane takes a drop: the artifact
+// files themselves, or the case folder that holds them. Folders are walked
+// through the drop API (Chromium's entry interface); whatever arrives goes
+// through the same uploadCase as the picker, as ONE case.
+const DROP_ACCEPT = /\.(edi|md|txt)$/i;
+
+function walkEntry(entry, out, depth){
+  if (!entry || depth > 4) return Promise.resolve();
+  if (entry.isFile)
+    return new Promise(res => entry.file(f => { out.push(f); res(); }, () => res()));
+  if (!entry.isDirectory) return Promise.resolve();
+  const rd = entry.createReader();
+  // readEntries hands back batches (100 max) and must be re-called until an
+  // empty one -- a folder of many files silently truncates otherwise.
+  return new Promise(res => {
+    const next = () => rd.readEntries(async batch => {
+      if (!batch.length) return res();
+      for (const en of batch) await walkEntry(en, out, depth + 1);
+      next();
+    }, () => res());
+    next();
+  });
+}
+
+async function filesFromDrop(dt){
+  const out = [];
+  const entries = [...(dt.items || [])]
+    .map(i => i.webkitGetAsEntry ? i.webkitGetAsEntry() : null).filter(Boolean);
+  if (entries.length) for (const en of entries) await walkEntry(en, out, 0);
+  else out.push(...(dt.files || []));
+  // Same shapes the picker accepts; a folder's strays (.DS_Store, images)
+  // must not ride into the case.
+  return out.filter(f => DROP_ACCEPT.test(f.name) && !f.name.startsWith('.'));
+}
+
+let DRAG_DEPTH = 0;
+const leftPane = $('#leftPane');
+leftPane.addEventListener('dragover', e => e.preventDefault());
+leftPane.addEventListener('dragenter', e => {
+  e.preventDefault(); DRAG_DEPTH++; leftPane.classList.add('drop');
+});
+leftPane.addEventListener('dragleave', () => {
+  if (--DRAG_DEPTH <= 0){ DRAG_DEPTH = 0; leftPane.classList.remove('drop'); }
+});
+leftPane.addEventListener('drop', async e => {
+  e.preventDefault(); DRAG_DEPTH = 0; leftPane.classList.remove('drop');
+  if ($('#resolveBtn').disabled) return;       // a resolve is already in flight
+  const files = await filesFromDrop(e.dataTransfer);
+  if (!files.length){
+    const ph = $('#leftCode .placeholder > div');
+    if (ph) ph.textContent =
+      'Nothing usable in that drop — looking for .edi, .md or .txt files';
+    return;
+  }
+  await stageCase(files);
+});
+$('#histBtn').onclick = openHistory;
+$('#histClose').onclick = () => $('#histPanel').classList.add('hidden');
+$('#newBtn').onclick = () => {
+  if (ES){ ES.close(); ES = null; }
+  stopTimer(); JOB = null; VIEW = null; ACTIVE = null; STAGED = null;
+  $('#timer').textContent = '0.0s'; $('#caseMeta').textContent = '';
+  $('#leftTabs').innerHTML = '';
+  $('#leftCode').innerHTML = EMPTY_LEFT;
+  $('#live').classList.add('hidden'); $('#live').innerHTML = '';
+  $('#rightCode').classList.add('hidden'); $('#rightCode').innerHTML = '';
+  $('#rightTabs').innerHTML = '<div class="tab active">claim_837p.CORRECTED.edi</div>';
+  $('#rationale').classList.add('hidden'); $('#rtext').textContent = '';
+  $('#ph').classList.remove('hidden'); $('#phdot').classList.add('hidden');
+  $('#phtext').textContent = 'Awaiting resolution';
+  $('#resolveBtn').disabled = false; $('#resolveBtn').textContent = 'Resolve case';
+  $('#stopBtn').classList.add('hidden');
+};
+
+const fromUrl = new URLSearchParams(location.search).get('job');
+if (fromUrl) replay(fromUrl);
+</script>

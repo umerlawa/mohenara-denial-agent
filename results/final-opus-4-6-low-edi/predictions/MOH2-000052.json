@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000052",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All five lines denied CO-4 + N822 on always-therapy CPTs (97110, 97140, 97530) with no GP/GO/GN modifier. Chart note confirms PT plan of care \u2014 GP is required. CO-4/N822 is unprocessable; resubmit as new original with GP appended. Medicare Part B does not accept frequency 7.",
+  "usage": {
+    "input_tokens": 3,
+    "output_tokens": 1413,
+    "cache_read_input_tokens": 70104,
+    "cache_creation_input_tokens": 6024,
+    "cost_usd": 0.11884620000000001,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "missing_therapy_modifier",
+      "explanation": "CPTs 97110, 97140, 97530 billed without GP modifier. Payer returned CO-4 + N822 (missing procedure modifier). Chart confirms physical therapy plan of care requiring GP."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Append modifier GP to all five lines. Submit as a new original claim (CLM05-3 = 1, no REF*F8). Do not appeal \u2014 no appeal rights on unprocessable claims. Filing clock running from 2026-06-01."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All 5 SVC lines carry CAS*CO*4 with LQ*HE*N822, $0 paid",
+        "locator": "CAS/LQ segments for each SVC"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "SV1 lines for 97110, 97140, 97530 have no GP/GO/GN modifier",
+        "locator": "SV1*HC:97110, SV1*HC:97140, SV1*HC:97530"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "Treatment note documents PT plan of care (therapeutic exercise, manual therapy, therapeutic activities)",
+        "locator": "PT treatment note header"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*1 active coverage for DOS 2026-06-01, Medicare Part B FFS",
+        "locator": "EB*1*IND*30"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "4",
+      "rarc": "N822",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "citations": [
+      {
+        "source": "therapy-modifiers-and-threshold.md",
+        "rule": "CO-4 + N822 on always-therapy CPTs without GP/GO/GN \u2192 correct_and_resubmit as new original CLM05-3=1"
+      },
+      {
+        "source": "resubmission-and-frequency-codes.md",
+        "rule": "Part B FFS: frequency 7 not accepted; unprocessable claim \u2192 new original 1, no REF*F8"
+      }
+    ]
+  }
+}

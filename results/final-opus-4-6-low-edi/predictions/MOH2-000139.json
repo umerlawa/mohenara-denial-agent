@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000139",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "DOS 2025-01-30, payer is commercial (CI). 835 denies both lines CO-29 (timely filing expired) with N211. But the 277CA shows the claim was accepted (STC A2:20) on 2025-02-16 \u2014 only 17 days after DOS, well within any commercial filing limit. The denial is erroneous; the provider has proof of timely submission. Appeal disputing the receipt date with the 277CA acceptance report.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 739,
+    "cache_read_input_tokens": 32421,
+    "cache_creation_input_tokens": 4826,
+    "cost_usd": 0.0713438,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "timely_filing",
+      "explanation": "CO-29 applied to both lines but 277CA proves claim accepted 2025-02-16, 17 days post-DOS. Payer's receipt-date determination is wrong."
+    },
+    "next_action": {
+      "path": "appeal",
+      "detail": "Appeal with 277CA acceptance report (STC A2:20, date 2025-02-16) proving timely submission. Dispute payer's receipt date \u2014 do not resubmit."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Both lines denied CAS*CO*29, $0 paid, MOA N211",
+        "locator": "CAS segments lines 1-2"
+      },
+      {
+        "artifact": "ack_277ca.edi",
+        "fact": "STC*A2:20 accepted status dated 2025-02-16, 17 days after DOS",
+        "locator": "STC*A2:20*20250216"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "DOS 2025-01-30, filing indicator CI (commercial)",
+        "locator": "DTP*472*D8*20250130; SBR*P*18*******CI"
+      }
+    ],
+    "denied_line_idxs": [
+      0,
+      1
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "29",
+      "rarc": "N211",
+      "level": "claim"
+    },
+    "citations": [
+      {
+        "source": "03-timely-filing.md",
+        "rule": "Proof of accepted submission inside the window \u2192 appeal with clearinghouse acceptance report: dispute the receipt date"
+      }
+    ]
+  }
+}

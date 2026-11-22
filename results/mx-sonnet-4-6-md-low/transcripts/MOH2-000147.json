@@ -1,0 +1,97 @@
+{
+  "case_id": "MOH2-000147",
+  "run_id": "mx-sonnet-4-6-md-low",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 7321,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5254,
+    "cache_read_input_tokens": 31309,
+    "output_tokens": 879,
+    "output_tokens_details": {
+      "thinking_tokens": 86
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5254
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.04651482,
+  "cache_hit_rate": 0.856256,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All 5 lines denied CO-4 / N822. CPTs 97530, 97140, 97116 are always-therapy codes. The 837P shows only modifier KX on every line \u2014 no GP, GO, or GN. Chart note documents PT services (physical therapy). Claim adjudicated (835 with CLP07 2619866086833). Medicare Part B \u2192 new original CLM05-3=1, not frequency 7.",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_therapy_modifier",
+        "explanation": "All 5 therapy lines (97530 \u00d72, 97140 \u00d72, 97116) carry only KX. GP modifier is absent on every line. CO-4 + N822 = required modifier missing, unprocessable."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Append GP to all 5 lines alongside KX. Submit as new original CLM05-3=1 (no REF*F8). Part B does not accept frequency 7. Act before 2027-06-05 \u2014 this returned claim never stopped the 1-year filing clock."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All 5 lines: CO-4 ($330.73 total), RARC N822 \u2014 missing procedure modifier(s)",
+          "locator": "Lines 1\u20135 CAS/MOA"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Modifier on all lines: KX only \u2014 no GP, GO, or GN present",
+          "locator": "Loop 2400 SV101"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "PT treatment note documents physical therapy services; plan of care is PT \u2192 GP required",
+          "locator": "2026-06-05 note"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP07 = 2619866086833 confirms claim adjudicated; filing indicator MB = Medicare Part B",
+          "locator": "CLP segment"
+        }
+      ],
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "4",
+        "rarc": "N822",
+        "level": "line"
+      },
+      "citations": [
+        {
+          "source": "08-therapy-modifiers.md \u00a7(a)",
+          "rule": "CO-4 + N822 on always-therapy CPTs without GP/GO/GN = missing_therapy_modifier; remedy is new original CLM05-3=1 with modifier appended"
+        },
+        {
+          "source": "02-resubmission-frequency.md \u00a7Part B/DME FFS row",
+          "rule": "Medicare Part B does not accept frequency 7; submit new original"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All 5 lines denied CO-4 / N822. CPTs 97530, 97140, 97116 are always-therapy codes. The 837P shows only modifier KX on every line \u2014 no GP, GO, or GN. Chart note documents PT services (physical therapy). Claim adjudicated (835 with CLP07 2619866086833). Medicare Part B \u2192 new original CLM05-3=1, not frequency 7.\",\"resolution\":{\"root_cause\":{\"family\":\"missing_therapy_modifier\",\"explanation\":\"All 5 therapy lines (97530 \u00d72, 97140 \u00d72, 97116) carry only KX. GP modifier is absent on every line. CO-4 + N822 = required modifier missing, unprocessable.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Append GP to all 5 lines alongside KX. Submit as new original CLM05-3=1 (no REF*F8). Part B does not accept frequency 7. Act before 2027-06-05 \u2014 this returned claim never stopped the 1-year filing clock.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All 5 lines: CO-4 ($330.73 total), RARC N822 \u2014 missing procedure modifier(s)\",\"locator\":\"Lines 1\u20135 CAS/MOA\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Modifier on all lines: KX only \u2014 no GP, GO, or GN present\",\"locator\":\"Loop 2400 SV101\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"PT treatment note documents physical therapy services; plan of care is PT \u2192 GP required\",\"locator\":\"2026-06-05 note\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP07 = 2619866086833 confirms claim adjudicated; filing indicator MB = Medicare Part B\",\"locator\":\"CLP segment\"}],\"denied_line_idxs\":[0,1,2,3,4],\"denial\":{\"group\":\"CO\",\"carc\":\"4\",\"rarc\":\"N822\",\"level\":\"line\"},\"citations\":[{\"source\":\"08-therapy-modifiers.md \u00a7(a)\",\"rule\":\"CO-4 + N822 on always-therapy CPTs without GP/GO/GN = missing_therapy_modifier; remedy is new original CLM05-3=1 with modifier appended\"},{\"source\":\"02-resubmission-frequency.md \u00a7Part B/DME FFS row\",\"rule\":\"Medicare Part B does not accept frequency 7; submit new original\"}]}}"
+}

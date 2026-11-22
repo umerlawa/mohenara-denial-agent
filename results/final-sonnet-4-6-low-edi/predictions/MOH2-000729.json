@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000729",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All three lines paid at Medicare fee schedule rates. CO-45 = contractual write-off to fee schedule; PR-2 = coinsurance. No denial codes. CLP status=1 (paid), $71.61 remitted, $17.90 patient responsibility. GP modifier present on all therapy lines. Claim adjudicated correctly.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 994,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 5075,
+    "cost_usd": 0.047818485,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "none",
+      "explanation": "Claim paid in full per Medicare fee schedule. CO-45 is contractual write-off; PR-2 is routine coinsurance. No denial issued."
+    },
+    "next_action": {
+      "path": "none",
+      "detail": "Post payment. Bill patient $17.90 coinsurance in normal AR cycle \u2014 this is routine cost-sharing, not a denial remedy."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP status=1 (paid); $71.61 paid of $131.37 billed; CLP07=2611016178420 confirms adjudication",
+        "locator": "CLP segment"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All three lines carry only CAS*CO*45 (fee schedule write-off) and CAS*PR*2 (coinsurance) \u2014 no denial CARC",
+        "locator": "SVC/CAS segments lines 1-3"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "GP modifier present on 97110, 97112, 97140; SBR*P filing indicator MB (Medicare Part B)",
+        "locator": "SV1 segments LX*1-3; SBR segment"
+      },
+      {
+        "artifact": "ack_277ca.edi",
+        "fact": "STC*A2:20 = accepted by payer; claim forwarded for adjudication",
+        "locator": "STC segment"
+      }
+    ],
+    "denial": null,
+    "denied_line_idxs": [],
+    "citations": [
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO = contractual write-off; PR = patient responsibility; next_action=none when claim adjudicated correctly"
+      },
+      {
+        "source": "01-carc-rarc-index.md",
+        "rule": "CARC 45 = exceeds fee schedule, contractual write-off"
+      }
+    ]
+  }
+}

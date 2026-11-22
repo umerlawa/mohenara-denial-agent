@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000117",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "CO-29 timely filing denial on both lines. The 277CA shows the claim (same trace TRC75364521) was accepted for processing on 2025-01-27, only 8 days after the 2025-01-19 DOS \u2014 well inside any commercial filing window. This is the clearinghouse acceptance-report proof that rebuts a late-filing denial; the fix is to dispute the payer's receipt date, not to write off or resubmit.",
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 4062,
+    "cache_read_input_tokens": 162014,
+    "cache_creation_input_tokens": 10215,
+    "cost_usd": 0.0985723,
+    "model": "claude-sonnet-5",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "timely_filing",
+      "explanation": "CO-29 denial on both lines (835), but the 277CA shows the claim accepted for processing 2025-01-27, 8 days post-DOS \u2014 proof it was timely received, contradicting the payer's late-filing basis."
+    },
+    "next_action": {
+      "path": "appeal",
+      "detail": "File appeal with LIBERTY BELL, attaching the 277CA acceptance report (status A2/20, received 2025-01-27, TRC75364521) to dispute the payer's claimed receipt/filing date."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Both lines denied CO-29 'time limit for filing has expired', MOA N211, CI filing indicator"
+      },
+      {
+        "artifact": "ack_277ca.edi",
+        "fact": "Status A2/20 accepted for processing, received date 2025-01-27, claim amount $138.62, trace TRC75364521 \u2014 only 8 days after DOS 2025-01-19"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Submission reference TRC75364521 matches the 277CA trace, same claim PA24642236, $138.62"
+      }
+    ],
+    "denied_line_idxs": [
+      0,
+      1
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "29",
+      "level": "line",
+      "rarc": "N211"
+    },
+    "citations": [
+      {
+        "source": "03-timely-filing.md",
+        "rule": "Proof accepted: clearinghouse/payer acceptance report (strongest) \u2192 appeal disputing receipt date, don't plead forgiveness"
+      },
+      {
+        "source": "03-timely-filing.md",
+        "rule": "Does not stop: EDI rejections don't restart clock; check 277CA history \u2014 sent early, rejected front-end, never reworked is the commonest true CO-29"
+      }
+    ]
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "usage": {
+    "input_tokens": 3,
+    "cache_creation_input_tokens": 6190,
+    "cache_read_input_tokens": 68748,
+    "output_tokens": 1688,
+    "output_tokens_details": {
+      "thinking_tokens": 111
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 6190
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "All 5 lines denied CO-4/N822: therapy CPTs 97530, 97140, 97116 billed with KX only \u2014 GP/GO/GN discipline modifier absent. Medicare Part B unprocessable (no appeal rights); remedy is a new original claim with GP appended to each line. DOS 2026-06-05, filed 2026-06-24, well within the 1-year Medicare window.",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_therapy_modifier",
+        "explanation": "All 5 lines carry only KX. CPTs 97530, 97140, and 97116 require a discipline modifier (GP for PT plan of care). CO-4/N822 = returned unprocessable; no appeal rights."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Submit a new original claim (CLM05-3=1, no REF*F8) adding GP to every line alongside KX. Do not appeal \u2014 unprocessable claims have no appeal rights and redetermination will be dismissed while the filing clock runs."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Lines 1\u20135: CO-4 ($330.73 total) with RARC N822 on therapy CPTs 97530, 97140, 97116",
+          "locator": "CAS segments, all 5 service lines"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Modifiers on claim: KX only \u2014 no GP, GO, or GN on any line",
+          "locator": "837P modifier field, lines 1\u20135"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "PT treatment note confirms physical therapy services under a PT plan of care, requiring GP modifier",
+          "locator": "PT treatment note 2026-06-05"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CO-4/N822 on therapy CPTs = unprocessable; remedy is new original CLM05-3=1 with discipline modifier appended",
+          "locator": "08-therapy-modifiers.md \u00a7a, disposition"
+        }
+      ],
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "4",
+        "rarc": "N822",
+        "level": "line"
+      },
+      "citations": [
+        {
+          "source": "08-therapy-modifiers.md",
+          "rule": "CO-4/N822 on always-therapy CPTs = missing discipline modifier; new original claim with GP/GO/GN; no appeal rights"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Medicare Part B unprocessable \u2192 CLM05-3=1, no REF*F8"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"All 5 lines denied CO-4/N822: therapy CPTs 97530, 97140, 97116 billed with KX only \u2014 GP/GO/GN discipline modifier absent. Medicare Part B unprocessable (no appeal rights); remedy is a new original claim with GP appended to each line. DOS 2026-06-05, filed 2026-06-24, well within the 1-year Medicare window.\",\"resolution\":{\"root_cause\":{\"family\":\"missing_therapy_modifier\",\"explanation\":\"All 5 lines carry only KX. CPTs 97530, 97140, and 97116 require a discipline modifier (GP for PT plan of care). CO-4/N822 = returned unprocessable; no appeal rights.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Submit a new original claim (CLM05-3=1, no REF*F8) adding GP to every line alongside KX. Do not appeal \u2014 unprocessable claims have no appeal rights and redetermination will be dismissed while the filing clock runs.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"Lines 1\u20135: CO-4 ($330.73 total) with RARC N822 on therapy CPTs 97530, 97140, 97116\",\"locator\":\"CAS segments, all 5 service lines\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Modifiers on claim: KX only \u2014 no GP, GO, or GN on any line\",\"locator\":\"837P modifier field, lines 1\u20135\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"PT treatment note confirms physical therapy services under a PT plan of care, requiring GP modifier\",\"locator\":\"PT treatment note 2026-06-05\"},{\"artifact\":\"reference\",\"fact\":\"CO-4/N822 on therapy CPTs = unprocessable; remedy is new original CLM05-3=1 with discipline modifier appended\",\"locator\":\"08-therapy-modifiers.md \u00a7a, disposition\"}],\"denied_line_idxs\":[0,1,2,3,4],\"denial\":{\"group\":\"CO\",\"carc\":\"4\",\"rarc\":\"N822\",\"level\":\"line\"},\"citations\":[{\"source\":\"08-therapy-modifiers.md\",\"rule\":\"CO-4/N822 on always-therapy CPTs = missing discipline modifier; new original claim with GP/GO/GN; no appeal rights\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Medicare Part B unprocessable \u2192 CLM05-3=1, no REF*F8\"}]}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

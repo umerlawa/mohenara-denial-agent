@@ -1,0 +1,38 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4819,
+    "cache_read_input_tokens": 31983,
+    "output_tokens": 1073,
+    "output_tokens_details": {
+      "thinking_tokens": 715
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4819
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "rationale": "CO-29 on both lines, commercial payer (CI). DOS 2/16/2025; 277CA shows first accepted submission 6/9/2025 (~113 days post-DOS). No artifact shows an earlier submission. If the provider has a clearinghouse report proving timely receipt within the contract window, the remedy is appeal disputing the receipt date. Without it, CO-29 is a write-off. The contractual filing limit and any prior submission history are not in these artifacts.",
+    "status": "awaiting_human",
+    "awaiting_human": {
+      "question": "Does the practice have a clearinghouse acceptance report (not a rejection) showing this claim was received by Keystone Commercial Health before the contractual filing deadline? If so, what date does it show?",
+      "why_needed": "The only submission in these artifacts reached the payer on 6/9/2025, ~113 days after the 2/16/2025 DOS. If an earlier accepted submission exists within the contract's filing window, the path is appeal with that proof. If not, CO-29 is a write-off. The payer's specific filing limit is also unknown.",
+      "blocks": [
+        "root_cause.family",
+        "next_action.path"
+      ],
+      "asked_of": "internal"
+    }
+  },
+  "result": "{\"rationale\":\"CO-29 on both lines, commercial payer (CI). DOS 2/16/2025; 277CA shows first accepted submission 6/9/2025 (~113 days post-DOS). No artifact shows an earlier submission. If the provider has a clearinghouse report proving timely receipt within the contract window, the remedy is appeal disputing the receipt date. Without it, CO-29 is a write-off. The contractual filing limit and any prior submission history are not in these artifacts.\",\"status\":\"awaiting_human\",\"awaiting_human\":{\"question\":\"Does the practice have a clearinghouse acceptance report (not a rejection) showing this claim was received by Keystone Commercial Health before the contractual filing deadline? If so, what date does it show?\",\"why_needed\":\"The only submission in these artifacts reached the payer on 6/9/2025, ~113 days after the 2/16/2025 DOS. If an earlier accepted submission exists within the contract's filing window, the path is appeal with that proof. If not, CO-29 is a write-off. The payer's specific filing limit is also unknown.\",\"blocks\":[\"root_cause.family\",\"next_action.path\"],\"asked_of\":\"internal\"}}",
+  "model": "us.anthropic.claude-opus-4-6-v1"
+}

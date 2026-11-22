@@ -1,0 +1,101 @@
+{
+  "case_id": "MOH2-000335",
+  "run_id": "final-sonnet-4-6-low-edi-dev25",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4706,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4998,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1219,
+    "output_tokens_details": {
+      "thinking_tokens": 435
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4998
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.05121336,
+  "cache_hit_rate": 0.863934,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All three lines denied CO-4 + N822: therapy CPTs 97530, 97140, 97112 were billed with KX but without a discipline modifier (GP). Chart note confirms PT services. CO-4/N822 = returned unprocessable; remedy is a new original claim with GP appended to every line.",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_therapy_modifier",
+        "explanation": "CPTs 97530, 97140, 97112 billed with KX only \u2014 no GP modifier. CO-4 (required modifier missing) + N822 (missing procedure modifier) on all three lines. Chart note confirms physical therapy plan of care."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Submit new original claim (CLM05-3=1, no REF*F8). Add GP to every service line alongside KX. Do not appeal \u2014 CO-4/N822 is unprocessable, no appeal rights.",
+        "resubmission_frequency_code": "7"
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CAS*CO*4*58.78 / CAS*CO*4*45.21 / CAS*CO*4*53.39 \u2014 CARC 4 group CO on all three lines",
+          "locator": "SVC lines 1\u20133"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "LQ*HE*N822 on all three lines \u2014 missing procedure modifier",
+          "locator": "after each CAS segment"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "97530:KX, 97140:KX, 97112:KX submitted \u2014 KX present, GP absent on every line",
+          "locator": "SV1 segments LX*1\u20133"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "Physical therapy services documented; GP modifier (PT plan of care) required",
+          "locator": "PT treatment note 2026-07-25"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "4",
+        "rarc": "N822",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2
+      ],
+      "citations": [
+        {
+          "source": "08-therapy-modifiers.md",
+          "rule": "CO-4 + N822 on always-therapy CPTs = missing_therapy_modifier; remedy is new original claim CLM05-3=1 with GP appended"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Unprocessable claim \u2192 new original CLM05-3=1, no REF*F8; frequency 7 not accepted on Part B FFS"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All three lines denied CO-4 + N822: therapy CPTs 97530, 97140, 97112 were billed with KX but without a discipline modifier (GP). Chart note confirms PT services. CO-4/N822 = returned unprocessable; remedy is a new original claim with GP appended to every line.\",\"resolution\":{\"root_cause\":{\"family\":\"missing_therapy_modifier\",\"explanation\":\"CPTs 97530, 97140, 97112 billed with KX only \u2014 no GP modifier. CO-4 (required modifier missing) + N822 (missing procedure modifier) on all three lines. Chart note confirms physical therapy plan of care.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Submit new original claim (CLM05-3=1, no REF*F8). Add GP to every service line alongside KX. Do not appeal \u2014 CO-4/N822 is unprocessable, no appeal rights.\",\"resubmission_frequency_code\":\"7\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CAS*CO*4*58.78 / CAS*CO*4*45.21 / CAS*CO*4*53.39 \u2014 CARC 4 group CO on all three lines\",\"locator\":\"SVC lines 1\u20133\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"LQ*HE*N822 on all three lines \u2014 missing procedure modifier\",\"locator\":\"after each CAS segment\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"97530:KX, 97140:KX, 97112:KX submitted \u2014 KX present, GP absent on every line\",\"locator\":\"SV1 segments LX*1\u20133\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"Physical therapy services documented; GP modifier (PT plan of care) required\",\"locator\":\"PT treatment note 2026-07-25\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"4\",\"rarc\":\"N822\",\"level\":\"line\"},\"denied_line_idxs\":[0,1,2],\"citations\":[{\"source\":\"08-therapy-modifiers.md\",\"rule\":\"CO-4 + N822 on always-therapy CPTs = missing_therapy_modifier; remedy is new original claim CLM05-3=1 with GP appended\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Unprocessable claim \u2192 new original CLM05-3=1, no REF*F8; frequency 7 not accepted on Part B FFS\"}]}}"
+}

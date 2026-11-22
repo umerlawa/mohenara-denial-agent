@@ -1,0 +1,94 @@
+{
+  "case_id": "MOH2-000009",
+  "run_id": "final-opus-4-6-low-edi",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 5095,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5211,
+    "cache_read_input_tokens": 31983,
+    "output_tokens": 1018,
+    "output_tokens_details": {
+      "thinking_tokens": 423
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5211
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.08142227499999999,
+  "cache_hit_rate": 0.859851,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "835 shows all lines denied CO-27 with MOA N30. 271 confirms EB*6 (inactive) with termination date 2026-05-31 (DTP*357), DOS 2026-06-07 is after termination. Filing indicator CI (commercial). No successor payer or EB*R in 271. Per reference, commercial CO-27 with coverage terminated before DOS and no successor: patient is no longer a member, hold-harmless does not reach them \u2014 bill patient after clearing overrides (none apply).",
+    "resolution": {
+      "root_cause": {
+        "family": "eligibility_terminated",
+        "explanation": "Patient's Delaware Valley Mutual EPO coverage terminated 2026-05-31 per 271 EB*6/DTP*357. DOS 2026-06-07 falls after termination. No successor payer identified."
+      },
+      "next_action": {
+        "path": "bill_patient",
+        "detail": "Bill patient for $326.59. Coverage ended before DOS; no other payer on file. Verify no retroactive reinstatement before sending statement."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All 5 lines denied CO-27, $0 paid, MOA N30, claim status 4 (denied), payer type CI"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*6 (inactive) for health benefit plan, DTP*357 termination date 2026-05-31, queried for DOS 2026-06-07"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "No EB*R (other payer) segment present; no successor coverage identified"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "SBR*P*18*******CI confirms commercial filing indicator, not Medicare FFS"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "27",
+        "rarc": null,
+        "level": "claim"
+      },
+      "denied_line_idxs": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "citations": [
+        {
+          "source": "05-eligibility-terminated.md",
+          "rule": "CI, EB*6 + 357 before DOS, no successor: CO-27 \u2192 bill_patient once overrides clear \u2014 hold-harmless reaches members only"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"835 shows all lines denied CO-27 with MOA N30. 271 confirms EB*6 (inactive) with termination date 2026-05-31 (DTP*357), DOS 2026-06-07 is after termination. Filing indicator CI (commercial). No successor payer or EB*R in 271. Per reference, commercial CO-27 with coverage terminated before DOS and no successor: patient is no longer a member, hold-harmless does not reach them \u2014 bill patient after clearing overrides (none apply).\",\"resolution\":{\"root_cause\":{\"family\":\"eligibility_terminated\",\"explanation\":\"Patient's Delaware Valley Mutual EPO coverage terminated 2026-05-31 per 271 EB*6/DTP*357. DOS 2026-06-07 falls after termination. No successor payer identified.\"},\"next_action\":{\"path\":\"bill_patient\",\"detail\":\"Bill patient for $326.59. Coverage ended before DOS; no other payer on file. Verify no retroactive reinstatement before sending statement.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All 5 lines denied CO-27, $0 paid, MOA N30, claim status 4 (denied), payer type CI\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*6 (inactive) for health benefit plan, DTP*357 termination date 2026-05-31, queried for DOS 2026-06-07\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"No EB*R (other payer) segment present; no successor coverage identified\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"SBR*P*18*******CI confirms commercial filing indicator, not Medicare FFS\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"27\",\"rarc\":null,\"level\":\"claim\"},\"denied_line_idxs\":[1,2,3,4,5],\"citations\":[{\"source\":\"05-eligibility-terminated.md\",\"rule\":\"CI, EB*6 + 357 before DOS, no successor: CO-27 \u2192 bill_patient once overrides clear \u2014 hold-harmless reaches members only\"}]}}"
+}

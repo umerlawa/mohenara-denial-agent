@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000710",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All three lines carry CO-29 (timely filing expired). The 837P in hand is dated 20260404 \u2014 ~15 months after DOS 20250109, beyond any commercial limit. But the 277CA shows TRC18373185 accepted (A2) on 20250121 \u2014 12 days after DOS, well within any limit. The April 2026 resubmission was untimely; the original was not. Appeal with the 277CA acceptance report disputing the receipt date.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 3371,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 4940,
+    "cost_usd": 0.08648211,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "timely_filing",
+      "explanation": "April 2026 resubmission (20260404) is ~15 months post-DOS and untimely. The original claim TRC18373185 was accepted per 277CA on 20250121 (12 days after DOS), proving a timely prior submission."
+    },
+    "next_action": {
+      "path": "appeal",
+      "detail": "File a redetermination/first-level appeal attaching the 277CA (STC A2:20, date 20250121) as proof of timely original filing. Dispute the payer's receipt date; do not re-file a new claim. N211 on a commercial remit does not extinguish appeal rights."
+    },
+    "denial": {
+      "group": "CO",
+      "carc": "29",
+      "rarc": "N211",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CAS*CO*29 on all three service lines; MOA N211; $0 paid; claim status 4 (denied).",
+        "locator": "CLP/SVC/CAS segments"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "BHT creation date 20260404; DOS 20250109 \u2014 submission ~15 months after date of service.",
+        "locator": "BHT*0019*00*TRC18373185*20260404; DTP*472*D8*20250109"
+      },
+      {
+        "artifact": "ack_277ca.edi",
+        "fact": "STC*A2:20 dated 20250121 for TRC18373185 \u2014 original claim accepted into adjudication 12 days after DOS.",
+        "locator": "STC*A2:20*20250121; TRN*2*TRC18373185"
+      },
+      {
+        "artifact": "reference",
+        "fact": "CO-29 with proof of accepted prior-window submission \u2192 appeal with clearinghouse acceptance report; N211 applied in error possible on commercial.",
+        "locator": "03-timely-filing.md \u2014 remedy table"
+      }
+    ],
+    "citations": [
+      {
+        "source": "03-timely-filing.md",
+        "rule": "Proof of accepted submission inside the window \u2192 appeal with clearinghouse acceptance report; dispute receipt date"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO = provider liable, not billable to patient; first matching ladder row = appeal when determination is wrong"
+      }
+    ]
+  }
+}

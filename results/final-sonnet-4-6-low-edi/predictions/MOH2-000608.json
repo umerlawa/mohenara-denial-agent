@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000608",
+  "input_format": "edi",
+  "status": "awaiting_human",
+  "rationale": "Line 0 (97110) was denied CO-236 + N20 \u2014 a PTP edit. 97150 (line 1) paid normally. The CCMI for the 97110/97150 pair in the Q2 2026 NCCI edit file is not in the artifacts or reference library. CCMI determines the entire disposition: CCMI=1 allows a modifier fix; CCMI=0 requires write-off. Cannot proceed without it.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1193,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 4930,
+    "cost_usd": 0.05050386,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "awaiting_human": {
+    "question": "What is the CCMI (Column Condition Modifier Indicator) for the 97110 / 97150 pair in the CMS NCCI PTP edit file effective for Q2 2026 (DOS 2026-06-28)?",
+    "why_needed": "CCMI=1 \u2192 correct_and_resubmit with a modifier on the 97110 line (chart note supports a distinct timed interval). CCMI=0 \u2192 do_not_resubmit, write off $88.70. The reference library prohibits guessing this value.",
+    "blocks": [
+      "root_cause.family",
+      "next_action.path"
+    ],
+    "asked_of": "internal"
+  }
+}

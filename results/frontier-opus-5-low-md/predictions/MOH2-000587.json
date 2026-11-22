@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000587",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "Commercial (CI) remit denies all four lines PR-27 with MOA N30. The 271 for the DOS shows EB*6 inactive, coverage ended 2025-05-31, eleven days before the 2025-06-12 service. PR is patient liability and no override (Medicaid, QMB, NSA, successor payer, grace period) appears. Bill the patient.",
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1881,
+    "cache_read_input_tokens": 93028,
+    "cache_creation_input_tokens": 7842,
+    "cost_usd": 0.1425715,
+    "model": "claude-opus-5",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "eligibility_terminated",
+      "explanation": "Coverage under ATLANTIC SHORE ASSURANCE PPO ended 2025-05-31; DOS 2025-06-12 is after termination. 271 for the DOS returns EB*6 inactive with DTP*357 2025-05-31. Remit denies every line PR-27 + N30, filing indicator CI."
+    },
+    "next_action": {
+      "path": "bill_patient",
+      "detail": "Bill ROBERT WILSON $181.22 for all four lines as self-pay. Confirm no successor plan or ACA grace-period pend for 2025-06-12 first, and file the 271 (ELG34168586) to the account. Do not resubmit or appeal."
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All four lines denied PR-27 (after coverage terminated), $0 paid, PR $181.22; MOA N30; filing indicator CI",
+        "locator": "CLP PA24576287 / CAS lines 1-4"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*6 inactive; eligibility 2024-01-01 to 2025-05-31; plan date 2025-06-12",
+        "locator": "EB / DTP*291 / DTP*357"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "DOS 2025-06-12, subscriber self, payer responsibility P, CI",
+        "locator": "DTP*472 / SBR"
+      },
+      {
+        "artifact": "reference",
+        "fact": "CI + EB*6 with 357 before DOS + PR-27 \u2192 bill_patient once overrides clear",
+        "locator": "05-eligibility-terminated.md"
+      }
+    ],
+    "citations": [
+      {
+        "source": "05-eligibility-terminated.md",
+        "rule": "CARC 27/N30 commercial CI, PR group, 271 inactive for DOS \u2192 bill_patient"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "PR balance, overrides cleared \u2192 bill_patient"
+      }
+    ]
+  }
+}

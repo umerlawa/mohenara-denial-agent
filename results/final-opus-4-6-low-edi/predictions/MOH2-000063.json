@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000063",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "Both lines (97140, 97110) denied CO-16 + N822: required therapy modifier missing. Claim billed without GP/GO/GN on always-therapy CPTs. Commercial payer (CI), so corrected claim frequency 7 + REF*F8 with the original payer claim number.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 719,
+    "cache_read_input_tokens": 32421,
+    "cache_creation_input_tokens": 4808,
+    "cost_usd": 0.07067005,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "missing_therapy_modifier",
+      "explanation": "CPTs 97140 and 97110 billed without GP/GO/GN modifier. Payer returned CO-16 + N822 (missing procedure modifier) on both lines."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Append modifier GP to both lines (PT plan of care per chart note). Resubmit as corrected claim CLM05-3=7 with REF*F8*2626505616209.",
+      "resubmission_frequency_code": "7"
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Both SVC lines denied CAS*CO*16 with LQ*HE*N822 (missing procedure modifier), $0 paid",
+        "locator": "CAS/LQ segments for 97140 and 97110"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "SV1 lines for 97140 and 97110 carry no GP/GO/GN modifier",
+        "locator": "SV1*HC:97140 and SV1*HC:97110"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "Treatment note documents PT plan of care (physical therapy), confirming GP is correct modifier",
+        "locator": "PT treatment note header"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP*PA24685180*4*127*0**CI*2626505616209 \u2014 commercial payer, payer claim number available for REF*F8",
+        "locator": "CLP segment"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "16",
+      "rarc": "N822",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1
+    ],
+    "citations": [
+      {
+        "source": "08-therapy-modifiers.md",
+        "rule": "CO-4/N822 on always-therapy CPTs without GP/GO/GN \u2192 correct_and_resubmit with appropriate modifier"
+      },
+      {
+        "source": "02-resubmission-frequency.md",
+        "rule": "Commercial payer: corrected claim = CLM05-3=7 + REF*F8 with CLP07 payer claim number"
+      }
+    ]
+  }
+}

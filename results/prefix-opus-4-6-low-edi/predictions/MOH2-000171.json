@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000171",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "835 shows CO-16 + N286 on all three lines ($0 paid). The 837P has no ordering/referring provider segment (NM1*DN/DQ absent). Payer is Medicare Part B FFS (SBR09=MB). 271 confirms active coverage on DOS. Per reference 09, this is a data defect\u2014fix the referring NPI and resubmit as a new original (Part B does not accept frequency 7).",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 884,
+    "cache_read_input_tokens": 31983,
+    "cache_creation_input_tokens": 4957,
+    "cost_usd": 0.07599102499999999,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "missing_referring_provider",
+      "explanation": "837P contains no ordering/referring provider segment. Medicare Part B requires it for therapy services. All three lines denied CO-16 + N286."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Add the ordering/referring provider NPI (verify in PECOS) and resubmit as a new original claim (CLM05-3 = 1). Do not use frequency 7 on Part B. Do not appeal.",
+      "resubmission_frequency_code": "7"
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All lines carry CAS*CO*16 with MOA N286 (missing/invalid referring provider primary identifier)"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "No NM1*DN or NM1*DQ segment present\u2014ordering/referring provider entirely absent"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*1 active coverage on DOS 2026-02-02; eligibility is not the issue"
+      },
+      {
+        "artifact": "reference",
+        "fact": "N286 = missing referring provider; Part B resubmit as CLM05-3=1, not frequency 7"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "16",
+      "rarc": "N286",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      1,
+      2,
+      3
+    ],
+    "citations": [
+      {
+        "source": "09-missing-referring-provider.md",
+        "rule": "CO-16 + N286: correct referring NPI and resubmit; Part B accepts only CLM05-3 = 1"
+      },
+      {
+        "source": "01-carc-rarc-index.md",
+        "rule": "N286 = missing/incomplete/invalid referring provider primary identifier; fix and resubmit"
+      }
+    ]
+  }
+}

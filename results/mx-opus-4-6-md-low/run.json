@@ -1,0 +1,19 @@
+{
+  "run_id": "mx-opus-4-6-md-low",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "low",
+  "thinking": "adaptive",
+  "input_format": "md",
+  "slice": "eval/slices/dev5.txt",
+  "n_cases": 5,
+  "counts": {
+    "resolved": 5,
+    "awaiting_human": 0,
+    "failed": 0
+  },
+  "cost_usd": 0.638206,
+  "cost_per_case_usd": 0.127641,
+  "wall_seconds": 128.3,
+  "spend_total_after": 9.671735,
+  "failures": []
+}

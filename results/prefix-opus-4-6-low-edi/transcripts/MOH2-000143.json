@@ -1,0 +1,92 @@
+{
+  "case_id": "MOH2-000143",
+  "run_id": "final-opus-4-6-low-edi",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 4649,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4953,
+    "cache_read_input_tokens": 31983,
+    "output_tokens": 687,
+    "output_tokens_details": {
+      "thinking_tokens": 178
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4953
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.070546025,
+  "cache_hit_rate": 0.865856,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All three lines denied CO-29 (timely filing). DOS 2024-07-13; 277CA shows payer accepted the claim 2024-07-18 \u2014 five days after service. The denial is wrong. Appeal with the clearinghouse acceptance report proving timely submission.",
+    "resolution": {
+      "root_cause": {
+        "family": "timely_filing",
+        "explanation": "Payer denied all lines CO-29 but the 277CA proves the claim was accepted 2024-07-18, five days after DOS 2024-07-13 \u2014 well within any commercial filing limit."
+      },
+      "next_action": {
+        "path": "appeal",
+        "detail": "Appeal to Liberty Bell citing the 277CA acceptance (status A2:20, 2024-07-18) as proof of timely filing. Dispute the receipt date; do not plead forgiveness."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All three lines carry CAS*CO*29, $0 paid, MOA N211."
+        },
+        {
+          "artifact": "ack_277ca.edi",
+          "fact": "STC*A2:20*20240718 \u2014 claim accepted by payer 2024-07-18, five days post-DOS."
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "DOS 2024-07-13; filing indicator CI (commercial)."
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*1 active coverage on DOS with plan start DTP*356 2024-01-01."
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "29",
+        "rarc": "N211",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        1,
+        2,
+        3
+      ],
+      "citations": [
+        {
+          "source": "03-timely-filing.md",
+          "rule": "Proof of accepted submission inside the window \u2192 appeal with clearinghouse acceptance report: dispute the receipt date."
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All three lines denied CO-29 (timely filing). DOS 2024-07-13; 277CA shows payer accepted the claim 2024-07-18 \u2014 five days after service. The denial is wrong. Appeal with the clearinghouse acceptance report proving timely submission.\",\"resolution\":{\"root_cause\":{\"family\":\"timely_filing\",\"explanation\":\"Payer denied all lines CO-29 but the 277CA proves the claim was accepted 2024-07-18, five days after DOS 2024-07-13 \u2014 well within any commercial filing limit.\"},\"next_action\":{\"path\":\"appeal\",\"detail\":\"Appeal to Liberty Bell citing the 277CA acceptance (status A2:20, 2024-07-18) as proof of timely filing. Dispute the receipt date; do not plead forgiveness.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All three lines carry CAS*CO*29, $0 paid, MOA N211.\"},{\"artifact\":\"ack_277ca.edi\",\"fact\":\"STC*A2:20*20240718 \u2014 claim accepted by payer 2024-07-18, five days post-DOS.\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"DOS 2024-07-13; filing indicator CI (commercial).\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*1 active coverage on DOS with plan start DTP*356 2024-01-01.\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"29\",\"rarc\":\"N211\",\"level\":\"line\"},\"denied_line_idxs\":[1,2,3],\"citations\":[{\"source\":\"03-timely-filing.md\",\"rule\":\"Proof of accepted submission inside the window \u2192 appeal with clearinghouse acceptance report: dispute the receipt date.\"}]}}"
+}

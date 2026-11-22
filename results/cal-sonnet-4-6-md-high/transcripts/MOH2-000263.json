@@ -1,0 +1,85 @@
+{
+  "case_id": "MOH2-000263",
+  "run_id": "cal-sonnet-4-6-md-high",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "high",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 6880,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5078,
+    "cache_read_input_tokens": 31309,
+    "output_tokens": 3119,
+    "output_tokens_details": {
+      "thinking_tokens": 2282
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5078
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.08274882,
+  "cache_hit_rate": 0.860397,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "Claim PA23903812 was paid. Status 1 (processed as primary, paid). All three therapy lines (97110-GP, 97112-GP, 97140-GP) paid at 80% of Medicare allowed amounts. CO-45 = standard contractual write-off (billed minus fee schedule); PR-2 = standard 20% coinsurance. Math balances on every line. No denial codes. No action warranted.",
+    "resolution": {
+      "root_cause": {
+        "family": "none",
+        "explanation": "Claim adjudicated correctly and paid. CO-45 is the standard Medicare fee-schedule contractual write-off; PR-2 is the 20% coinsurance. All three lines balance: billed \u2212 CO-45 = allowed; allowed \u00d7 80% = paid."
+      },
+      "next_action": {
+        "path": "none",
+        "detail": "Post the $97.80 payment. Bill patient $24.44 PR-2 coinsurance (PR group \u2014 billable). Write off CO-45 totals ($84.22) per participation agreement."
+      },
+      "denial": null,
+      "denied_line_idxs": [],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP status 1 (processed as primary, paid); $97.80 paid against $206.46 billed.",
+          "locator": "CLP PA23903812"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CO-45 on all three lines ($20.77 + $50.37 + $13.08 = $84.22): charge exceeds Medicare fee schedule, contractual write-off per 00-group-codes.md.",
+          "locator": "CAS lines 1\u20133"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "PR-2 on all three lines ($5.81 + $13.09 + $5.54 = $24.44): patient coinsurance, billable per 00-group-codes.md PR group rule.",
+          "locator": "CAS lines 1\u20133"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "GP modifier present on all three therapy lines; filing indicator MB; all claim data consistent with remit.",
+          "locator": "SV1 lines 1\u20133"
+        }
+      ],
+      "citations": [
+        {
+          "source": "00-group-codes.md",
+          "rule": "CO = contractual write-off, never bill patient; PR = patient responsibility, billable after overrides; next_action none for correctly adjudicated clean claim."
+        },
+        {
+          "source": "01-carc-rarc-index.md",
+          "rule": "CARC 45: contractual write-off; 100% charge = disguised denial \u2014 not present here; CARC 2 (PR-2) = coinsurance."
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"Claim PA23903812 was paid. Status 1 (processed as primary, paid). All three therapy lines (97110-GP, 97112-GP, 97140-GP) paid at 80% of Medicare allowed amounts. CO-45 = standard contractual write-off (billed minus fee schedule); PR-2 = standard 20% coinsurance. Math balances on every line. No denial codes. No action warranted.\",\"resolution\":{\"root_cause\":{\"family\":\"none\",\"explanation\":\"Claim adjudicated correctly and paid. CO-45 is the standard Medicare fee-schedule contractual write-off; PR-2 is the 20% coinsurance. All three lines balance: billed \u2212 CO-45 = allowed; allowed \u00d7 80% = paid.\"},\"next_action\":{\"path\":\"none\",\"detail\":\"Post the $97.80 payment. Bill patient $24.44 PR-2 coinsurance (PR group \u2014 billable). Write off CO-45 totals ($84.22) per participation agreement.\"},\"denial\":null,\"denied_line_idxs\":[],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP status 1 (processed as primary, paid); $97.80 paid against $206.46 billed.\",\"locator\":\"CLP PA23903812\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CO-45 on all three lines ($20.77 + $50.37 + $13.08 = $84.22): charge exceeds Medicare fee schedule, contractual write-off per 00-group-codes.md.\",\"locator\":\"CAS lines 1\u20133\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"PR-2 on all three lines ($5.81 + $13.09 + $5.54 = $24.44): patient coinsurance, billable per 00-group-codes.md PR group rule.\",\"locator\":\"CAS lines 1\u20133\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"GP modifier present on all three therapy lines; filing indicator MB; all claim data consistent with remit.\",\"locator\":\"SV1 lines 1\u20133\"}],\"citations\":[{\"source\":\"00-group-codes.md\",\"rule\":\"CO = contractual write-off, never bill patient; PR = patient responsibility, billable after overrides; next_action none for correctly adjudicated clean claim.\"},{\"source\":\"01-carc-rarc-index.md\",\"rule\":\"CARC 45: contractual write-off; 100% charge = disguised denial \u2014 not present here; CARC 2 (PR-2) = coinsurance.\"}]}}"
+}

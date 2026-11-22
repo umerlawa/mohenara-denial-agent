@@ -1,0 +1,18 @@
+{
+  "run_id": "probe-sonnet-4-6-max",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "max",
+  "input_format": "md",
+  "slice": "/tmp/probe3.txt",
+  "n_cases": 3,
+  "counts": {
+    "resolved": 3,
+    "awaiting_human": 0,
+    "failed": 0
+  },
+  "cost_usd": 0.906322,
+  "cost_per_case_usd": 0.302107,
+  "wall_seconds": 562.8,
+  "spend_total_after": 7.038578,
+  "failures": []
+}

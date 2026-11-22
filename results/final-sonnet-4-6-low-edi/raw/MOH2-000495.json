@@ -1,0 +1,81 @@
+{
+  "usage": {
+    "input_tokens": 3,
+    "cache_creation_input_tokens": 6125,
+    "cache_read_input_tokens": 68370,
+    "output_tokens": 2073,
+    "output_tokens_details": {
+      "thinking_tokens": 381
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 6125
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "Both lines carry CO-29 + MOA N211. DOS 2024-07-30; 837P submitted 2025-09-05 \u2014 37 days past Medicare's 1-year filing deadline (42 CFR 424.44). 277CA STC A2:20 confirms payer receipt 2025-09-07, after the window closed. N211 bars appeal. No statutory exception is evident. CO group code: not billable to patient.",
+    "resolution": {
+      "root_cause": {
+        "family": "timely_filing",
+        "explanation": "DOS 2024-07-30; claim received by Novitas 2025-09-05 per 277CA \u2014 37 days after the 1-year Medicare filing deadline. CO-29 + N211 on both lines."
+      },
+      "next_action": {
+        "path": "do_not_resubmit",
+        "detail": "Write off both lines. CO-29 with N211 is not appealable (42 CFR 405.926). CO group code: never bill patient. No statutory exception (no administrative error, no retroactive entitlement, no MA disenrollment) is present in the artifacts."
+      },
+      "denial": {
+        "group": "CO",
+        "carc": "29",
+        "rarc": "N211",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CAS*CO*29 on both SVC lines; MOA N211 ('you may not appeal this decision'); $0 paid on $220.69 billed",
+          "locator": "CAS segments under each SVC; MOA segment"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "DTP*472*D8*20240730 \u2014 DOS July 30, 2024; ISA date 20250905 \u2014 submitted September 5, 2025",
+          "locator": "DTP segments LX*1/LX*2; ISA segment"
+        },
+        {
+          "artifact": "ack_277ca.edi",
+          "fact": "STC*A2:20*20250907 \u2014 payer-accepted receipt date September 7, 2025, 38 days past the 1-year Medicare deadline",
+          "locator": "STC segment"
+        },
+        {
+          "artifact": "reference",
+          "fact": "42 CFR 424.44: Medicare filing limit is 1 calendar year from DOS; CO-29 with N211 is not an initial determination and cannot be appealed (42 CFR 405.926); CO group code is never billable to patient",
+          "locator": "03-timely-filing.md; 00-group-codes.md"
+        }
+      ],
+      "citations": [
+        {
+          "source": "03-timely-filing.md",
+          "rule": "Medicare FFS 1-year filing limit from DOS; CO-29 genuine \u2192 do_not_resubmit"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "CO = provider liable, never bill patient"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"Both lines carry CO-29 + MOA N211. DOS 2024-07-30; 837P submitted 2025-09-05 \u2014 37 days past Medicare's 1-year filing deadline (42 CFR 424.44). 277CA STC A2:20 confirms payer receipt 2025-09-07, after the window closed. N211 bars appeal. No statutory exception is evident. CO group code: not billable to patient.\",\"resolution\":{\"root_cause\":{\"family\":\"timely_filing\",\"explanation\":\"DOS 2024-07-30; claim received by Novitas 2025-09-05 per 277CA \u2014 37 days after the 1-year Medicare filing deadline. CO-29 + N211 on both lines.\"},\"next_action\":{\"path\":\"do_not_resubmit\",\"detail\":\"Write off both lines. CO-29 with N211 is not appealable (42 CFR 405.926). CO group code: never bill patient. No statutory exception (no administrative error, no retroactive entitlement, no MA disenrollment) is present in the artifacts.\"},\"denial\":{\"group\":\"CO\",\"carc\":\"29\",\"rarc\":\"N211\",\"level\":\"line\"},\"denied_line_idxs\":[0,1],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CAS*CO*29 on both SVC lines; MOA N211 ('you may not appeal this decision'); $0 paid on $220.69 billed\",\"locator\":\"CAS segments under each SVC; MOA segment\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"DTP*472*D8*20240730 \u2014 DOS July 30, 2024; ISA date 20250905 \u2014 submitted September 5, 2025\",\"locator\":\"DTP segments LX*1/LX*2; ISA segment\"},{\"artifact\":\"ack_277ca.edi\",\"fact\":\"STC*A2:20*20250907 \u2014 payer-accepted receipt date September 7, 2025, 38 days past the 1-year Medicare deadline\",\"locator\":\"STC segment\"},{\"artifact\":\"reference\",\"fact\":\"42 CFR 424.44: Medicare filing limit is 1 calendar year from DOS; CO-29 with N211 is not an initial determination and cannot be appealed (42 CFR 405.926); CO group code is never billable to patient\",\"locator\":\"03-timely-filing.md; 00-group-codes.md\"}],\"citations\":[{\"source\":\"03-timely-filing.md\",\"rule\":\"Medicare FFS 1-year filing limit from DOS; CO-29 genuine \u2192 do_not_resubmit\"},{\"source\":\"00-group-codes.md\",\"rule\":\"CO = provider liable, never bill patient\"}]}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

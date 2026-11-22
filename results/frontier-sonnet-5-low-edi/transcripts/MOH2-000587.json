@@ -1,0 +1,103 @@
+{
+  "case_id": "MOH2-000587",
+  "run_id": "frontier-sonnet-5-low-edi",
+  "model": "claude-sonnet-5",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4866,
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 8127,
+    "cache_read_input_tokens": 104031,
+    "output_tokens": 2276,
+    "output_tokens_details": {
+      "thinking_tokens": 290
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 8127,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 759,
+        "cache_read_input_tokens": 55318,
+        "cache_creation_input_tokens": 1522,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1522
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.0638917,
+  "cache_hit_rate": 0.927507,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "271 shows coverage terminated 2025-05-31 (DTP*357), DOS is 2025-06-12 \u2014 after termination. Remit denies all 4 lines PR-27/N30. Commercial payer (CI); no QMB/Medicaid/ACA-grace/hold-harmless override applies since patient had no active coverage on the DOS. PR is billable to the patient once overrides clear.",
+    "resolution": {
+      "root_cause": {
+        "family": "eligibility_terminated",
+        "explanation": "271 for DOS 2025-06-12 shows EB*6 (inactive) with DTP*357=20250531 (termination before DOS) and no successor coverage. 835 denies all 4 lines PR-27/N30, consistent with coverage having ended before the DOS."
+      },
+      "next_action": {
+        "path": "bill_patient",
+        "detail": "Bill patient Robert Wilson for all 4 lines ($181.22 total) \u2014 PR-27, coverage terminated 2025-05-31, DOS 2025-06-12, no override applies."
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "denial": {
+        "level": "line",
+        "group": "PR",
+        "carc": "27",
+        "rarc": "N30"
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All 4 service lines carry CAS*PR*27 with MOA*N30, claim filing indicator CI (commercial)",
+          "locator": "CAS segments, lines 1-4"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*6 (inactive) for DOS 2025-06-12, DTP*356=20240101, DTP*357=20250531 \u2014 termination precedes DOS by 12 days, no successor payer",
+          "locator": "EB/DTP segments"
+        }
+      ],
+      "citations": [
+        {
+          "source": "05-eligibility-terminated.md",
+          "rule": "CI, EB*6 + 357 before DOS, no successor: PR-27 \u2192 bill_patient"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "PR balance, overrides cleared \u2192 bill_patient"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"271 shows coverage terminated 2025-05-31 (DTP*357), DOS is 2025-06-12 \u2014 after termination. Remit denies all 4 lines PR-27/N30. Commercial payer (CI); no QMB/Medicaid/ACA-grace/hold-harmless override applies since patient had no active coverage on the DOS. PR is billable to the patient once overrides clear.\",\"resolution\":{\"root_cause\":{\"family\":\"eligibility_terminated\",\"explanation\":\"271 for DOS 2025-06-12 shows EB*6 (inactive) with DTP*357=20250531 (termination before DOS) and no successor coverage. 835 denies all 4 lines PR-27/N30, consistent with coverage having ended before the DOS.\"},\"next_action\":{\"path\":\"bill_patient\",\"detail\":\"Bill patient Robert Wilson for all 4 lines ($181.22 total) \u2014 PR-27, coverage terminated 2025-05-31, DOS 2025-06-12, no override applies.\"},\"denied_line_idxs\":[0,1,2,3],\"denial\":{\"level\":\"line\",\"group\":\"PR\",\"carc\":\"27\",\"rarc\":\"N30\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All 4 service lines carry CAS*PR*27 with MOA*N30, claim filing indicator CI (commercial)\",\"locator\":\"CAS segments, lines 1-4\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*6 (inactive) for DOS 2025-06-12, DTP*356=20240101, DTP*357=20250531 \u2014 termination precedes DOS by 12 days, no successor payer\",\"locator\":\"EB/DTP segments\"}],\"citations\":[{\"source\":\"05-eligibility-terminated.md\",\"rule\":\"CI, EB*6 + 357 before DOS, no successor: PR-27 \u2192 bill_patient\"},{\"source\":\"00-group-codes.md\",\"rule\":\"PR balance, overrides cleared \u2192 bill_patient\"}]}}"
+}

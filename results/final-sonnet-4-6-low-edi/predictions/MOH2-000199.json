@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000199",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "Line 3 (97112, 5 units) denied CO-151+N362 \u2014 MUE exceeded. Chart note documents 31 minutes of 97112, supporting 2 units max under the 8-minute rule (2\u00d715=30, 1 min remainder <8). Billing 5 units is a keying error. Medicare Part B FFS (MB); frequency 7 not accepted \u2014 vehicle is clerical-error reopening. Lines 1\u20132 paid with routine CO-45/PR-2 adjustments; no denial there.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1932,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 5034,
+    "cost_usd": 0.06312636,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "mue_exceeded",
+      "explanation": "97112 billed 5 units; chart note documents 31 minutes = 2 units maximum. CO-151+N362 confirms MUE exceeded. Units overbilled by a factor of 2.5."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Resubmit 97112 with 2 units (31 documented minutes \u00f7 15 = 2 under 8-minute rule). Medicare Part B FFS \u2014 frequency 7 not accepted; submit via clerical-error reopening referencing ICN 2615618156708.",
+      "resubmission_frequency_code": "7"
+    },
+    "denial": {
+      "group": "CO",
+      "carc": "151",
+      "rarc": "N362",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      2
+    ],
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "SVC*HC:97112:GP*214.95*0**5 \u2014 5 units, $0 paid; CAS*CO*151*214.95 + LQ*HE*N362 \u2014 MUE exceeded, full denial",
+        "locator": "third SVC segment"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "97112 documented at 31 minutes; under the 8-minute rule 31 min = 2 billable units",
+        "locator": "timed minutes entry"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "SBR*P*18*******MB \u2014 Medicare Part B FFS filing indicator; frequency 7 not accepted on Part B",
+        "locator": "SBR segment"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP07 = 2615618156708 \u2014 claim adjudicated; reopening vehicle requires ICN reference",
+        "locator": "CLP segment"
+      }
+    ],
+    "citations": [
+      {
+        "source": "07-ncci-and-mue.md",
+        "rule": "CO-151+N362 = MUE exceeded; keying/conversion error \u2192 correct_and_resubmit"
+      },
+      {
+        "source": "02-resubmission-frequency.md",
+        "rule": "Medicare Part B FFS: frequency 7 not accepted; adjudicated claim \u2192 clerical-error reopening"
+      }
+    ]
+  }
+}

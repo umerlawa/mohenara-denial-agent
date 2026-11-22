@@ -1,0 +1,96 @@
+{
+  "case_id": "MOH2-000166",
+  "run_id": "final-opus-4-6-low-edi",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 4731,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4999,
+    "cache_read_input_tokens": 31983,
+    "output_tokens": 771,
+    "output_tokens_details": {
+      "thinking_tokens": 150
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4999
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.073172275,
+  "cache_hit_rate": 0.864779,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All three lines denied OA-18 (exact duplicate) with MOA N111. Claim was adjudicated (CLP07=2609185534064) and billed as CLM05-3=1 (original). No evidence of repeat/bilateral service \u2014 same DOS, same codes, same units. True duplicate; the original claim's disposition governs.",
+    "resolution": {
+      "root_cause": {
+        "family": "exact_duplicate",
+        "explanation": "Claim PA26461680 billed as original (frequency 1) matched an already-adjudicated claim (ICN 2609185534064). All three therapy lines denied OA-18. No bilateral or repeat service indicated."
+      },
+      "next_action": {
+        "path": "do_not_resubmit",
+        "detail": "Do not resubmit. Check the original claim's status via portal/IVR using ICN 2609185534064. If the original paid, post payment and close. If it denied, address that denial on the original."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All lines carry CAS*OA*18, $0 paid; CLP07=2609185534064 confirms adjudication against a prior claim"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "CLM05-3=1 (original submission), no REF*F8 \u2014 treated as new claim, triggering duplicate match"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "MOA***N111 at claim level \u2014 no appeal rights except duplicate claim/service issue"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Same provider/member/DOS/procedures as the matched original; no modifier or condition code distinguishing a repeat service"
+        }
+      ],
+      "denial": {
+        "group": "OA",
+        "carc": "18",
+        "rarc": null,
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        1,
+        2,
+        3
+      ],
+      "citations": [
+        {
+          "source": "04-exact-duplicate.md",
+          "rule": "True duplicate \u2014 one service, billed once, sent twice. Disposition do_not_resubmit, family exact_duplicate. Hard-coded edit, MACs cannot override or bypass."
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Every 837 with CLM05-3=1 is treated as brand-new; duplicate logic matches provider/member/DOS/procedure and fires the edit."
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All three lines denied OA-18 (exact duplicate) with MOA N111. Claim was adjudicated (CLP07=2609185534064) and billed as CLM05-3=1 (original). No evidence of repeat/bilateral service \u2014 same DOS, same codes, same units. True duplicate; the original claim's disposition governs.\",\"resolution\":{\"root_cause\":{\"family\":\"exact_duplicate\",\"explanation\":\"Claim PA26461680 billed as original (frequency 1) matched an already-adjudicated claim (ICN 2609185534064). All three therapy lines denied OA-18. No bilateral or repeat service indicated.\"},\"next_action\":{\"path\":\"do_not_resubmit\",\"detail\":\"Do not resubmit. Check the original claim's status via portal/IVR using ICN 2609185534064. If the original paid, post payment and close. If it denied, address that denial on the original.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All lines carry CAS*OA*18, $0 paid; CLP07=2609185534064 confirms adjudication against a prior claim\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"CLM05-3=1 (original submission), no REF*F8 \u2014 treated as new claim, triggering duplicate match\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"MOA***N111 at claim level \u2014 no appeal rights except duplicate claim/service issue\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Same provider/member/DOS/procedures as the matched original; no modifier or condition code distinguishing a repeat service\"}],\"denial\":{\"group\":\"OA\",\"carc\":\"18\",\"rarc\":null,\"level\":\"line\"},\"denied_line_idxs\":[1,2,3],\"citations\":[{\"source\":\"04-exact-duplicate.md\",\"rule\":\"True duplicate \u2014 one service, billed once, sent twice. Disposition do_not_resubmit, family exact_duplicate. Hard-coded edit, MACs cannot override or bypass.\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Every 837 with CLM05-3=1 is treated as brand-new; duplicate logic matches provider/member/DOS/procedure and fires the edit.\"}]}}"
+}

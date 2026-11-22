@@ -1,0 +1,92 @@
+{
+  "case_id": "MOH2-000061",
+  "run_id": "mx-sonnet-4-6-edi-low",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 4936,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 36432,
+    "cache_read_input_tokens": 0,
+    "output_tokens": 1520,
+    "output_tokens_details": {
+      "thinking_tokens": 648
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 36432
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.1753686,
+  "cache_hit_rate": 0.0,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "835 shows OA-18 on all four lines with CLP07 present (adjudicated). 837P bills 97140 twice and 97110 twice on the same DOS without a distinguishing modifier \u2014 payer's duplicate logic matched lines 3/4 against lines 1/2. Chart note confirms two discrete 97140 bouts (15 min + 14 min) and two 97110 bouts (31 min + 16 min): legitimate repeat services, not a true duplicate. Medicare Part B: modifier 76 on the repeat lines via clerical-error reopening.",
+    "resolution": {
+      "root_cause": {
+        "family": "exact_duplicate",
+        "explanation": "Lines 3 (97140) and 4 (97110) duplicate the CPT/modifier/DOS of lines 1 and 2. No modifier 76 distinguishes the repeat same-day services. OA-18 fired on all four lines."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "File a clerical-error reopening with the MAC (not a new claim, not a redetermination). Add modifier 76 to lines 3 and 4. Attach chart note documenting two discrete 97140 bouts and two 97110 bouts on 07/05/2026. Part B does not accept frequency 7.",
+        "resubmission_frequency_code": "7"
+      },
+      "denial": {
+        "group": "OA",
+        "carc": "18",
+        "rarc": "N111",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP07=2623576767957 confirms adjudication; all four lines carry CAS*OA*18 with MOA N111.",
+          "locator": "CLP segment and four SVC/CAS blocks"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Lines 1 and 3 both bill 97140:GP:KX on 20260705; lines 2 and 4 both bill 97110:GP:KX on 20260705. No modifier 76 on lines 3 or 4.",
+          "locator": "LX*1\u2013LX*4 SV1 segments"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "Two separate 97140 bouts (15 min, 14 min) and two separate 97110 bouts (31 min, 16 min) documented on 2026-07-05 \u2014 legitimate repeat services.",
+          "locator": "Treatment note 2026-07-05"
+        },
+        {
+          "artifact": "reference",
+          "fact": "Medicare Part B false duplicate: modifier 76 added via clerical-error reopening; frequency 7 not accepted on Part B.",
+          "locator": "04-exact-duplicate.md; 02-resubmission-frequency.md \u00a76"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"835 shows OA-18 on all four lines with CLP07 present (adjudicated). 837P bills 97140 twice and 97110 twice on the same DOS without a distinguishing modifier \u2014 payer's duplicate logic matched lines 3/4 against lines 1/2. Chart note confirms two discrete 97140 bouts (15 min + 14 min) and two 97110 bouts (31 min + 16 min): legitimate repeat services, not a true duplicate. Medicare Part B: modifier 76 on the repeat lines via clerical-error reopening.\",\"resolution\":{\"root_cause\":{\"family\":\"exact_duplicate\",\"explanation\":\"Lines 3 (97140) and 4 (97110) duplicate the CPT/modifier/DOS of lines 1 and 2. No modifier 76 distinguishes the repeat same-day services. OA-18 fired on all four lines.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"File a clerical-error reopening with the MAC (not a new claim, not a redetermination). Add modifier 76 to lines 3 and 4. Attach chart note documenting two discrete 97140 bouts and two 97110 bouts on 07/05/2026. Part B does not accept frequency 7.\",\"resubmission_frequency_code\":\"7\"},\"denial\":{\"group\":\"OA\",\"carc\":\"18\",\"rarc\":\"N111\",\"level\":\"line\"},\"denied_line_idxs\":[0,1,2,3],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP07=2623576767957 confirms adjudication; all four lines carry CAS*OA*18 with MOA N111.\",\"locator\":\"CLP segment and four SVC/CAS blocks\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Lines 1 and 3 both bill 97140:GP:KX on 20260705; lines 2 and 4 both bill 97110:GP:KX on 20260705. No modifier 76 on lines 3 or 4.\",\"locator\":\"LX*1\u2013LX*4 SV1 segments\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"Two separate 97140 bouts (15 min, 14 min) and two separate 97110 bouts (31 min, 16 min) documented on 2026-07-05 \u2014 legitimate repeat services.\",\"locator\":\"Treatment note 2026-07-05\"},{\"artifact\":\"reference\",\"fact\":\"Medicare Part B false duplicate: modifier 76 added via clerical-error reopening; frequency 7 not accepted on Part B.\",\"locator\":\"04-exact-duplicate.md; 02-resubmission-frequency.md \u00a76\"}]}}"
+}

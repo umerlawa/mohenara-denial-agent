@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000008",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "Claim adjudicated and paid. All adjustments are CO-45 (contractual write-off per fee schedule) and PR-2 (patient coinsurance). CO-45 is a standard contractual reduction, not a denial. PR-2 is routine patient responsibility \u2014 not a denial remedy. No action needed on the claim.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 726,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 5045,
+    "cost_usd": 0.043272735,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "none",
+      "explanation": "Claim paid $67.61. CO-45 on all three lines is contractual fee-schedule write-off; PR-2 is standard coinsurance. No denial \u2014 adjudicated correctly as primary commercial claim."
+    },
+    "next_action": {
+      "path": "none",
+      "detail": "Post the $67.61 payment. Bill patient $16.89 coinsurance (PR-2, lines 1\u20133) through normal AR. Write off CO-45 totals ($40.59) per participation agreement."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP status 1 (processed as primary, paid); $67.61 paid of $125.09 billed.",
+        "locator": "CLP segment, PA27416586"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All line adjustments are CO-45 (contractual fee schedule reduction) and PR-2 (coinsurance); no denial CARC present.",
+        "locator": "CAS segments, lines 1\u20133"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*1 active coverage on 2026-05-24; eligibility begin 2024-01-01; no termination date.",
+        "locator": "EB segment, plan date 291 2026-05-24"
+      }
+    ],
+    "denied_line_idxs": [],
+    "citations": [
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO = contractual obligation, provider write-off; PR = patient responsibility, billable in normal course \u2014 neither constitutes a denial requiring next_action remedy."
+      },
+      {
+        "source": "01-carc-rarc-index.md",
+        "rule": "CARC 45: contractual write-off; PR-2: patient coinsurance \u2014 routine AR, not a denial."
+      }
+    ]
+  }
+}

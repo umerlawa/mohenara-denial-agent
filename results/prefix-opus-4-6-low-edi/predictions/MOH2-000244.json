@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000244",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "835 shows CO-16 on all three lines with claim-level MOA N286 (missing/invalid referring provider). Claim billed to Medicare Part B (MB) with rendering provider Lopez but no referring/ordering provider in the 837P. Patient is eligible (271 EB*1, active since 2024-01-01). Fix: add valid ordering/referring NPI and resubmit as new original (CLM05-3=1) per Part B rules.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 649,
+    "cache_read_input_tokens": 31983,
+    "cache_creation_input_tokens": 4955,
+    "cost_usd": 0.069514775,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "missing_referring_provider",
+      "explanation": "Claim denied CO-16 + N286 at claim level. The 837P contains no ordering/referring provider loop. Medicare requires a valid referring NPI for therapy services."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Add the ordering/referring provider NPI (verify in PECOS) and resubmit as a new original claim (CLM05-3=1). Do not use frequency 7 on Part B.",
+      "resubmission_frequency_code": "7"
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CAS*CO*16 on all three lines; MOA***N286 at claim level \u2014 missing/invalid referring provider identifier"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "No referring/ordering provider NM1 segment (loop 2310A) present in the claim"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*1*IND*30 \u2014 patient active Medicare Part B on DOS 2026-01-22"
+      },
+      {
+        "artifact": "reference",
+        "fact": "CO-16+N286: correct and resubmit as CLM05-3=1 on Medicare Part B; do not appeal a data defect"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "16",
+      "rarc": "N286",
+      "level": "claim"
+    },
+    "denied_line_idxs": [
+      1,
+      2,
+      3
+    ],
+    "citations": [
+      {
+        "source": "09-missing-referring-provider.md",
+        "rule": "CO-16+N286 = missing referring provider; correct_and_resubmit as new original on Part B"
+      },
+      {
+        "source": "02-resubmission-frequency.md",
+        "rule": "Part B does not accept frequency 7; resubmit as CLM05-3=1"
+      }
+    ]
+  }
+}

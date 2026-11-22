@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000612",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "Remit is CO-16 with MOA N286 on a Medicare Part B (MB) remit; the 837P lists submitter, billing and rendering provider but no ordering/referring provider. That is the signature for a missing/invalid referring provider identifier \u2014 a data defect on the claim as billed, so correct and resubmit; never appeal, never bill the patient on CO.",
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 3156,
+    "cache_read_input_tokens": 143868,
+    "cache_creation_input_tokens": 8975,
+    "cost_usd": 0.20695775,
+    "model": "claude-opus-5",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "missing_referring_provider",
+      "explanation": "835 claim-level MOA N286 (missing/incomplete/invalid referring provider primary identifier) with CO-16 denying all three lines. The 837P carries no referring/ordering provider \u2014 only billing NPI 1110692305 and rendering MARY CLARK 1992501921."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Verify the ordering/referring physician's name and NPI in the NPI Registry and PECOS, add them to the claim, and resubmit to Novitas as a NEW original claim (CLM05-3 = 1, no REF*F8) \u2014 Part B rejects frequency 7. Do not appeal; do not bill the patient."
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Claim-level MOA N286 = missing/incomplete/invalid referring provider primary identifier; CO-16 denies all 3 lines, $220.86 billed, $0 paid",
+        "locator": "MOA; CAS lines 1-3"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "No referring/ordering provider party submitted \u2014 only billing [85] and rendering [82]",
+        "locator": "claim parties"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Filing indicator MB (Medicare Part B FFS), frequency 1, group code CO",
+        "locator": "CLP"
+      },
+      {
+        "artifact": "reference",
+        "fact": "CO-16 + N286 \u2192 correct_and_resubmit; Part B accepts only CLM05-3=1; never appeal a data defect, never bill patient on CO",
+        "locator": "09-missing-referring-provider.md"
+      }
+    ],
+    "citations": [
+      {
+        "source": "09-missing-referring-provider.md",
+        "rule": "CARC 16 + N286 = missing/invalid referring provider; fix name+NPI via NPI Registry/PECOS, resubmit; Part B new original 1"
+      },
+      {
+        "source": "01-carc-rarc-index.md",
+        "rule": "N286 invalid referring provider ID; CARC 16 inert alone, defect named by paired RARC, never PR"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO on Medicare FFS is never billable to the patient; provider-side data defect \u2192 correct_and_resubmit to the same payer"
+      }
+    ]
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000117",
+  "input_format": "md",
+  "status": "awaiting_human",
+  "rationale": "CO-29 timely filing denial. 837P envelope is dated 2025-10-15 (~9 months after DOS 2025-01-19), which would be late under most commercial filing limits. However, the 277CA carries received date 2025-01-27 \u2014 only 8 days post-DOS \u2014 and shares trace TRC75364521 with the October 837P. A 277CA cannot predate its 837P; one date is wrong. If a prior submission was accepted on or near 2025-01-27, that acceptance report is proof of timely filing and the CO-29 is appealable. Without that answer the disposition cannot be determined.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 3949,
+    "cache_read_input_tokens": 31309,
+    "cache_creation_input_tokens": 4817,
+    "cost_usd": 0.095367195,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "awaiting_human": {
+    "question": "Was a claim for DOS 2025-01-19 submitted to Liberty Bell Health Plans and accepted by the clearinghouse before 2025-10-15? The 277CA shows received date 2025-01-27 but the 837P envelope is dated 2025-10-15 \u2014 these cannot both be correct for the same transaction. Confirm: (a) is the 277CA date a data entry error (should it be ~2025-10-27?), or (b) was there an earlier submission accepted on 2025-01-27 with a separate clearinghouse acceptance report?",
+    "why_needed": "If a prior submission was accepted on 2025-01-27, that acceptance report is proof of timely filing and CO-29 is appealable. If the 277CA date is erroneous and the only submission was October 2025, the claim is likely genuinely late and must be written off.",
+    "blocks": [
+      "root_cause.family",
+      "next_action.path"
+    ],
+    "asked_of": "internal"
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000188",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All three lines denied CO-4/N822. The 837P service lines for 97140, 97110, and 97112 carry no GP/GO/GN modifier. Chart note confirms PT plan of care. Medicare Part B (MB) \u2014 new original claim required, not frequency 7. DOS 2026-07-17; 1-year Medicare window closes 2027-07-17, still open.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1173,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 5010,
+    "cost_usd": 0.05050386,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "missing_therapy_modifier",
+      "explanation": "All three lines (97140, 97110, 97112) were billed without a GP modifier. Remit: CAS*CO*4 + LQ*HE*N822 on each line. Chart note confirms PT plan of care."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Submit a new original claim (CLM05-3=1, no REF*F8) appending modifier GP to all three service lines. Do not use frequency 7 \u2014 Medicare Part B FFS rejects it.",
+      "resubmission_frequency_code": "7"
+    },
+    "denial": {
+      "group": "CO",
+      "carc": "4",
+      "rarc": "N822",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CAS*CO*4 + LQ*HE*N822 on all three SVC lines; paid $0; payer filing indicator MB (Medicare Part B FFS)",
+        "locator": "SVC/CAS/LQ segments, lines 97140/97110/97112"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "SV1 segments for 97140, 97110, 97112 contain no GP, GO, or GN modifier",
+        "locator": "LX*1\u2013LX*3 SV1 segments"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "Physical therapy treatment note confirming PT plan of care \u2014 GP modifier is required",
+        "locator": "2026-07-17 PT treatment note"
+      },
+      {
+        "artifact": "reference",
+        "fact": "CO-4 + N822 = missing required therapy modifier; remedy is new original claim (CLM05-3=1); frequency 7 not accepted on Medicare Part B FFS",
+        "locator": "08-therapy-modifiers.md \u00a7a, \u00a7disposition"
+      }
+    ],
+    "citations": [
+      {
+        "source": "08-therapy-modifiers.md",
+        "rule": "CO-4/N822 on always-therapy CPTs = missing GP/GO/GN; correct_and_resubmit as new original CLM05-3=1"
+      },
+      {
+        "source": "02-resubmission-frequency.md",
+        "rule": "Frequency 7 not accepted on Medicare Part B FFS; submit new original"
+      }
+    ]
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000445",
+  "input_format": "edi",
+  "status": "awaiting_human",
+  "rationale": "Lines 0 and 2 (97110:GO) are denied CO-236+N20 \u2014 NCCI PTP edits. 97760:GO (line 1) is the Column One code and was paid. The chart note documents separate sessions and distinct body regions, but the bypass modifier decision turns on the CCMI for the 97110/97760 pair in the Q1 2024 PTP edit file. The 835 carries neither the partner code nor the CCMI; per reference 07 I cannot guess it.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1475,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 5190,
+    "cost_usd": 0.05622936,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "awaiting_human": {
+    "question": "What is the CCMI (Column II modifier indicator) for the 97110 / 97760 PTP edit pair in the Q1 2024 (January 2024) CMS NCCI edit file?",
+    "why_needed": "CCMI=1 \u2192 correct_and_resubmit with a bypass modifier on lines 0 and 2; CCMI=0 \u2192 do_not_resubmit. The chart note documents separate sessions, but that only matters if CCMI=1.",
+    "blocks": [
+      "next_action.path"
+    ],
+    "asked_of": "internal"
+  }
+}

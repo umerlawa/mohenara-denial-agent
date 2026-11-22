@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000587",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "271 confirms coverage inactive (EB*6) with eligibility end 2025-05-31, before the 2025-06-12 DOS. All four lines carry PR-27. Filing indicator is CI (commercial). PR group code on a commercial claim means patient may be billed after overrides are cleared. No QMB, Medicaid, NSA, or ACA grace-period indicator present. Hold-harmless reaches members for covered services \u2014 coverage ended before DOS, so patient is outside it. Bill patient.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 743,
+    "cache_read_input_tokens": 31309,
+    "cache_creation_input_tokens": 5051,
+    "cost_usd": 0.043433445,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "eligibility_terminated",
+      "explanation": "271 shows EB*6 (inactive), eligibility end DTP*357 = 2025-05-31; DOS is 2025-06-12. Coverage had lapsed 12 days before service. All four lines denied PR-27."
+    },
+    "next_action": {
+      "path": "bill_patient",
+      "detail": "Send patient a statement for $181.22. Verify no QMB/Medicaid/NSA override applies. No appeal basis; payer's determination is consistent with the 271."
+    },
+    "evidence": [
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*6 (inactive), DTP*357 (eligibility end) = 2025-05-31, plan date 2025-06-12 \u2014 coverage terminated before DOS.",
+        "locator": "ELG34168586"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All four lines adjusted PR-27 ($181.22 total patient responsibility); filing indicator CI; no OA or CO group code.",
+        "locator": "CLP PA24576287, CAS lines 1\u20134"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Subscriber relationship 18 (self), payer responsibility P (primary), no secondary payer on file.",
+        "locator": "PA24576287"
+      }
+    ],
+    "denial": {
+      "group": "PR",
+      "carc": "27",
+      "rarc": "N30",
+      "level": "line"
+    },
+    "citations": [
+      {
+        "source": "05-eligibility-terminated.md",
+        "rule": "CI + EB*6 + DTP*357 before DOS + PR-27 \u2192 bill_patient after overrides cleared"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "PR = patient liability; commercial CI hold-harmless does not extend to non-members on the DOS"
+      }
+    ]
+  }
+}

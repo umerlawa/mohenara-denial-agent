@@ -1,0 +1,102 @@
+{
+  "case_id": "MOH2-000199",
+  "run_id": "mx-sonnet-4-6-edi-low",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 4780,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5034,
+    "cache_read_input_tokens": 31309,
+    "output_tokens": 1999,
+    "output_tokens_details": {
+      "thinking_tokens": 1092
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5034
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.06408732,
+  "cache_hit_rate": 0.861439,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "Line 3 (97112) denied CO-151+N362: units billed (5) far exceed what the chart supports. 31 documented minutes of 97112 yields 2 units under the 8-minute rule, not 5. This is a units keying/conversion error \u2192 mue_exceeded, correct_and_resubmit. Lines 1\u20132 adjudicated normally (CO-45 write-off + PR-2 coinsurance). Payer is Medicare Part B FFS (MB); frequency 7 not accepted \u2014 vehicle is clerical-error reopening.",
+    "resolution": {
+      "root_cause": {
+        "family": "mue_exceeded",
+        "explanation": "97112 billed 5 units; chart documents 31 minutes \u2192 2 units under the 8-minute rule. CO-151+N362 confirms units exceeded payer maximum. Units are a keying/conversion error, not a coverage dispute."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "File a clerical-error reopening with the MAC (Part B; frequency 7 rejected). Correct line 3 units from 5 to 2 (31 min \u00f7 8-min rule). Attach chart note showing 31 minutes. ICN 2615618156708."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Line 3: SVC HC:97112:GP billed $214.95, paid $0, 5 units; CAS*CO*151*214.95; LQ*HE*N362 \u2014 MUE exceeded, full denial",
+          "locator": "CLP PA21657403 / LX*3"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "97112 documented at 31 minutes; 8-minute rule yields 2 units, not 5",
+          "locator": "chart_note.txt"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "SBR*P*18*******MB \u2014 Medicare Part B FFS; frequency 7 not accepted on Part B",
+          "locator": "HL*2 / SBR"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP07=2615618156708 confirms claim adjudicated; reopening (not new original) is the correct vehicle",
+          "locator": "CLP*PA21657403"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "151",
+        "rarc": "N362",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        2
+      ],
+      "citations": [
+        {
+          "source": "07-ncci-and-mue.md",
+          "rule": "CO-151+N362 = MUE exceeded; miscoded units \u2192 correct_and_resubmit"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Medicare Part B: frequency 7 not accepted; use clerical-error reopening"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "CO = provider liable, never bill patient"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"Line 3 (97112) denied CO-151+N362: units billed (5) far exceed what the chart supports. 31 documented minutes of 97112 yields 2 units under the 8-minute rule, not 5. This is a units keying/conversion error \u2192 mue_exceeded, correct_and_resubmit. Lines 1\u20132 adjudicated normally (CO-45 write-off + PR-2 coinsurance). Payer is Medicare Part B FFS (MB); frequency 7 not accepted \u2014 vehicle is clerical-error reopening.\",\"resolution\":{\"root_cause\":{\"family\":\"mue_exceeded\",\"explanation\":\"97112 billed 5 units; chart documents 31 minutes \u2192 2 units under the 8-minute rule. CO-151+N362 confirms units exceeded payer maximum. Units are a keying/conversion error, not a coverage dispute.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"File a clerical-error reopening with the MAC (Part B; frequency 7 rejected). Correct line 3 units from 5 to 2 (31 min \u00f7 8-min rule). Attach chart note showing 31 minutes. ICN 2615618156708.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"Line 3: SVC HC:97112:GP billed $214.95, paid $0, 5 units; CAS*CO*151*214.95; LQ*HE*N362 \u2014 MUE exceeded, full denial\",\"locator\":\"CLP PA21657403 / LX*3\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"97112 documented at 31 minutes; 8-minute rule yields 2 units, not 5\",\"locator\":\"chart_note.txt\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"SBR*P*18*******MB \u2014 Medicare Part B FFS; frequency 7 not accepted on Part B\",\"locator\":\"HL*2 / SBR\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP07=2615618156708 confirms claim adjudicated; reopening (not new original) is the correct vehicle\",\"locator\":\"CLP*PA21657403\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"151\",\"rarc\":\"N362\",\"level\":\"line\"},\"denied_line_idxs\":[2],\"citations\":[{\"source\":\"07-ncci-and-mue.md\",\"rule\":\"CO-151+N362 = MUE exceeded; miscoded units \u2192 correct_and_resubmit\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Medicare Part B: frequency 7 not accepted; use clerical-error reopening\"},{\"source\":\"00-group-codes.md\",\"rule\":\"CO = provider liable, never bill patient\"}]}}"
+}

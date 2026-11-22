@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000062",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "271 shows coverage inactive (EB*6) with eligibility end 2025-05-31, before the 2025-06-17 DOS; no successor payer active. Remit denies all four lines PR-27/N30, commercial (CI) filing indicator. Per eligibility-terminated ladder, CI with termination before DOS and no successor routes PR-27 to bill_patient.",
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 2509,
+    "cache_read_input_tokens": 161315,
+    "cache_creation_input_tokens": 9022,
+    "cost_usd": 0.07992,
+    "model": "claude-sonnet-5",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "denial": {
+      "group": "PR",
+      "carc": "27",
+      "rarc": "N30",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "root_cause": {
+      "family": "eligibility_terminated",
+      "explanation": "271 shows benefit inactive (EB*6), eligibility end 2025-05-31, before DOS 2025-06-17; no successor coverage shown. Remit denies all lines PR-27/N30, commercial payer (CI)."
+    },
+    "next_action": {
+      "path": "bill_patient",
+      "detail": "Coverage terminated 2025-05-31, before DOS. Group code PR confirms patient liability; no QMB/Medicaid/ACA-grace override present. Bill patient the $204.23 balance."
+    },
+    "evidence": [
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "benefit 6 (inactive), eligibility end (357) 2025-05-31, plan date 2025-06-17 \u2014 coverage ended before DOS",
+        "locator": "271 EB*6/DTP*357"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All 4 lines denied PR-27 with claim remark N30, filing indicator CI (commercial)",
+        "locator": "835 CAS/MOA"
+      }
+    ],
+    "citations": [
+      {
+        "source": "05-eligibility-terminated.md",
+        "rule": "CI, EB*6 + 357 before DOS, no successor: PR-27 \u2192 bill_patient"
+      }
+    ]
+  }
+}

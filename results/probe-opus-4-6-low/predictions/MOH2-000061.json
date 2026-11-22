@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000061",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "All four lines denied OA-18 (exact duplicate). Claim was adjudicated (835 with CLP07 2623576767957). Filed as frequency 1 original. Modifiers GP and KX already present \u2014 no false-duplicate modifier issue. This is a true duplicate: the same services were already adjudicated under a prior claim. Disposition: do_not_resubmit; check the original claim's payment status via portal/IVR.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 725,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 37095,
+    "cost_usd": 0.274976625,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "exact_duplicate",
+      "explanation": "Claim PA22957514 submitted as CLM05-3=1 (original) matched an already-adjudicated prior claim on same provider/member/DOS/procedures. Payer fired the hard-coded duplicate edit on all four lines."
+    },
+    "next_action": {
+      "path": "do_not_resubmit",
+      "detail": "Do not resubmit. Look up payer claim control number for the original claim via Novitas portal or IVR. If the original paid, post that payment. If pending, hold. If denied, address that denial on its own merits."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All lines denied OA-18 with MOA N111; payer claim control 2623576767957 confirms adjudication.",
+        "locator": "CAS OA-18 on lines 1-4; MOA N111"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "CLM05-3=1 (original claim), no REF*F8 \u2014 treated as brand-new submission triggering duplicate match.",
+        "locator": "CLM05-3"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Modifiers GP and KX already present on all lines \u2014 no missing modifier to correct; not a false-duplicate scenario.",
+        "locator": "SV1 lines 1-4"
+      },
+      {
+        "artifact": "reference",
+        "fact": "True duplicate under OA-18 is hard-coded, unappealable; disposition is do_not_resubmit. Original claim's status governs.",
+        "locator": "04-exact-duplicate.md"
+      }
+    ],
+    "denial": {
+      "group": "OA",
+      "carc": "18",
+      "rarc": null,
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "citations": [
+      {
+        "source": "04-exact-duplicate.md",
+        "rule": "True duplicate \u2014 one service, billed once, sent twice. Disposition do_not_resubmit; edit is hard-coded, MACs cannot override."
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "OA = liability not stated, not billable; pursue the real reason."
+      }
+    ]
+  }
+}

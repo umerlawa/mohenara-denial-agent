@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000441",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All three lines (97110, 97140, 97530) \u2014 always-therapy CPTs \u2014 denied CO-4 + N822 (missing required modifier) with no GP/GO/GN appended on the 837P. Chart note confirms physical therapy plan of care, so GP is the correct modifier. CO-4/N822 means the claim was returned unprocessable, never adjudicated, so no appeal rights and the fix is a brand-new original claim with GP added to each line.",
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 3163,
+    "cache_read_input_tokens": 160376,
+    "cache_creation_input_tokens": 8767,
+    "cost_usd": 0.0856347,
+    "model": "claude-sonnet-5",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "missing_therapy_modifier",
+      "explanation": "97110, 97140, 97530 billed without GP/GO/GN; remit denies each line CO-4 (required modifier missing) + N822. Chart note confirms a PT plan of care, so GP applies to all three lines."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Append modifier GP to lines for 97110, 97140, and 97530 and submit as a new original claim (CLM05-3=1, no REF*F8) to Novitas Solutions Medicare Part B. Do not appeal \u2014 claim never adjudicated. Filing clock continues running from DOS 2026-02-19."
+    },
+    "denial": {
+      "level": "line",
+      "group": "CO",
+      "carc": "4",
+      "rarc": "N822"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All three SVC lines carry CAS*CO*4 with LQ*HE*N822 (missing required modifier)",
+        "locator": "CAS*CO*4*51.34 / *91.8 / *46.54; LQ*HE*N822"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "SV1 lines for HC:97110, HC:97140, HC:97530 carry no GP/GO/GN modifier",
+        "locator": "SV1*HC:97110*51.34*UN*1***1 etc."
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "Treatment is therapeutic exercise, manual therapy, and therapeutic activities \u2014 a physical therapy plan of care, indicating GP",
+        "locator": "chart_note.txt full text"
+      }
+    ],
+    "citations": [
+      {
+        "source": "08-therapy-modifiers.md",
+        "rule": "CO-4 + N822 on always-therapy CPTs 97110/97112/97140/97530 = missing GP/GO/GN; correct_and_resubmit as new original claim, never appeal, never bill patient"
+      }
+    ]
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000026",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "835 shows CO-22 on all lines with MOA MA04. 271 confirms Novitas Medicare Part B FFS is primary (EB*R + MSG \"PLAN IS PRIMARY PAYER FOR THIS MEMBER\"). Claim was billed to Delaware Valley Mutual as primary but Medicare is primary. Bill Medicare first, then resubmit as secondary with adjudication data.",
+  "usage": {
+    "input_tokens": 3,
+    "output_tokens": 1094,
+    "cache_read_input_tokens": 69110,
+    "cache_creation_input_tokens": 5780,
+    "cost_usd": 0.1078495,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "cob_other_primary",
+      "explanation": "Claim billed Delaware Valley Mutual as primary but 271 shows Novitas Medicare Part B FFS is primary payer. CO-22 + MA04 on all lines."
+    },
+    "next_action": {
+      "path": "resubmit_other_payer",
+      "detail": "Bill Medicare Part B (Novitas, payer ID 1846349352) as primary. Once adjudicated, resubmit to Delaware Valley Mutual as secondary with SBR*S and primary's payment/adjustment data in loops 2320/2430."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All four lines denied CO-22; claim-level MOA carries MA04."
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*R names NOVITAS SOLUTIONS MEDICARE PART B FFS with MSG 'PLAN IS PRIMARY PAYER FOR THIS MEMBER', effective 2024-01-01."
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "SBR*P*18*******CI \u2014 billed as primary to commercial payer with no secondary payer loop."
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*1 active coverage with Delaware Valley Mutual HMO confirmed for DOS but Medicare is primary."
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "22",
+      "rarc": "MA04",
+      "level": "line"
+    }
+  }
+}

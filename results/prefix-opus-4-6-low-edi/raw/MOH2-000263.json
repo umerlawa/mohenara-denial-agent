@@ -1,0 +1,53 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5059,
+    "cache_read_input_tokens": 31983,
+    "output_tokens": 702,
+    "output_tokens_details": {
+      "thinking_tokens": 304
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5059
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "Claim paid normally. CO-45 is contractual write-off (fee schedule reduction), PR-2 is patient coinsurance ($24.44). No denial. 271 confirms active coverage (EB*1, effective 2024-01-01). No QMB or other override indicators. Standard Medicare adjudication \u2014 collect coinsurance from patient.",
+    "resolution": {
+      "root_cause": {
+        "family": "none",
+        "explanation": "Claim adjudicated correctly. CO-45 contractual adjustments reduce charges to fee schedule; PR-2 assigns 20% coinsurance to patient. No denial occurred."
+      },
+      "next_action": {
+        "path": "bill_patient",
+        "detail": "Bill patient $24.44 coinsurance (PR-2): Line 1 $5.81, Line 2 $13.09, Line 3 $5.54."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP status 1 (processed as primary), paid $97.80; adjustments CO-45 and PR-2 on all lines"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "PR-2 totals $24.44 matching CLP05 patient responsibility"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*1 active coverage for DOS 2026-02-06, no QMB or override indicators"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"Claim paid normally. CO-45 is contractual write-off (fee schedule reduction), PR-2 is patient coinsurance ($24.44). No denial. 271 confirms active coverage (EB*1, effective 2024-01-01). No QMB or other override indicators. Standard Medicare adjudication \u2014 collect coinsurance from patient.\",\"resolution\":{\"root_cause\":{\"family\":\"none\",\"explanation\":\"Claim adjudicated correctly. CO-45 contractual adjustments reduce charges to fee schedule; PR-2 assigns 20% coinsurance to patient. No denial occurred.\"},\"next_action\":{\"path\":\"bill_patient\",\"detail\":\"Bill patient $24.44 coinsurance (PR-2): Line 1 $5.81, Line 2 $13.09, Line 3 $5.54.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP status 1 (processed as primary), paid $97.80; adjustments CO-45 and PR-2 on all lines\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"PR-2 totals $24.44 matching CLP05 patient responsibility\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*1 active coverage for DOS 2026-02-06, no QMB or override indicators\"}]}}",
+  "model": "us.anthropic.claude-opus-4-6-v1"
+}

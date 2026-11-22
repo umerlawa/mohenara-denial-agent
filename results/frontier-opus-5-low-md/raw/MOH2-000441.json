@@ -1,0 +1,87 @@
+{
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 7619,
+    "cache_read_input_tokens": 92864,
+    "output_tokens": 1818,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 7619,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 892,
+        "cache_read_input_tokens": 49752,
+        "cache_creation_input_tokens": 979,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 979
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "835 denies all three always-therapy lines CO-4 + N822 (missing procedure modifier). 837P lines carry no GP/GO/GN. Chart note documents PT plan of care \u2192 GP. Card 08: correct_and_resubmit as a new original claim (CLM05-3=1); Part B unprocessable, no appeal rights. Filing clock never stopped.",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_therapy_modifier",
+        "explanation": "837P lines 97110, 97140, 97530 submitted with no therapy discipline modifier; 835 returns CO-4 with RARC N822 (missing procedure modifier) on each line. Chart note documents PT treatment under an outpatient PT plan of care, so GP applies."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Append modifier GP to all three lines (97110, 97140, 97530) and submit a NEW ORIGINAL claim, CLM05-3=1, no REF*F8. Do not appeal or send frequency 7 \u2014 Part B rejects it. File promptly: the 1-year clock from DOS 2026-02-19 never stopped."
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All three lines CO-4 with RARC N822, missing procedure modifier(s), $0 paid",
+          "locator": "SVC/CAS lines 1-3"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "97110, 97140, 97530 billed with no GP/GO/GN modifier",
+          "locator": "SV1 lines 1-3"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "PT treatment note 2026-02-19 under physical therapy plan of care \u2192 GP"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CO-4+N822 on always-therapy CPTs = unprocessable, no appeal rights; remedy is new original claim with modifier",
+          "locator": "08-therapy-modifiers.md (a)"
+        }
+      ],
+      "citations": [
+        {
+          "source": "08-therapy-modifiers.md",
+          "rule": "CO-4 + N822 on 97110/97140/97530 without GP/GO/GN \u2192 correct_and_resubmit as new original (CLM05-3=1); never appeal, never bill patient"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "CO on Medicare FFS (MB): never bill the patient"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"835 denies all three always-therapy lines CO-4 + N822 (missing procedure modifier). 837P lines carry no GP/GO/GN. Chart note documents PT plan of care \u2192 GP. Card 08: correct_and_resubmit as a new original claim (CLM05-3=1); Part B unprocessable, no appeal rights. Filing clock never stopped.\",\"resolution\":{\"root_cause\":{\"family\":\"missing_therapy_modifier\",\"explanation\":\"837P lines 97110, 97140, 97530 submitted with no therapy discipline modifier; 835 returns CO-4 with RARC N822 (missing procedure modifier) on each line. Chart note documents PT treatment under an outpatient PT plan of care, so GP applies.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Append modifier GP to all three lines (97110, 97140, 97530) and submit a NEW ORIGINAL claim, CLM05-3=1, no REF*F8. Do not appeal or send frequency 7 \u2014 Part B rejects it. File promptly: the 1-year clock from DOS 2026-02-19 never stopped.\"},\"denied_line_idxs\":[0,1,2],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All three lines CO-4 with RARC N822, missing procedure modifier(s), $0 paid\",\"locator\":\"SVC/CAS lines 1-3\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"97110, 97140, 97530 billed with no GP/GO/GN modifier\",\"locator\":\"SV1 lines 1-3\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"PT treatment note 2026-02-19 under physical therapy plan of care \u2192 GP\"},{\"artifact\":\"reference\",\"fact\":\"CO-4+N822 on always-therapy CPTs = unprocessable, no appeal rights; remedy is new original claim with modifier\",\"locator\":\"08-therapy-modifiers.md (a)\"}],\"citations\":[{\"source\":\"08-therapy-modifiers.md\",\"rule\":\"CO-4 + N822 on 97110/97140/97530 without GP/GO/GN \u2192 correct_and_resubmit as new original (CLM05-3=1); never appeal, never bill patient\"},{\"source\":\"00-group-codes.md\",\"rule\":\"CO on Medicare FFS (MB): never bill the patient\"}]}}",
+  "model": "claude-opus-5"
+}

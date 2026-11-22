@@ -1,0 +1,81 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4815,
+    "cache_read_input_tokens": 32421,
+    "output_tokens": 879,
+    "output_tokens_details": {
+      "thinking_tokens": 238
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4815
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "835 shows CO-27 on both lines with MOA N30. 271 confirms EB*6 (inactive) with DTP*357 = 2026-05-31, DOS = 2026-06-18 \u2014 service after coverage terminated. Payer is commercial (CI). No successor payer, no QMB, no Medicaid override. Per reference, commercial CO-27 with terminated coverage places liability on the patient once overrides clear \u2014 hold-harmless only reaches members for covered services.",
+    "resolution": {
+      "root_cause": {
+        "family": "eligibility_terminated",
+        "explanation": "Coverage with Delaware Valley Mutual ended 2026-05-31 (271 DTP*357). DOS 2026-06-18 is 18 days post-termination. Commercial payer, no successor coverage identified."
+      },
+      "next_action": {
+        "path": "bill_patient",
+        "detail": "Bill patient $89.67. Coverage was inactive on DOS; commercial CO-27 with no active membership means hold-harmless does not apply. Verify no other insurance before sending statement."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CAS*CO*27 on both service lines, $0 paid, MOA N30",
+          "locator": "CAS segments lines 1-2"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*6 (inactive) with DTP*357*D8*20260531 \u2014 plan ended before DOS 2026-06-18",
+          "locator": "EB and DTP segments"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "SBR*P*18*******CI \u2014 commercial filing indicator, patient is subscriber",
+          "locator": "SBR segment"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "No EB*R segment \u2014 no other payer on file for this DOS",
+          "locator": "Full 271 response"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "27",
+        "rarc": null,
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1
+      ],
+      "citations": [
+        {
+          "source": "05-eligibility-terminated.md",
+          "rule": "CI, EB*6 + 357 before DOS, no successor: CO-27 \u2192 bill_patient once overrides clear \u2014 hold-harmless reaches members only"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "Commercial CO is payer assertion; hold-harmless clause runs to covered members for covered services only"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"835 shows CO-27 on both lines with MOA N30. 271 confirms EB*6 (inactive) with DTP*357 = 2026-05-31, DOS = 2026-06-18 \u2014 service after coverage terminated. Payer is commercial (CI). No successor payer, no QMB, no Medicaid override. Per reference, commercial CO-27 with terminated coverage places liability on the patient once overrides clear \u2014 hold-harmless only reaches members for covered services.\",\"resolution\":{\"root_cause\":{\"family\":\"eligibility_terminated\",\"explanation\":\"Coverage with Delaware Valley Mutual ended 2026-05-31 (271 DTP*357). DOS 2026-06-18 is 18 days post-termination. Commercial payer, no successor coverage identified.\"},\"next_action\":{\"path\":\"bill_patient\",\"detail\":\"Bill patient $89.67. Coverage was inactive on DOS; commercial CO-27 with no active membership means hold-harmless does not apply. Verify no other insurance before sending statement.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CAS*CO*27 on both service lines, $0 paid, MOA N30\",\"locator\":\"CAS segments lines 1-2\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*6 (inactive) with DTP*357*D8*20260531 \u2014 plan ended before DOS 2026-06-18\",\"locator\":\"EB and DTP segments\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"SBR*P*18*******CI \u2014 commercial filing indicator, patient is subscriber\",\"locator\":\"SBR segment\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"No EB*R segment \u2014 no other payer on file for this DOS\",\"locator\":\"Full 271 response\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"27\",\"rarc\":null,\"level\":\"line\"},\"denied_line_idxs\":[0,1],\"citations\":[{\"source\":\"05-eligibility-terminated.md\",\"rule\":\"CI, EB*6 + 357 before DOS, no successor: CO-27 \u2192 bill_patient once overrides clear \u2014 hold-harmless reaches members only\"},{\"source\":\"00-group-codes.md\",\"rule\":\"Commercial CO is payer assertion; hold-harmless clause runs to covered members for covered services only\"}]}}",
+  "model": "us.anthropic.claude-opus-4-6-v1"
+}

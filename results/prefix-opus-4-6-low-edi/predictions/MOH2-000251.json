@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000251",
+  "input_format": "edi",
+  "status": "awaiting_human",
+  "rationale": "Line 1 (97110:GP:KX) denied CO-236 + N20 = NCCI PTP edit. 97110 is the Column Two code; 97150 (paid) is Column One. Per reference 07, the CCMI for the code pair in the DOS-quarter PTP edit file determines disposition (1=resubmit with modifier, 0=write off, 9=appeal). The 835 does not carry the CCMI and no PTP edit file is among the artifacts. Cannot resolve without it.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1033,
+    "cache_read_input_tokens": 31983,
+    "cache_creation_input_tokens": 4909,
+    "cost_usd": 0.079758525,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "awaiting_human": {
+    "question": "What is the Column One/Column Two Correct Coding Modifier Indicator (CCMI) for the PTP edit pair 97150 (Col 1) / 97110 (Col 2) in the Q3 2026 NCCI PTP edit file?",
+    "why_needed": "CCMI=1 means a modifier bypass is allowed and the fix is correct_and_resubmit with a distinguishing modifier; CCMI=0 means the bundling is absolute and the line must be written off; CCMI=9 means the edit may not apply and the path is appeal. The 835 does not carry this value.",
+    "blocks": [
+      "root_cause.family",
+      "next_action.path"
+    ]
+  }
+}

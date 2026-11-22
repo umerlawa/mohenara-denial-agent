@@ -1,0 +1,14 @@
+anthropic[bedrock]>=0.121.0
+boto3>=1.43.0
+jsonschema>=4.23.0
+pytest>=8.0.0
+claude-agent-sdk>=0.2.136
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+python-multipart>=0.0.9
+# Imported directly by src/mohenara (resolve.py drives anyio.run; api.py declares
+# pydantic models). Both arrive transitively via fastapi and the Agent SDK today,
+# but a direct import on a transitive dependency breaks silently the day either
+# upstream changes its own requirements.
+anyio>=4.0.0
+pydantic>=2.0.0

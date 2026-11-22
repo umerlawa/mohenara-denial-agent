@@ -1,0 +1,74 @@
+{
+  "case_id": "MOH2-000162",
+  "run_id": "final-opus-4-6-low-edi",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 5043,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 37601,
+    "cache_read_input_tokens": 0,
+    "output_tokens": 527,
+    "output_tokens_details": {
+      "thinking_tokens": 85
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 37601
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.273010375,
+  "cache_hit_rate": 0.0,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All four lines paid. CLP*PA25592574*1 = status \"1\" (processed as primary). Adjustments are CO-45 (contractual write-down to fee schedule) and PR-2 (20% coinsurance). No denial exists; this is routine Medicare adjudication with allowed amounts, contractual adjustments, and standard patient cost-sharing.",
+    "resolution": {
+      "root_cause": {
+        "family": "none",
+        "explanation": "Claim paid correctly. CO-45 is the contractual write-off to the Medicare fee schedule; PR-2 is standard 20% coinsurance. No lines denied."
+      },
+      "next_action": {
+        "path": "bill_patient",
+        "detail": "Collect PR-2 coinsurance totaling $36.27 from the patient (or bill secondary/Medigap if applicable)."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP status code 1 (processed as primary), paid $145.09 of $293.81 billed",
+          "locator": "CLP*PA25592574*1*293.81*145.09*36.27"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All four lines carry CO-45 (fee schedule reduction) and PR-2 (coinsurance) \u2014 no denial CARCs",
+          "locator": "CAS segments on all SVC lines"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "PR-2 amounts total $36.27 matching CLP patient responsibility field",
+          "locator": "CAS*PR*2 on lines 1-4"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All four lines paid. CLP*PA25592574*1 = status \\\"1\\\" (processed as primary). Adjustments are CO-45 (contractual write-down to fee schedule) and PR-2 (20% coinsurance). No denial exists; this is routine Medicare adjudication with allowed amounts, contractual adjustments, and standard patient cost-sharing.\",\"resolution\":{\"root_cause\":{\"family\":\"none\",\"explanation\":\"Claim paid correctly. CO-45 is the contractual write-off to the Medicare fee schedule; PR-2 is standard 20% coinsurance. No lines denied.\"},\"next_action\":{\"path\":\"bill_patient\",\"detail\":\"Collect PR-2 coinsurance totaling $36.27 from the patient (or bill secondary/Medigap if applicable).\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP status code 1 (processed as primary), paid $145.09 of $293.81 billed\",\"locator\":\"CLP*PA25592574*1*293.81*145.09*36.27\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"All four lines carry CO-45 (fee schedule reduction) and PR-2 (coinsurance) \u2014 no denial CARCs\",\"locator\":\"CAS segments on all SVC lines\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"PR-2 amounts total $36.27 matching CLP patient responsibility field\",\"locator\":\"CAS*PR*2 on lines 1-4\"}]}}"
+}

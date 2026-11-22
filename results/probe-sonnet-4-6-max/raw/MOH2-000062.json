@@ -1,0 +1,87 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 36370,
+    "cache_read_input_tokens": 0,
+    "output_tokens": 10814,
+    "output_tokens_details": {
+      "thinking_tokens": 9896
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 36370
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "271 confirms EB*6 (inactive), coverage end 2025-05-31, for DOS 2025-06-17\u2014patient was uninsured 17 days after termination. All four lines carry PR-27 (group PR). Commercial CI, no successor payer in 271. Hold-harmless runs to members only; patient lapsed before DOS. No QMB, Medicaid, ACA grace-pend, or rescission indicator present. Overrides clear; PR-27 commercial \u2192 bill patient.",
+    "resolution": {
+      "root_cause": {
+        "family": "eligibility_terminated",
+        "explanation": "Coverage ended 2025-05-31; DOS 2025-06-17 is 17 days post-termination. 271 EB*6 + DTP*357=2025-05-31 for plan date 2025-06-17 confirms inactive on DOS."
+      },
+      "next_action": {
+        "path": "bill_patient",
+        "detail": "Send Jessica Harris a statement for $204.23 (all four lines PR-27). No successor payer; no overrides block billing. Reference DOS 2025-06-17 and coverage end 2025-05-31."
+      },
+      "denial": {
+        "group": "PR",
+        "carc": "27",
+        "rarc": null,
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "evidence": [
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*6 (inactive), DTP*357=2025-05-31, plan date 2025-06-17\u2014coverage terminated before DOS",
+          "locator": "271 benefit segment, ELG78719585"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All four lines: PR-27, $204.23 total patient responsibility; claim status 4 denied",
+          "locator": "CAS segments, lines 1\u20134; claim PA27132865"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "MOA N30 (patient ineligible for this service) at claim level corroborates eligibility denial",
+          "locator": "MOA segment, claim PA27132865"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Filing indicator CI (commercial), subscriber self (18), primary payer; 271 shows no EB*R successor payer",
+          "locator": "CLM segment; 271 response"
+        }
+      ],
+      "citations": [
+        {
+          "source": "05-eligibility-terminated.md",
+          "rule": "CI + EB*6 + DTP*357 before DOS, no successor + PR-27 \u2192 bill_patient once overrides clear"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "PR = patient liability; billable after QMB/Medicaid/NSA/ABN overrides cleared"
+        },
+        {
+          "source": "01-carc-rarc-index.md",
+          "rule": "CARC 27: expenses incurred after coverage terminated; PR \u2192 billable after overrides"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"271 confirms EB*6 (inactive), coverage end 2025-05-31, for DOS 2025-06-17\u2014patient was uninsured 17 days after termination. All four lines carry PR-27 (group PR). Commercial CI, no successor payer in 271. Hold-harmless runs to members only; patient lapsed before DOS. No QMB, Medicaid, ACA grace-pend, or rescission indicator present. Overrides clear; PR-27 commercial \u2192 bill patient.\",\"resolution\":{\"root_cause\":{\"family\":\"eligibility_terminated\",\"explanation\":\"Coverage ended 2025-05-31; DOS 2025-06-17 is 17 days post-termination. 271 EB*6 + DTP*357=2025-05-31 for plan date 2025-06-17 confirms inactive on DOS.\"},\"next_action\":{\"path\":\"bill_patient\",\"detail\":\"Send Jessica Harris a statement for $204.23 (all four lines PR-27). No successor payer; no overrides block billing. Reference DOS 2025-06-17 and coverage end 2025-05-31.\"},\"denial\":{\"group\":\"PR\",\"carc\":\"27\",\"rarc\":null,\"level\":\"line\"},\"denied_line_idxs\":[0,1,2,3],\"evidence\":[{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*6 (inactive), DTP*357=2025-05-31, plan date 2025-06-17\u2014coverage terminated before DOS\",\"locator\":\"271 benefit segment, ELG78719585\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"All four lines: PR-27, $204.23 total patient responsibility; claim status 4 denied\",\"locator\":\"CAS segments, lines 1\u20134; claim PA27132865\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"MOA N30 (patient ineligible for this service) at claim level corroborates eligibility denial\",\"locator\":\"MOA segment, claim PA27132865\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Filing indicator CI (commercial), subscriber self (18), primary payer; 271 shows no EB*R successor payer\",\"locator\":\"CLM segment; 271 response\"}],\"citations\":[{\"source\":\"05-eligibility-terminated.md\",\"rule\":\"CI + EB*6 + DTP*357 before DOS, no successor + PR-27 \u2192 bill_patient once overrides clear\"},{\"source\":\"00-group-codes.md\",\"rule\":\"PR = patient liability; billable after QMB/Medicaid/NSA/ABN overrides cleared\"},{\"source\":\"01-carc-rarc-index.md\",\"rule\":\"CARC 27: expenses incurred after coverage terminated; PR \u2192 billable after overrides\"}]}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

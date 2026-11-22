@@ -1,0 +1,91 @@
+{
+  "case_id": "MOH2-000062",
+  "run_id": "probe-opus-4-6-low",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "low",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 6898,
+  "usage": {
+    "input_tokens": 3,
+    "cache_creation_input_tokens": 5845,
+    "cache_read_input_tokens": 69027,
+    "output_tokens": 1244,
+    "output_tokens_details": {
+      "thinking_tokens": 79
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5845
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.11237572500000001,
+  "cache_hit_rate": 0.921896,
+  "model_output": {
+    "rationale": "271 confirms coverage ended 2025-05-31 (EB*6, DTP*357), DOS is 2025-06-17. Group PR assigns patient liability. Filing indicator CI (commercial), no successor payer (no EB*R), no QMB/Medicaid/NSA override applies. Per reference 05: CI + EB*6 + DTP*357 before DOS + PR-27 \u2192 bill_patient.",
+    "resolution": {
+      "root_cause": {
+        "family": "eligibility_terminated",
+        "explanation": "Patient's Keystone Commercial EPO coverage ended 2025-05-31. DOS 2025-06-17 is 17 days after termination. 271 confirms EB*6 inactive, DTP*357 = 2025-05-31."
+      },
+      "next_action": {
+        "path": "bill_patient",
+        "detail": "Issue patient statement for $204.23. Coverage was inactive on DOS; PR group assigns liability to the patient."
+      },
+      "evidence": [
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*6 (inactive), eligibility end DTP*357 = 2025-05-31, plan date 2025-06-17",
+          "locator": "271 response benefit/date segments"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All lines PR-27 totaling $204.23; MOA N30 (patient ineligible)",
+          "locator": "CAS segments lines 1-4"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Filing indicator CI (commercial insurance), not Medicare FFS",
+          "locator": "CLP segment"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "No EB*R (no other payer on file)",
+          "locator": "271 response"
+        }
+      ],
+      "denial": {
+        "group": "PR",
+        "carc": "27",
+        "rarc": null,
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "citations": [
+        {
+          "source": "05-eligibility-terminated.md",
+          "rule": "CI, EB*6 + 357 before DOS, no successor: PR-27 \u2192 bill_patient"
+        }
+      ]
+    },
+    "status": "resolved"
+  },
+  "raw_text": "{\"rationale\":\"271 confirms coverage ended 2025-05-31 (EB*6, DTP*357), DOS is 2025-06-17. Group PR assigns patient liability. Filing indicator CI (commercial), no successor payer (no EB*R), no QMB/Medicaid/NSA override applies. Per reference 05: CI + EB*6 + DTP*357 before DOS + PR-27 \u2192 bill_patient.\",\"resolution\":{\"root_cause\":{\"family\":\"eligibility_terminated\",\"explanation\":\"Patient's Keystone Commercial EPO coverage ended 2025-05-31. DOS 2025-06-17 is 17 days after termination. 271 confirms EB*6 inactive, DTP*357 = 2025-05-31.\"},\"next_action\":{\"path\":\"bill_patient\",\"detail\":\"Issue patient statement for $204.23. Coverage was inactive on DOS; PR group assigns liability to the patient.\"},\"evidence\":[{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*6 (inactive), eligibility end DTP*357 = 2025-05-31, plan date 2025-06-17\",\"locator\":\"271 response benefit/date segments\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"All lines PR-27 totaling $204.23; MOA N30 (patient ineligible)\",\"locator\":\"CAS segments lines 1-4\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"Filing indicator CI (commercial insurance), not Medicare FFS\",\"locator\":\"CLP segment\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"No EB*R (no other payer on file)\",\"locator\":\"271 response\"}],\"denial\":{\"group\":\"PR\",\"carc\":\"27\",\"rarc\":null,\"level\":\"line\"},\"denied_line_idxs\":[1,2,3,4],\"citations\":[{\"source\":\"05-eligibility-terminated.md\",\"rule\":\"CI, EB*6 + 357 before DOS, no successor: PR-27 \u2192 bill_patient\"}]},\"status\":\"resolved\"}"
+}

@@ -1,0 +1,79 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4957,
+    "cache_read_input_tokens": 31983,
+    "output_tokens": 884,
+    "output_tokens_details": {
+      "thinking_tokens": 279
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4957
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "rationale": "835 shows CO-16 + N286 on all three lines ($0 paid). The 837P has no ordering/referring provider segment (NM1*DN/DQ absent). Payer is Medicare Part B FFS (SBR09=MB). 271 confirms active coverage on DOS. Per reference 09, this is a data defect\u2014fix the referring NPI and resubmit as a new original (Part B does not accept frequency 7).",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_referring_provider",
+        "explanation": "837P contains no ordering/referring provider segment. Medicare Part B requires it for therapy services. All three lines denied CO-16 + N286."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Add the ordering/referring provider NPI (verify in PECOS) and resubmit as a new original claim (CLM05-3 = 1). Do not use frequency 7 on Part B. Do not appeal.",
+        "resubmission_frequency_code": "7"
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All lines carry CAS*CO*16 with MOA N286 (missing/invalid referring provider primary identifier)"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "No NM1*DN or NM1*DQ segment present\u2014ordering/referring provider entirely absent"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*1 active coverage on DOS 2026-02-02; eligibility is not the issue"
+        },
+        {
+          "artifact": "reference",
+          "fact": "N286 = missing referring provider; Part B resubmit as CLM05-3=1, not frequency 7"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "16",
+        "rarc": "N286",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        1,
+        2,
+        3
+      ],
+      "citations": [
+        {
+          "source": "09-missing-referring-provider.md",
+          "rule": "CO-16 + N286: correct referring NPI and resubmit; Part B accepts only CLM05-3 = 1"
+        },
+        {
+          "source": "01-carc-rarc-index.md",
+          "rule": "N286 = missing/incomplete/invalid referring provider primary identifier; fix and resubmit"
+        }
+      ]
+    },
+    "status": "resolved"
+  },
+  "result": "{\"rationale\":\"835 shows CO-16 + N286 on all three lines ($0 paid). The 837P has no ordering/referring provider segment (NM1*DN/DQ absent). Payer is Medicare Part B FFS (SBR09=MB). 271 confirms active coverage on DOS. Per reference 09, this is a data defect\u2014fix the referring NPI and resubmit as a new original (Part B does not accept frequency 7).\",\"resolution\":{\"root_cause\":{\"family\":\"missing_referring_provider\",\"explanation\":\"837P contains no ordering/referring provider segment. Medicare Part B requires it for therapy services. All three lines denied CO-16 + N286.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Add the ordering/referring provider NPI (verify in PECOS) and resubmit as a new original claim (CLM05-3 = 1). Do not use frequency 7 on Part B. Do not appeal.\",\"resubmission_frequency_code\":\"7\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All lines carry CAS*CO*16 with MOA N286 (missing/invalid referring provider primary identifier)\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"No NM1*DN or NM1*DQ segment present\u2014ordering/referring provider entirely absent\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*1 active coverage on DOS 2026-02-02; eligibility is not the issue\"},{\"artifact\":\"reference\",\"fact\":\"N286 = missing referring provider; Part B resubmit as CLM05-3=1, not frequency 7\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"16\",\"rarc\":\"N286\",\"level\":\"line\"},\"denied_line_idxs\":[1,2,3],\"citations\":[{\"source\":\"09-missing-referring-provider.md\",\"rule\":\"CO-16 + N286: correct referring NPI and resubmit; Part B accepts only CLM05-3 = 1\"},{\"source\":\"01-carc-rarc-index.md\",\"rule\":\"N286 = missing/incomplete/invalid referring provider primary identifier; fix and resubmit\"}]},\"status\":\"resolved\"}",
+  "model": "us.anthropic.claude-opus-4-6-v1"
+}

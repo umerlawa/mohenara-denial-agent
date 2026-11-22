@@ -1,0 +1,89 @@
+{
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 8240,
+    "cache_read_input_tokens": 103973,
+    "output_tokens": 2706,
+    "output_tokens_details": {
+      "thinking_tokens": 571
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 8240,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1064,
+        "cache_read_input_tokens": 55260,
+        "cache_creation_input_tokens": 1693,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1693
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "rationale": "All three lines denied CO-22 (COB) with claim-level MOA MA04. The 271 for the DOS resolves the routing: EB*R names Novitas Medicare Part B FFS as primary for this member, explicitly stating \"PLAN IS PRIMARY PAYER FOR THIS MEMBER,\" yet the 837P billed Liberty Bell as primary (SBR*P). Per cob-and-eligibility.md, CARC 22 means the order is wrong, not that the claim is incomplete \u2014 bill the true primary (Medicare) first, then resubmit to Liberty Bell as secondary with Medicare's adjudication data to avoid a follow-on MA04.",
+    "resolution": {
+      "root_cause": {
+        "family": "cob_other_primary",
+        "explanation": "837P billed Liberty Bell as primary (SBR*P*18...CI), but the 271 for DOS 2026-01-29 shows EB*R naming Novitas Medicare Part B FFS as primary payer for this member. All 3 lines denied CO-22."
+      },
+      "next_action": {
+        "path": "resubmit_other_payer",
+        "detail": "Bill Novitas Medicare Part B FFS as primary for DOS 2026-01-29. After Medicare adjudicates, resubmit to Liberty Bell as secondary carrying Medicare's SBR/AMT/CAS adjudication data to avoid a follow-on MA04 rejection."
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2
+      ],
+      "denial": {
+        "level": "line",
+        "group": "CO",
+        "carc": "22",
+        "rarc": null
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Each SVC line carries CAS*CO*22, and claim-level MOA*MA04 is present",
+          "locator": "CAS*CO*22*38.87 / *43.39 / *91.23"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*R identifies Novitas Solutions Medicare Part B FFS as primary, with MSG confirming it is primary for this member on the DOS",
+          "locator": "EB*R*IND*30**NOVITAS SOLUTIONS MEDICARE PART B FFS / MSG*PLAN IS PRIMARY PAYER FOR THIS MEMBER"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Claim was billed to Liberty Bell Health Plans as primary payer",
+          "locator": "SBR*P*18*******CI"
+        }
+      ],
+      "citations": [
+        {
+          "source": "06-cob-other-primary.md",
+          "rule": "CARC 22 alone -> resubmit_other_payer: coverage exists, only the order is wrong; bill the true primary then rebill this payer as secondary"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "Another payer primary, CARC 22 (not MA04) -> resubmit_other_payer; never appeal a disclaiming payer"
+        }
+      ]
+    },
+    "status": "resolved"
+  },
+  "result": "{\"rationale\":\"All three lines denied CO-22 (COB) with claim-level MOA MA04. The 271 for the DOS resolves the routing: EB*R names Novitas Medicare Part B FFS as primary for this member, explicitly stating \\\"PLAN IS PRIMARY PAYER FOR THIS MEMBER,\\\" yet the 837P billed Liberty Bell as primary (SBR*P). Per cob-and-eligibility.md, CARC 22 means the order is wrong, not that the claim is incomplete \u2014 bill the true primary (Medicare) first, then resubmit to Liberty Bell as secondary with Medicare's adjudication data to avoid a follow-on MA04.\",\"resolution\":{\"root_cause\":{\"family\":\"cob_other_primary\",\"explanation\":\"837P billed Liberty Bell as primary (SBR*P*18...CI), but the 271 for DOS 2026-01-29 shows EB*R naming Novitas Medicare Part B FFS as primary payer for this member. All 3 lines denied CO-22.\"},\"next_action\":{\"path\":\"resubmit_other_payer\",\"detail\":\"Bill Novitas Medicare Part B FFS as primary for DOS 2026-01-29. After Medicare adjudicates, resubmit to Liberty Bell as secondary carrying Medicare's SBR/AMT/CAS adjudication data to avoid a follow-on MA04 rejection.\"},\"denied_line_idxs\":[0,1,2],\"denial\":{\"level\":\"line\",\"group\":\"CO\",\"carc\":\"22\",\"rarc\":null},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"Each SVC line carries CAS*CO*22, and claim-level MOA*MA04 is present\",\"locator\":\"CAS*CO*22*38.87 / *43.39 / *91.23\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*R identifies Novitas Solutions Medicare Part B FFS as primary, with MSG confirming it is primary for this member on the DOS\",\"locator\":\"EB*R*IND*30**NOVITAS SOLUTIONS MEDICARE PART B FFS / MSG*PLAN IS PRIMARY PAYER FOR THIS MEMBER\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Claim was billed to Liberty Bell Health Plans as primary payer\",\"locator\":\"SBR*P*18*******CI\"}],\"citations\":[{\"source\":\"06-cob-other-primary.md\",\"rule\":\"CARC 22 alone -> resubmit_other_payer: coverage exists, only the order is wrong; bill the true primary then rebill this payer as secondary\"},{\"source\":\"00-group-codes.md\",\"rule\":\"Another payer primary, CARC 22 (not MA04) -> resubmit_other_payer; never appeal a disclaiming payer\"}]},\"status\":\"resolved\"}",
+  "model": "claude-sonnet-5"
+}

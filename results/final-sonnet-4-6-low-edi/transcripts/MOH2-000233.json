@@ -1,0 +1,56 @@
+{
+  "case_id": "MOH2-000233",
+  "run_id": "final-sonnet-4-6-low-edi-dev25",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 5063,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5169,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1039,
+    "output_tokens_details": {
+      "thinking_tokens": 661
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5169
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.048948735,
+  "cache_hit_rate": 0.859933,
+  "model_output": {
+    "status": "awaiting_human",
+    "rationale": "Lines 0\u20132 (97110\u00d73) are denied CO-236+N20 \u2014 NCCI PTP edit, 97110 bundled into 97150. The chart note documents a clearly demarcated separate encounter on a different body region for an unrelated goal, which could support a bypass modifier \u2014 but only if CCMI=1. The 835 carries neither the Column One/Two partner confirmation nor the CCMI. The PTP edit file for Q2 2026 must be consulted before any corrected claim or write-off decision is made.",
+    "awaiting_human": {
+      "question": "What is the CCMI (Column II Modifier Indicator) for the 97110/97150 pair in the CMS NCCI PTP edit table effective for DOS 2026-06-25?",
+      "why_needed": "CCMI=1 allows a corrected-claim reopening with a bypass modifier (the chart note documents separate encounter, different body region, unrelated goal). CCMI=0 means the edit is unconditional \u2014 write off. CCMI=9 means appeal the edit's applicability. The 835 does not carry this value.",
+      "blocks": [
+        "root_cause.family",
+        "next_action.path"
+      ],
+      "asked_of": "internal"
+    }
+  },
+  "raw_text": "{\"status\":\"awaiting_human\",\"rationale\":\"Lines 0\u20132 (97110\u00d73) are denied CO-236+N20 \u2014 NCCI PTP edit, 97110 bundled into 97150. The chart note documents a clearly demarcated separate encounter on a different body region for an unrelated goal, which could support a bypass modifier \u2014 but only if CCMI=1. The 835 carries neither the Column One/Two partner confirmation nor the CCMI. The PTP edit file for Q2 2026 must be consulted before any corrected claim or write-off decision is made.\",\"awaiting_human\":{\"question\":\"What is the CCMI (Column II Modifier Indicator) for the 97110/97150 pair in the CMS NCCI PTP edit table effective for DOS 2026-06-25?\",\"why_needed\":\"CCMI=1 allows a corrected-claim reopening with a bypass modifier (the chart note documents separate encounter, different body region, unrelated goal). CCMI=0 means the edit is unconditional \u2014 write off. CCMI=9 means appeal the edit's applicability. The 835 does not carry this value.\",\"blocks\":[\"root_cause.family\",\"next_action.path\"],\"asked_of\":\"internal\"}}"
+}

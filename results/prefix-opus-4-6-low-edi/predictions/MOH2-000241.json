@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000241",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "Claim paid $143.22. CO-45 is the contractual fee-schedule reduction (write-off). PR-2 is the 20% Medicare coinsurance ($35.80 total). No denial \u2014 normal Medicare Part B adjudication. Patient owes the PR balance.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 688,
+    "cache_read_input_tokens": 31983,
+    "cache_creation_input_tokens": 5037,
+    "cost_usd": 0.07115102499999999,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "none",
+      "explanation": "Claim adjudicated correctly. CO-45 is the contractual write-off to the fee schedule; PR-2 is the standard 20% coinsurance. No denial occurred."
+    },
+    "next_action": {
+      "path": "bill_patient",
+      "detail": "Bill patient $35.80 (coinsurance: $11.62 + $13.09 + $11.09). CO-45 amounts are contractual write-offs \u2014 do not bill."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP status code 1 (processed as primary), paid $143.22 of $287.49 billed"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All lines carry CAS*CO*45 (fee schedule reduction) and CAS*PR*2 (coinsurance) \u2014 standard Medicare payment pattern"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*1 (active coverage) for DOS 2026-01-14, Medicare Part B FFS"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "No denial CARC present; no zero-pay lines"
+      }
+    ],
+    "denial": null
+  }
+}

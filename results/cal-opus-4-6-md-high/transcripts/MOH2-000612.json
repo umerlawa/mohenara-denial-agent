@@ -1,0 +1,94 @@
+{
+  "case_id": "MOH2-000612",
+  "run_id": "cal-opus-4-6-md-high",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "high",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 6691,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4981,
+    "cache_read_input_tokens": 31983,
+    "output_tokens": 3775,
+    "output_tokens_details": {
+      "thinking_tokens": 3007
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4981
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.155658525,
+  "cache_hit_rate": 0.8652,
+  "model_output": {
+    "rationale": "835 shows CO-16 on all three lines with claim-level MOA N286 (missing/invalid referring provider). The 837P lists billing, rendering, subscriber, and payer parties but no referring/ordering provider loop. Therapy codes (97110, 97116) on Medicare Part B require an ordering/referring NPI. Filing indicator MB confirms Medicare Part B FFS. Fix is to add the referring provider and resubmit as a new original \u2014 Part B does not accept frequency 7.",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_referring_provider",
+        "explanation": "837P contains no referring/ordering provider. Medicare Part B requires it for therapy services (97110, 97116). MOA N286 confirms: missing/invalid referring provider primary identifier."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Add the ordering physician's NPI (verify active in PECOS and eligible to order/refer). Resubmit as new original CLM05-3 = 1 to Novitas. Do not use frequency 7 \u2014 not accepted on Part B."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All lines denied CO-16; claim-level MOA N286 (missing/invalid referring provider primary identifier)",
+          "locator": "CAS*CO*16; MOA*N286"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "No referring/ordering provider loop present \u2014 only billing [85], rendering [82], subscriber [IL], payer [PR]",
+          "locator": "Loop 2310 parties"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Filing indicator MB (Medicare Part B FFS); payer claim control 2625180081827 confirms adjudication",
+          "locator": "CLP*PA25851339*4*220.86*0***MB*2625180081827"
+        },
+        {
+          "artifact": "ack_277ca.edi",
+          "fact": "Status A2 accepted for adjudication, received 2026-08-05 \u2014 filing clock started 2026-07-20, within 1-year limit",
+          "locator": "STC*A2:20*20260805"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "16",
+        "rarc": "N286",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2
+      ],
+      "citations": [
+        {
+          "source": "09-missing-referring-provider.md",
+          "rule": "CO-16 + N286 = missing/invalid referring provider; correct_and_resubmit; Part B frequency only CLM05-3 = 1"
+        },
+        {
+          "source": "01-carc-rarc-index.md",
+          "rule": "CARC 16 defect named by paired RARC; N286 = verify ordering/referring NPI in PECOS, resubmit"
+        }
+      ]
+    },
+    "status": "resolved"
+  },
+  "raw_text": "{\"rationale\":\"835 shows CO-16 on all three lines with claim-level MOA N286 (missing/invalid referring provider). The 837P lists billing, rendering, subscriber, and payer parties but no referring/ordering provider loop. Therapy codes (97110, 97116) on Medicare Part B require an ordering/referring NPI. Filing indicator MB confirms Medicare Part B FFS. Fix is to add the referring provider and resubmit as a new original \u2014 Part B does not accept frequency 7.\",\"resolution\":{\"root_cause\":{\"family\":\"missing_referring_provider\",\"explanation\":\"837P contains no referring/ordering provider. Medicare Part B requires it for therapy services (97110, 97116). MOA N286 confirms: missing/invalid referring provider primary identifier.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Add the ordering physician's NPI (verify active in PECOS and eligible to order/refer). Resubmit as new original CLM05-3 = 1 to Novitas. Do not use frequency 7 \u2014 not accepted on Part B.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All lines denied CO-16; claim-level MOA N286 (missing/invalid referring provider primary identifier)\",\"locator\":\"CAS*CO*16; MOA*N286\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"No referring/ordering provider loop present \u2014 only billing [85], rendering [82], subscriber [IL], payer [PR]\",\"locator\":\"Loop 2310 parties\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"Filing indicator MB (Medicare Part B FFS); payer claim control 2625180081827 confirms adjudication\",\"locator\":\"CLP*PA25851339*4*220.86*0***MB*2625180081827\"},{\"artifact\":\"ack_277ca.edi\",\"fact\":\"Status A2 accepted for adjudication, received 2026-08-05 \u2014 filing clock started 2026-07-20, within 1-year limit\",\"locator\":\"STC*A2:20*20260805\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"16\",\"rarc\":\"N286\",\"level\":\"line\"},\"denied_line_idxs\":[0,1,2],\"citations\":[{\"source\":\"09-missing-referring-provider.md\",\"rule\":\"CO-16 + N286 = missing/invalid referring provider; correct_and_resubmit; Part B frequency only CLM05-3 = 1\"},{\"source\":\"01-carc-rarc-index.md\",\"rule\":\"CARC 16 defect named by paired RARC; N286 = verify ordering/referring NPI in PECOS, resubmit\"}]},\"status\":\"resolved\"}"
+}

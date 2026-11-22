@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000638",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "Lines denied CO-22 (COB, another payer may be primary) and claim-level MA04 (primary payer identity missing), implying DVM believes it is secondary. But the 271 run for this exact DOS explicitly states \"PLAN IS PRIMARY PAYER FOR THIS MEMBER,\" with Medicare Part B FFS shown only as EB*R (other/additional), not primary. The claim was correctly billed to DVM as primary (SBR responsibility P), consistent with the 271. DVM's own eligibility record contradicts its CO-22/MA04 denial rationale, so this is not a routing or completeness defect to fix and resend \u2014 it's a wrong determination to dispute.",
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2075,
+    "cache_read_input_tokens": 104363,
+    "cache_creation_input_tokens": 8022,
+    "cost_usd": 0.06168560000000001,
+    "model": "claude-sonnet-5",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "cob_other_primary",
+      "explanation": "CO-22 lines and claim-level MA04 assert another payer is primary/must be identified, but DVM's own 271 for the DOS states 'PLAN IS PRIMARY PAYER FOR THIS MEMBER' and lists Medicare Part B only as EB*R (other/additional), not primary."
+    },
+    "next_action": {
+      "path": "appeal",
+      "detail": "Appeal the CO-22/MA04 denial to Delaware Valley Mutual, attaching the 271 response (ELG98488513, 2026-08-04) showing DVM's own eligibility system confirms it as primary payer for this member on 2026-06-04; do not rebill Medicare or resubmit."
+    },
+    "evidence": [
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "Payer message 'PLAN IS PRIMARY PAYER FOR THIS MEMBER'; benefit R (other/additional) for Novitas Medicare Part B, benefit 1 (active) for DVM, plan date 291 = 2026-06-04",
+        "locator": "271 response, ELG98488513"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Lines 1-3 denied CO-22 (COB, another payer may be primary); claim-level MOA MA04 (secondary payment cannot be considered without primary payer identity)",
+        "locator": "claim PA28394878, service lines 1-3"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Claim billed with payer responsibility code P (primary) to DVM, consistent with the 271's primacy statement",
+        "locator": "837P SBR, claim PA28394878"
+      }
+    ],
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "citations": [
+      {
+        "source": "06-cob-other-primary.md",
+        "rule": "CARC 22 \u2192 resubmit_other_payer only when coverage order is genuinely wrong; where the payer's own 271 record contradicts the COB assertion, dispute the determination rather than rebill."
+      },
+      {
+        "source": "05-eligibility-terminated.md",
+        "rule": "Payer's record contradicts the denial \u2192 appeal, quoting the 271's exchange reference and date."
+      }
+    ]
+  }
+}

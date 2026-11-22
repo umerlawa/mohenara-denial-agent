@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000309",
+  "input_format": "edi",
+  "status": "awaiting_human",
+  "rationale": "Lines 0\u20131 (97110, 97140) paid with routine CO-45/PR-2 adjustments. Line 2 (97530, 7 units) was fully denied CO-151 + N362 \u2014 MUE exceeded. Chart note documents 31 minutes for 97530 (~2 billable units), so 7 units is a keying error. Next action is correct_and_resubmit for MAI 1 or 2, but appeal for MAI 3. MAI cannot be assumed.",
+  "usage": {
+    "input_tokens": 3,
+    "output_tokens": 1818,
+    "cache_read_input_tokens": 68547,
+    "cache_creation_input_tokens": 6533,
+    "cost_usd": 0.079576035,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "awaiting_human": {
+    "question": "What is the MAI (Medically Unlikely Edit Adjudication Indicator) for CPT 97530 in the CMS MUE table for DOS quarter Q1 2026?",
+    "why_needed": "CO-151 + N362 on service line 3 (97530, 7 units) is an MUE denial. Next action is correct_and_resubmit for MAI 1 or 2 (chart shows 31 min \u2248 2 units, clearly a keying error), but appeal for MAI 3. The MAI is absent from all artifacts and the reference library prohibits asserting a value that is not visible.",
+    "blocks": [
+      "next_action.path"
+    ],
+    "asked_of": "internal"
+  }
+}

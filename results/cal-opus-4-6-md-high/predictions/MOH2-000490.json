@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000490",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "All lines denied CO-22 with claim-level MOA MA04. Payer treated itself as secondary, requesting primary payer data. But the 271 for the DOS explicitly states \"PLAN IS PRIMARY PAYER FOR THIS MEMBER\" with Medicare Part B listed as EB*R (other/additional payer). Claim was correctly billed as primary (SBR P). MA04 routes to correct_and_resubmit per reference; the payer's COB records must be corrected to match their own eligibility system before resubmission.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 13182,
+    "cache_read_input_tokens": 31983,
+    "cache_creation_input_tokens": 5033,
+    "cost_usd": 0.41470852500000005,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "high",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "cob_other_primary",
+      "explanation": "835 denied all lines CO-22, MOA MA04\u2014payer's claims system treated itself as secondary. 271 for DOS 2026-01-29 contradicts: EB*1 active coverage, EB*R Medicare Part B (other payer), message \"PLAN IS PRIMARY PAYER FOR THIS MEMBER.\" Claim correctly billed as primary."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Contact Liberty Bell citing 271 (ELG31652538) to correct internal COB records to reflect primary status. Resubmit as frequency 7 with REF*F8 = 2606299108316. No claim data changes needed; payer must align claims system with their eligibility records.",
+      "resubmission_frequency_code": "7"
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All three lines adjusted CO-22 $173.49 total; claim-level MOA MA04 (secondary payment cannot be considered without primary payer identity)",
+        "locator": "CAS*CO*22; MOA*MA04"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*1 active coverage Liberty Bell PPO; EB*R other payer NOVITAS SOLUTIONS MEDICARE PART B FFS; message PLAN IS PRIMARY PAYER FOR THIS MEMBER",
+        "locator": "EB*1*IND*30; EB*R*IND*30; MSG"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Payer responsibility P (primary), subscriber relationship 18 (self), filing indicator CI\u2014claim correctly billed as primary",
+        "locator": "SBR*P*18*****CI"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP07 = 2606299108316\u2014claim adjudicated, REF*F8 value available for resubmission",
+        "locator": "CLP*PA28830819*4*173.49*0"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "22",
+      "rarc": "MA04",
+      "level": "claim"
+    },
+    "denied_line_idxs": [
+      1,
+      2,
+      3
+    ],
+    "citations": [
+      {
+        "source": "06-cob-other-primary.md",
+        "rule": "MA04 \u2192 correct_and_resubmit to the same payer; completeness defect, not routing\u2014supply primary data and resend; do not appeal, do not resubmit_other_payer"
+      },
+      {
+        "source": "02-resubmission-frequency.md",
+        "rule": "Adjudicated commercial claim correction: CLM05-3 = 7 + REF*F8 with payer claim control number from 835 CLP07"
+      }
+    ]
+  }
+}

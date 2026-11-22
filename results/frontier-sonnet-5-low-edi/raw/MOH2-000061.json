@@ -1,0 +1,90 @@
+{
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 58357,
+    "cache_read_input_tokens": 112668,
+    "output_tokens": 3880,
+    "output_tokens_details": {
+      "thinking_tokens": 908
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 58357,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 986,
+        "cache_read_input_tokens": 57306,
+        "cache_creation_input_tokens": 1051,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1051
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "All four lines denied OA-18 (exact duplicate) but chart note shows two genuinely separate manual-therapy/exercise sessions billed same DOS with identical codes (97140 x2, 97110 x2) and no distinguishing modifier \u2014 the payer's duplicate edit matched line 3 against line 1 and line 4 against line 2. This is a false duplicate: repeat services lacking the modifier that would distinguish them, not one service billed twice.",
+    "resolution": {
+      "denial": {
+        "group": "OA",
+        "carc": "18",
+        "rarc": "N111",
+        "level": "line"
+      },
+      "root_cause": {
+        "family": "exact_duplicate",
+        "explanation": "Lines 3 and 4 duplicate the codes on lines 1 and 2 (97140/97110, same DOS) with no modifier distinguishing the two separate treatment sessions documented in the chart note, tripping the exact-duplicate edit (OA-18/N111)."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Append modifier 76 (repeat procedure, same provider) to the second occurrence of each code (lines 3 and 4) per chart note's two distinct sessions. Medicare Part B FFS: submit via clerical-error reopening, not frequency 7 (not accepted on Part B) and not a new original (claim already adjudicated)."
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All 4 SVC lines carry CAS*OA*18 (exact duplicate) with MOA N111; CLP07 2623576767957 confirms adjudication occurred.",
+          "locator": "CAS segments"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Lines 1&3 both bill 97140:GP:KX and lines 2&4 both bill 97110:GP:KX, same DOS 20260705, no modifier distinguishing repeats.",
+          "locator": "SV1 segments"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "Documents two separate manual-therapy encounters (97140 x2) and two exercise sessions (97110 x2) same day, totaling 76 timed minutes.",
+          "locator": "chart note body"
+        }
+      ],
+      "citations": [
+        {
+          "source": "04-exact-duplicate.md",
+          "rule": "False duplicate = legitimate repeat service billed without distinguishing modifier -> correct_and_resubmit, corrected line(s) only"
+        },
+        {
+          "source": "resubmission-and-frequency-codes.md",
+          "rule": "Medicare Part B FFS does not accept frequency 7; modifier correction on adjudicated claim is a clerical-error reopening"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"All four lines denied OA-18 (exact duplicate) but chart note shows two genuinely separate manual-therapy/exercise sessions billed same DOS with identical codes (97140 x2, 97110 x2) and no distinguishing modifier \u2014 the payer's duplicate edit matched line 3 against line 1 and line 4 against line 2. This is a false duplicate: repeat services lacking the modifier that would distinguish them, not one service billed twice.\",\"resolution\":{\"denial\":{\"group\":\"OA\",\"carc\":\"18\",\"rarc\":\"N111\",\"level\":\"line\"},\"root_cause\":{\"family\":\"exact_duplicate\",\"explanation\":\"Lines 3 and 4 duplicate the codes on lines 1 and 2 (97140/97110, same DOS) with no modifier distinguishing the two separate treatment sessions documented in the chart note, tripping the exact-duplicate edit (OA-18/N111).\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Append modifier 76 (repeat procedure, same provider) to the second occurrence of each code (lines 3 and 4) per chart note's two distinct sessions. Medicare Part B FFS: submit via clerical-error reopening, not frequency 7 (not accepted on Part B) and not a new original (claim already adjudicated).\"},\"denied_line_idxs\":[0,1,2,3],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All 4 SVC lines carry CAS*OA*18 (exact duplicate) with MOA N111; CLP07 2623576767957 confirms adjudication occurred.\",\"locator\":\"CAS segments\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Lines 1&3 both bill 97140:GP:KX and lines 2&4 both bill 97110:GP:KX, same DOS 20260705, no modifier distinguishing repeats.\",\"locator\":\"SV1 segments\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"Documents two separate manual-therapy encounters (97140 x2) and two exercise sessions (97110 x2) same day, totaling 76 timed minutes.\",\"locator\":\"chart note body\"}],\"citations\":[{\"source\":\"04-exact-duplicate.md\",\"rule\":\"False duplicate = legitimate repeat service billed without distinguishing modifier -> correct_and_resubmit, corrected line(s) only\"},{\"source\":\"resubmission-and-frequency-codes.md\",\"rule\":\"Medicare Part B FFS does not accept frequency 7; modifier correction on adjudicated claim is a clerical-error reopening\"}]}}",
+  "model": "claude-sonnet-5"
+}

@@ -1,0 +1,37 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5292,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1531,
+    "output_tokens_details": {
+      "thinking_tokens": 1147
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5292
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "awaiting_human",
+    "rationale": "Lines 0 and 2 (both 97110) are denied CO-236+N20 \u2014 confirmed NCCI PTP edits. The chart note documents distinctness for both sessions. Next action (correct_and_resubmit with modifier vs. do_not_resubmit vs. appeal) turns entirely on the CCMI for the affected pairs in the Q2 2026 PTP edit file, which the 835 does not carry. Reference 07 is explicit: look it up or park.",
+    "awaiting_human": {
+      "question": "In the CMS NCCI PTP edit file effective Q2 2026 (DOS 2026-06-02), what is the Column Indicator (CCMI) for the pair 97110 / 97760, and for 97110 / 97140?",
+      "why_needed": "CO-236 on lines 0 and 2 (both 97110) is a PTP edit. CCMI 1 \u2192 correct_and_resubmit with appropriate modifier (chart note supports distinctness); CCMI 0 \u2192 do_not_resubmit; CCMI 9 \u2192 appeal. Cannot determine next action without it.",
+      "blocks": [
+        "next_action.path"
+      ],
+      "asked_of": "internal"
+    }
+  },
+  "result": "{\"status\":\"awaiting_human\",\"rationale\":\"Lines 0 and 2 (both 97110) are denied CO-236+N20 \u2014 confirmed NCCI PTP edits. The chart note documents distinctness for both sessions. Next action (correct_and_resubmit with modifier vs. do_not_resubmit vs. appeal) turns entirely on the CCMI for the affected pairs in the Q2 2026 PTP edit file, which the 835 does not carry. Reference 07 is explicit: look it up or park.\",\"awaiting_human\":{\"question\":\"In the CMS NCCI PTP edit file effective Q2 2026 (DOS 2026-06-02), what is the Column Indicator (CCMI) for the pair 97110 / 97760, and for 97110 / 97140?\",\"why_needed\":\"CO-236 on lines 0 and 2 (both 97110) is a PTP edit. CCMI 1 \u2192 correct_and_resubmit with appropriate modifier (chart note supports distinctness); CCMI 0 \u2192 do_not_resubmit; CCMI 9 \u2192 appeal. Cannot determine next action without it.\",\"blocks\":[\"next_action.path\"],\"asked_of\":\"internal\"}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

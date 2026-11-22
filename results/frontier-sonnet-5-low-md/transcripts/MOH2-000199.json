@@ -1,0 +1,82 @@
+{
+  "case_id": "MOH2-000199",
+  "run_id": "frontier-sonnet-5-low-md",
+  "model": "claude-sonnet-5",
+  "effort": "low",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 6883,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 9067,
+    "cache_read_input_tokens": 161415,
+    "output_tokens": 2746,
+    "output_tokens_details": {
+      "thinking_tokens": 1298
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 9067,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 747,
+        "cache_read_input_tokens": 57035,
+        "cache_creation_input_tokens": 745,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 745
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.0824225,
+  "cache_hit_rate": 0.946782,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "Line 3 (97112-GP, 5 units) denied CO-151+N362: units exceed the MUE. Chart note documents only 31 minutes of 97112 on this DOS \u2014 under the 8-minute rule that supports 2 units, not 5. This is a units-keying error, not a documentation gap, so the corrected-units path applies regardless of the (unseen) MAI tier.",
+    "resolution": {
+      "root_cause": {
+        "family": "mue_exceeded",
+        "explanation": "Line 3 (97112-GP x5 units) denied CO-151 with RARC N362 (units exceed acceptable maximum). Chart note documents 31 minutes of 97112, supporting 2 units under the 8-minute rule, not 5 \u2014 a units-keying error, not a medical-necessity issue."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Correct line 3 (97112-GP) to 2 units per documented 31 minutes (8-minute rule) and resubmit that line to Novitas. Medicare Part B FFS: use a clerical-error reopening, not frequency 7 (rejected) and not a new original 1 (claim already adjudicated).",
+        "resubmission_frequency_code": "7"
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Line 3: 97112-GP, 5 units, $0 paid, CO-151 $214.95, RARC N362 (units exceed acceptable maximum)"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "97112 documented as 31 minutes of neuromuscular re-education, total timed minutes 60 across all three lines"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Line 3 billed 5 UN for 97112-GP, charge $214.95, same DOS as lines 1-2"
+        }
+      ],
+      "denied_line_idxs": [
+        2
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"Line 3 (97112-GP, 5 units) denied CO-151+N362: units exceed the MUE. Chart note documents only 31 minutes of 97112 on this DOS \u2014 under the 8-minute rule that supports 2 units, not 5. This is a units-keying error, not a documentation gap, so the corrected-units path applies regardless of the (unseen) MAI tier.\",\"resolution\":{\"root_cause\":{\"family\":\"mue_exceeded\",\"explanation\":\"Line 3 (97112-GP x5 units) denied CO-151 with RARC N362 (units exceed acceptable maximum). Chart note documents 31 minutes of 97112, supporting 2 units under the 8-minute rule, not 5 \u2014 a units-keying error, not a medical-necessity issue.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Correct line 3 (97112-GP) to 2 units per documented 31 minutes (8-minute rule) and resubmit that line to Novitas. Medicare Part B FFS: use a clerical-error reopening, not frequency 7 (rejected) and not a new original 1 (claim already adjudicated).\",\"resubmission_frequency_code\":\"7\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"Line 3: 97112-GP, 5 units, $0 paid, CO-151 $214.95, RARC N362 (units exceed acceptable maximum)\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"97112 documented as 31 minutes of neuromuscular re-education, total timed minutes 60 across all three lines\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Line 3 billed 5 UN for 97112-GP, charge $214.95, same DOS as lines 1-2\"}],\"denied_line_idxs\":[2]}}"
+}

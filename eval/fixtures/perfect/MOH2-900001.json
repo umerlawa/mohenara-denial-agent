@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-900001",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "Fixture prediction with a score known before the scorer runs.",
+  "usage": {
+    "input_tokens": 100,
+    "output_tokens": 10,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0,
+    "cost_usd": 0.001,
+    "model": "fixture",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "timely_filing",
+      "explanation": "fixture"
+    },
+    "next_action": {
+      "path": "do_not_resubmit",
+      "detail": "fixture"
+    },
+    "denial": {
+      "group": "CO",
+      "carc": "16",
+      "rarc": null,
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0
+    ],
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "fixture"
+      }
+    ]
+  }
+}

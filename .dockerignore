@@ -1,0 +1,7 @@
+.env.local
+.venv/
+node_modules/
+.git/
+results/
+tests/
+eval/

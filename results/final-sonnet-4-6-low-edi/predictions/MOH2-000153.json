@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000153",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "Both lines denied CO-29 (timely filing). But the 277CA shows STC*A2:20 on 2025-02-10 \u2014 the claim was accepted by the payer's front end 12 days after the 2025-01-29 DOS. No commercial limit is that short. The CO-29 is erroneous; appeal with the acceptance report.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1482,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 4803,
+    "cost_usd": 0.054748485,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "timely_filing",
+      "explanation": "Payer issued CO-29 on both lines, but 277CA confirms front-end acceptance (A2:20) on 2025-02-10 \u2014 12 days post-DOS. The filing was timely; the denial is wrong."
+    },
+    "next_action": {
+      "path": "appeal",
+      "detail": "File redetermination/first-level appeal citing the 277CA acceptance date (2025-02-10) as proof of timely receipt. Attach the 277CA with TRN TRC16862806 and STC A2:20. Dispute the CO-29 on both lines."
+    },
+    "denial": {
+      "group": "CO",
+      "carc": "29",
+      "rarc": "N211",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1
+    ],
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CAS*CO*29 on both service lines; MOA N211; $0 paid on $116.52 billed",
+        "locator": "CAS segments under SVC HC:97110 and HC:97140"
+      },
+      {
+        "artifact": "ack_277ca.edi",
+        "fact": "STC*A2:20 dated 2025-02-10 confirms payer front-end acceptance of claim TRC16862806",
+        "locator": "STC*A2:20*20250210*WQ*116.52"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "DOS 2025-01-29 \u2014 claim accepted 12 days later, within any commercial filing window",
+        "locator": "DTP*472*D8*20250129"
+      },
+      {
+        "artifact": "reference",
+        "fact": "Proof of accepted submission inside the window \u2192 appeal with clearinghouse acceptance report",
+        "locator": "03-timely-filing.md \u00a7Disposition"
+      }
+    ],
+    "citations": [
+      {
+        "source": "03-timely-filing.md",
+        "rule": "Proof of accepted submission inside the window \u2192 appeal with the clearinghouse acceptance report; dispute the receipt date"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO-29 with no exception \u2192 do_not_resubmit; but where proof rebuts the date, appeal is the remedy"
+      }
+    ]
+  }
+}

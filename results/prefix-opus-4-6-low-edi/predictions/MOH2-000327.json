@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000327",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "Line 4 (97112:GP) billed 7 units but chart documents only 15 minutes of neuromuscular re-education = 1 unit. CO-151 + N362 = MUE exceeded. Units were miscoded. Correct to 1 unit and resubmit as new original (Medicare Part B, CLM05-3=1).",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 816,
+    "cache_read_input_tokens": 31983,
+    "cache_creation_input_tokens": 5182,
+    "cost_usd": 0.0756679,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "mue_exceeded",
+      "explanation": "97112 billed at 7 units; chart note documents only 15 minutes (1 unit) of neuromuscular re-education. Units exceed MUE due to a keying error."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Correct line 4 from 7 units to 1 unit of 97112:GP. Resubmit as new original CLM05-3=1 to Novitas. Do not use frequency 7 on Medicare Part B.",
+      "resubmission_frequency_code": "7"
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Line 4 SVC*HC:97112:GP*353.57*0**7 denied with CAS*CO*151*353.57 and LQ*HE*N362",
+        "locator": "CAS/LQ segments for line 4"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "97112 documented at 15 minutes only (1 unit), not 7 units as billed",
+        "locator": "97112 (15 min): neuromuscular re-education"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Line 4 billed SV1*HC:97112:GP*353.57*UN*7 \u2014 7 units submitted",
+        "locator": "LX*4 SV1 segment"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "151",
+      "rarc": "N362",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      4
+    ],
+    "citations": [
+      {
+        "source": "07-ncci-and-mue.md",
+        "rule": "CO-151 + N362 = MUE exceeded; miscoded units \u2192 correct_and_resubmit"
+      }
+    ]
+  }
+}

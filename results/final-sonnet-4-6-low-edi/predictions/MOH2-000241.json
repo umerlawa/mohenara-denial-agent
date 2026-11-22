@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000241",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All three lines adjudicated and paid. CO-45 is the contractual fee-schedule write-off; PR-2 is Medicare Part B coinsurance ($35.80 total), patient's responsibility. Math balances on every line. No denial; routine AR collection only.",
+  "usage": {
+    "input_tokens": 3,
+    "output_tokens": 2105,
+    "cache_read_input_tokens": 68531,
+    "cache_creation_input_tokens": 6440,
+    "cost_usd": 0.08392263,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "none",
+      "explanation": "Claim paid correctly. CO-45 write-offs reflect Medicare fee schedule; PR-2 coinsurance totaling $35.80 is patient liability. No adjudication error."
+    },
+    "next_action": {
+      "path": "none",
+      "detail": "Post $143.22 payment. Bill patient $35.80 coinsurance (PR-2) through normal AR. Write off CO-45 amounts ($108.47 combined) per participation agreement."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP: billed $287.49, paid $143.22, patient liability $35.80 (MB/Medicare FFS). All three SVC lines carry only CO-45 and PR-2 \u2014 no denial CARC.",
+        "locator": "CLP*PA26006826*1*287.49*143.22*35.8*MB"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "PR-2 coinsurance: $11.62 (97110) + $13.09 (97112) + $11.09 (97140) = $35.80; each line balances billed = paid + CO-45 + PR-2.",
+        "locator": "SVC lines 1\u20133, CAS*PR*2 segments"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*1 (active coverage) for Medicare Part B FFS, effective 2024-01-01, queried for DOS 2026-01-14 \u2014 no termination date.",
+        "locator": "EB*1*IND*30**NOVITAS SOLUTIONS MEDICARE PART B FFS; DTP*356*D8*20240101"
+      }
+    ],
+    "denial": null,
+    "denied_line_idxs": [],
+    "citations": [
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO = contractual write-off, never bill patient; PR = patient responsibility, billable after overrides"
+      },
+      {
+        "source": "01-carc-rarc-index.md",
+        "rule": "CARC 45: fee-schedule write-off; PR-2: coinsurance owed by patient"
+      }
+    ]
+  }
+}

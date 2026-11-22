@@ -1,0 +1,83 @@
+{
+  "usage": {
+    "input_tokens": 3,
+    "cache_creation_input_tokens": 6036,
+    "cache_read_input_tokens": 68599,
+    "output_tokens": 1735,
+    "output_tokens_details": {
+      "thinking_tokens": 794
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 6036
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "All 4 lines denied CO-119 + N435 (claim-level MOA N435). No KX modifier on any line in the 837P. Chart note dated 2026-07-01 documents skilled PT as medically necessary. Medicare Part B, adjudicated (CLP07 present). Fix: add KX to each line and submit via clerical-error reopening \u2014 frequency 7 not accepted on Part B.",
+    "resolution": {
+      "root_cause": {
+        "family": "threshold_no_kx",
+        "explanation": "CO-119 + N435 on all four lines; no KX modifier present on any line in the 837P. Chart note supports medical necessity of continued skilled PT on DOS 2026-07-01."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Submit clerical-error reopening to Novitas Part B MAC. Add KX to every therapy line (97110 \u00d73, 97140 \u00d71). Do NOT send frequency 7 \u2014 Part B FFS does not accept it. Attach chart note as supporting documentation."
+      },
+      "denial": {
+        "group": "CO",
+        "carc": "119",
+        "rarc": "N435",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All four SVC lines carry CAS*CO*119; claim-level MOA N435; CLP07=2621472133868 confirms adjudication; payer MB (Medicare Part B).",
+          "locator": "CLP segment + SVC/CAS blocks"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "No KX modifier on any of the four service lines (97110\u00d73, 97140\u00d71); GP modifier present on all.",
+          "locator": "LX*1\u20134 SV1 segments"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "Therapist attests 'skilled services remain medically necessary' on 2026-07-01, supporting KX attestation.",
+          "locator": "Final sentence"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CO-119 + N435, no KX, record supports threshold: correct_and_resubmit via clerical-error reopening; frequency 7 not accepted on Medicare Part B FFS.",
+          "locator": "08-therapy-modifiers.md \u00a7threshold_no_kx table row 1; resubmission-and-frequency-codes.md Part B row"
+        }
+      ],
+      "citations": [
+        {
+          "source": "08-therapy-modifiers.md",
+          "rule": "CO-119 + N435, no KX, record justifies: correct_and_resubmit clerical-error reopening"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Frequency 7 not accepted on Medicare Part B/DME FFS; use reopening"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"All 4 lines denied CO-119 + N435 (claim-level MOA N435). No KX modifier on any line in the 837P. Chart note dated 2026-07-01 documents skilled PT as medically necessary. Medicare Part B, adjudicated (CLP07 present). Fix: add KX to each line and submit via clerical-error reopening \u2014 frequency 7 not accepted on Part B.\",\"resolution\":{\"root_cause\":{\"family\":\"threshold_no_kx\",\"explanation\":\"CO-119 + N435 on all four lines; no KX modifier present on any line in the 837P. Chart note supports medical necessity of continued skilled PT on DOS 2026-07-01.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Submit clerical-error reopening to Novitas Part B MAC. Add KX to every therapy line (97110 \u00d73, 97140 \u00d71). Do NOT send frequency 7 \u2014 Part B FFS does not accept it. Attach chart note as supporting documentation.\"},\"denial\":{\"group\":\"CO\",\"carc\":\"119\",\"rarc\":\"N435\",\"level\":\"line\"},\"denied_line_idxs\":[0,1,2,3],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All four SVC lines carry CAS*CO*119; claim-level MOA N435; CLP07=2621472133868 confirms adjudication; payer MB (Medicare Part B).\",\"locator\":\"CLP segment + SVC/CAS blocks\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"No KX modifier on any of the four service lines (97110\u00d73, 97140\u00d71); GP modifier present on all.\",\"locator\":\"LX*1\u20134 SV1 segments\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"Therapist attests 'skilled services remain medically necessary' on 2026-07-01, supporting KX attestation.\",\"locator\":\"Final sentence\"},{\"artifact\":\"reference\",\"fact\":\"CO-119 + N435, no KX, record supports threshold: correct_and_resubmit via clerical-error reopening; frequency 7 not accepted on Medicare Part B FFS.\",\"locator\":\"08-therapy-modifiers.md \u00a7threshold_no_kx table row 1; resubmission-and-frequency-codes.md Part B row\"}],\"citations\":[{\"source\":\"08-therapy-modifiers.md\",\"rule\":\"CO-119 + N435, no KX, record justifies: correct_and_resubmit clerical-error reopening\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Frequency 7 not accepted on Medicare Part B/DME FFS; use reopening\"}]}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

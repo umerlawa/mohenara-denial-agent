@@ -1,0 +1,96 @@
+{
+  "case_id": "MOH2-000142",
+  "run_id": "final-sonnet-4-6-low-edi",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4863,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5079,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1730,
+    "output_tokens_details": {
+      "thinking_tokens": 961
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5079
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.059978985,
+  "cache_hit_rate": 0.862034,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "271 confirms coverage terminated 2025-09-30 (DTP*357); DOS is 2025-10-11. All four lines denied CO-27. Payer is commercial (CI). Hold-harmless runs to members for covered services; coverage ended before DOS so patient is outside it. No overrides (QMB, Medicaid, NSA, successor payer) present. CO-27 on CI resolves to bill_patient per reference 05 table row.",
+    "resolution": {
+      "root_cause": {
+        "family": "eligibility_terminated",
+        "explanation": "271 shows EB*6 (inactive) with DTP*357=20250930; DOS is 20251011. Coverage lapsed 11 days before the visit. CO-27 on all four lines, commercial (CI) payer."
+      },
+      "next_action": {
+        "path": "bill_patient",
+        "detail": "Verify no QMB/Medicaid/NSA override applies, then bill Susan Harris for $181.71. Hold-harmless clause does not protect a patient whose coverage ended before the DOS."
+      },
+      "denial": {
+        "group": "CO",
+        "carc": "27",
+        "rarc": "N30",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "evidence": [
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*6 (inactive coverage) with DTP*357*D8*20250930 \u2014 termination date 2025-09-30",
+          "locator": "EB*6 segment, DTP*357"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All four service lines carry CAS*CO*27; $0 paid; CI filing indicator on CLP",
+          "locator": "CLP*PA26892768*4 and all CAS segments"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "DOS 20251011 on all lines \u2014 11 days after coverage termination",
+          "locator": "DTP*472*D8*20251011 (LX 1-4)"
+        }
+      ],
+      "citations": [
+        {
+          "source": "05-eligibility-terminated.md",
+          "rule": "CI + EB*6 + DTP*357 before DOS, no successor payer: CO-27 \u2192 bill_patient once overrides cleared"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "Commercial CO: hold-harmless reaches members for covered services; non-member on DOS sits outside it"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"271 confirms coverage terminated 2025-09-30 (DTP*357); DOS is 2025-10-11. All four lines denied CO-27. Payer is commercial (CI). Hold-harmless runs to members for covered services; coverage ended before DOS so patient is outside it. No overrides (QMB, Medicaid, NSA, successor payer) present. CO-27 on CI resolves to bill_patient per reference 05 table row.\",\"resolution\":{\"root_cause\":{\"family\":\"eligibility_terminated\",\"explanation\":\"271 shows EB*6 (inactive) with DTP*357=20250930; DOS is 20251011. Coverage lapsed 11 days before the visit. CO-27 on all four lines, commercial (CI) payer.\"},\"next_action\":{\"path\":\"bill_patient\",\"detail\":\"Verify no QMB/Medicaid/NSA override applies, then bill Susan Harris for $181.71. Hold-harmless clause does not protect a patient whose coverage ended before the DOS.\"},\"denial\":{\"group\":\"CO\",\"carc\":\"27\",\"rarc\":\"N30\",\"level\":\"line\"},\"denied_line_idxs\":[0,1,2,3],\"evidence\":[{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*6 (inactive coverage) with DTP*357*D8*20250930 \u2014 termination date 2025-09-30\",\"locator\":\"EB*6 segment, DTP*357\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"All four service lines carry CAS*CO*27; $0 paid; CI filing indicator on CLP\",\"locator\":\"CLP*PA26892768*4 and all CAS segments\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"DOS 20251011 on all lines \u2014 11 days after coverage termination\",\"locator\":\"DTP*472*D8*20251011 (LX 1-4)\"}],\"citations\":[{\"source\":\"05-eligibility-terminated.md\",\"rule\":\"CI + EB*6 + DTP*357 before DOS, no successor payer: CO-27 \u2192 bill_patient once overrides cleared\"},{\"source\":\"00-group-codes.md\",\"rule\":\"Commercial CO: hold-harmless reaches members for covered services; non-member on DOS sits outside it\"}]}}"
+}

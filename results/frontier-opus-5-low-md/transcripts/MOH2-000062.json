@@ -1,0 +1,98 @@
+{
+  "case_id": "MOH2-000062",
+  "run_id": "frontier-opus-5-low-md",
+  "model": "claude-opus-5",
+  "effort": "low",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 6898,
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 7728,
+    "cache_read_input_tokens": 93034,
+    "output_tokens": 1664,
+    "output_tokens_details": {
+      "thinking_tokens": 80
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 7728,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 799,
+        "cache_read_input_tokens": 49922,
+        "cache_creation_input_tokens": 918,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 918
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.136437,
+  "cache_hit_rate": 0.923268,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "Commercial (CI) remit denies all four lines PR-27 with MOA N30. The 271 for the DOS confirms coverage inactive (EB*6, end 2025-05-31; DOS 2025-06-17) with no successor payer. Group PR plus verified termination makes the balance the patient's; no override (Medicaid, QMB, grace period, other payer) is present.",
+    "resolution": {
+      "root_cause": {
+        "family": "eligibility_terminated",
+        "explanation": "Coverage under Keystone EPO ended 2025-05-31; DOS 2025-06-17 is after termination. 271 for the DOS returns EB*6 inactive with DTP*357 2025-05-31 and no other payer. All lines denied PR-27 + N30."
+      },
+      "next_action": {
+        "path": "bill_patient",
+        "detail": "Bill Jessica Harris $204.23 as self-pay for the 2025-06-17 PT visit. Do not resubmit or appeal. Confirm no successor or retroactive coverage for that DOS before statementing; if one exists, bill that payer instead."
+      },
+      "denial": {
+        "group": "PR",
+        "carc": "27",
+        "rarc": "N30",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All four lines denied PR-27 (expenses after coverage terminated), $0 paid, PR $204.23; filing indicator CI",
+          "locator": "CLP/SVC/CAS lines 1-4"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*6 inactive for plan date 2025-06-17; coverage 2024-01-01 to 2025-05-31; no other payer named",
+          "locator": "EB/DTP*291/DTP*357"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "DOS 2025-06-17, after the 2025-05-31 termination date",
+          "locator": "DTP*472"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CI + EB*6 with 357 before DOS + PR-27 -> bill_patient once overrides clear",
+          "locator": "05-eligibility-terminated.md"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"Commercial (CI) remit denies all four lines PR-27 with MOA N30. The 271 for the DOS confirms coverage inactive (EB*6, end 2025-05-31; DOS 2025-06-17) with no successor payer. Group PR plus verified termination makes the balance the patient's; no override (Medicaid, QMB, grace period, other payer) is present.\",\"resolution\":{\"root_cause\":{\"family\":\"eligibility_terminated\",\"explanation\":\"Coverage under Keystone EPO ended 2025-05-31; DOS 2025-06-17 is after termination. 271 for the DOS returns EB*6 inactive with DTP*357 2025-05-31 and no other payer. All lines denied PR-27 + N30.\"},\"next_action\":{\"path\":\"bill_patient\",\"detail\":\"Bill Jessica Harris $204.23 as self-pay for the 2025-06-17 PT visit. Do not resubmit or appeal. Confirm no successor or retroactive coverage for that DOS before statementing; if one exists, bill that payer instead.\"},\"denial\":{\"group\":\"PR\",\"carc\":\"27\",\"rarc\":\"N30\",\"level\":\"line\"},\"denied_line_idxs\":[0,1,2,3],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All four lines denied PR-27 (expenses after coverage terminated), $0 paid, PR $204.23; filing indicator CI\",\"locator\":\"CLP/SVC/CAS lines 1-4\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*6 inactive for plan date 2025-06-17; coverage 2024-01-01 to 2025-05-31; no other payer named\",\"locator\":\"EB/DTP*291/DTP*357\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"DOS 2025-06-17, after the 2025-05-31 termination date\",\"locator\":\"DTP*472\"},{\"artifact\":\"reference\",\"fact\":\"CI + EB*6 with 357 before DOS + PR-27 -> bill_patient once overrides clear\",\"locator\":\"05-eligibility-terminated.md\"}]}}"
+}

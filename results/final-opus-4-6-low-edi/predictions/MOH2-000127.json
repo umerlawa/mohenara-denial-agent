@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000127",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "835 shows PR-27 on all lines with MOA N30. 271 confirms EB*6 (inactive) with coverage end DTP*357 = 2025-06-30, DOS 2025-07-12 is after termination. Commercial payer (CI), group PR = patient responsibility. No successor payer, no QMB, no overrides. Patient is billable.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 751,
+    "cache_read_input_tokens": 32421,
+    "cache_creation_input_tokens": 4948,
+    "cost_usd": 0.07251255000000001,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "eligibility_terminated",
+      "explanation": "Coverage ended 2025-06-30 per 271 EB*6/DTP*357. DOS 2025-07-12 is after termination. Commercial payer issued PR-27 correctly."
+    },
+    "next_action": {
+      "path": "bill_patient",
+      "detail": "Bill patient $138.54 for all three lines. Coverage was inactive on DOS per 271. No overrides apply."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All three lines denied PR-27, $0 paid, MOA N30",
+        "locator": "CAS*PR*27 on each SVC segment"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*6 (inactive) with DTP*357*D8*20250630 \u2014 coverage ended June 30, 2025",
+        "locator": "EB*6*IND*30 and DTP*357*D8*20250630"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "DOS 2025-07-12, filing indicator CI (commercial), SBR*P",
+        "locator": "DTP*472*D8*20250712; SBR*P*18*******CI"
+      }
+    ],
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "denial": {
+      "group": "PR",
+      "carc": "27",
+      "rarc": "N30",
+      "level": "line"
+    },
+    "citations": [
+      {
+        "source": "05-eligibility-terminated.md",
+        "rule": "CI, EB*6 + 357 before DOS, no successor: PR-27 \u2192 bill_patient"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "PR = patient responsibility, billable after overrides cleared"
+      }
+    ]
+  }
+}

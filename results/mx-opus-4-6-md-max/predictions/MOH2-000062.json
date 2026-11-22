@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000062",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "All lines carry PR-27 (coverage terminated), filing indicator CI (commercial), claim-level MOA N30. The 271 for DOS 2025-06-17 returns EB*6 (inactive) with DTP*357 = 2025-05-31 \u2014 coverage ended 17 days before service. No EB*R (no other payer), patient is 27 (no Medicare). PR group code on commercial = patient liability; no overrides apply. Bill the patient.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 2277,
+    "cache_read_input_tokens": 31983,
+    "cache_creation_input_tokens": 5061,
+    "cost_usd": 0.11501352499999999,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "max",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "eligibility_terminated",
+      "explanation": "271 confirms coverage inactive (EB*6) with eligibility end 2025-05-31 (DTP*357). DOS 2025-06-17 is 17 days after termination. No successor payer on file."
+    },
+    "next_action": {
+      "path": "bill_patient",
+      "detail": "Issue patient statement for $204.23. Coverage verified terminated before DOS; no other payer exists. Confirm no balance-billing prohibition applies before sending."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All 4 lines denied PR-27; claim MOA N30; filing indicator CI; paid $0, patient responsibility $204.23",
+        "locator": "CAS PR*27; MOA N30"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*6 (inactive), eligibility end DTP*357 = 2025-05-31, queried for DOS 2025-06-17 \u2014 coverage terminated before service",
+        "locator": "EB*6, DTP*357*20250531"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "No EB*R segment \u2014 no other payer on file for this member on the DOS",
+        "locator": "271 response segments"
+      }
+    ],
+    "denial": {
+      "group": "PR",
+      "carc": "27",
+      "rarc": "N30",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "citations": [
+      {
+        "source": "05-eligibility-terminated.md",
+        "rule": "CI + EB*6 + DTP*357 before DOS + no successor + PR-27 \u2192 bill_patient after overrides cleared"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "PR = patient liable, subject to QMB / 42 CFR 447.15 / NSA / ABN overrides \u2014 none present here"
+      }
+    ]
+  }
+}

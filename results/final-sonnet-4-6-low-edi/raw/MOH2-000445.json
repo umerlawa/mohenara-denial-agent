@@ -1,0 +1,37 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5190,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1475,
+    "output_tokens_details": {
+      "thinking_tokens": 1119
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5190
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "awaiting_human",
+    "rationale": "Lines 0 and 2 (97110:GO) are denied CO-236+N20 \u2014 NCCI PTP edits. 97760:GO (line 1) is the Column One code and was paid. The chart note documents separate sessions and distinct body regions, but the bypass modifier decision turns on the CCMI for the 97110/97760 pair in the Q1 2024 PTP edit file. The 835 carries neither the partner code nor the CCMI; per reference 07 I cannot guess it.",
+    "awaiting_human": {
+      "question": "What is the CCMI (Column II modifier indicator) for the 97110 / 97760 PTP edit pair in the Q1 2024 (January 2024) CMS NCCI edit file?",
+      "why_needed": "CCMI=1 \u2192 correct_and_resubmit with a bypass modifier on lines 0 and 2; CCMI=0 \u2192 do_not_resubmit. The chart note documents separate sessions, but that only matters if CCMI=1.",
+      "blocks": [
+        "next_action.path"
+      ],
+      "asked_of": "internal"
+    }
+  },
+  "result": "{\"status\":\"awaiting_human\",\"rationale\":\"Lines 0 and 2 (97110:GO) are denied CO-236+N20 \u2014 NCCI PTP edits. 97760:GO (line 1) is the Column One code and was paid. The chart note documents separate sessions and distinct body regions, but the bypass modifier decision turns on the CCMI for the 97110/97760 pair in the Q1 2024 PTP edit file. The 835 carries neither the partner code nor the CCMI; per reference 07 I cannot guess it.\",\"awaiting_human\":{\"question\":\"What is the CCMI (Column II modifier indicator) for the 97110 / 97760 PTP edit pair in the Q1 2024 (January 2024) CMS NCCI edit file?\",\"why_needed\":\"CCMI=1 \u2192 correct_and_resubmit with a bypass modifier on lines 0 and 2; CCMI=0 \u2192 do_not_resubmit. The chart note documents separate sessions, but that only matters if CCMI=1.\",\"blocks\":[\"next_action.path\"],\"asked_of\":\"internal\"}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

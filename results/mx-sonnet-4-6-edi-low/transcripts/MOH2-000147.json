@@ -1,0 +1,103 @@
+{
+  "case_id": "MOH2-000147",
+  "run_id": "mx-sonnet-4-6-edi-low",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 5220,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5281,
+    "cache_read_input_tokens": 31309,
+    "output_tokens": 1422,
+    "output_tokens_details": {
+      "thinking_tokens": 493
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5281
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.055585695,
+  "cache_hit_rate": 0.855624,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All 5 lines denied CO-4/N822. The 837P carries KX on every line but no GP/GO/GN discipline modifier. CPTs 97530, 97140, and 97116 are always-therapy codes; Medicare requires a therapy discipline modifier (GP for PT plan of care). Provider is a physical therapy group; GP is correct. Remedy is a new original claim \u2014 CO-4/N822 is returned unprocessable; timely filing clock kept running from DOS 2026-06-05.",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_therapy_modifier",
+        "explanation": "All 5 lines billed with KX but no GP/GO/GN. CO-4 + N822 = required therapy discipline modifier absent. Physical therapy group \u2192 GP required on each line."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Submit a new original claim (CLM05-3=1, no REF*F8). Append GP to every service line alongside KX. Do not appeal; do not send frequency 7. Timely filing deadline: 2027-06-05 \u2014 act promptly.",
+        "resubmission_frequency_code": "7"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All 5 CAS segments: CO-4 with RARC N822 \u2014 missing required procedure modifier",
+          "locator": "CAS*CO*4*48.46 \u2026 LQ*HE*N822 (repeated for all 5 SVC lines)"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "All SV1 lines carry KX only (e.g. HC:97530:KX, HC:97140:KX, HC:97116:KX); no GP/GO/GN present",
+          "locator": "LX*1\u2013LX*5 SV1 segments"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Filing indicator MB (Medicare Part B); provider is Schuylkill Physical Therapy Group \u2014 GP is the correct discipline modifier",
+          "locator": "SBR*P*18*******MB; NM1*85 and NM1*41"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CO-4 + N822 = unprocessable; remedy is new original claim CLM05-3=1 with modifier appended; Part B does not accept frequency 7",
+          "locator": "08-therapy-modifiers.md \u00a7(a); resubmission-and-frequency-codes.md \u00a76"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "4",
+        "rarc": "N822",
+        "level": "line"
+      },
+      "citations": [
+        {
+          "source": "08-therapy-modifiers.md",
+          "rule": "CO-4 + N822 = missing discipline modifier; new original claim with GP/GO/GN appended"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Medicare Part B: CLM05-3=1 only; frequency 7 rejected"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All 5 lines denied CO-4/N822. The 837P carries KX on every line but no GP/GO/GN discipline modifier. CPTs 97530, 97140, and 97116 are always-therapy codes; Medicare requires a therapy discipline modifier (GP for PT plan of care). Provider is a physical therapy group; GP is correct. Remedy is a new original claim \u2014 CO-4/N822 is returned unprocessable; timely filing clock kept running from DOS 2026-06-05.\",\"resolution\":{\"root_cause\":{\"family\":\"missing_therapy_modifier\",\"explanation\":\"All 5 lines billed with KX but no GP/GO/GN. CO-4 + N822 = required therapy discipline modifier absent. Physical therapy group \u2192 GP required on each line.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Submit a new original claim (CLM05-3=1, no REF*F8). Append GP to every service line alongside KX. Do not appeal; do not send frequency 7. Timely filing deadline: 2027-06-05 \u2014 act promptly.\",\"resubmission_frequency_code\":\"7\"},\"denied_line_idxs\":[0,1,2,3,4],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All 5 CAS segments: CO-4 with RARC N822 \u2014 missing required procedure modifier\",\"locator\":\"CAS*CO*4*48.46 \u2026 LQ*HE*N822 (repeated for all 5 SVC lines)\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"All SV1 lines carry KX only (e.g. HC:97530:KX, HC:97140:KX, HC:97116:KX); no GP/GO/GN present\",\"locator\":\"LX*1\u2013LX*5 SV1 segments\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Filing indicator MB (Medicare Part B); provider is Schuylkill Physical Therapy Group \u2014 GP is the correct discipline modifier\",\"locator\":\"SBR*P*18*******MB; NM1*85 and NM1*41\"},{\"artifact\":\"reference\",\"fact\":\"CO-4 + N822 = unprocessable; remedy is new original claim CLM05-3=1 with modifier appended; Part B does not accept frequency 7\",\"locator\":\"08-therapy-modifiers.md \u00a7(a); resubmission-and-frequency-codes.md \u00a76\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"4\",\"rarc\":\"N822\",\"level\":\"line\"},\"citations\":[{\"source\":\"08-therapy-modifiers.md\",\"rule\":\"CO-4 + N822 = missing discipline modifier; new original claim with GP/GO/GN appended\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Medicare Part B: CLM05-3=1 only; frequency 7 rejected\"}]}}"
+}

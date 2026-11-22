@@ -1,0 +1,82 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5028,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1741,
+    "output_tokens_details": {
+      "thinking_tokens": 845
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5028
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "All three lines carry OA-22 with claim-level MOA MA04. The 271 for DOS 2026-01-20 returns EB*R naming Novitas Solutions Medicare Part B FFS as primary with MSG \"PLAN IS PRIMARY PAYER FOR THIS MEMBER.\" The 837P filed Garden State as primary (SBR*P / CI). MA04 here signals missing primary adjudication data \u2014 Medicare hasn't paid yet because it was never billed. Bill Medicare first, then return to Garden State as secondary.",
+    "resolution": {
+      "root_cause": {
+        "family": "cob_other_primary",
+        "explanation": "271 EB*R names Novitas Solutions Medicare Part B FFS as primary payer for this member on DOS 2026-01-20. Claim was filed to Garden State as primary (SBR*P/CI). OA-22 = wrong COB order; MA04 = primary adjudication data absent."
+      },
+      "next_action": {
+        "path": "resubmit_other_payer",
+        "detail": "Bill Novitas Solutions Medicare Part B (payer ID 1846349352) as primary. Once Medicare adjudicates, rebill Garden State as secondary (SBR*S) carrying Medicare's payment and CAS data in the 2320/2430 loops to satisfy MA04."
+      },
+      "evidence": [
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*R + NM1 naming NOVITAS SOLUTIONS MEDICARE PART B FFS + MSG 'PLAN IS PRIMARY PAYER FOR THIS MEMBER' for DOS 2026-01-20",
+          "locator": "EB*R loop"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "SBR*P*18*******CI \u2014 Garden State filed as primary payer",
+          "locator": "Loop 2000B SBR"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CAS*OA*22 on all three lines; MOA***MA04 at claim level; $0 paid",
+          "locator": "CLP PA25981784 / MOA / SVC lines"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CARC 22 = coverage exists, order wrong \u2192 resubmit_other_payer; MA04 = primary adjudication data missing, resolved by billing Medicare first (06-cob-other-primary.md)",
+          "locator": "06-cob-other-primary.md \u00a7Disposition"
+        }
+      ],
+      "denial": {
+        "group": "OA",
+        "carc": "22",
+        "rarc": "MA04",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2
+      ],
+      "citations": [
+        {
+          "source": "06-cob-other-primary.md",
+          "rule": "CARC 22 \u2192 resubmit_other_payer; MA04 \u2192 supply primary adjudication data"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "OA = liability not stated, not billable to patient; pursue wrong payer / COB"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"All three lines carry OA-22 with claim-level MOA MA04. The 271 for DOS 2026-01-20 returns EB*R naming Novitas Solutions Medicare Part B FFS as primary with MSG \\\"PLAN IS PRIMARY PAYER FOR THIS MEMBER.\\\" The 837P filed Garden State as primary (SBR*P / CI). MA04 here signals missing primary adjudication data \u2014 Medicare hasn't paid yet because it was never billed. Bill Medicare first, then return to Garden State as secondary.\",\"resolution\":{\"root_cause\":{\"family\":\"cob_other_primary\",\"explanation\":\"271 EB*R names Novitas Solutions Medicare Part B FFS as primary payer for this member on DOS 2026-01-20. Claim was filed to Garden State as primary (SBR*P/CI). OA-22 = wrong COB order; MA04 = primary adjudication data absent.\"},\"next_action\":{\"path\":\"resubmit_other_payer\",\"detail\":\"Bill Novitas Solutions Medicare Part B (payer ID 1846349352) as primary. Once Medicare adjudicates, rebill Garden State as secondary (SBR*S) carrying Medicare's payment and CAS data in the 2320/2430 loops to satisfy MA04.\"},\"evidence\":[{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*R + NM1 naming NOVITAS SOLUTIONS MEDICARE PART B FFS + MSG 'PLAN IS PRIMARY PAYER FOR THIS MEMBER' for DOS 2026-01-20\",\"locator\":\"EB*R loop\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"SBR*P*18*******CI \u2014 Garden State filed as primary payer\",\"locator\":\"Loop 2000B SBR\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CAS*OA*22 on all three lines; MOA***MA04 at claim level; $0 paid\",\"locator\":\"CLP PA25981784 / MOA / SVC lines\"},{\"artifact\":\"reference\",\"fact\":\"CARC 22 = coverage exists, order wrong \u2192 resubmit_other_payer; MA04 = primary adjudication data missing, resolved by billing Medicare first (06-cob-other-primary.md)\",\"locator\":\"06-cob-other-primary.md \u00a7Disposition\"}],\"denial\":{\"group\":\"OA\",\"carc\":\"22\",\"rarc\":\"MA04\",\"level\":\"line\"},\"denied_line_idxs\":[0,1,2],\"citations\":[{\"source\":\"06-cob-other-primary.md\",\"rule\":\"CARC 22 \u2192 resubmit_other_payer; MA04 \u2192 supply primary adjudication data\"},{\"source\":\"00-group-codes.md\",\"rule\":\"OA = liability not stated, not billable to patient; pursue wrong payer / COB\"}]}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

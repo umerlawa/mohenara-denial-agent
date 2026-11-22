@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000009",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "271 confirms EB*6 (inactive) with DTP*357 = 2026-05-31 for member MTA297421990; DOS is 2026-06-07 \u2014 six days after termination. All five lines carry CO-27 from commercial payer CI. Hold-harmless runs to members for covered services; this patient was not a member on DOS. No override applies (no QMB, no Medicaid, no N830, no successor payer). Bill the patient.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1861,
+    "cache_read_input_tokens": 31309,
+    "cache_creation_input_tokens": 5211,
+    "cost_usd": 0.062540445,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "eligibility_terminated",
+      "explanation": "Coverage ended 2026-05-31 per 271 DTP*357; DOS 2026-06-07 is six days post-termination. Payer issued CO-27 on all five therapy lines."
+    },
+    "next_action": {
+      "path": "bill_patient",
+      "detail": "Verify no QMB/Medicaid/NSA override applies, then bill Samuel Lopez for $326.59. Attach the 271 and 835 to the patient statement as proof of payer denial."
+    },
+    "evidence": [
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*6 (inactive coverage) with DTP*357*D8*20260531 \u2014 coverage terminated May 31 2026, before DOS June 7 2026.",
+        "locator": "HL*3 / EB segment"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All five service lines carry CAS*CO*27 \u2014 $326.59 total denied; claim filing indicator CI (commercial).",
+        "locator": "CLP*PA29479026 / SVC lines 1-5"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "MOA N30 at claim level confirms no liability assigned to payer.",
+        "locator": "MOA***N30"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "No successor payer loop (no EB*R) and no active coverage date on or after DOS.",
+        "locator": "Full 271 EB segment \u2014 single EB*6 only"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "27",
+      "rarc": "N30",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "citations": [
+      {
+        "source": "05-eligibility-terminated.md",
+        "rule": "CI + CO-27 + EB*6 with DTP*357 before DOS, no successor \u2192 bill_patient once overrides cleared; hold-harmless does not reach non-members on DOS"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "Commercial CO: hold-harmless runs to members for covered services; patient outside it when coverage ended before DOS"
+      }
+    ]
+  }
+}

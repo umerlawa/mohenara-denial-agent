@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000008",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "Claim adjudicated and paid. CO-45 on all three lines is a contractual fee-schedule write-off; PR-2 is patient coinsurance. 271 confirms active CI coverage (EB*1, effective 2024-01-01, no termination) for DOS 2026-05-24. No denial code present. Routine AR \u2014 collect PR-2 balance ($16.89) from patient in normal course.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1078,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 36784,
+    "cost_usd": 0.1695276,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "none",
+      "explanation": "Claim paid. CO-45 = contractual write-off per fee schedule; PR-2 = patient coinsurance. No denial issued."
+    },
+    "next_action": {
+      "path": "none",
+      "detail": "Post payment. Write off CO-45 per contract. Bill patient $16.89 PR-2 coinsurance in normal AR cycle."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP status 1 (paid), $67.61 paid of $125.09 billed; all three lines carry CAS CO-45 (contractual write-off) and CAS PR-2 (coinsurance) \u2014 no denial CARC present",
+        "locator": "CLP*PA27416586*1*125.09*67.61"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*1 active commercial coverage (Atlantic Shore Assurance EPO), effective 2024-01-01, no termination date \u2014 coverage active on DOS 2026-05-24",
+        "locator": "EB*1*IND*30**ATLANTIC SHORE ASSURANCE EPO / DTP*356*D8*20240101"
+      }
+    ],
+    "denial": null,
+    "denied_line_idxs": [],
+    "citations": [
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO = contractual obligation, provider write-off; PR = patient responsibility, billable in normal AR"
+      },
+      {
+        "source": "01-carc-rarc-index.md",
+        "rule": "CARC 45 = exceeds fee schedule, contractual write-off"
+      }
+    ]
+  }
+}

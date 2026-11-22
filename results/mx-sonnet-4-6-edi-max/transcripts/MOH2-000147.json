@@ -1,0 +1,102 @@
+{
+  "case_id": "MOH2-000147",
+  "run_id": "mx-sonnet-4-6-edi-max",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "max",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 5220,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5281,
+    "cache_read_input_tokens": 31309,
+    "output_tokens": 6150,
+    "output_tokens_details": {
+      "thinking_tokens": 5185
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5281
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.13359769500000002,
+  "cache_hit_rate": 0.855624,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All 5 therapy lines (97530, 97140, 97116) submitted with KX only \u2014 no GP discipline modifier. Medicare Part B requires GP/GO/GN on outpatient therapy CPTs. CO-4+N822 is the returned-unprocessable signature for this defect. Resubmit as a new original (CLM05-3=1) with GP added to each line; frequency 7 is not accepted on Part B. Filing clock still open \u2014 DOS 2026-06-05, 1-year limit not reached.",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_therapy_modifier",
+        "explanation": "All 5 lines billed 97530/97140/97116 with KX only \u2014 no GP modifier present. CO-4+N822 on every line confirms missing therapy discipline modifier (physical therapy plan of care)."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Add GP to all 5 lines (97530\u00d72, 97140\u00d72, 97116\u00d71); resubmit as new original CLM05-3=1. Frequency 7 is rejected on Medicare Part B. File promptly \u2014 1-year window from DOS 2026-06-05 remains open."
+      },
+      "denial": {
+        "group": "CO",
+        "carc": "4",
+        "rarc": "N822",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All 5 service lines carry CAS*CO*4 and LQ*HE*N822 \u2014 returned unprocessable for missing modifier.",
+          "locator": "SVC/CAS/LQ segments, LX1\u2013LX5"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "All SV1 lines specify KX modifier only; no GP/GO/GN present on any line.",
+          "locator": "LX*1\u2013LX*5 SV1 segments"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "PT treatment note confirms physical therapy services (97530, 97140, 97116) for shoulder dx \u2014 GP (physical therapy plan of care) is the required modifier.",
+          "locator": "2026-06-05 PT treatment note"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CO-4+N822 on therapy CPTs = missing_therapy_modifier; correct vehicle is new original CLM05-3=1; frequency 7 not accepted on Medicare Part B FFS.",
+          "locator": "08-therapy-modifiers.md \u00a7(a); 02-resubmission-frequency.md Part B/DME FFS row"
+        }
+      ],
+      "citations": [
+        {
+          "source": "08-therapy-modifiers.md",
+          "rule": "CO-4+N822 on always-therapy CPTs = missing therapy discipline modifier; correct_and_resubmit as new original CLM05-3=1; not a corrected 7, not an appeal"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Medicare Part B/DME FFS: frequency 7 not accepted; new original CLM05-3=1 is the only valid vehicle"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All 5 therapy lines (97530, 97140, 97116) submitted with KX only \u2014 no GP discipline modifier. Medicare Part B requires GP/GO/GN on outpatient therapy CPTs. CO-4+N822 is the returned-unprocessable signature for this defect. Resubmit as a new original (CLM05-3=1) with GP added to each line; frequency 7 is not accepted on Part B. Filing clock still open \u2014 DOS 2026-06-05, 1-year limit not reached.\",\"resolution\":{\"root_cause\":{\"family\":\"missing_therapy_modifier\",\"explanation\":\"All 5 lines billed 97530/97140/97116 with KX only \u2014 no GP modifier present. CO-4+N822 on every line confirms missing therapy discipline modifier (physical therapy plan of care).\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Add GP to all 5 lines (97530\u00d72, 97140\u00d72, 97116\u00d71); resubmit as new original CLM05-3=1. Frequency 7 is rejected on Medicare Part B. File promptly \u2014 1-year window from DOS 2026-06-05 remains open.\"},\"denial\":{\"group\":\"CO\",\"carc\":\"4\",\"rarc\":\"N822\",\"level\":\"line\"},\"denied_line_idxs\":[0,1,2,3,4],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All 5 service lines carry CAS*CO*4 and LQ*HE*N822 \u2014 returned unprocessable for missing modifier.\",\"locator\":\"SVC/CAS/LQ segments, LX1\u2013LX5\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"All SV1 lines specify KX modifier only; no GP/GO/GN present on any line.\",\"locator\":\"LX*1\u2013LX*5 SV1 segments\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"PT treatment note confirms physical therapy services (97530, 97140, 97116) for shoulder dx \u2014 GP (physical therapy plan of care) is the required modifier.\",\"locator\":\"2026-06-05 PT treatment note\"},{\"artifact\":\"reference\",\"fact\":\"CO-4+N822 on therapy CPTs = missing_therapy_modifier; correct vehicle is new original CLM05-3=1; frequency 7 not accepted on Medicare Part B FFS.\",\"locator\":\"08-therapy-modifiers.md \u00a7(a); 02-resubmission-frequency.md Part B/DME FFS row\"}],\"citations\":[{\"source\":\"08-therapy-modifiers.md\",\"rule\":\"CO-4+N822 on always-therapy CPTs = missing therapy discipline modifier; correct_and_resubmit as new original CLM05-3=1; not a corrected 7, not an appeal\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Medicare Part B/DME FFS: frequency 7 not accepted; new original CLM05-3=1 is the only valid vehicle\"}]}}"
+}

@@ -1,0 +1,81 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4815,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1430,
+    "output_tokens_details": {
+      "thinking_tokens": 676
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4815
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "271 shows EB*6 with DTP*357 = 2026-05-31; DOS is 2026-06-18 \u2014 coverage terminated 18 days before the visit. Both lines carry CO-27 under commercial (CI) filing. Per ref 05, CI + CO-27 + no successor payer \u2192 bill_patient once standard overrides (QMB, Medicaid, NSA) are cleared; none appear here.",
+    "resolution": {
+      "root_cause": {
+        "family": "eligibility_terminated",
+        "explanation": "Delaware Valley Mutual terminated Richard Williams's coverage 2026-05-31 (271 DTP*357). Both 97110 lines billed 2026-06-18 fall after that date. Payer issued CO-27 on both lines."
+      },
+      "next_action": {
+        "path": "bill_patient",
+        "detail": "Coverage was terminated before DOS; commercial CO-27 with no successor payer on record. Verify no QMB/Medicaid/NSA override applies, then bill Williams $89.67 (sum of both lines)."
+      },
+      "evidence": [
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*6 IND coverage; DTP*357 D8 20260531 \u2014 termination date 2026-05-31",
+          "locator": "EB/DTP segments"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "DOS 2026-06-18 on both service lines; filing indicator CI (commercial)",
+          "locator": "DTP*472 / SBR*P*18*******CI"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CAS*CO*27*41.99 and CAS*CO*27*47.68 \u2014 both lines denied CO-27, $0 paid",
+          "locator": "CAS segments under each SVC"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CI + CO-27 + EB*6 with DTP*357 before DOS + no successor payer \u2192 bill_patient once overrides cleared",
+          "locator": "05-eligibility-terminated.md table row 3"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "27",
+        "rarc": "N30",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1
+      ],
+      "citations": [
+        {
+          "source": "05-eligibility-terminated.md",
+          "rule": "CI + CO-27 + terminated coverage + no successor \u2192 bill_patient after override check"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "Commercial CO is payer assertion; hold-harmless binds members only \u2014 no automatic write-off"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"271 shows EB*6 with DTP*357 = 2026-05-31; DOS is 2026-06-18 \u2014 coverage terminated 18 days before the visit. Both lines carry CO-27 under commercial (CI) filing. Per ref 05, CI + CO-27 + no successor payer \u2192 bill_patient once standard overrides (QMB, Medicaid, NSA) are cleared; none appear here.\",\"resolution\":{\"root_cause\":{\"family\":\"eligibility_terminated\",\"explanation\":\"Delaware Valley Mutual terminated Richard Williams's coverage 2026-05-31 (271 DTP*357). Both 97110 lines billed 2026-06-18 fall after that date. Payer issued CO-27 on both lines.\"},\"next_action\":{\"path\":\"bill_patient\",\"detail\":\"Coverage was terminated before DOS; commercial CO-27 with no successor payer on record. Verify no QMB/Medicaid/NSA override applies, then bill Williams $89.67 (sum of both lines).\"},\"evidence\":[{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*6 IND coverage; DTP*357 D8 20260531 \u2014 termination date 2026-05-31\",\"locator\":\"EB/DTP segments\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"DOS 2026-06-18 on both service lines; filing indicator CI (commercial)\",\"locator\":\"DTP*472 / SBR*P*18*******CI\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CAS*CO*27*41.99 and CAS*CO*27*47.68 \u2014 both lines denied CO-27, $0 paid\",\"locator\":\"CAS segments under each SVC\"},{\"artifact\":\"reference\",\"fact\":\"CI + CO-27 + EB*6 with DTP*357 before DOS + no successor payer \u2192 bill_patient once overrides cleared\",\"locator\":\"05-eligibility-terminated.md table row 3\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"27\",\"rarc\":\"N30\",\"level\":\"line\"},\"denied_line_idxs\":[0,1],\"citations\":[{\"source\":\"05-eligibility-terminated.md\",\"rule\":\"CI + CO-27 + terminated coverage + no successor \u2192 bill_patient after override check\"},{\"source\":\"00-group-codes.md\",\"rule\":\"Commercial CO is payer assertion; hold-harmless binds members only \u2014 no automatic write-off\"}]}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

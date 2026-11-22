@@ -1,0 +1,12 @@
+{
+  "run_id": "final-opus-4-6-low-edi",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "low",
+  "thinking": "adaptive",
+  "input_format": "edi",
+  "slice": "eval/slices/full140.txt (stopped at 37)",
+  "n_cases": 37,
+  "provider": "bedrock",
+  "note": "Post-fix run, stopped by a Bedrock ThrottlingException on us.anthropic.claude-opus-4-6-v1 rather than by budget or by choice. See results/notes/throttling.md. Scored two ways: strictly against the full 140-case slice, where the 103 cases never reached count as wrong, and against the 37 it attempted.",
+  "cost_usd": 4.239603
+}

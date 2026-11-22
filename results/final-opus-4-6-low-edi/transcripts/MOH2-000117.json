@@ -1,0 +1,95 @@
+{
+  "case_id": "MOH2-000117",
+  "run_id": "final-opus-4-6-low-edi",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4391,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4824,
+    "cache_read_input_tokens": 32421,
+    "output_tokens": 1141,
+    "output_tokens_details": {
+      "thinking_tokens": 540
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4824
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.08238505,
+  "cache_hit_rate": 0.870433,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "CO-29 timely filing denial on both lines, but the 277CA proves the claim was accepted 2025-01-27 \u2014 8 days after the 2025-01-19 DOS. The payer's receipt-date determination is wrong. Reference: proof of accepted submission inside the window \u2192 appeal, dispute the receipt date.",
+    "resolution": {
+      "root_cause": {
+        "family": "timely_filing",
+        "explanation": "Payer denied CO-29 but 277CA shows claim accepted 2025-01-27, only 8 days post-DOS. Filing was timely; payer's receipt-date determination is erroneous."
+      },
+      "next_action": {
+        "path": "appeal",
+        "detail": "Appeal with the 277CA acceptance report (2025-01-27, TRN TRC75364521) as proof of timely filing. Dispute the payer's receipt date \u2014 do not plead forgiveness."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Both lines denied CAS*CO*29, $0 paid, MOA N211",
+          "locator": "CAS segments lines 1-2"
+        },
+        {
+          "artifact": "ack_277ca.edi",
+          "fact": "STC*A2:20 on 2025-01-27 \u2014 claim accepted 8 days after DOS",
+          "locator": "STC*A2:20*20250127"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "DOS 2025-01-19, payer Liberty Bell Health Plans, filing indicator CI (commercial)",
+          "locator": "DTP*472*D8*20250119; SBR*P*18*******CI"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "Coverage active from 2024-01-01 for DOS 2025-01-19 (EB*1)",
+          "locator": "EB*1*IND*30; DTP*356*D8*20240101"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "29",
+        "rarc": "N211",
+        "level": "claim"
+      },
+      "denied_line_idxs": [
+        0,
+        1
+      ],
+      "citations": [
+        {
+          "source": "03-timely-filing.md",
+          "rule": "Proof of accepted submission inside the window \u2192 appeal with clearinghouse acceptance report; dispute the receipt date"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"CO-29 timely filing denial on both lines, but the 277CA proves the claim was accepted 2025-01-27 \u2014 8 days after the 2025-01-19 DOS. The payer's receipt-date determination is wrong. Reference: proof of accepted submission inside the window \u2192 appeal, dispute the receipt date.\",\"resolution\":{\"root_cause\":{\"family\":\"timely_filing\",\"explanation\":\"Payer denied CO-29 but 277CA shows claim accepted 2025-01-27, only 8 days post-DOS. Filing was timely; payer's receipt-date determination is erroneous.\"},\"next_action\":{\"path\":\"appeal\",\"detail\":\"Appeal with the 277CA acceptance report (2025-01-27, TRN TRC75364521) as proof of timely filing. Dispute the payer's receipt date \u2014 do not plead forgiveness.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"Both lines denied CAS*CO*29, $0 paid, MOA N211\",\"locator\":\"CAS segments lines 1-2\"},{\"artifact\":\"ack_277ca.edi\",\"fact\":\"STC*A2:20 on 2025-01-27 \u2014 claim accepted 8 days after DOS\",\"locator\":\"STC*A2:20*20250127\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"DOS 2025-01-19, payer Liberty Bell Health Plans, filing indicator CI (commercial)\",\"locator\":\"DTP*472*D8*20250119; SBR*P*18*******CI\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"Coverage active from 2024-01-01 for DOS 2025-01-19 (EB*1)\",\"locator\":\"EB*1*IND*30; DTP*356*D8*20240101\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"29\",\"rarc\":\"N211\",\"level\":\"claim\"},\"denied_line_idxs\":[0,1],\"citations\":[{\"source\":\"03-timely-filing.md\",\"rule\":\"Proof of accepted submission inside the window \u2192 appeal with clearinghouse acceptance report; dispute the receipt date\"}]}}"
+}

@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000233",
+  "input_format": "md",
+  "status": "awaiting_human",
+  "rationale": "Lines 1\u20133 (97110-GP) denied CO-236/N20 as bundled into paid 97150-GP (line 4). Chart note documents separate body region and demarcated encounter segment. Disposition hinges entirely on the CCMI for the 97110/97150 pair in the Q2/Q3 2026 NCCI PTP edit table: CCMI 1 \u2192 reopening with bypass modifier (record supports it); CCMI 0 \u2192 write off. Cannot proceed without it.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 849,
+    "cache_read_input_tokens": 31309,
+    "cache_creation_input_tokens": 5197,
+    "cost_usd": 0.045784695,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "awaiting_human": {
+    "question": "What is the CCMI (Column Modifier Indicator) for the 97110 / 97150 code pair in the CMS NCCI PTP edit file effective for DOS 2026-06-25?",
+    "why_needed": "CCMI 1 means a bypass modifier can distinguish the services and the claim is correctable via clerical-error reopening; CCMI 0 means the edit is absolute and the lines must be written off. The chart note supports distinctness but that is only actionable when CCMI = 1.",
+    "blocks": [
+      "root_cause.family",
+      "next_action.path"
+    ]
+  }
+}

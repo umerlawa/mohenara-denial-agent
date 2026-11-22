@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000202",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All four lines denied CO-119 + N435 (therapy threshold reached). Claim lines carry GP but no KX modifier. Chart note dated 2026-07-21 documents skilled medical necessity. Medicare Part B: KX omission on an adjudicated claim is a clerical-error reopening.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1325,
+    "cache_read_input_tokens": 31983,
+    "cache_creation_input_tokens": 5107,
+    "cost_usd": 0.089149775,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "threshold_no_kx",
+      "explanation": "CO-119 + N435 on all lines. 97110:GP and 97140:GP billed without KX modifier; beneficiary's therapy expenditure exceeded the $2,480 PT threshold. Chart note supports necessity but KX was not appended."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Request clerical-error reopening with Novitas (ICN 2623310739166). Append modifier KX to all four lines. Part B does not accept frequency 7; reopening is the vehicle.",
+      "resubmission_frequency_code": "7"
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All lines denied CAS*CO*119 with MOA N435; $0 paid; CLP07=2623310739166",
+        "locator": "CAS/MOA segments"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Lines billed as HC:97110:GP and HC:97140:GP \u2014 no KX modifier present",
+        "locator": "SV1 segments"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "DOS 2026-07-21 documents 75 timed minutes of skilled PT with medical necessity assertion",
+        "locator": "full note"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*1 active Medicare Part B coverage on DOS with benefit start 2024-01-01",
+        "locator": "EB segment"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "119",
+      "rarc": "N435",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "citations": [
+      {
+        "source": "therapy-modifiers-and-threshold.md",
+        "rule": "CO-119 + N435 = therapy threshold denial; no KX \u2192 correct_and_resubmit via clerical-error reopening (Part B)"
+      },
+      {
+        "source": "resubmission-and-frequency-codes.md",
+        "rule": "Part B FFS does not accept frequency 7; use clerical-error reopening for modifier additions"
+      }
+    ]
+  }
+}

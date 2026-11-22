@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000061",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "All four lines carry OA-18. The claim was adjudicated (CLP07 = 2623576767957). Lines 1 and 3 are both 97140-GP-KX; lines 2 and 4 are both 97110-GP-KX on the same DOS with no distinguishing modifier. Chart note confirms two distinct timed blocks for each code. This is a false duplicate; the fix is a MAC clerical-error reopening to add modifier 76 to lines 3 and 4. Frequency 7 not accepted on Part B.",
+  "usage": {
+    "input_tokens": 3,
+    "output_tokens": 3196,
+    "cache_read_input_tokens": 68606,
+    "cache_creation_input_tokens": 7405,
+    "cost_usd": 0.105929505,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "exact_duplicate",
+      "explanation": "Lines 3 and 4 repeat the same HCPCS/modifier combination as lines 1 and 2 on the same DOS without modifier 76 distinguishing them as repeat procedures. Payer matched provider/member/DOS/procedure and denied all four."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "File a clerical-error reopening with Novitas. Add modifier 76 to lines 3 and 4 only (second 97140 and second 97110). Attach chart note documenting distinct timed blocks. Do not resend the whole claim; frequency 7 is not accepted on Medicare Part B."
+    },
+    "denial": {
+      "group": "OA",
+      "carc": "18",
+      "rarc": "N111",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All four lines denied OA-18; CLP07 = 2623576767957 confirms adjudication; MOA N111.",
+        "locator": "CLP/CAS segments lines 1\u20134"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Lines 1 and 3 both 97140-GP-KX; lines 2 and 4 both 97110-GP-KX; same DOS 2026-07-05; no modifier 76.",
+        "locator": "SV1 segments lines 1\u20134"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "Two distinct 97140 timed blocks (15 min, 14 min) and two distinct 97110 blocks (31 min, 16 min) documented.",
+        "locator": "PT treatment note 2026-07-05"
+      },
+      {
+        "artifact": "reference",
+        "fact": "False duplicate \u2192 correct_and_resubmit corrected lines only; Part B: clerical-error reopening; modifier 76 is reopening-eligible.",
+        "locator": "04-exact-duplicate.md; 02-resubmission-frequency.md \u00a76"
+      }
+    ],
+    "citations": [
+      {
+        "source": "04-exact-duplicate.md",
+        "rule": "False duplicate (repeat service without distinguishing modifier) \u2192 correct_and_resubmit, corrected lines only; Medicare Part B: clerical-error reopening, modifier 76 reopening-eligible."
+      },
+      {
+        "source": "02-resubmission-frequency.md",
+        "rule": "Medicare Part B / DME FFS: frequency 7 not accepted; use clerical-error reopening or redetermination."
+      }
+    ]
+  }
+}

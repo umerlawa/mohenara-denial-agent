@@ -1,0 +1,87 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5110,
+    "cache_read_input_tokens": 31309,
+    "output_tokens": 4791,
+    "output_tokens_details": {
+      "thinking_tokens": 3816
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5110
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "835 MOA N286 and CO-16 on all four lines signal a missing ordering/referring provider. The 837P parties list billing provider [85], rendering provider [82], subscriber, and payer \u2014 no referring/ordering provider loop. Coverage is active (271 EB*1, begin 2024-01-01). Claim adjudicated (CLP07 2626660924906 present), so the Part B vehicle is a clerical-error reopening; frequency 7 is not accepted on Part B FFS.",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_referring_provider",
+        "explanation": "837P has no referring/ordering provider loop. 835 MOA N286 + CO-16 on all four lines confirm the defect: missing/incomplete/invalid referring provider primary identifier."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Obtain ordering/referring provider name and NPI; verify against NPI Registry and PECOS. Submit clerical-error reopening to Novitas citing ICN 2626660924906. Do not send frequency 7 \u2014 rejected on Part B FFS."
+      },
+      "denial": {
+        "group": "CO",
+        "carc": "16",
+        "rarc": "N286",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "MOA N286 at claim level: missing/incomplete/invalid referring provider primary identifier; CO-16 on all four service lines, $310.83 withheld.",
+          "locator": "CLP PA28755879, MOA segment, CAS lines 1\u20134"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Claim parties: billing provider [85], rendering provider [82], subscriber [IL], payer [PR] \u2014 no referring/ordering provider loop present.",
+          "locator": "Loop 2310A absent"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP07 = 2626660924906: payer claim control number present; claim adjudicated, not returned unprocessable.",
+          "locator": "CLP segment position 7"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*1 active coverage, eligibility begin 2024-01-01 for DOS 2026-08-06; eligibility is not the issue.",
+          "locator": "EB / DTP 356 segments"
+        }
+      ],
+      "citations": [
+        {
+          "source": "09-missing-referring-provider.md",
+          "rule": "CO-16 + N286 \u2192 correct_and_resubmit; fix referring provider name and NPI; Part B adjudicated denial \u2192 clerical-error reopening, not a new original or frequency 7"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "CARC 16/N286 \u2192 correct_and_resubmit to same payer; Part B adjudicated clerical error \u2192 reopening vehicle; frequency 7 rejected on Part B either way"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Part B / DME FFS: frequency 7 not accepted; use reopening (1-year window, 4-year good cause)"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"835 MOA N286 and CO-16 on all four lines signal a missing ordering/referring provider. The 837P parties list billing provider [85], rendering provider [82], subscriber, and payer \u2014 no referring/ordering provider loop. Coverage is active (271 EB*1, begin 2024-01-01). Claim adjudicated (CLP07 2626660924906 present), so the Part B vehicle is a clerical-error reopening; frequency 7 is not accepted on Part B FFS.\",\"resolution\":{\"root_cause\":{\"family\":\"missing_referring_provider\",\"explanation\":\"837P has no referring/ordering provider loop. 835 MOA N286 + CO-16 on all four lines confirm the defect: missing/incomplete/invalid referring provider primary identifier.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Obtain ordering/referring provider name and NPI; verify against NPI Registry and PECOS. Submit clerical-error reopening to Novitas citing ICN 2626660924906. Do not send frequency 7 \u2014 rejected on Part B FFS.\"},\"denial\":{\"group\":\"CO\",\"carc\":\"16\",\"rarc\":\"N286\",\"level\":\"line\"},\"denied_line_idxs\":[0,1,2,3],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"MOA N286 at claim level: missing/incomplete/invalid referring provider primary identifier; CO-16 on all four service lines, $310.83 withheld.\",\"locator\":\"CLP PA28755879, MOA segment, CAS lines 1\u20134\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Claim parties: billing provider [85], rendering provider [82], subscriber [IL], payer [PR] \u2014 no referring/ordering provider loop present.\",\"locator\":\"Loop 2310A absent\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP07 = 2626660924906: payer claim control number present; claim adjudicated, not returned unprocessable.\",\"locator\":\"CLP segment position 7\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*1 active coverage, eligibility begin 2024-01-01 for DOS 2026-08-06; eligibility is not the issue.\",\"locator\":\"EB / DTP 356 segments\"}],\"citations\":[{\"source\":\"09-missing-referring-provider.md\",\"rule\":\"CO-16 + N286 \u2192 correct_and_resubmit; fix referring provider name and NPI; Part B adjudicated denial \u2192 clerical-error reopening, not a new original or frequency 7\"},{\"source\":\"00-group-codes.md\",\"rule\":\"CARC 16/N286 \u2192 correct_and_resubmit to same payer; Part B adjudicated clerical error \u2192 reopening vehicle; frequency 7 rejected on Part B either way\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Part B / DME FFS: frequency 7 not accepted; use reopening (1-year window, 4-year good cause)\"}]}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

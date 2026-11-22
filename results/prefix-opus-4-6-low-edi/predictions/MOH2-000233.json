@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000233",
+  "input_format": "edi",
+  "status": "awaiting_human",
+  "rationale": "Lines 1-3 (97110:GP) denied CO-236 + N20 = NCCI PTP edit. Column One (paid) is 97150; Column Two (denied) is 97110. Chart note documents separate time, body region, and goal supporting a modifier bypass, but only if CCMI=1 for this pair in the DOS-quarter PTP file. The 835 carries neither the partner code nor the CCMI. Without the CCMI, cannot determine correct_and_resubmit vs do_not_resubmit.",
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1805,
+    "cache_read_input_tokens": 107404,
+    "cache_creation_input_tokens": 6695,
+    "cost_usd": 0.15475982500000002,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "awaiting_human": {
+    "question": "What is the CCMI (Correct Coding Modifier Indicator) for the 97150/97110 pair in the CMS NCCI PTP edit file effective for DOS 2026-06-25?",
+    "why_needed": "CCMI=1 means a bypass modifier (59/XE/XS/XP/XU) may be appended to the 97110 lines and resubmitted via clerical-error reopening, given the chart documents separate time/region/goal. CCMI=0 means the edit cannot be overridden and the $173.46 across three lines must be written off.",
+    "blocks": [
+      "root_cause.family",
+      "next_action.path"
+    ]
+  }
+}

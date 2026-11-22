@@ -1,0 +1,89 @@
+{
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 7917,
+    "cache_read_input_tokens": 92646,
+    "output_tokens": 2479,
+    "output_tokens_details": {
+      "thinking_tokens": 237
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 7917,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1066,
+        "cache_read_input_tokens": 49534,
+        "cache_creation_input_tokens": 1495,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1495
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "All three lines denied CO-22 (another payer primary), $0 paid, with MOA MA04. The 271 for DOS 2026-01-29 returns EB*R naming NOVITAS SOLUTIONS MEDICARE PART B FFS with \"PLAN IS PRIMARY PAYER FOR THIS MEMBER\", while the 837P was sent SBR*P to Liberty Bell. Coverage is active but misordered: bill Medicare Part B first, then rebill Liberty Bell as secondary with the primary's payment data. CO-22 is never patient-billable.",
+    "resolution": {
+      "root_cause": {
+        "family": "cob_other_primary",
+        "explanation": "837P sent SBR*P (primary) to Liberty Bell; 271 for DOS 2026-01-29 shows EB*R with Novitas Medicare Part B FFS and MSG 'PLAN IS PRIMARY PAYER FOR THIS MEMBER'. All three lines denied CO-22, $0 paid, MOA MA04."
+      },
+      "next_action": {
+        "path": "resubmit_other_payer",
+        "detail": "Submit the 2026-01-29 claim (97110/97140/97530, GP) to Novitas Solutions Medicare Part B FFS as primary, CLM05-3=1. After its remit, rebill Liberty Bell as secondary: SBR01=S, 2320 SBR/AMT/CAS and 2430 SVD/CAS, balanced. Do not appeal; do not bill the patient. Medicare 1-year limit runs from DOS."
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "22",
+        "rarc": "MA04",
+        "level": "line"
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All three SVC lines CAS*CO*22 for full billed amount; claim paid 0; MOA***MA04",
+          "locator": "CLP*PA28830819*4*173.49*0"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*R for DOS 2026-01-29 names NOVITAS SOLUTIONS MEDICARE PART B FFS, MSG 'PLAN IS PRIMARY PAYER FOR THIS MEMBER'",
+          "locator": "EB*R*IND*30"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Claim submitted SBR*P (primary) to Liberty Bell Health Plans, filing indicator CI",
+          "locator": "SBR*P*18*******CI"
+        }
+      ],
+      "citations": [
+        {
+          "source": "06-cob-other-primary.md",
+          "rule": "CARC 22 \u2192 resubmit_other_payer: bill true primary, then rebill this payer as secondary with the primary's adjudication data"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "CO is contractual, never billable to the patient"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"All three lines denied CO-22 (another payer primary), $0 paid, with MOA MA04. The 271 for DOS 2026-01-29 returns EB*R naming NOVITAS SOLUTIONS MEDICARE PART B FFS with \\\"PLAN IS PRIMARY PAYER FOR THIS MEMBER\\\", while the 837P was sent SBR*P to Liberty Bell. Coverage is active but misordered: bill Medicare Part B first, then rebill Liberty Bell as secondary with the primary's payment data. CO-22 is never patient-billable.\",\"resolution\":{\"root_cause\":{\"family\":\"cob_other_primary\",\"explanation\":\"837P sent SBR*P (primary) to Liberty Bell; 271 for DOS 2026-01-29 shows EB*R with Novitas Medicare Part B FFS and MSG 'PLAN IS PRIMARY PAYER FOR THIS MEMBER'. All three lines denied CO-22, $0 paid, MOA MA04.\"},\"next_action\":{\"path\":\"resubmit_other_payer\",\"detail\":\"Submit the 2026-01-29 claim (97110/97140/97530, GP) to Novitas Solutions Medicare Part B FFS as primary, CLM05-3=1. After its remit, rebill Liberty Bell as secondary: SBR01=S, 2320 SBR/AMT/CAS and 2430 SVD/CAS, balanced. Do not appeal; do not bill the patient. Medicare 1-year limit runs from DOS.\"},\"denied_line_idxs\":[0,1,2],\"denial\":{\"group\":\"CO\",\"carc\":\"22\",\"rarc\":\"MA04\",\"level\":\"line\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All three SVC lines CAS*CO*22 for full billed amount; claim paid 0; MOA***MA04\",\"locator\":\"CLP*PA28830819*4*173.49*0\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*R for DOS 2026-01-29 names NOVITAS SOLUTIONS MEDICARE PART B FFS, MSG 'PLAN IS PRIMARY PAYER FOR THIS MEMBER'\",\"locator\":\"EB*R*IND*30\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Claim submitted SBR*P (primary) to Liberty Bell Health Plans, filing indicator CI\",\"locator\":\"SBR*P*18*******CI\"}],\"citations\":[{\"source\":\"06-cob-other-primary.md\",\"rule\":\"CARC 22 \u2192 resubmit_other_payer: bill true primary, then rebill this payer as secondary with the primary's adjudication data\"},{\"source\":\"00-group-codes.md\",\"rule\":\"CO is contractual, never billable to the patient\"}]}}",
+  "model": "claude-opus-5"
+}

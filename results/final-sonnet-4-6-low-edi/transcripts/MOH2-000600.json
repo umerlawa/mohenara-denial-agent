@@ -1,0 +1,94 @@
+{
+  "case_id": "MOH2-000600",
+  "run_id": "final-sonnet-4-6-low-edi",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4431,
+  "usage": {
+    "input_tokens": 3,
+    "cache_creation_input_tokens": 5820,
+    "cache_read_input_tokens": 68316,
+    "output_tokens": 1671,
+    "output_tokens_details": {
+      "thinking_tokens": 281
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5820
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.07413318,
+  "cache_hit_rate": 0.921458,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "835 carries CO-16 + MOA N286 on both lines, denying all $91.58. N286 = missing/incomplete/invalid referring provider. The 837P has a rendering provider (NM1*82, Rodriguez NPI 1462872737) but no ordering/referring provider loop. Payer is Medicare Part B (MB); CLP07 confirms adjudication. Part B does not accept frequency 7 \u2014 resubmit as a new original claim with the referring provider NPI populated.",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_referring_provider",
+        "explanation": "837P has no ordering/referring provider loop. 835 MOA N286 on both lines confirms the missing referring provider identifier."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Add ordering/referring provider loop with correct name and NPI (verified against NPI Registry and PECOS). Submit as new original claim CLM05-3=1 \u2014 Medicare Part B does not accept frequency 7."
+      },
+      "denial": {
+        "group": "CO",
+        "carc": "16",
+        "rarc": "N286",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "MOA***N286 at claim level; CAS*CO*16*42.75 and CAS*CO*16*48.83 deny both lines in full",
+          "locator": "MOA segment; SVC lines 1-2"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "No ordering/referring provider NM1 loop present; only NM1*82 rendering provider Rodriguez NPI 1462872737",
+          "locator": "Loop 2310 absent"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP07=2618087804994 confirms claim adjudicated; filing indicator MB = Medicare Part B",
+          "locator": "CLP segment"
+        }
+      ],
+      "citations": [
+        {
+          "source": "09-missing-referring-provider.md",
+          "rule": "CO-16+N286 = data defect, correct_and_resubmit; Part B accepts only CLM05-3=1"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Frequency 7 not accepted on Medicare Part B/DME FFS"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"835 carries CO-16 + MOA N286 on both lines, denying all $91.58. N286 = missing/incomplete/invalid referring provider. The 837P has a rendering provider (NM1*82, Rodriguez NPI 1462872737) but no ordering/referring provider loop. Payer is Medicare Part B (MB); CLP07 confirms adjudication. Part B does not accept frequency 7 \u2014 resubmit as a new original claim with the referring provider NPI populated.\",\"resolution\":{\"root_cause\":{\"family\":\"missing_referring_provider\",\"explanation\":\"837P has no ordering/referring provider loop. 835 MOA N286 on both lines confirms the missing referring provider identifier.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Add ordering/referring provider loop with correct name and NPI (verified against NPI Registry and PECOS). Submit as new original claim CLM05-3=1 \u2014 Medicare Part B does not accept frequency 7.\"},\"denial\":{\"group\":\"CO\",\"carc\":\"16\",\"rarc\":\"N286\",\"level\":\"line\"},\"denied_line_idxs\":[0,1],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"MOA***N286 at claim level; CAS*CO*16*42.75 and CAS*CO*16*48.83 deny both lines in full\",\"locator\":\"MOA segment; SVC lines 1-2\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"No ordering/referring provider NM1 loop present; only NM1*82 rendering provider Rodriguez NPI 1462872737\",\"locator\":\"Loop 2310 absent\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP07=2618087804994 confirms claim adjudicated; filing indicator MB = Medicare Part B\",\"locator\":\"CLP segment\"}],\"citations\":[{\"source\":\"09-missing-referring-provider.md\",\"rule\":\"CO-16+N286 = data defect, correct_and_resubmit; Part B accepts only CLM05-3=1\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Frequency 7 not accepted on Medicare Part B/DME FFS\"}]}}"
+}

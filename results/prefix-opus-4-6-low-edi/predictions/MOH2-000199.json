@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000199",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "Line 3 billed 97112:GP with 5 units but chart documents only 31 timed minutes, which under the 8-minute rule yields 2 units. CO-151 + N362 = MUE exceeded. Units were a keying error. Medicare Part B, adjudicated claim \u2014 correct via clerical-error reopening.",
+  "usage": {
+    "input_tokens": 3,
+    "output_tokens": 1498,
+    "cache_read_input_tokens": 69000,
+    "cache_creation_input_tokens": 5932,
+    "cost_usd": 0.119944,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "mue_exceeded",
+      "explanation": "97112 billed at 5 units but chart documents 31 minutes (2 units per 8-minute rule). Units exceed the MUE; keying error."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Request clerical-error reopening with MAC (Part B does not accept frequency 7). Correct line 3 units from 5 to 2. Reference ICN 2615618156708."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Line 3 HC:97112:GP denied CO-151 $214.95 with RARC N362",
+        "locator": "CAS*CO*151*214.95; LQ*HE*N362"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Line 3 billed 97112:GP with 5 units",
+        "locator": "SV1*HC:97112:GP*214.95*UN*5"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "97112 neuromuscular re-education documented at 31 minutes (= 2 units per 8-minute rule)",
+        "locator": "97112 (31 min)"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Claim adjudicated with payer control number 2615618156708",
+        "locator": "CLP*PA21657403*1*300.34*46.5*11.62*MB*2615618156708"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "151",
+      "rarc": "N362",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      2
+    ],
+    "citations": [
+      {
+        "source": "07-ncci-and-mue.md",
+        "rule": "CO-151 + N362 = MUE exceeded; keying/conversion error \u2192 correct_and_resubmit"
+      },
+      {
+        "source": "02-resubmission-frequency.md",
+        "rule": "Part B FFS does not accept frequency 7; use clerical-error reopening"
+      }
+    ]
+  }
+}

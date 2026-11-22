@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000105",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "835 carries CO-16 with MOA N286 \u2014 referring provider primary identifier missing/invalid. The 837P names only billing and rendering providers; no referring/ordering provider. GP and KX are correctly on every line, so this is not a modifier or threshold defect. A data defect is corrected and resubmitted to the same payer; never appealed, never billed to the patient.",
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2157,
+    "cache_read_input_tokens": 93068,
+    "cache_creation_input_tokens": 8100,
+    "cost_usd": 0.151104,
+    "model": "claude-opus-5",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "missing_referring_provider",
+      "explanation": "Remit: CO-16 on all four lines with MOA N286 (missing/incomplete/invalid referring provider primary identifier). The 837P lists submitter, billing, rendering (MARY CLARK 1992501921) and payer only \u2014 no referring/ordering provider name or NPI. GP/KX present and correct."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Obtain the ordering/referring physician's name and NPI, verify in PECOS/NPI Registry as eligible to order or refer, add to the claim, and resubmit to Novitas as a new original 837P (CLM05-3=1; Part B rejects frequency 7). Watch the 1-year filing clock from 2026-08-06."
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "16",
+      "rarc": "N286",
+      "level": "line"
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All four lines denied CO-16, $0 paid; claim-level MOA N286 (missing/incomplete/invalid referring provider primary identifier)",
+        "locator": "CAS*CO*16 x4; MOA N286"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "No referring/ordering provider submitted \u2014 only billing (1110692305) and rendering (1992501921)",
+        "locator": "claim parties"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Lines carry GP and KX; filing indicator MB, frequency 1",
+        "locator": "SV1 lines 1-4"
+      },
+      {
+        "artifact": "reference",
+        "fact": "CO-16 + N286 \u2192 correct_and_resubmit; Part B accepts only CLM05-3=1; never appeal a data defect, never bill patient (group CO)",
+        "locator": "09-missing-referring-provider.md"
+      }
+    ],
+    "citations": [
+      {
+        "source": "09-missing-referring-provider.md",
+        "rule": "CARC 16 + N286 = missing/invalid referring provider NPI \u2192 correct and resubmit; Part B new original claim"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO = provider liability, never billable to patient"
+      }
+    ]
+  }
+}

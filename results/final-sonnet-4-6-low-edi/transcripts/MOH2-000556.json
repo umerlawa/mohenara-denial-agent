@@ -1,0 +1,100 @@
+{
+  "case_id": "MOH2-000556",
+  "run_id": "final-sonnet-4-6-low-edi",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4324,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4781,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1151,
+    "output_tokens_details": {
+      "thinking_tokens": 348
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4781
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.049196235,
+  "cache_hit_rate": 0.869067,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "835 carries CO-16 + MOA N286 at claim level, both lines denied $0. N286 = missing/invalid referring provider NPI. The 837P has no NM1*DN (referring provider) loop. Claim adjudicated (CLP07 = 2607719007446). Commercial CI payer \u2192 corrected claim frequency 7 + REF*F8.",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_referring_provider",
+        "explanation": "837P contains no referring provider loop (NM1*DN absent). 835 returns CO-16 + N286 on both lines: missing/invalid referring provider primary identifier."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Add the ordering/referring provider NM1*DN loop with verified NPI and name (confirm PECOS enrollment). Resubmit as corrected claim CLM05-3=7 with REF*F8=2607719007446 to Delaware Valley Mutual.",
+        "resubmission_frequency_code": "7"
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "MOA***N286 at claim level; CAS*CO*16*96.78 and CAS*CO*16*38.18 on both service lines \u2014 all billed charges denied.",
+          "locator": "CLP/MOA/SVC segments"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "No NM1*DN (referring provider) loop present anywhere in the 837P transaction.",
+          "locator": "Loop 2310"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP07=2607719007446 confirms claim adjudicated; CI filing indicator confirms commercial payer.",
+          "locator": "CLP*PA23681933*4*134.96*0**CI*2607719007446"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*1 active coverage, DTP*356 effective 2024-01-01, no termination \u2014 eligibility is not the issue.",
+          "locator": "EB/DTP segments"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "16",
+        "rarc": "N286",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1
+      ],
+      "citations": [
+        {
+          "source": "09-missing-referring-provider.md",
+          "rule": "CO-16+N286 = missing/invalid referring provider NPI; fix and resubmit; commercial = frequency 7 + REF*F8 with CLP07"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Adjudicated commercial claim with data defect: CLM05-3=7 + REF*F8 carrying payer claim control number from 835 CLP07"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"835 carries CO-16 + MOA N286 at claim level, both lines denied $0. N286 = missing/invalid referring provider NPI. The 837P has no NM1*DN (referring provider) loop. Claim adjudicated (CLP07 = 2607719007446). Commercial CI payer \u2192 corrected claim frequency 7 + REF*F8.\",\"resolution\":{\"root_cause\":{\"family\":\"missing_referring_provider\",\"explanation\":\"837P contains no referring provider loop (NM1*DN absent). 835 returns CO-16 + N286 on both lines: missing/invalid referring provider primary identifier.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Add the ordering/referring provider NM1*DN loop with verified NPI and name (confirm PECOS enrollment). Resubmit as corrected claim CLM05-3=7 with REF*F8=2607719007446 to Delaware Valley Mutual.\",\"resubmission_frequency_code\":\"7\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"MOA***N286 at claim level; CAS*CO*16*96.78 and CAS*CO*16*38.18 on both service lines \u2014 all billed charges denied.\",\"locator\":\"CLP/MOA/SVC segments\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"No NM1*DN (referring provider) loop present anywhere in the 837P transaction.\",\"locator\":\"Loop 2310\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP07=2607719007446 confirms claim adjudicated; CI filing indicator confirms commercial payer.\",\"locator\":\"CLP*PA23681933*4*134.96*0**CI*2607719007446\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*1 active coverage, DTP*356 effective 2024-01-01, no termination \u2014 eligibility is not the issue.\",\"locator\":\"EB/DTP segments\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"16\",\"rarc\":\"N286\",\"level\":\"line\"},\"denied_line_idxs\":[0,1],\"citations\":[{\"source\":\"09-missing-referring-provider.md\",\"rule\":\"CO-16+N286 = missing/invalid referring provider NPI; fix and resubmit; commercial = frequency 7 + REF*F8 with CLP07\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Adjudicated commercial claim with data defect: CLM05-3=7 + REF*F8 carrying payer claim control number from 835 CLP07\"}]}}"
+}

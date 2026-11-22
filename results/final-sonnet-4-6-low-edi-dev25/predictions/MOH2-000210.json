@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000210",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All three lines denied CO-119/N435 (therapy threshold exceeded, no KX). KX is absent from every SV1 line in the 837P. The DOS chart note documents ongoing medical necessity, satisfying the KX attestation requirement. Payer is Medicare Part B FFS (MB); corrected claim uses clerical-error reopening, not frequency 7.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1359,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 4968,
+    "cost_usd": 0.05339961,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "threshold_no_kx",
+      "explanation": "CO-119+N435 on all three lines; KX modifier absent from 97110:GP and both 97140:GP lines in the 837P despite a same-date chart note documenting continued medical necessity."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Submit a clerical-error reopening to Novitas (ICN 2619202822254). Append KX to each of the three therapy lines. Do not send frequency 7 \u2014 Medicare Part B does not accept it. Chart note dated 2026-06-15 supports the KX attestation."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CAS*CO*119 on all three SVC lines; MOA N435 at claim level; payer MB; ICN 2619202822254",
+        "locator": "CLP/SVC/CAS segments"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "SV1 lines 97110:GP, 97140:GP, 97140:GP \u2014 no KX modifier on any line",
+        "locator": "LX*1\u20133 / SV1 segments"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "Dated 2026-06-15: 'skilled services remain medically necessary' \u2014 supports KX attestation for threshold exceedance",
+        "locator": "final sentence"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "119",
+      "rarc": "N435",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "citations": [
+      {
+        "source": "08-therapy-modifiers.md",
+        "rule": "CO-119+N435, no KX, record justifies threshold \u2192 correct_and_resubmit via clerical-error reopening (Part B)"
+      },
+      {
+        "source": "02-resubmission-frequency.md",
+        "rule": "Medicare Part B does not accept frequency 7; reopening is the vehicle for adjudicated clerical errors"
+      }
+    ]
+  }
+}

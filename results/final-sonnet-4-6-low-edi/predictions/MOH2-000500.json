@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000500",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All four lines carry CO-29 (timely filing expired). DOS is 20250224. The 277CA \u2014 same BHT control number TRC65023992 \u2014 shows clearinghouse acceptance (A2:20) dated 20250302, six days after DOS. That is well within any commercial filing window. The July 2025 837P ISA date reflects a later artifact generation; the March acceptance report is the operative filing proof. Appeal citing the 277CA to dispute the payer's receipt-date determination.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 2499,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 5068,
+    "cost_usd": 0.07262211,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "timely_filing",
+      "explanation": "All four lines denied CO-29. DOS 20250224; payer remit dated 20250812. 277CA shows clearinghouse acceptance (A2:20) for the same transaction TRC65023992 on 20250302 \u2014 6 days post-DOS, timely under any commercial filing limit."
+    },
+    "next_action": {
+      "path": "appeal",
+      "detail": "File a redetermination/appeal with Keystone disputing the receipt date. Attach the 277CA (STC*A2:20, dated 20250302) as proof of timely clearinghouse acceptance. N211 on a commercial remit has no binding force (ref 03-timely-filing.md: N211 applied in error)."
+    },
+    "denial": {
+      "group": "CO",
+      "carc": "29",
+      "rarc": "N211",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CAS*CO*29 on all four service lines; MOA N211; $0 paid",
+        "locator": "CLP PA23970034 + four SVC/CAS segments"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "DOS 20250224 for all lines; BHT control TRC65023992",
+        "locator": "DTP*472*D8*20250224 (LX 1-4); BHT segment"
+      },
+      {
+        "artifact": "ack_277ca.edi",
+        "fact": "STC*A2:20 (accepted) dated 20250302 for TRC65023992 \u2014 same transaction, 6 days post-DOS",
+        "locator": "STC*A2:20*20250302; TRN*2*TRC65023992"
+      },
+      {
+        "artifact": "reference",
+        "fact": "Proof of clearinghouse acceptance inside the window \u2192 appeal disputing receipt date; N211 has been applied in error on commercial remits",
+        "locator": "03-timely-filing.md \u00a78, \u00a79.1"
+      }
+    ],
+    "citations": [
+      {
+        "source": "03-timely-filing.md",
+        "rule": "Proof of accepted submission inside the window \u2192 appeal with clearinghouse acceptance report"
+      },
+      {
+        "source": "03-timely-filing.md",
+        "rule": "N211 has also been applied in error (R3118CP)"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO-29 with no exception \u2192 do_not_resubmit; but exception (proof of timely filing) \u2192 appeal"
+      }
+    ]
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000062",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "835 carries PR-27 on all four lines (commercial CI payer). 271 confirms EB*6 (inactive) with eligibility end 2025-05-31; DOS 2025-06-17 is after termination. No successor payer, no QMB/Medicaid/NSA/ACA-grace override present. PR-27 on a commercial claim \u2192 bill patient after overrides cleared.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1297,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 5061,
+    "cost_usd": 0.052760235,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "eligibility_terminated",
+      "explanation": "Coverage ended 2025-05-31 per 271 (EB*6, DTP*357=2025-05-31). DOS 2025-06-17 falls after termination. Payer applied PR-27 to all four lines."
+    },
+    "next_action": {
+      "path": "bill_patient",
+      "detail": "Send patient a statement for $204.23. No QMB, Medicaid, ACA grace, or successor payer override applies. Verify no hold-harmless clause in participation agreement covers terminated members before issuing."
+    },
+    "evidence": [
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*6 (inactive), eligibility end DTP*357=2025-05-31; DOS 2025-06-17 is post-termination",
+        "locator": "271 response benefit segment"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All four lines adjusted PR-27 ($204.23 total); group PR assigns patient liability; filing indicator CI (commercial)",
+        "locator": "CAS segments lines 1-4"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "MOA remark N30 (patient ineligible for this service) at claim level",
+        "locator": "MOA segment CLP PA27132865"
+      },
+      {
+        "artifact": "reference",
+        "fact": "CI + PR-27 + EB*6 with DTP*357 before DOS, no successor payer \u2192 bill_patient once overrides cleared",
+        "locator": "05-eligibility-terminated.md table row 3"
+      }
+    ],
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "denial": {
+      "group": "PR",
+      "carc": "27",
+      "rarc": null,
+      "level": "line"
+    },
+    "citations": [
+      {
+        "source": "05-eligibility-terminated.md",
+        "rule": "CI payer, PR-27, EB*6 + DTP*357 before DOS, no successor \u2192 bill_patient after overrides cleared"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "PR = patient liability; bill_patient after override check"
+      }
+    ]
+  }
+}

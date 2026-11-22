@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000117",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "Both lines carry CO-29 + N211. DOS is 2025-01-19; the 277CA shows STC A2 (accepted) on 2025-01-27 \u2014 8 days post-DOS, inside any commercial window. The CO-29 is factually wrong. Per timely-filing.md, proof of timely acceptance \u2192 appeal disputing the receipt date. N211 has been applied in error (R3118CP). Group CO prohibits patient billing.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1486,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 4824,
+    "cost_usd": 0.05490111,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "timely_filing",
+      "explanation": "Payer issued CO-29 for DOS 2025-01-19, but the 277CA (STC A2:20, 2025-01-27) confirms the claim was accepted into adjudication 8 days after DOS \u2014 well within any commercial filing limit."
+    },
+    "next_action": {
+      "path": "appeal",
+      "detail": "File redetermination/first-level appeal attaching the 277CA acceptance report (TRN TRC75364521, accepted 2025-01-27) as proof of timely receipt. Dispute the payer's receipt date; do not plead hardship. N211 was applied in error \u2014 filing was timely."
+    },
+    "denied_line_idxs": [
+      0,
+      1
+    ],
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Both lines: CAS*CO*29 \u2014 CARC 29 timely filing, group CO; MOA N211 'no appeal'",
+        "locator": "CAS segments, MOA"
+      },
+      {
+        "artifact": "ack_277ca.edi",
+        "fact": "STC*A2:20 on 2025-01-27 \u2014 claim accepted into adjudication 8 days after DOS 2025-01-19",
+        "locator": "STC*A2:20*20250127"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "DOS 2025-01-19; filing indicator CI (commercial)",
+        "locator": "DTP*472*D8*20250119; SBR*P*18*******CI"
+      },
+      {
+        "artifact": "reference",
+        "fact": "Timely-filing.md: clearinghouse acceptance report is proof of timely filing \u2192 appeal disputing receipt date; N211 applied in error per R3118CP",
+        "locator": "03-timely-filing.md \u00a7Remedy/Proof accepted"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "29",
+      "rarc": "N211",
+      "level": "line"
+    },
+    "citations": [
+      {
+        "source": "03-timely-filing.md",
+        "rule": "Clearinghouse acceptance report is proof of timely filing; appeal disputing payer's receipt date"
+      },
+      {
+        "source": "03-timely-filing.md",
+        "rule": "N211 has been applied in error (R3118CP)"
+      }
+    ]
+  }
+}

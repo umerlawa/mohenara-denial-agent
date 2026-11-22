@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000162",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "CLP status 1 = processed as primary. All four lines paid at Medicare fee schedule. CO-45 is the contractual write-off (billed above MPFS allowable). PR-2 is the 20% coinsurance. No denial exists \u2014 this claim adjudicated correctly.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 605,
+    "cache_read_input_tokens": 31983,
+    "cache_creation_input_tokens": 5180,
+    "cost_usd": 0.06985164999999999,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "none",
+      "explanation": "Claim paid correctly. CO-45 is the standard contractual adjustment to the fee schedule allowable; PR-2 is the Medicare 20% coinsurance. No line was denied."
+    },
+    "next_action": {
+      "path": "none",
+      "detail": "Collect PR-2 coinsurance totaling $36.27 from the patient or their supplemental insurer. No corrective action needed."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP status code 1 (processed as primary); paid $145.09 of $293.81 billed."
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All four lines carry only CO-45 (contractual) and PR-2 (coinsurance) \u2014 no denial CARC."
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*1 (active coverage) for DOS 2026-01-12, Medicare Part B FFS, no termination date."
+      }
+    ]
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "case_id": "MOH2-000612",
+  "run_id": "frontier-sonnet-5-low-edi",
+  "model": "claude-sonnet-5",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4644,
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 7682,
+    "cache_read_input_tokens": 103873,
+    "output_tokens": 1869,
+    "output_tokens_details": {
+      "thinking_tokens": 468
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 7682,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 687,
+        "cache_read_input_tokens": 55160,
+        "cache_creation_input_tokens": 1235,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1235
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.0586776,
+  "cache_hit_rate": 0.931104,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "835 shows CO-16 on all three lines with MOA N286 (missing/invalid referring provider identifier). The 837P carries no referring provider (NM1*DN) loop at all \u2014 only rendering (NM1*82, Clark) and billing/pay-to (NM1*85). This is the CO-16/N286 data-defect signature: fix and resubmit, do not appeal or bill patient.",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_referring_provider",
+        "explanation": "Claim lacks a referring/ordering provider NM1 loop; 835 denies all three service lines CO-16 with MOA N286 (missing/incomplete/invalid referring provider primary identifier)."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Add the ordering/referring provider name and NPI (verified against NPI Registry/PECOS) to the claim and resubmit to Novitas as a new original claim, CLM05-3=1, no REF*F8 \u2014 Part B FFS does not accept frequency 7.",
+        "resubmission_frequency_code": "7"
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All three SVC lines carry CAS*CO*16 and claim-level MOA***N286.",
+          "locator": "MOA segment; CAS*CO*16 on LX1-3"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "No NM1*DN (referring provider) loop present anywhere in the claim.",
+          "locator": "claim body, loops 2310"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Claim adjudicated (CLP02=4, CLP07 control number 2625180081827 present), payer Novitas Medicare Part B (MB).",
+          "locator": "CLP segment"
+        }
+      ],
+      "denied_line_idxs": [
+        0,
+        1,
+        2
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"835 shows CO-16 on all three lines with MOA N286 (missing/invalid referring provider identifier). The 837P carries no referring provider (NM1*DN) loop at all \u2014 only rendering (NM1*82, Clark) and billing/pay-to (NM1*85). This is the CO-16/N286 data-defect signature: fix and resubmit, do not appeal or bill patient.\",\"resolution\":{\"root_cause\":{\"family\":\"missing_referring_provider\",\"explanation\":\"Claim lacks a referring/ordering provider NM1 loop; 835 denies all three service lines CO-16 with MOA N286 (missing/incomplete/invalid referring provider primary identifier).\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Add the ordering/referring provider name and NPI (verified against NPI Registry/PECOS) to the claim and resubmit to Novitas as a new original claim, CLM05-3=1, no REF*F8 \u2014 Part B FFS does not accept frequency 7.\",\"resubmission_frequency_code\":\"7\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All three SVC lines carry CAS*CO*16 and claim-level MOA***N286.\",\"locator\":\"MOA segment; CAS*CO*16 on LX1-3\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"No NM1*DN (referring provider) loop present anywhere in the claim.\",\"locator\":\"claim body, loops 2310\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"Claim adjudicated (CLP02=4, CLP07 control number 2625180081827 present), payer Novitas Medicare Part B (MB).\",\"locator\":\"CLP segment\"}],\"denied_line_idxs\":[0,1,2]}}"
+}

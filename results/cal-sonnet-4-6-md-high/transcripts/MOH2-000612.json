@@ -1,0 +1,87 @@
+{
+  "case_id": "MOH2-000612",
+  "run_id": "cal-sonnet-4-6-md-high",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "high",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 6691,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4981,
+    "cache_read_input_tokens": 31309,
+    "output_tokens": 6768,
+    "output_tokens_details": {
+      "thinking_tokens": 5879
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4981
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.142557195,
+  "cache_hit_rate": 0.862697,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All three lines carry CO-16; claim-level MOA N286 identifies the defect as a missing/invalid referring provider NPI. The 837P parties confirm it: only billing provider BRANDYWINE and rendering provider MARY CLARK are present \u2014 no ordering/referring provider loop was submitted. Root cause is clear. Vehicle for Part B is unresolved at source (Noridian N286 guidance: new original; denial-lifecycle \u00a74 adjudicated-claim path: clerical-error reopening); confirm with Novitas before resubmitting.",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_referring_provider",
+        "explanation": "CO-16 on all three lines; MOA N286 confirms referring provider NPI absent from the 837P. Claim parties show only billing and rendering providers \u2014 no ordering/referring provider loop was submitted."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Add ordering/referring provider name + NPI to the claim; verify enrollment and specialty in PECOS. Part B vehicle is unresolved: call Novitas to confirm new original (CLM05-3=1, Noridian N286) vs. clerical-error reopening (denial-lifecycle \u00a74 adjudicated path). Deadline 2027-07-20."
+      },
+      "denial": {
+        "group": "CO",
+        "carc": "16",
+        "rarc": "N286",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "MOA remark N286 at claim level: missing/incomplete/invalid referring provider primary identifier. CO-16 on all three service lines totaling $220.86."
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Claim parties list only billing provider BRANDYWINE MOVEMENT SCIENCES and rendering provider MARY CLARK (NPI 1992501921); no ordering/referring provider loop present."
+        },
+        {
+          "artifact": "reference",
+          "locator": "09-missing-referring-provider.md",
+          "fact": "CO-16 + N286 = missing_referring_provider; remedy is correct_and_resubmit. Part B vehicle open for adjudicated claims: Noridian N286 row says new original; denial-lifecycle \u00a74 row 1a routes adjudicated data defect to clerical-error reopening."
+        }
+      ],
+      "citations": [
+        {
+          "source": "09-missing-referring-provider.md",
+          "rule": "CO-16 + N286 \u2192 correct_and_resubmit; fix referring NPI, verify PECOS. Part B adjudicated-claim vehicle unresolved \u2014 N286 row says new original, denial-lifecycle says reopening; consider awaiting_human."
+        },
+        {
+          "source": "01-carc-rarc-index.md",
+          "rule": "CARC 16: lacks information, defect named by paired RARC. N286: missing/incomplete/invalid referring provider primary identifier; verify NPI and specialty in PECOS, resubmit."
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All three lines carry CO-16; claim-level MOA N286 identifies the defect as a missing/invalid referring provider NPI. The 837P parties confirm it: only billing provider BRANDYWINE and rendering provider MARY CLARK are present \u2014 no ordering/referring provider loop was submitted. Root cause is clear. Vehicle for Part B is unresolved at source (Noridian N286 guidance: new original; denial-lifecycle \u00a74 adjudicated-claim path: clerical-error reopening); confirm with Novitas before resubmitting.\",\"resolution\":{\"root_cause\":{\"family\":\"missing_referring_provider\",\"explanation\":\"CO-16 on all three lines; MOA N286 confirms referring provider NPI absent from the 837P. Claim parties show only billing and rendering providers \u2014 no ordering/referring provider loop was submitted.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Add ordering/referring provider name + NPI to the claim; verify enrollment and specialty in PECOS. Part B vehicle is unresolved: call Novitas to confirm new original (CLM05-3=1, Noridian N286) vs. clerical-error reopening (denial-lifecycle \u00a74 adjudicated path). Deadline 2027-07-20.\"},\"denial\":{\"group\":\"CO\",\"carc\":\"16\",\"rarc\":\"N286\",\"level\":\"line\"},\"denied_line_idxs\":[0,1,2],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"MOA remark N286 at claim level: missing/incomplete/invalid referring provider primary identifier. CO-16 on all three service lines totaling $220.86.\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Claim parties list only billing provider BRANDYWINE MOVEMENT SCIENCES and rendering provider MARY CLARK (NPI 1992501921); no ordering/referring provider loop present.\"},{\"artifact\":\"reference\",\"locator\":\"09-missing-referring-provider.md\",\"fact\":\"CO-16 + N286 = missing_referring_provider; remedy is correct_and_resubmit. Part B vehicle open for adjudicated claims: Noridian N286 row says new original; denial-lifecycle \u00a74 row 1a routes adjudicated data defect to clerical-error reopening.\"}],\"citations\":[{\"source\":\"09-missing-referring-provider.md\",\"rule\":\"CO-16 + N286 \u2192 correct_and_resubmit; fix referring NPI, verify PECOS. Part B adjudicated-claim vehicle unresolved \u2014 N286 row says new original, denial-lifecycle says reopening; consider awaiting_human.\"},{\"source\":\"01-carc-rarc-index.md\",\"rule\":\"CARC 16: lacks information, defect named by paired RARC. N286: missing/incomplete/invalid referring provider primary identifier; verify NPI and specialty in PECOS, resubmit.\"}]}}"
+}

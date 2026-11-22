@@ -1,0 +1,93 @@
+{
+  "case_id": "MOH2-000219",
+  "run_id": "final-opus-4-6-low-edi",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 4767,
+  "usage": {
+    "input_tokens": 3,
+    "cache_creation_input_tokens": 5779,
+    "cache_read_input_tokens": 68999,
+    "output_tokens": 1275,
+    "output_tokens_details": {
+      "thinking_tokens": 73
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5779
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.11275907500000001,
+  "cache_hit_rate": 0.922681,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "Line 2 (97140:GP) billed at 7 units but chart documents only 14 minutes of manual therapy (1 unit). CO-151 + N362 confirms MUE exceeded. This is a keying error \u2014 correct units and resubmit. Medicare Part B does not accept frequency 7; submit as new original.",
+    "resolution": {
+      "root_cause": {
+        "family": "mue_exceeded",
+        "explanation": "97140 billed at 7 units; chart note documents 14 minutes (1 unit). CO-151 + N362 confirms units exceed the MUE. Keying error on unit count."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Correct line 2 (97140:GP) from 7 units to 1 unit. Medicare Part B: submit as new original CLM05-3=1. Do not send frequency 7."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Line 2 HC:97140:GP denied $328.30, CAS*CO*151*328.3, LQ*HE*N362",
+          "locator": "SVC/CAS/LQ segments for line 2"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "SV1*HC:97140:GP*328.3*UN*7 \u2014 billed 7 units",
+          "locator": "LX*2 SV1 segment"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "97140 (14 min): manual therapy \u2014 14 minutes equals 1 unit, not 7",
+          "locator": "treatment note"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "151",
+        "rarc": "N362",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        1
+      ],
+      "citations": [
+        {
+          "source": "07-ncci-and-mue.md",
+          "rule": "MAI 2: absolute per-day policy edit; correct_and_resubmit if units were a keying/conversion error"
+        },
+        {
+          "source": "01-carc-rarc-index.md",
+          "rule": "CO-151 + N362: units exceed acceptable maximum, entire line denied"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"Line 2 (97140:GP) billed at 7 units but chart documents only 14 minutes of manual therapy (1 unit). CO-151 + N362 confirms MUE exceeded. This is a keying error \u2014 correct units and resubmit. Medicare Part B does not accept frequency 7; submit as new original.\",\"resolution\":{\"root_cause\":{\"family\":\"mue_exceeded\",\"explanation\":\"97140 billed at 7 units; chart note documents 14 minutes (1 unit). CO-151 + N362 confirms units exceed the MUE. Keying error on unit count.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Correct line 2 (97140:GP) from 7 units to 1 unit. Medicare Part B: submit as new original CLM05-3=1. Do not send frequency 7.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"Line 2 HC:97140:GP denied $328.30, CAS*CO*151*328.3, LQ*HE*N362\",\"locator\":\"SVC/CAS/LQ segments for line 2\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"SV1*HC:97140:GP*328.3*UN*7 \u2014 billed 7 units\",\"locator\":\"LX*2 SV1 segment\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"97140 (14 min): manual therapy \u2014 14 minutes equals 1 unit, not 7\",\"locator\":\"treatment note\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"151\",\"rarc\":\"N362\",\"level\":\"line\"},\"denied_line_idxs\":[1],\"citations\":[{\"source\":\"07-ncci-and-mue.md\",\"rule\":\"MAI 2: absolute per-day policy edit; correct_and_resubmit if units were a keying/conversion error\"},{\"source\":\"01-carc-rarc-index.md\",\"rule\":\"CO-151 + N362: units exceed acceptable maximum, entire line denied\"}]}}"
+}

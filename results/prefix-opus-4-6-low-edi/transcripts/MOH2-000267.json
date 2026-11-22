@@ -1,0 +1,96 @@
+{
+  "case_id": "MOH2-000267",
+  "run_id": "final-opus-4-6-low-edi",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 4689,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4978,
+    "cache_read_input_tokens": 31983,
+    "output_tokens": 965,
+    "output_tokens_details": {
+      "thinking_tokens": 406
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4978
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.0783629,
+  "cache_hit_rate": 0.865271,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All three lines denied CO-119 + N435 (therapy threshold reached). Claim billed 97140/97530 with GP but no KX modifier. Chart note documents medical necessity (\"skilled services remain medically necessary\"). KX was a clerical omission. Medicare Part B: clerical-error reopening to add KX.",
+    "resolution": {
+      "root_cause": {
+        "family": "threshold_no_kx",
+        "explanation": "All lines denied CO-119/N435. Therapy codes billed with GP but missing KX attestation modifier. Chart note supports medical necessity; KX omission is clerical."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Request clerical-error reopening with MAC (1-year window) to add KX modifier to all three lines. Part B does not accept frequency 7. Do not file a new original (duplicate edit)."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All lines: CAS*CO*119 with MOA N435; $0 paid; CLP07=2619052433323 (adjudicated)"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "SV1 lines carry GP modifier but no KX on any line"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "Documents skilled services remain medically necessary on DOS 2026-05-26"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*1 active Medicare Part B coverage for DOS 2026-05-26"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "119",
+        "rarc": "N435",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        1,
+        2,
+        3
+      ],
+      "citations": [
+        {
+          "source": "therapy-modifiers-and-threshold.md",
+          "rule": "CO-119 + N435 without KX: correct_and_resubmit via clerical-error reopening (\u00a78.2)"
+        },
+        {
+          "source": "resubmission-and-frequency-codes.md",
+          "rule": "Part B FFS does not accept frequency 7; use reopening (\u00a76)"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All three lines denied CO-119 + N435 (therapy threshold reached). Claim billed 97140/97530 with GP but no KX modifier. Chart note documents medical necessity (\\\"skilled services remain medically necessary\\\"). KX was a clerical omission. Medicare Part B: clerical-error reopening to add KX.\",\"resolution\":{\"root_cause\":{\"family\":\"threshold_no_kx\",\"explanation\":\"All lines denied CO-119/N435. Therapy codes billed with GP but missing KX attestation modifier. Chart note supports medical necessity; KX omission is clerical.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Request clerical-error reopening with MAC (1-year window) to add KX modifier to all three lines. Part B does not accept frequency 7. Do not file a new original (duplicate edit).\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All lines: CAS*CO*119 with MOA N435; $0 paid; CLP07=2619052433323 (adjudicated)\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"SV1 lines carry GP modifier but no KX on any line\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"Documents skilled services remain medically necessary on DOS 2026-05-26\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*1 active Medicare Part B coverage for DOS 2026-05-26\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"119\",\"rarc\":\"N435\",\"level\":\"line\"},\"denied_line_idxs\":[1,2,3],\"citations\":[{\"source\":\"therapy-modifiers-and-threshold.md\",\"rule\":\"CO-119 + N435 without KX: correct_and_resubmit via clerical-error reopening (\u00a78.2)\"},{\"source\":\"resubmission-and-frequency-codes.md\",\"rule\":\"Part B FFS does not accept frequency 7; use reopening (\u00a76)\"}]}}"
+}

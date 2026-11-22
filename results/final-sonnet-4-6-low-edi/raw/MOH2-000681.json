@@ -1,0 +1,38 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4913,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1164,
+    "output_tokens_details": {
+      "thinking_tokens": 775
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4913
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "awaiting_human",
+    "rationale": "Line 2 (97110:GP) is denied CO-236 + N20 \u2014 an NCCI PTP edit. The chart note documents a distinct, demarcated service on a different body region, supporting a modifier bypass \u2014 but disposition (correct_and_resubmit vs. do_not_resubmit vs. appeal) turns entirely on the CCMI for the 97150/97110 pair in the Q2 2026 PTP edit table, which no artifact carries. Reference 07 requires a lookup; guessing is prohibited.",
+    "awaiting_human": {
+      "question": "What is the Column-Modifier-Indicator (CCMI) for the 97150 (Column One) / 97110 (Column Two) pair in the CMS NCCI PTP edit table effective for Q2 2026 (DOS 2026-06-14)?",
+      "why_needed": "CCMI=1 \u2192 correct_and_resubmit with an appropriate modifier (chart note documents distinct service/body region); CCMI=0 \u2192 do_not_resubmit/write-off; CCMI=9 or no edit present \u2192 appeal. The path is different for each value.",
+      "blocks": [
+        "root_cause.family",
+        "next_action.path"
+      ],
+      "asked_of": "internal"
+    }
+  },
+  "result": "{\"status\":\"awaiting_human\",\"rationale\":\"Line 2 (97110:GP) is denied CO-236 + N20 \u2014 an NCCI PTP edit. The chart note documents a distinct, demarcated service on a different body region, supporting a modifier bypass \u2014 but disposition (correct_and_resubmit vs. do_not_resubmit vs. appeal) turns entirely on the CCMI for the 97150/97110 pair in the Q2 2026 PTP edit table, which no artifact carries. Reference 07 requires a lookup; guessing is prohibited.\",\"awaiting_human\":{\"question\":\"What is the Column-Modifier-Indicator (CCMI) for the 97150 (Column One) / 97110 (Column Two) pair in the CMS NCCI PTP edit table effective for Q2 2026 (DOS 2026-06-14)?\",\"why_needed\":\"CCMI=1 \u2192 correct_and_resubmit with an appropriate modifier (chart note documents distinct service/body region); CCMI=0 \u2192 do_not_resubmit/write-off; CCMI=9 or no edit present \u2192 appeal. The path is different for each value.\",\"blocks\":[\"root_cause.family\",\"next_action.path\"],\"asked_of\":\"internal\"}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000210",
+  "input_format": "edi",
+  "status": "awaiting_human",
+  "rationale": "All three lines denied CO-119 + N435 (therapy threshold reached, no KX modifier). Claim lines carry GP but no KX. KX is an attestation that documentation in the file justifies services beyond the $2,480 threshold. The single chart note states \"skilled services remain medically necessary\" but does not reference threshold justification, functional goals, or progress toward discharge. Appending KX without confirmed supporting documentation is a false attestation risking audit liability.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 883,
+    "cache_read_input_tokens": 31983,
+    "cache_creation_input_tokens": 4968,
+    "cost_usd": 0.07603915,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "awaiting_human": {
+    "question": "Does the patient's file contain documentation (evaluation, plan of care, progress/re-evaluation notes) that supports medical necessity for therapy services beyond the $2,480 KX threshold for CY2026? This is needed before KX can be attested and appended.",
+    "why_needed": "KX is a provider attestation that reasonable and necessary justification exists in the record. If documentation exists, the remedy is correct-and-resubmit via clerical-error reopening with KX appended. If it does not, the claim must be written off \u2014 appending KX without support is a false attestation exposing the practice to audit recoupment.",
+    "blocks": [
+      "root_cause.family",
+      "next_action.path"
+    ],
+    "asked_of": "provider"
+  }
+}

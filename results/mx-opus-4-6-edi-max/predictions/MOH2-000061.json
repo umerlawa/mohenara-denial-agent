@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000061",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All 4 lines denied OA-18 (exact duplicate) with MOA N111. Claim filed CLM05-3=1 (original) against Medicare Part B (MB). CLP07=2623576767957 confirms a prior adjudicated claim exists for this provider/member/DOS/procedure. Duplicate edit is hard-coded, unappealable, and MACs cannot override it. 271 confirms active coverage (EB*1, no termination), so eligibility is not the issue. Disposition: do_not_resubmit; verify original claim status.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 6096,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 37106,
+    "cost_usd": 0.42275475,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "max",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "exact_duplicate",
+      "explanation": "All 4 lines carry OA-18. Claim sent CLM05-3=1 (original) but MAC already adjudicated a matching claim for same provider/member/DOS/procedures. CLP07 2623576767957 confirms adjudication. Hard-coded edit, unappealable."
+    },
+    "next_action": {
+      "path": "do_not_resubmit",
+      "detail": "Check original claim status via portal/IVR. If it paid, post payment and close. Do not resubmit \u2014 another CLM05-3=1 fires the same edit. If original denied for a different reason, address that denial. If duplicate finding is wrong, request telephone reopening."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All 4 service lines carry CAS*OA*18; CLP status 4 (denied); $0 paid; MOA N111 (no appeal rights except duplicate issue)",
+        "locator": "CLP*PA22957514*4, CAS*OA*18 on each SVC"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP07=2623576767957 confirms claim was adjudicated and a prior claim control number exists on file",
+        "locator": "CLP segment field 7"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "CLM05-3=1 (original submission), no REF*F8 \u2014 sent as new claim against an already-adjudicated prior",
+        "locator": "CLM*PA22957514*240.86***11:B:1"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*1 active coverage on DOS 20260705, no termination \u2014 eligibility is not the issue",
+        "locator": "EB*1*IND*30, DTP*356*D8*20240101"
+      }
+    ],
+    "denial": {
+      "group": "OA",
+      "carc": "18",
+      "rarc": null,
+      "level": "claim"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "citations": [
+      {
+        "source": "04-exact-duplicate.md",
+        "rule": "True duplicate \u2014 one service billed twice. Disposition do_not_resubmit. Hard-coded edit, MACs cannot override. Original claim disposition governs."
+      },
+      {
+        "source": "02-resubmission-frequency.md",
+        "rule": "Do not re-send frequency 1 on an adjudicated claim; duplicate logic matches provider/member/DOS/procedure and fires the edit which contractors cannot override."
+      }
+    ]
+  }
+}

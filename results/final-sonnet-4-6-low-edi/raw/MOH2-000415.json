@@ -1,0 +1,82 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4976,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1432,
+    "output_tokens_details": {
+      "thinking_tokens": 647
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4976
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "All three lines denied CO-119/N435 \u2014 therapy threshold reached, KX absent. Chart note dated 06-07-2026 documents medical necessity for all three CPTs. Medicare Part B FFS: add KX to each therapy line and submit via clerical-error reopening (no frequency 7 on Part B).",
+    "resolution": {
+      "root_cause": {
+        "family": "threshold_no_kx",
+        "explanation": "CO-119 + N435 on all three lines; 837P SV1 segments show GP modifier only \u2014 KX absent on 97110, 97112, and 97140. Chart note confirms medical necessity on the DOS."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Append KX to all three therapy lines (97110:GP:KX, 97112:GP:KX, 97140:GP:KX). Medicare Part B FFS \u2014 submit via clerical-error reopening to Novitas, referencing ICN 2621171018657. Attach 06-07-2026 chart note. Do not use frequency 7."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CAS*CO*119 on all three SVC lines with MOA N435; $0 paid; payer MB (Medicare Part B FFS); ICN 2621171018657",
+          "locator": "CLP/MOA/CAS segments"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "SV1 modifiers are GP only on all three lines \u2014 no KX modifier present",
+          "locator": "LX*1\u20133 SV1 segments"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "Skilled services documented as medically necessary on 2026-06-07 for all three CPTs",
+          "locator": "chart_note.txt"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CO-119 + N435, no KX, record supports necessity \u2192 correct_and_resubmit via clerical-error reopening; Part B does not accept frequency 7",
+          "locator": "08-therapy-modifiers.md \u00a7(b) threshold_no_kx table row 1"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "119",
+        "rarc": "N435",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2
+      ],
+      "citations": [
+        {
+          "source": "08-therapy-modifiers.md",
+          "rule": "CO-119 + N435, no KX, justified record \u2192 correct_and_resubmit; Part B vehicle is clerical-error reopening"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Frequency 7 not accepted on Medicare Part B FFS"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"All three lines denied CO-119/N435 \u2014 therapy threshold reached, KX absent. Chart note dated 06-07-2026 documents medical necessity for all three CPTs. Medicare Part B FFS: add KX to each therapy line and submit via clerical-error reopening (no frequency 7 on Part B).\",\"resolution\":{\"root_cause\":{\"family\":\"threshold_no_kx\",\"explanation\":\"CO-119 + N435 on all three lines; 837P SV1 segments show GP modifier only \u2014 KX absent on 97110, 97112, and 97140. Chart note confirms medical necessity on the DOS.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Append KX to all three therapy lines (97110:GP:KX, 97112:GP:KX, 97140:GP:KX). Medicare Part B FFS \u2014 submit via clerical-error reopening to Novitas, referencing ICN 2621171018657. Attach 06-07-2026 chart note. Do not use frequency 7.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CAS*CO*119 on all three SVC lines with MOA N435; $0 paid; payer MB (Medicare Part B FFS); ICN 2621171018657\",\"locator\":\"CLP/MOA/CAS segments\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"SV1 modifiers are GP only on all three lines \u2014 no KX modifier present\",\"locator\":\"LX*1\u20133 SV1 segments\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"Skilled services documented as medically necessary on 2026-06-07 for all three CPTs\",\"locator\":\"chart_note.txt\"},{\"artifact\":\"reference\",\"fact\":\"CO-119 + N435, no KX, record supports necessity \u2192 correct_and_resubmit via clerical-error reopening; Part B does not accept frequency 7\",\"locator\":\"08-therapy-modifiers.md \u00a7(b) threshold_no_kx table row 1\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"119\",\"rarc\":\"N435\",\"level\":\"line\"},\"denied_line_idxs\":[0,1,2],\"citations\":[{\"source\":\"08-therapy-modifiers.md\",\"rule\":\"CO-119 + N435, no KX, justified record \u2192 correct_and_resubmit; Part B vehicle is clerical-error reopening\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Frequency 7 not accepted on Medicare Part B FFS\"}]}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

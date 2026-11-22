@@ -1,0 +1,68 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5178,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1294,
+    "output_tokens_details": {
+      "thinking_tokens": 629
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5178
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "All four lines adjudicated and paid. CO-45 is the contractual fee-schedule write-off; PR-2 is patient coinsurance. Math balances on every line. No denial, no defect \u2014 routine AR collection of the $50.36 patient balance is not a denial remedy.",
+    "resolution": {
+      "root_cause": {
+        "family": "none",
+        "explanation": "Claim paid in full at contracted rates. CO-45 contractual adjustment + PR-2 coinsurance on all four lines; totals balance to billed charges of $382.76."
+      },
+      "next_action": {
+        "path": "none",
+        "detail": "Post $201.48 payment and $50.36 patient coinsurance. Write off the CO-45 amounts per participation agreement. Bill patient $50.36 in the normal course."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP paid status 1; $201.48 paid, $50.36 PR; all four SVC lines carry only CO-45 and PR-2 adjustments that sum to billed charges.",
+          "locator": "CLP*PA24158429*1*382.76*201.48*50.36"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CO-45 on each line is contractual fee-schedule reduction (write-off); PR-2 is patient coinsurance billable to patient.",
+          "locator": "CAS*CO*45 / CAS*PR*2 on SVC lines 1-4"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*1 (active coverage) for DOS 2026-08-09; no termination date segment present.",
+          "locator": "EB*1*IND*30 / DTP*356*D8*20240101"
+        }
+      ],
+      "denied_line_idxs": [],
+      "denial": null,
+      "citations": [
+        {
+          "source": "00-group-codes.md",
+          "rule": "CO = contractual write-off, not billable to patient; PR = patient responsibility, billable after overrides."
+        },
+        {
+          "source": "01-carc-rarc-index.md",
+          "rule": "CARC 45: contractual fee-schedule adjustment, write off. PR-2: coinsurance, bill patient."
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"All four lines adjudicated and paid. CO-45 is the contractual fee-schedule write-off; PR-2 is patient coinsurance. Math balances on every line. No denial, no defect \u2014 routine AR collection of the $50.36 patient balance is not a denial remedy.\",\"resolution\":{\"root_cause\":{\"family\":\"none\",\"explanation\":\"Claim paid in full at contracted rates. CO-45 contractual adjustment + PR-2 coinsurance on all four lines; totals balance to billed charges of $382.76.\"},\"next_action\":{\"path\":\"none\",\"detail\":\"Post $201.48 payment and $50.36 patient coinsurance. Write off the CO-45 amounts per participation agreement. Bill patient $50.36 in the normal course.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP paid status 1; $201.48 paid, $50.36 PR; all four SVC lines carry only CO-45 and PR-2 adjustments that sum to billed charges.\",\"locator\":\"CLP*PA24158429*1*382.76*201.48*50.36\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CO-45 on each line is contractual fee-schedule reduction (write-off); PR-2 is patient coinsurance billable to patient.\",\"locator\":\"CAS*CO*45 / CAS*PR*2 on SVC lines 1-4\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*1 (active coverage) for DOS 2026-08-09; no termination date segment present.\",\"locator\":\"EB*1*IND*30 / DTP*356*D8*20240101\"}],\"denied_line_idxs\":[],\"denial\":null,\"citations\":[{\"source\":\"00-group-codes.md\",\"rule\":\"CO = contractual write-off, not billable to patient; PR = patient responsibility, billable after overrides.\"},{\"source\":\"01-carc-rarc-index.md\",\"rule\":\"CARC 45: contractual fee-schedule adjustment, write off. PR-2: coinsurance, bill patient.\"}]}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

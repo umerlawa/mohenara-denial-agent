@@ -1,0 +1,84 @@
+{
+  "usage": {
+    "input_tokens": 3,
+    "cache_creation_input_tokens": 6624,
+    "cache_read_input_tokens": 68775,
+    "output_tokens": 2086,
+    "output_tokens_details": {
+      "thinking_tokens": 468
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 6624
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "All 5 lines carry CO-4 + N822: required therapy discipline modifier missing. 837P shows KX on every line but no GP/GO/GN. Chart note is a PT treatment note (shoulder Dx), so GP is required on all lines. MB filing indicator = Medicare Part B FFS. Per ref 08, CO-4/N822 = returned unprocessable; remedy is a new original claim (CLM05-3=1), not a corrected 7.",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_therapy_modifier",
+        "explanation": "All 5 lines denied CO-4/N822. 837P sent KX but omitted GP on every line (97530\u00d72, 97140\u00d72, 97116). Chart note is a PT session; GP is required on all always-therapy CPTs under a PT plan of care."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Append GP to every service line (97530, 97140, 97116). Resubmit as a NEW original claim (CLM05-3=1, no REF*F8) \u2014 Medicare Part B does not accept frequency 7. File before the 1-year DOS deadline (2027-06-05). The returned claim never stopped the filing clock."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All 5 SVC lines carry CAS*CO*4 + LQ*HE*N822 \u2014 required modifier missing, provider liability",
+          "locator": "CAS/LQ segments, lines 1\u20135"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "SV1 segments show KX on each line; no GP/GO/GN present on any line",
+          "locator": "LX*1\u2013LX*5 SV1 segments"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "PT treatment note, left shoulder Dx \u2014 establishes a PT plan of care requiring GP modifier",
+          "locator": "first line"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CO-4/N822 = returned unprocessable; remedy is new original CLM05-3=1, not corrected claim or appeal",
+          "locator": "08-therapy-modifiers.md \u00a7a, disposition"
+        }
+      ],
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "4",
+        "rarc": "N822",
+        "level": "line"
+      },
+      "citations": [
+        {
+          "source": "08-therapy-modifiers.md",
+          "rule": "CO-4+N822 on always-therapy CPTs = missing GP/GO/GN; resubmit as new original CLM05-3=1"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Medicare Part B FFS does not accept frequency 7; only CLM05-3=1 valid"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"All 5 lines carry CO-4 + N822: required therapy discipline modifier missing. 837P shows KX on every line but no GP/GO/GN. Chart note is a PT treatment note (shoulder Dx), so GP is required on all lines. MB filing indicator = Medicare Part B FFS. Per ref 08, CO-4/N822 = returned unprocessable; remedy is a new original claim (CLM05-3=1), not a corrected 7.\",\"resolution\":{\"root_cause\":{\"family\":\"missing_therapy_modifier\",\"explanation\":\"All 5 lines denied CO-4/N822. 837P sent KX but omitted GP on every line (97530\u00d72, 97140\u00d72, 97116). Chart note is a PT session; GP is required on all always-therapy CPTs under a PT plan of care.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Append GP to every service line (97530, 97140, 97116). Resubmit as a NEW original claim (CLM05-3=1, no REF*F8) \u2014 Medicare Part B does not accept frequency 7. File before the 1-year DOS deadline (2027-06-05). The returned claim never stopped the filing clock.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All 5 SVC lines carry CAS*CO*4 + LQ*HE*N822 \u2014 required modifier missing, provider liability\",\"locator\":\"CAS/LQ segments, lines 1\u20135\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"SV1 segments show KX on each line; no GP/GO/GN present on any line\",\"locator\":\"LX*1\u2013LX*5 SV1 segments\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"PT treatment note, left shoulder Dx \u2014 establishes a PT plan of care requiring GP modifier\",\"locator\":\"first line\"},{\"artifact\":\"reference\",\"fact\":\"CO-4/N822 = returned unprocessable; remedy is new original CLM05-3=1, not corrected claim or appeal\",\"locator\":\"08-therapy-modifiers.md \u00a7a, disposition\"}],\"denied_line_idxs\":[0,1,2,3,4],\"denial\":{\"group\":\"CO\",\"carc\":\"4\",\"rarc\":\"N822\",\"level\":\"line\"},\"citations\":[{\"source\":\"08-therapy-modifiers.md\",\"rule\":\"CO-4+N822 on always-therapy CPTs = missing GP/GO/GN; resubmit as new original CLM05-3=1\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Medicare Part B FFS does not accept frequency 7; only CLM05-3=1 valid\"}]}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

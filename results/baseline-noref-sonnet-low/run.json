@@ -1,0 +1,17 @@
+{
+  "run_id": "baseline-noref-sonnet-low",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "md",
+  "slice": "eval/slices/dev15.txt",
+  "n_cases": 2,
+  "counts": {
+    "resolved": 2,
+    "awaiting_human": 0,
+    "failed": 0
+  },
+  "cost_usd": 0.327379,
+  "cost_per_case_usd": 0.163689,
+  "stopped_early": true,
+  "note": "Stopped after 2 of 15 cases. Run deliberately, with the reference library still empty, to measure the cost structure before committing to a matrix size. Not a scoreable baseline: the prompt changed immediately afterwards. Kept because it is the real measurement behind the revised spend plan, and gives the token-accounting replay test genuine raw responses to verify."
+}

@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000147",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All five lines carry CO-4 + N822 (\"missing procedure modifier\") on always-therapy CPTs 97530/97140/97116. The 837P lines carry only the KX modifier, no GP/GO/GN discipline modifier. Per missing_therapy_modifier, CO-4/N822 on these CPTs means the claim was never adjudicated (unprocessable), so it must be corrected and resubmitted as a new original claim with GP appended, not appealed or reopened.",
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1926,
+    "cache_read_input_tokens": 104278,
+    "cache_creation_input_tokens": 8106,
+    "cost_usd": 0.06038860000000001,
+    "model": "claude-sonnet-5",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "missing_therapy_modifier",
+      "explanation": "All 5 lines (97530, 97140, 97530, 97140, 97116) denied CO-4 + N822 (\"missing procedure modifier\"). Claim carries KX but no GP/GO/GN discipline modifier required on always-therapy CPTs."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Append GP (outpatient PT plan of care) to all five lines alongside existing KX, and resubmit as a NEW original claim (CLM05-3=1, no REF*F8) \u2014 the claim was never adjudicated. Do not appeal; timely filing clock kept running from DOS 2026-06-05.",
+      "resubmission_frequency_code": "7"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All five SVC lines carry CAS*CO*4 and LQ*HE*N822",
+        "locator": "CAS*CO*4 / LQ*HE*N822 on each SVC"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "SV1 lines use HC:97530:KX, HC:97140:KX, HC:97116:KX \u2014 KX present, no GP/GO/GN",
+        "locator": "SV1 segments"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "Services are PT (therapeutic activities, manual therapy, gait training) under a PT plan of care, supporting GP",
+        "locator": "treatment note 2026-06-05"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "4",
+      "rarc": "N822",
+      "level": "line"
+    },
+    "citations": [
+      {
+        "source": "08-therapy-modifiers.md",
+        "rule": "CO-4 + N822 on always-therapy CPTs 97110/97112/97140/97530 with no GP/GO/GN \u2192 correct_and_resubmit as a new original claim (CLM05-3=1), never appeal, never bill_patient"
+      }
+    ]
+  }
+}

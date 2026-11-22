@@ -1,0 +1,38 @@
+{
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 7402,
+    "cache_read_input_tokens": 108227,
+    "output_tokens": 2379,
+    "output_tokens_details": {
+      "thinking_tokens": 1264
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 7402
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "awaiting_human",
+    "rationale": "Lines 1 and 3 (97110) denied CO-236 + N20 \u2014 NCCI PTP edit, bundled into 97760 (Column One). Chart documents distinct body regions and separate sessions. However, the 835 does not carry the CCMI value for the 97110/97760 pair. If CCMI=1, correct_and_resubmit with a distinguishing modifier via reopening. If CCMI=0, write off. No artifact establishes the CCMI.",
+    "awaiting_human": {
+      "question": "What is the Correct Coding Modifier Indicator (CCMI) for the 97110/97760 code pair in the CMS NCCI PTP edit file for Q2 2026 (DOS 2026-06-02)?",
+      "why_needed": "CCMI=1 means a modifier (59/XE/XS/XP/XU) can unbundle the pair and the remedy is correct_and_resubmit via clerical-error reopening. CCMI=0 means no modifier is permitted and the lines must be written off. The disposition turns entirely on this value.",
+      "blocks": [
+        "root_cause.family",
+        "next_action.path"
+      ],
+      "asked_of": "internal"
+    }
+  },
+  "result": "{\"status\":\"awaiting_human\",\"rationale\":\"Lines 1 and 3 (97110) denied CO-236 + N20 \u2014 NCCI PTP edit, bundled into 97760 (Column One). Chart documents distinct body regions and separate sessions. However, the 835 does not carry the CCMI value for the 97110/97760 pair. If CCMI=1, correct_and_resubmit with a distinguishing modifier via reopening. If CCMI=0, write off. No artifact establishes the CCMI.\",\"awaiting_human\":{\"question\":\"What is the Correct Coding Modifier Indicator (CCMI) for the 97110/97760 code pair in the CMS NCCI PTP edit file for Q2 2026 (DOS 2026-06-02)?\",\"why_needed\":\"CCMI=1 means a modifier (59/XE/XS/XP/XU) can unbundle the pair and the remedy is correct_and_resubmit via clerical-error reopening. CCMI=0 means no modifier is permitted and the lines must be written off. The disposition turns entirely on this value.\",\"blocks\":[\"root_cause.family\",\"next_action.path\"],\"asked_of\":\"internal\"}}",
+  "model": "us.anthropic.claude-opus-4-6-v1"
+}

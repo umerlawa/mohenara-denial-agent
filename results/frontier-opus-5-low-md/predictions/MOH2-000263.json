@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000263",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "835 shows CLP status 1, processed as primary and paid $97.80. Only adjustments are CO-45 contractual write-offs and PR-2 coinsurance \u2014 routine, not denials. GP modifiers present on all therapy lines; 271 shows active coverage on DOS. No rework warranted.",
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1330,
+    "cache_read_input_tokens": 93062,
+    "cache_creation_input_tokens": 7543,
+    "cost_usd": 0.12694475,
+    "model": "claude-opus-5",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "none",
+      "explanation": "Claim adjudicated correctly: paid $97.80, with CO-45 fee-schedule reductions and PR-2 coinsurance only. No denied lines."
+    },
+    "next_action": {
+      "path": "none",
+      "detail": "Post the $97.80 payment and bill the $24.44 PR-2 coinsurance in the normal course. No corrected claim, no appeal."
+    },
+    "denied_line_idxs": [],
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP status 1 (processed as primary, paid); billed $206.46, paid $97.80, PR $24.44",
+        "locator": "CLP PA23903812"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All line adjustments are CO-45 (exceeds fee schedule) and PR-2 (coinsurance); no denial CARCs or RARCs",
+        "locator": "SVC lines 1-3 CAS"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "97110/97112/97140 each carry GP, so no CO-4/N822 therapy-modifier exposure",
+        "locator": "SV1 lines 1-3"
+      }
+    ],
+    "citations": [
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO = contractual, not billable to patient; PR = patient responsibility"
+      },
+      {
+        "source": "01-carc-rarc-index.md",
+        "rule": "CARC 45 = exceeds fee schedule; contractual write-off"
+      }
+    ]
+  }
+}

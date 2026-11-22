@@ -1,0 +1,91 @@
+{
+  "case_id": "MOH2-000062",
+  "run_id": "mx-sonnet-4-6-md-high",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "high",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 6898,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5061,
+    "cache_read_input_tokens": 31309,
+    "output_tokens": 4776,
+    "output_tokens_details": {
+      "thinking_tokens": 3997
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5061
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.110019195,
+  "cache_hit_rate": 0.8608,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "271 confirms KEYSTONE coverage inactive (EB*6), end date 2025-05-31; DOS 2025-06-17 is 17 days post-termination. All four lines carry PR-27 under filing indicator CI. Group PR assigns the balance to the patient. No QMB, Medicaid, NSA (N830), or successor-payer override is present in any artifact. Bill the patient $204.23.",
+    "resolution": {
+      "root_cause": {
+        "family": "eligibility_terminated",
+        "explanation": "271 (ELG78719585) shows EB*6 (inactive), DTP*357 = 2025-05-31. DOS 2025-06-17 is after termination. All 4 lines PR-27, CI filing indicator, no successor payer on record."
+      },
+      "next_action": {
+        "path": "bill_patient",
+        "detail": "Send patient statement for $204.23. All 4 lines are PR-27 (patient liability). No override applies: not QMB, no Medicaid enrollment, no N830, no successor payer in 271. No resubmission warranted."
+      },
+      "denial": {
+        "group": "PR",
+        "carc": "27",
+        "rarc": null,
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "evidence": [
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*6 (inactive), eligibility end DTP*357 = 2025-05-31; DOS 2025-06-17 falls 17 days after termination.",
+          "locator": "ELG78719585"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All 4 lines adjusted PR-27, full billed amounts; $204.23 assigned to patient responsibility. MOA N30 at claim level.",
+          "locator": "PA27132865"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Filing indicator CI, payer responsibility P (primary only); no secondary payer submitted.",
+          "locator": "PA27132865"
+        }
+      ],
+      "citations": [
+        {
+          "source": "05-eligibility-terminated.md",
+          "rule": "CI + PR-27 + EB*6 + DTP*357 before DOS, no successor payer \u2192 bill_patient after overrides cleared"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "PR = patient responsibility; billable after QMB/Medicaid/NSA/ABN overrides checked and cleared"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"271 confirms KEYSTONE coverage inactive (EB*6), end date 2025-05-31; DOS 2025-06-17 is 17 days post-termination. All four lines carry PR-27 under filing indicator CI. Group PR assigns the balance to the patient. No QMB, Medicaid, NSA (N830), or successor-payer override is present in any artifact. Bill the patient $204.23.\",\"resolution\":{\"root_cause\":{\"family\":\"eligibility_terminated\",\"explanation\":\"271 (ELG78719585) shows EB*6 (inactive), DTP*357 = 2025-05-31. DOS 2025-06-17 is after termination. All 4 lines PR-27, CI filing indicator, no successor payer on record.\"},\"next_action\":{\"path\":\"bill_patient\",\"detail\":\"Send patient statement for $204.23. All 4 lines are PR-27 (patient liability). No override applies: not QMB, no Medicaid enrollment, no N830, no successor payer in 271. No resubmission warranted.\"},\"denial\":{\"group\":\"PR\",\"carc\":\"27\",\"rarc\":null,\"level\":\"line\"},\"denied_line_idxs\":[0,1,2,3],\"evidence\":[{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*6 (inactive), eligibility end DTP*357 = 2025-05-31; DOS 2025-06-17 falls 17 days after termination.\",\"locator\":\"ELG78719585\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"All 4 lines adjusted PR-27, full billed amounts; $204.23 assigned to patient responsibility. MOA N30 at claim level.\",\"locator\":\"PA27132865\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Filing indicator CI, payer responsibility P (primary only); no secondary payer submitted.\",\"locator\":\"PA27132865\"}],\"citations\":[{\"source\":\"05-eligibility-terminated.md\",\"rule\":\"CI + PR-27 + EB*6 + DTP*357 before DOS, no successor payer \u2192 bill_patient after overrides cleared\"},{\"source\":\"00-group-codes.md\",\"rule\":\"PR = patient responsibility; billable after QMB/Medicaid/NSA/ABN overrides checked and cleared\"}]}}"
+}

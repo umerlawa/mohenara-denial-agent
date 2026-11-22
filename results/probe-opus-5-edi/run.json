@@ -1,0 +1,23 @@
+{
+  "run_id": "probe-opus-5-edi",
+  "model": "claude-opus-5",
+  "effort": "low",
+  "thinking": "adaptive",
+  "input_format": "edi",
+  "slice": "eval/slices/dev5.txt",
+  "n_cases": 5,
+  "counts": {
+    "resolved": 5,
+    "awaiting_human": 0,
+    "failed": 0
+  },
+  "cost_usd": 0.961766,
+  "cost_usd_successful_cases": 0.961766,
+  "cost_usd_failed_cases": 0.0,
+  "cost_per_case_usd": 0.192353,
+  "wall_seconds": 93.7,
+  "provider": "anthropic",
+  "provider_spend_after": 0.961766,
+  "spend_total_after": 44.183659,
+  "failures": []
+}

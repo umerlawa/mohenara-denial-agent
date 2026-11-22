@@ -1,0 +1,95 @@
+{
+  "case_id": "MOH2-000079",
+  "run_id": "final-sonnet-4-6-low-md-dev25",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 6736,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4925,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 2807,
+    "output_tokens_details": {
+      "thinking_tokens": 1843
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4925
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.077114235,
+  "cache_hit_rate": 0.865654,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "271 confirms `EB*R` for Novitas Solutions Medicare Part B FFS \u2014 a second active payer. Liberty Bell fired CO-22 at both lines and MA04 at claim level. MA04 controls: this is a completeness defect (missing primary adjudication data), not a routing error. Per reference 06, MA04 = correct_and_resubmit to the same payer with the primary's SBR/AMT/CAS populated. File Medicare (Novitas) first; once that remit arrives, rebill Liberty Bell as secondary.",
+    "resolution": {
+      "root_cause": {
+        "family": "cob_other_primary",
+        "explanation": "835 carries CO-22 on both lines and claim-level MA04. 271 shows EB*R for Novitas Solutions Medicare Part B FFS on the DOS. Claim was submitted SBR responsibility P (primary) without Medicare adjudication data; Liberty Bell cannot process as secondary."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Submit to Novitas Solutions Medicare Part B (payer ID 1846349352) as primary first. Once the Medicare 835 is received, resubmit to Liberty Bell as secondary: SBR01=S, add 2320 loop with Medicare paid amount (AMT) and CAS adjustments, CLM05-3=7, REF*F8=2623368127604.",
+        "resubmission_frequency_code": "7"
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CO-22 on lines 1 and 2; claim-level MOA MA04 ('secondary payment cannot be considered without primary payer identity')",
+          "locator": "CAS segments lines 1\u20132; MOA segment claim PA22820481"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*R benefit for NOVITAS SOLUTIONS MEDICARE PART B FFS on plan date 2026-07-02 \u2014 another active payer on record",
+          "locator": "EB*R loop, 2120 payer loop"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "SBR payer responsibility P (primary) \u2014 claim billed to Liberty Bell as primary with no primary adjudication data attached",
+          "locator": "Loop 2000B SBR01"
+        },
+        {
+          "artifact": "reference",
+          "fact": "MA04: correct_and_resubmit to the same payer; populate primary SBR/AMT/CAS. Never resubmit_other_payer or appeal.",
+          "locator": "06-cob-other-primary.md, disposition split"
+        }
+      ],
+      "denied_line_idxs": [
+        0,
+        1
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "22",
+        "rarc": "MA04",
+        "level": "line"
+      },
+      "citations": [
+        {
+          "source": "06-cob-other-primary.md",
+          "rule": "MA04 \u2192 correct_and_resubmit to the same payer; supply primary adjudication data; never appeal or resubmit_other_payer"
+        },
+        {
+          "source": "01-carc-rarc-index.md",
+          "rule": "CARC 22: care may be covered by another payer per COB; MA04: primary payer data missing"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"271 confirms `EB*R` for Novitas Solutions Medicare Part B FFS \u2014 a second active payer. Liberty Bell fired CO-22 at both lines and MA04 at claim level. MA04 controls: this is a completeness defect (missing primary adjudication data), not a routing error. Per reference 06, MA04 = correct_and_resubmit to the same payer with the primary's SBR/AMT/CAS populated. File Medicare (Novitas) first; once that remit arrives, rebill Liberty Bell as secondary.\",\"resolution\":{\"root_cause\":{\"family\":\"cob_other_primary\",\"explanation\":\"835 carries CO-22 on both lines and claim-level MA04. 271 shows EB*R for Novitas Solutions Medicare Part B FFS on the DOS. Claim was submitted SBR responsibility P (primary) without Medicare adjudication data; Liberty Bell cannot process as secondary.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Submit to Novitas Solutions Medicare Part B (payer ID 1846349352) as primary first. Once the Medicare 835 is received, resubmit to Liberty Bell as secondary: SBR01=S, add 2320 loop with Medicare paid amount (AMT) and CAS adjustments, CLM05-3=7, REF*F8=2623368127604.\",\"resubmission_frequency_code\":\"7\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CO-22 on lines 1 and 2; claim-level MOA MA04 ('secondary payment cannot be considered without primary payer identity')\",\"locator\":\"CAS segments lines 1\u20132; MOA segment claim PA22820481\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*R benefit for NOVITAS SOLUTIONS MEDICARE PART B FFS on plan date 2026-07-02 \u2014 another active payer on record\",\"locator\":\"EB*R loop, 2120 payer loop\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"SBR payer responsibility P (primary) \u2014 claim billed to Liberty Bell as primary with no primary adjudication data attached\",\"locator\":\"Loop 2000B SBR01\"},{\"artifact\":\"reference\",\"fact\":\"MA04: correct_and_resubmit to the same payer; populate primary SBR/AMT/CAS. Never resubmit_other_payer or appeal.\",\"locator\":\"06-cob-other-primary.md, disposition split\"}],\"denied_line_idxs\":[0,1],\"denial\":{\"group\":\"CO\",\"carc\":\"22\",\"rarc\":\"MA04\",\"level\":\"line\"},\"citations\":[{\"source\":\"06-cob-other-primary.md\",\"rule\":\"MA04 \u2192 correct_and_resubmit to the same payer; supply primary adjudication data; never appeal or resubmit_other_payer\"},{\"source\":\"01-carc-rarc-index.md\",\"rule\":\"CARC 22: care may be covered by another payer per COB; MA04: primary payer data missing\"}]}}"
+}

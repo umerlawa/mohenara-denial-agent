@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000575",
+  "input_format": "edi",
+  "status": "awaiting_human",
+  "rationale": "Line 0 (97530:GP) denied CO-236+N20 \u2014 confirmed NCCI PTP edit. 97150 is Column One (paid); 97530 is Column Two (denied). Chart note documents separate service, separate start/stop, different body region. Next action depends entirely on CCMI for this pair in the Q3 2026 PTP edit file \u2014 cannot determine from the 835. Line 1 (97150) paid correctly; CO-45 write-off + PR-2 coinsurance routine.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1149,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 4917,
+    "cost_usd": 0.049724235,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "awaiting_human": {
+    "question": "What is the CCMI (Correct Coding Modifier Indicator) for CPT pair 97150 (Column 1) / 97530 (Column 2) in the CMS NCCI PTP edit file effective Q3 2026 (DOS 2026-07-23)?",
+    "why_needed": "CCMI=1 allows correct_and_resubmit via clerical-error reopening with an appropriate bypass modifier (the chart note supports distinct service); CCMI=0 means do_not_resubmit and write off the $55.88.",
+    "blocks": [
+      "next_action.path"
+    ],
+    "asked_of": "internal"
+  }
+}

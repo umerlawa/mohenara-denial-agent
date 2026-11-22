@@ -1,0 +1,95 @@
+{
+  "case_id": "MOH2-000105",
+  "run_id": "cal-sonnet-4-6-md-high",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "high",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 6954,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5110,
+    "cache_read_input_tokens": 31309,
+    "output_tokens": 3768,
+    "output_tokens_details": {
+      "thinking_tokens": 2877
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5110
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.09358932,
+  "cache_hit_rate": 0.859641,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All four lines carry CO-16; claim-level MOA N286 names the defect: missing/invalid referring provider identifier. The 837P lists billing and rendering providers but no referring provider loop. Claim adjudicated (CLP07 present, 277CA A2), filing indicator MB \u2014 Part B FFS vehicle is a clerical-error reopening; frequency 7 is rejected on Part B either way.",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_referring_provider",
+        "explanation": "CO-16 on all four lines; claim-level MOA N286 = missing/incomplete/invalid referring provider primary identifier. The 837P carries no referring provider loop \u2014 only billing (85) and rendering (82) providers are present."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Add the ordering/referring provider name and NPI; verify enrollment in PECOS. MB/Part B adjudicated denial \u2014 frequency 7 is rejected; vehicle is a clerical-error reopening citing ICN 2626660924906. Do not appeal."
+      },
+      "denial": {
+        "group": "CO",
+        "carc": "16",
+        "rarc": "N286",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All four service lines carry CO-16 ($310.83 total); claim-level MOA N286 = missing/incomplete/invalid referring provider primary identifier.",
+          "locator": "CAS CO-16 lines 1\u20134; MOA N286"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "No referring provider loop in the 837P party list; only billing provider (85, NPI 1110692305) and rendering provider (82, NPI 1992501921) are present.",
+          "locator": "837P Loop 2310 parties"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP07 = 2626660924906 confirms the claim was adjudicated; filing indicator MB = Medicare Part B FFS.",
+          "locator": "CLP segment"
+        },
+        {
+          "artifact": "ack_277ca.edi",
+          "fact": "Status A2 (accepted for adjudication) \u2014 claim passed front-end edits and was adjudicated, not returned unprocessable; no MA130.",
+          "locator": "277CA claim status A2"
+        }
+      ],
+      "citations": [
+        {
+          "source": "09-missing-referring-provider.md",
+          "rule": "CO-16 + N286 = missing/invalid referring provider; correct_and_resubmit to same payer; verify name + NPI in NPI Registry and PECOS."
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "Part B adjudicated denial with clerical error \u2192 clerical-error reopening; frequency 7 rejected on Part B FFS; emit as correct_and_resubmit with vehicle named in detail."
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All four lines carry CO-16; claim-level MOA N286 names the defect: missing/invalid referring provider identifier. The 837P lists billing and rendering providers but no referring provider loop. Claim adjudicated (CLP07 present, 277CA A2), filing indicator MB \u2014 Part B FFS vehicle is a clerical-error reopening; frequency 7 is rejected on Part B either way.\",\"resolution\":{\"root_cause\":{\"family\":\"missing_referring_provider\",\"explanation\":\"CO-16 on all four lines; claim-level MOA N286 = missing/incomplete/invalid referring provider primary identifier. The 837P carries no referring provider loop \u2014 only billing (85) and rendering (82) providers are present.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Add the ordering/referring provider name and NPI; verify enrollment in PECOS. MB/Part B adjudicated denial \u2014 frequency 7 is rejected; vehicle is a clerical-error reopening citing ICN 2626660924906. Do not appeal.\"},\"denial\":{\"group\":\"CO\",\"carc\":\"16\",\"rarc\":\"N286\",\"level\":\"line\"},\"denied_line_idxs\":[0,1,2,3],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All four service lines carry CO-16 ($310.83 total); claim-level MOA N286 = missing/incomplete/invalid referring provider primary identifier.\",\"locator\":\"CAS CO-16 lines 1\u20134; MOA N286\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"No referring provider loop in the 837P party list; only billing provider (85, NPI 1110692305) and rendering provider (82, NPI 1992501921) are present.\",\"locator\":\"837P Loop 2310 parties\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP07 = 2626660924906 confirms the claim was adjudicated; filing indicator MB = Medicare Part B FFS.\",\"locator\":\"CLP segment\"},{\"artifact\":\"ack_277ca.edi\",\"fact\":\"Status A2 (accepted for adjudication) \u2014 claim passed front-end edits and was adjudicated, not returned unprocessable; no MA130.\",\"locator\":\"277CA claim status A2\"}],\"citations\":[{\"source\":\"09-missing-referring-provider.md\",\"rule\":\"CO-16 + N286 = missing/invalid referring provider; correct_and_resubmit to same payer; verify name + NPI in NPI Registry and PECOS.\"},{\"source\":\"00-group-codes.md\",\"rule\":\"Part B adjudicated denial with clerical error \u2192 clerical-error reopening; frequency 7 rejected on Part B FFS; emit as correct_and_resubmit with vehicle named in detail.\"}]}}"
+}

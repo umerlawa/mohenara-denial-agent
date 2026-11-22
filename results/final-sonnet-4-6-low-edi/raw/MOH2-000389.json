@@ -1,0 +1,81 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5028,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 3149,
+    "output_tokens_details": {
+      "thinking_tokens": 2240
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5028
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "97530 billed 9 units; chart note documents 29 minutes = 2 units under the 8-minute rule. CO-151 + N362 is MUE exceeded (ref 07). Claim adjudicated on MB (Part B); CLP07 = 2608318151126 confirms adjudication. Part B does not accept frequency 7 \u2014 vehicle is clerical-error reopening. Correct units to 2 and submit via reopening.",
+    "resolution": {
+      "root_cause": {
+        "family": "mue_exceeded",
+        "explanation": "97530 billed 9 units; chart note documents 29 minutes = 2 billable units (8-minute rule). CO-151 + N362 on line 3 confirms MUE exceeded."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Submit a clerical-error reopening to Novitas (Part B \u2014 frequency 7 not accepted). Reduce 97530 to 2 units, referencing ICN 2608318151126. Do not split lines if MAI is 2 or 3.",
+        "resubmission_frequency_code": "7"
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "SVC HC:97530:GP billed 9 units, paid $0; CAS CO-151 $551.20 with RARC N362 (units exceed acceptable maximum)",
+          "locator": "SVC*HC:97530:GP*551.2*0**9 / CAS*CO*151*551.2 / LQ*HE*N362"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "97530 documented at 29 minutes = 2 billable units under the 8-minute rule; 9 units unsupported",
+          "locator": "97530 (29 min): therapeutic activities"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Claim adjudicated; payer claim control number present confirming Part B adjudication",
+          "locator": "CLP*PA26516017*1*663.98*67.6*16.9*MB*2608318151126"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CO-151 + N362 = MUE exceeded; Part B does not accept frequency 7 \u2014 use clerical-error reopening",
+          "locator": "07-ncci-and-mue.md; 02-resubmission-frequency.md"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "151",
+        "rarc": "N362",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        2
+      ],
+      "citations": [
+        {
+          "source": "07-ncci-and-mue.md",
+          "rule": "CO-151 + N362 = mue_exceeded; MAI determines split vs appeal vs write-off"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Medicare Part B does not accept frequency 7; use reopening (1 yr / 4 yr good cause)"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"97530 billed 9 units; chart note documents 29 minutes = 2 units under the 8-minute rule. CO-151 + N362 is MUE exceeded (ref 07). Claim adjudicated on MB (Part B); CLP07 = 2608318151126 confirms adjudication. Part B does not accept frequency 7 \u2014 vehicle is clerical-error reopening. Correct units to 2 and submit via reopening.\",\"resolution\":{\"root_cause\":{\"family\":\"mue_exceeded\",\"explanation\":\"97530 billed 9 units; chart note documents 29 minutes = 2 billable units (8-minute rule). CO-151 + N362 on line 3 confirms MUE exceeded.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Submit a clerical-error reopening to Novitas (Part B \u2014 frequency 7 not accepted). Reduce 97530 to 2 units, referencing ICN 2608318151126. Do not split lines if MAI is 2 or 3.\",\"resubmission_frequency_code\":\"7\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"SVC HC:97530:GP billed 9 units, paid $0; CAS CO-151 $551.20 with RARC N362 (units exceed acceptable maximum)\",\"locator\":\"SVC*HC:97530:GP*551.2*0**9 / CAS*CO*151*551.2 / LQ*HE*N362\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"97530 documented at 29 minutes = 2 billable units under the 8-minute rule; 9 units unsupported\",\"locator\":\"97530 (29 min): therapeutic activities\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"Claim adjudicated; payer claim control number present confirming Part B adjudication\",\"locator\":\"CLP*PA26516017*1*663.98*67.6*16.9*MB*2608318151126\"},{\"artifact\":\"reference\",\"fact\":\"CO-151 + N362 = MUE exceeded; Part B does not accept frequency 7 \u2014 use clerical-error reopening\",\"locator\":\"07-ncci-and-mue.md; 02-resubmission-frequency.md\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"151\",\"rarc\":\"N362\",\"level\":\"line\"},\"denied_line_idxs\":[2],\"citations\":[{\"source\":\"07-ncci-and-mue.md\",\"rule\":\"CO-151 + N362 = mue_exceeded; MAI determines split vs appeal vs write-off\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Medicare Part B does not accept frequency 7; use reopening (1 yr / 4 yr good cause)\"}]}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

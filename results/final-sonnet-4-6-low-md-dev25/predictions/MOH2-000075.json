@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000075",
+  "input_format": "md",
+  "status": "awaiting_human",
+  "rationale": "Line 1 (97140-GP-KX) denied CO-236 + N20 \u2014 NCCI PTP bundling against 97150. The chart note documents a separate session and distinct body region, which could support a bypass modifier if CCMI = 1. But the 835 carries neither the Column One partner code nor the CCMI indicator. Per reference 07-ncci-and-mue.md, the CCMI must be looked up in the PTP edit file for the DOS quarter before any action can be determined; guessing is prohibited.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 893,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 4970,
+    "cost_usd": 0.04571886,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "awaiting_human": {
+    "question": "What is the CCMI (Column 2/Column 1 Modifier Indicator) for the 97140/97150 pair in the CMS NCCI PTP edit table effective Q3 2026 (July 1, 2026)?",
+    "why_needed": "CCMI = 1 \u2192 correct_and_resubmit with a bypass modifier (chart note documents separate session/distinct region). CCMI = 0 \u2192 do_not_resubmit, write off. CCMI = 9 \u2192 appeal edit applicability. The action is different in each case and cannot be determined without this value.",
+    "blocks": [
+      "next_action.path"
+    ],
+    "asked_of": "internal"
+  }
+}

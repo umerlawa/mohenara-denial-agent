@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000067",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "835 shows CO-16 + MOA N286 on all three lines: referring provider NPI missing or invalid. The 837P has a rendering provider (NM1*82 Lopez/1390221007) but no referring/ordering provider loop. Medicare Part B (MB); claim adjudicated (CLP07 present). Fix: add valid ordering/referring NPI, resubmit as new original (CLM05-3=1).",
+  "usage": {
+    "input_tokens": 3,
+    "output_tokens": 1856,
+    "cache_read_input_tokens": 68465,
+    "cache_creation_input_tokens": 6117,
+    "cost_usd": 0.078459975,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "missing_referring_provider",
+      "explanation": "837P omits the referring/ordering provider loop entirely. 835 returns CO-16+N286 on all three lines: missing/incomplete/invalid referring provider primary identifier."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Add ordering/referring provider name + NPI to the 837P (verify against NPI Registry and PECOS). Resubmit as CLM05-3=1 (new original) \u2014 Medicare Part B FFS does not accept frequency 7."
+    },
+    "denial": {
+      "group": "CO",
+      "carc": "16",
+      "rarc": "N286",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CAS*CO*16 on all three SVC lines; MOA N286 at claim level \u2014 missing/invalid referring provider primary identifier",
+        "locator": "MOA***N286; CAS*CO*16*93.05 / *81.91 / *56.91"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "No referring provider loop (NM1*77) present; only rendering provider NM1*82 Lopez/1390221007",
+        "locator": "837P \u2014 NM1*82 only"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP07=2625095686411 confirms adjudication; filing indicator MB = Medicare Part B FFS",
+        "locator": "CLP*PA24729290*4*231.87*0**MB*2625095686411"
+      }
+    ],
+    "citations": [
+      {
+        "source": "09-missing-referring-provider.md",
+        "rule": "CO-16+N286 \u2192 correct_and_resubmit; verify referring NPI in PECOS; Part B accepts CLM05-3=1 only"
+      },
+      {
+        "source": "02-resubmission-frequency.md",
+        "rule": "Medicare Part B FFS: frequency 7 not accepted; submit new original CLM05-3=1"
+      }
+    ]
+  }
+}

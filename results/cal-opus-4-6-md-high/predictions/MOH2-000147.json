@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000147",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "All 5 therapy lines (97530, 97140, 97116) denied CO-4 + N822. Claim carries only KX; no GP/GO/GN discipline modifier present. Chart note confirms \"PT treatment note\" \u2014 physical therapy plan of care \u2014 so GP is required. CO-4/N822 on always-therapy CPTs is the missing_therapy_modifier signature. Per reference 08, this is unprocessable with no appeal rights; resubmit as a new original (frequency 1) with GP appended to each line.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 2310,
+    "cache_read_input_tokens": 31983,
+    "cache_creation_input_tokens": 5254,
+    "cost_usd": 0.11724789999999999,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "high",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "missing_therapy_modifier",
+      "explanation": "All lines billed 97530/97140/97116 with KX only. GP modifier required for services under a physical therapy plan of care is absent. Chart note confirms PT discipline."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Append modifier GP to every line alongside KX. Submit as a new original claim (CLM05-3 = 1). Do not appeal \u2014 no appeal rights on CO-4/N822. Filing clock running from DOS 2026-06-05; act before 2027-06-05."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All 5 lines denied CO-4 $330.73 with RARC N822 (missing procedure modifier)",
+        "locator": "CAS segments lines 1-5"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Lines carry only KX modifier; no GP/GO/GN therapy discipline modifier present",
+        "locator": "SV1 segments all lines"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "'PT treatment note 2026-06-05' confirms physical therapy plan of care requiring GP",
+        "locator": "first line"
+      },
+      {
+        "artifact": "reference",
+        "fact": "CO-4 + N822 on always-therapy CPTs = missing_therapy_modifier; vehicle is new original claim, not appeal or reopening",
+        "locator": "08-therapy-modifiers.md \u00a7a"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "4",
+      "rarc": "N822",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "citations": [
+      {
+        "source": "08-therapy-modifiers.md",
+        "rule": "CO-4 + N822 on 97530/97140/97116 without GP/GO/GN = missing therapy modifier; resubmit as new original"
+      },
+      {
+        "source": "08-therapy-modifiers.md",
+        "rule": "Unprocessable claim has no appeal rights; MAC N822 guidance says submit a new claim (CLM05-3 = 1)"
+      }
+    ]
+  }
+}

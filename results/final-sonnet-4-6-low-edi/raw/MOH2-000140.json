@@ -1,0 +1,77 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5005,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1391,
+    "output_tokens_details": {
+      "thinking_tokens": 567
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5005
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "All three lines carry CO-22. The 271 returns EB*R for Novitas Medicare Part B with MSG \"PLAN IS PRIMARY PAYER FOR THIS MEMBER.\" The 837P filed Liberty Bell as primary (SBR*P). Coverage order is inverted; Medicare must adjudicate first. MA04 at MOA confirms missing primary payer data \u2014 a symptom of the same root cause.",
+    "resolution": {
+      "root_cause": {
+        "family": "cob_other_primary",
+        "explanation": "Claim billed Liberty Bell as primary (SBR*P/CI). 271 identifies Novitas Medicare Part B as primary payer (EB*R + MSG). All three lines denied CO-22; claim never adjudicated by correct primary."
+      },
+      "next_action": {
+        "path": "resubmit_other_payer",
+        "detail": "Submit new original claim (CLM05-3=1) to Novitas Medicare Part B (PI 1846349352). Once Medicare adjudicates, rebill Liberty Bell as secondary carrying Medicare's SBR/AMT/CAS/SVD data to satisfy MA04."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All three service lines: CAS*CO*22 \u2014 contractual adjustment, CARC 22 (another payer primary). MOA***MA04 at claim level (primary payer adjudication data missing).",
+          "locator": "SVC/CAS segments; MOA segment under CLP*PA23020810"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*R for NOVITAS SOLUTIONS MEDICARE PART B FFS with MSG 'PLAN IS PRIMARY PAYER FOR THIS MEMBER', effective 2024-01-01.",
+          "locator": "EB*R loop, NM1*PR*2*NOVITAS, MSG segment"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "SBR*P*18*******CI \u2014 Liberty Bell billed as primary payer.",
+          "locator": "Loop 2000B SBR segment"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "22",
+        "rarc": null,
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2
+      ],
+      "citations": [
+        {
+          "source": "06-cob-other-primary.md",
+          "rule": "CARC 22 alone \u2192 resubmit_other_payer; never appeal a disclaiming payer."
+        },
+        {
+          "source": "06-cob-other-primary.md",
+          "rule": "MA04 \u2192 correct_and_resubmit to same payer: supply primary SBR/AMT/CAS. Here triggered after Medicare adjudicates."
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"All three lines carry CO-22. The 271 returns EB*R for Novitas Medicare Part B with MSG \\\"PLAN IS PRIMARY PAYER FOR THIS MEMBER.\\\" The 837P filed Liberty Bell as primary (SBR*P). Coverage order is inverted; Medicare must adjudicate first. MA04 at MOA confirms missing primary payer data \u2014 a symptom of the same root cause.\",\"resolution\":{\"root_cause\":{\"family\":\"cob_other_primary\",\"explanation\":\"Claim billed Liberty Bell as primary (SBR*P/CI). 271 identifies Novitas Medicare Part B as primary payer (EB*R + MSG). All three lines denied CO-22; claim never adjudicated by correct primary.\"},\"next_action\":{\"path\":\"resubmit_other_payer\",\"detail\":\"Submit new original claim (CLM05-3=1) to Novitas Medicare Part B (PI 1846349352). Once Medicare adjudicates, rebill Liberty Bell as secondary carrying Medicare's SBR/AMT/CAS/SVD data to satisfy MA04.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All three service lines: CAS*CO*22 \u2014 contractual adjustment, CARC 22 (another payer primary). MOA***MA04 at claim level (primary payer adjudication data missing).\",\"locator\":\"SVC/CAS segments; MOA segment under CLP*PA23020810\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*R for NOVITAS SOLUTIONS MEDICARE PART B FFS with MSG 'PLAN IS PRIMARY PAYER FOR THIS MEMBER', effective 2024-01-01.\",\"locator\":\"EB*R loop, NM1*PR*2*NOVITAS, MSG segment\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"SBR*P*18*******CI \u2014 Liberty Bell billed as primary payer.\",\"locator\":\"Loop 2000B SBR segment\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"22\",\"rarc\":null,\"level\":\"line\"},\"denied_line_idxs\":[0,1,2],\"citations\":[{\"source\":\"06-cob-other-primary.md\",\"rule\":\"CARC 22 alone \u2192 resubmit_other_payer; never appeal a disclaiming payer.\"},{\"source\":\"06-cob-other-primary.md\",\"rule\":\"MA04 \u2192 correct_and_resubmit to same payer: supply primary SBR/AMT/CAS. Here triggered after Medicare adjudicates.\"}]}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

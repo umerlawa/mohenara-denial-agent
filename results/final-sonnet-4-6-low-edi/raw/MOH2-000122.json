@@ -1,0 +1,37 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4819,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1713,
+    "output_tokens_details": {
+      "thinking_tokens": 1349
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4819
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "awaiting_human",
+    "rationale": "Both lines denied CO-29 (timely filing expired) with N211. DOS 2025-02-16; claim accepted by clearinghouse/payer 2025-06-09 \u2014 113 days after DOS. Whether to appeal (submission was within window) or write off (genuinely late) turns entirely on Keystone Commercial Health's filing deadline, which is not in the reference library. NJ has no documented state floor in the reference files.",
+    "awaiting_human": {
+      "question": "What is Keystone Commercial Health's timely filing deadline for outpatient participating-provider claims \u2014 is it 90 days, 180 days, or some other limit per the provider agreement or Keystone's billing manual?",
+      "why_needed": "DOS is 2025-02-16; claim was accepted by Keystone on 2025-06-09 (113 days). If the deadline is \u226490 days the denial is valid and the claim must be written off (CO-29, no patient billing). If the deadline is \u2265120 days the filing was timely and the denial should be appealed with the 277CA acceptance report.",
+      "blocks": [
+        "next_action.path"
+      ],
+      "asked_of": "provider"
+    }
+  },
+  "result": "{\"status\":\"awaiting_human\",\"rationale\":\"Both lines denied CO-29 (timely filing expired) with N211. DOS 2025-02-16; claim accepted by clearinghouse/payer 2025-06-09 \u2014 113 days after DOS. Whether to appeal (submission was within window) or write off (genuinely late) turns entirely on Keystone Commercial Health's filing deadline, which is not in the reference library. NJ has no documented state floor in the reference files.\",\"awaiting_human\":{\"question\":\"What is Keystone Commercial Health's timely filing deadline for outpatient participating-provider claims \u2014 is it 90 days, 180 days, or some other limit per the provider agreement or Keystone's billing manual?\",\"why_needed\":\"DOS is 2025-02-16; claim was accepted by Keystone on 2025-06-09 (113 days). If the deadline is \u226490 days the denial is valid and the claim must be written off (CO-29, no patient billing). If the deadline is \u2265120 days the filing was timely and the denial should be appealed with the 277CA acceptance report.\",\"blocks\":[\"next_action.path\"],\"asked_of\":\"provider\"}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

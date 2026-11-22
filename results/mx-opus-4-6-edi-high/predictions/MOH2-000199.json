@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000199",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "Line 3 denied CO-151/N362 (MUE exceeded) for 97112:GP \u00d7 5 units. Chart documents only 31 minutes of neuromuscular re-education = 2 units per the 8-minute rule. This is a keying error\u20145 units unsupported by documentation. Medicare Part B does not accept frequency 7; vehicle is a clerical-error reopening to the MAC correcting units to 2.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 3726,
+    "cache_read_input_tokens": 31983,
+    "cache_creation_input_tokens": 5034,
+    "cost_usd": 0.1546754,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "high",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "mue_exceeded",
+      "explanation": "Line 3 billed 97112:GP \u00d7 5 units; chart documents 31 minutes = 2 units. CO-151 + N362 confirms MUE exceeded. Keying error, not a clinical dispute."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Request clerical-error reopening to Novitas (Part B rejects frequency 7). Correct line 3 to 97112:GP \u00d7 2 units per documented 31 minutes. Reference ICN 2615618156708."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Line 3 97112:GP denied in full: CAS*CO*151*214.95, LQ*HE*N362 (units exceed acceptable maximum)",
+        "locator": "SVC*HC:97112:GP*214.95*0**5 / CAS / LQ lines"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Line 3 billed SV1*HC:97112:GP*214.95*UN*5 \u2014 5 units submitted",
+        "locator": "LX*3 segment"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "97112 documented at 31 minutes total; 8-minute rule yields 2 units, not 5",
+        "locator": "97112 (31 min): neuromuscular re-education"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Payer is Medicare Part B FFS (SBR=MB); CLP07=2615618156708 is the ICN for reopening",
+        "locator": "CLP*PA21657403*1*300.34*46.5*11.62*MB*2615618156708"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "151",
+      "rarc": "N362",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      2
+    ],
+    "citations": [
+      {
+        "source": "07-ncci-and-mue.md",
+        "rule": "CO-151 + N362 = MUE exceeded; keying/conversion error \u2192 correct_and_resubmit"
+      },
+      {
+        "source": "02-resubmission-frequency.md",
+        "rule": "Part B/DME FFS: frequency 7 not accepted; use clerical-error reopening (1 yr) or redetermination (120 days)"
+      }
+    ]
+  }
+}

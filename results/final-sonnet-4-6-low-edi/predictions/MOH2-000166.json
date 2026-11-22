@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000166",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All three lines carry OA-18 (exact duplicate). The 835 has CLP07=2609185534064, confirming adjudication. The 277CA shows the original transmission was accepted (A2). A second identical claim was submitted as CLM05-3=1, triggering the duplicate edit. OA group = no patient liability. Original claim's disposition governs.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1026,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 4999,
+    "cost_usd": 0.048032985,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "exact_duplicate",
+      "explanation": "All three lines denied OA-18. 835 CLP07=2609185534064 confirms adjudication. A second claim for PA26461680 was submitted as frequency 1, matching provider/member/DOS/procedure of the already-adjudicated original."
+    },
+    "next_action": {
+      "path": "do_not_resubmit",
+      "detail": "Do not resend. Pull the original claim PA26461680 status via MAC portal/IVR. If it paid, post and close. If still pending, hold. Do not appeal \u2014 duplicate edits are hard-coded and unappealable."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CAS*OA*18 on all three SVC lines; CLP07=2609185534064 confirms prior adjudication",
+        "locator": "CLP/SVC/CAS segments"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "MOA N111 present; $0 paid on this submission",
+        "locator": "MOA***N111; BPR*H*0"
+      },
+      {
+        "artifact": "ack_277ca.edi",
+        "fact": "STC*A2:20 \u2014 original transmission accepted and forwarded",
+        "locator": "STC segment"
+      },
+      {
+        "artifact": "reference",
+        "fact": "OA-18 = exact duplicate; hard-coded edit, no appeal rights, do_not_resubmit; original's disposition governs",
+        "locator": "04-exact-duplicate.md"
+      }
+    ],
+    "denial": {
+      "group": "OA",
+      "carc": "18",
+      "rarc": "N111",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "citations": [
+      {
+        "source": "04-exact-duplicate.md",
+        "rule": "OA-18 true duplicate \u2192 do_not_resubmit; hard-coded edit, unappealable; original claim's disposition governs"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "OA = liability unstated, never bill patient"
+      }
+    ]
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "case_id": "MOH2-000117",
+  "run_id": "probe-opus-5-edi",
+  "model": "claude-opus-5",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4391,
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 2047,
+    "cache_read_input_tokens": 98540,
+    "output_tokens": 2947,
+    "output_tokens_details": {
+      "thinking_tokens": 1036
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 2047,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 953,
+        "cache_read_input_tokens": 49270,
+        "cache_creation_input_tokens": 2047,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 2047
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.13575875,
+  "cache_hit_rate": 0.979611,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "835 denies both lines CO-29/N211 as untimely. But the 277CA for trace TRC75364521 is dated 2025-01-27, eight days after the 2025-01-19 DOS, with no A3/A7 rejection \u2014 the claim was submitted and acknowledged well inside any commercial filing window. The defect is the payer's receipt date, not late filing: appeal with the acceptance report. CO bars patient billing; the claim as billed is correct, so no corrected claim.",
+    "resolution": {
+      "root_cause": {
+        "family": "timely_filing",
+        "explanation": "Both lines denied CO-29 / N211 for DOS 2025-01-19. The 277CA dated 2025-01-27 for the same trace TRC75364521 shows the claim was submitted and acknowledged eight days after DOS, with no A3/A7 rejection category."
+      },
+      "next_action": {
+        "path": "appeal",
+        "detail": "Appeal to Liberty Bell Health Plans disputing the receipt date. Attach the 277CA acknowledgement dated 2025-01-27 (trace TRC75364521, $138.62) as proof of submission inside the filing window. Do not rebill and do not bill the patient \u2014 group code CO."
+      },
+      "denial": {
+        "group": "CO",
+        "carc": "29",
+        "rarc": "N211",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Both service lines denied CAS*CO*29 ($91.91, $46.71), $0 paid, MOA N211",
+          "locator": "CAS*CO*29 / MOA***N211"
+        },
+        {
+          "artifact": "ack_277ca.edi",
+          "fact": "Claim trace TRC75364521 acknowledged 2025-01-27 for $138.62; no A3/A7 rejection",
+          "locator": "STC*A2:20*20250127*WQ*138.62"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "DOS 2025-01-19 \u2014 acknowledgement 8 days later, inside any commercial limit",
+          "locator": "DTP*472*D8*20250119"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CO-29 with proof of accepted submission inside the window \u2192 appeal disputing receipt date; CO never billable to patient",
+          "locator": "03-timely-filing.md"
+        }
+      ],
+      "citations": [
+        {
+          "source": "03-timely-filing.md",
+          "rule": "CARC 29 + N211; acceptance report inside window \u2192 appeal the receipt date, not write-off"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "CO = provider liability, never bill patient; claim data right, determination wrong \u2192 appeal"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"835 denies both lines CO-29/N211 as untimely. But the 277CA for trace TRC75364521 is dated 2025-01-27, eight days after the 2025-01-19 DOS, with no A3/A7 rejection \u2014 the claim was submitted and acknowledged well inside any commercial filing window. The defect is the payer's receipt date, not late filing: appeal with the acceptance report. CO bars patient billing; the claim as billed is correct, so no corrected claim.\",\"resolution\":{\"root_cause\":{\"family\":\"timely_filing\",\"explanation\":\"Both lines denied CO-29 / N211 for DOS 2025-01-19. The 277CA dated 2025-01-27 for the same trace TRC75364521 shows the claim was submitted and acknowledged eight days after DOS, with no A3/A7 rejection category.\"},\"next_action\":{\"path\":\"appeal\",\"detail\":\"Appeal to Liberty Bell Health Plans disputing the receipt date. Attach the 277CA acknowledgement dated 2025-01-27 (trace TRC75364521, $138.62) as proof of submission inside the filing window. Do not rebill and do not bill the patient \u2014 group code CO.\"},\"denial\":{\"group\":\"CO\",\"carc\":\"29\",\"rarc\":\"N211\",\"level\":\"line\"},\"denied_line_idxs\":[0,1],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"Both service lines denied CAS*CO*29 ($91.91, $46.71), $0 paid, MOA N211\",\"locator\":\"CAS*CO*29 / MOA***N211\"},{\"artifact\":\"ack_277ca.edi\",\"fact\":\"Claim trace TRC75364521 acknowledged 2025-01-27 for $138.62; no A3/A7 rejection\",\"locator\":\"STC*A2:20*20250127*WQ*138.62\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"DOS 2025-01-19 \u2014 acknowledgement 8 days later, inside any commercial limit\",\"locator\":\"DTP*472*D8*20250119\"},{\"artifact\":\"reference\",\"fact\":\"CO-29 with proof of accepted submission inside the window \u2192 appeal disputing receipt date; CO never billable to patient\",\"locator\":\"03-timely-filing.md\"}],\"citations\":[{\"source\":\"03-timely-filing.md\",\"rule\":\"CARC 29 + N211; acceptance report inside window \u2192 appeal the receipt date, not write-off\"},{\"source\":\"00-group-codes.md\",\"rule\":\"CO = provider liability, never bill patient; claim data right, determination wrong \u2192 appeal\"}]}}"
+}

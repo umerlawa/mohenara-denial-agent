@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000490",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "Liberty Bell denied all three lines CO-22 + MOA MA04, asserting another payer is primary. But Liberty Bell's own 271 response for the DOS (2026-01-29) carries EB*1 (active coverage) with the explicit payer message \"PLAN IS PRIMARY PAYER FOR THIS MEMBER.\" The payer's records contradict the denial. Appeal with the 271 as the controlling evidence; do not bill Medicare first.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 2938,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 5033,
+    "cost_usd": 0.079721235,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "cob_other_primary",
+      "explanation": "Liberty Bell denied CO-22 (another payer primary) with MOA MA04 (no primary payer identity), but their own 271 response for DOS 2026-01-29 states 'PLAN IS PRIMARY PAYER FOR THIS MEMBER' with active EB*1 coverage."
+    },
+    "next_action": {
+      "path": "appeal",
+      "detail": "File redetermination with Liberty Bell citing 271 exchange ELG31652538 (dated 2026-03-10, DOS 2026-01-29): Liberty Bell's own eligibility response confirms it is primary. Attach the 271 showing EB*1 active coverage and the 'PLAN IS PRIMARY PAYER FOR THIS MEMBER' message. Do not submit to Medicare first."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All three service lines denied CO-22 ($173.49 total); claim-level MOA MA04 \u2014 Liberty Bell treating itself as secondary.",
+        "locator": "CAS lines 1\u20133; MOA segment"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*1 active coverage for Liberty Bell PPO on DOS 2026-01-29; payer message: 'PLAN IS PRIMARY PAYER FOR THIS MEMBER'.",
+        "locator": "Exchange ELG31652538; EB*1 / payer message segment"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*R identifies Novitas Solutions Medicare Part B as other/additional payer \u2014 confirms Medicare exists but does not establish it as primary.",
+        "locator": "EB*R loop, 2120 payer: NOVITAS SOLUTIONS MEDICARE PART B FFS"
+      },
+      {
+        "artifact": "reference",
+        "fact": "Per 06-cob-other-primary.md: when payer's own eligibility record contradicts the CO-22 denial, action is appeal citing the 271 exchange reference and date.",
+        "locator": "06-cob-other-primary.md \u2014 disposition table, row: 'Payer's record contradicts the denial'"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "22",
+      "rarc": "MA04",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "citations": [
+      {
+        "source": "06-cob-other-primary.md",
+        "rule": "CO-22 with payer's own eligibility contradicting the denial \u2192 appeal with 271 exchange reference"
+      },
+      {
+        "source": "01-carc-rarc-index.md",
+        "rule": "CARC 22: care may be covered by another payer per COB; MA04: primary payer data missing"
+      }
+    ]
+  }
+}

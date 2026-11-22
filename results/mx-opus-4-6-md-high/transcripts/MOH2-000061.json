@@ -1,0 +1,96 @@
+{
+  "case_id": "MOH2-000061",
+  "run_id": "mx-opus-4-6-md-high",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "high",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 6892,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 37095,
+    "cache_read_input_tokens": 0,
+    "output_tokens": 2355,
+    "output_tokens_details": {
+      "thinking_tokens": 1675
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 37095
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.319801625,
+  "cache_hit_rate": 0.0,
+  "model_output": {
+    "rationale": "All four lines denied OA-18 (exact duplicate) with MOA N111. Claim filed as frequency 1 (original) to Medicare Part B (MB). Payer's duplicate logic matched provider/member/DOS/procedure against an already-adjudicated prior claim. CLP07 present confirms adjudication. OA group = no patient liability. Duplicate edit is hard-coded, unappealable; original claim's disposition governs.",
+    "resolution": {
+      "root_cause": {
+        "family": "exact_duplicate",
+        "explanation": "Claim PA22957514 filed as frequency 1 hit the hard-coded duplicate edit against a prior adjudicated claim with matching provider/member/DOS/procedures. OA-18 + N111 on all lines."
+      },
+      "next_action": {
+        "path": "do_not_resubmit",
+        "detail": "Check portal/IVR for the original claim's status. If paid, post payment and close. Do not resubmit \u2014 duplicate edit is hard-coded and MACs cannot override it."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All 4 lines denied OA-18 (exact duplicate claim/service); MOA N111 (no appeal right except duplicate claim/service issue)",
+          "locator": "CAS segment all lines; MOA"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP07 = 2623576767957 confirms claim was adjudicated (not front-end rejected)",
+          "locator": "CLP segment"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "CLM05-3 = 1 (original claim); no REF*F8 \u2014 treated as brand-new submission subject to duplicate matching",
+          "locator": "CLM segment"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*1 active coverage from 2024-01-01 for DOS 2026-07-05 \u2014 eligibility not at issue",
+          "locator": "EB segment"
+        }
+      ],
+      "denial": {
+        "group": "OA",
+        "carc": "18",
+        "rarc": null,
+        "level": "claim"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "citations": [
+        {
+          "source": "04-exact-duplicate.md",
+          "rule": "True duplicate \u2014 one service billed once sent twice: disposition do_not_resubmit, family exact_duplicate. Hard-coded edit, MACs cannot override or bypass."
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Every 837 with CLM05-3=1 is treated as brand-new; duplicate logic matches provider/member/DOS/procedure and fires the edit."
+        }
+      ]
+    },
+    "status": "resolved"
+  },
+  "raw_text": "{\"rationale\":\"All four lines denied OA-18 (exact duplicate) with MOA N111. Claim filed as frequency 1 (original) to Medicare Part B (MB). Payer's duplicate logic matched provider/member/DOS/procedure against an already-adjudicated prior claim. CLP07 present confirms adjudication. OA group = no patient liability. Duplicate edit is hard-coded, unappealable; original claim's disposition governs.\",\"resolution\":{\"root_cause\":{\"family\":\"exact_duplicate\",\"explanation\":\"Claim PA22957514 filed as frequency 1 hit the hard-coded duplicate edit against a prior adjudicated claim with matching provider/member/DOS/procedures. OA-18 + N111 on all lines.\"},\"next_action\":{\"path\":\"do_not_resubmit\",\"detail\":\"Check portal/IVR for the original claim's status. If paid, post payment and close. Do not resubmit \u2014 duplicate edit is hard-coded and MACs cannot override it.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All 4 lines denied OA-18 (exact duplicate claim/service); MOA N111 (no appeal right except duplicate claim/service issue)\",\"locator\":\"CAS segment all lines; MOA\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP07 = 2623576767957 confirms claim was adjudicated (not front-end rejected)\",\"locator\":\"CLP segment\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"CLM05-3 = 1 (original claim); no REF*F8 \u2014 treated as brand-new submission subject to duplicate matching\",\"locator\":\"CLM segment\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*1 active coverage from 2024-01-01 for DOS 2026-07-05 \u2014 eligibility not at issue\",\"locator\":\"EB segment\"}],\"denial\":{\"group\":\"OA\",\"carc\":\"18\",\"rarc\":null,\"level\":\"claim\"},\"denied_line_idxs\":[0,1,2,3],\"citations\":[{\"source\":\"04-exact-duplicate.md\",\"rule\":\"True duplicate \u2014 one service billed once sent twice: disposition do_not_resubmit, family exact_duplicate. Hard-coded edit, MACs cannot override or bypass.\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Every 837 with CLM05-3=1 is treated as brand-new; duplicate logic matches provider/member/DOS/procedure and fires the edit.\"}]},\"status\":\"resolved\"}"
+}

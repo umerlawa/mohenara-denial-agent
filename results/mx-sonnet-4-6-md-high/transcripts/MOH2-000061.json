@@ -1,0 +1,96 @@
+{
+  "case_id": "MOH2-000061",
+  "run_id": "mx-sonnet-4-6-md-high",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "high",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 6892,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 36421,
+    "cache_read_input_tokens": 0,
+    "output_tokens": 12095,
+    "output_tokens_details": {
+      "thinking_tokens": 11077
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 36421
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.349810725,
+  "cache_hit_rate": 0.0,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All four service lines carry OA-18 (exact duplicate) + MOA N111 (no appeal right). CLP07 2623576767957 confirms the claim was adjudicated, not front-end rejected. Billed amounts differ between the repeated-code lines (97140: $47.76 vs $46.48; 97110: $98.25 vs $48.37), ruling out intra-claim self-match \u2014 a prior claim for DOS 2026-07-05 was already adjudicated. Hard-coded edit; MACs cannot override; original claim's disposition governs.",
+    "resolution": {
+      "root_cause": {
+        "family": "exact_duplicate",
+        "explanation": "OA-18 on all four lines + N111. Intra-claim billed amounts differ (97140 lines: $47.76 vs $46.48; 97110 lines: $98.25 vs $48.37), ruling out self-match. A prior adjudicated claim for DOS 2026-07-05 triggered the hard-coded duplicate edit."
+      },
+      "next_action": {
+        "path": "do_not_resubmit",
+        "detail": "Do not resubmit. Check portal/IVR for the prior claim's ICN and its status. If it paid, post payment and close. If denied, address that original via Telephone Reopenings only \u2014 not a new claim, not a redetermination."
+      },
+      "denial": {
+        "group": "OA",
+        "carc": "18",
+        "rarc": "N111",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All four lines: CAS OA-18 totaling $240.86; MOA N111 (no appeal right except duplicate issue). $0 paid.",
+          "locator": "CLP PA22957514 / SVC lines 1\u20134"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP07 = 2623576767957 \u2014 payer claim control number present, confirming adjudication (not front-end rejection).",
+          "locator": "CLP segment"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Lines 1 and 3 both bill 97140-GP-KX but at different amounts ($47.76 vs $46.48); lines 2 and 4 both bill 97110-GP-KX at $98.25 vs $48.37 \u2014 intra-claim amounts do not match.",
+          "locator": "SV1 loops, lines 1\u20134"
+        },
+        {
+          "artifact": "reference",
+          "fact": "Duplicate match criteria include billed amount; differing amounts rule out intra-claim collision. True duplicate \u2192 do_not_resubmit; edit hard-coded, MACs cannot override, original claim's disposition governs.",
+          "locator": "04-exact-duplicate.md (disposition section); carc-rarc-remedies.md \u00a75"
+        }
+      ],
+      "citations": [
+        {
+          "source": "04-exact-duplicate.md",
+          "rule": "True duplicate \u2192 do_not_resubmit; OA-18 hard-coded and unappealable; original claim's disposition governs; use Telephone Reopenings if finding looks wrong."
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "Genuine exact duplicate (CARC 18, OA) \u2192 do_not_resubmit; OA is not patient liability."
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All four service lines carry OA-18 (exact duplicate) + MOA N111 (no appeal right). CLP07 2623576767957 confirms the claim was adjudicated, not front-end rejected. Billed amounts differ between the repeated-code lines (97140: $47.76 vs $46.48; 97110: $98.25 vs $48.37), ruling out intra-claim self-match \u2014 a prior claim for DOS 2026-07-05 was already adjudicated. Hard-coded edit; MACs cannot override; original claim's disposition governs.\",\"resolution\":{\"root_cause\":{\"family\":\"exact_duplicate\",\"explanation\":\"OA-18 on all four lines + N111. Intra-claim billed amounts differ (97140 lines: $47.76 vs $46.48; 97110 lines: $98.25 vs $48.37), ruling out self-match. A prior adjudicated claim for DOS 2026-07-05 triggered the hard-coded duplicate edit.\"},\"next_action\":{\"path\":\"do_not_resubmit\",\"detail\":\"Do not resubmit. Check portal/IVR for the prior claim's ICN and its status. If it paid, post payment and close. If denied, address that original via Telephone Reopenings only \u2014 not a new claim, not a redetermination.\"},\"denial\":{\"group\":\"OA\",\"carc\":\"18\",\"rarc\":\"N111\",\"level\":\"line\"},\"denied_line_idxs\":[0,1,2,3],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All four lines: CAS OA-18 totaling $240.86; MOA N111 (no appeal right except duplicate issue). $0 paid.\",\"locator\":\"CLP PA22957514 / SVC lines 1\u20134\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP07 = 2623576767957 \u2014 payer claim control number present, confirming adjudication (not front-end rejection).\",\"locator\":\"CLP segment\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Lines 1 and 3 both bill 97140-GP-KX but at different amounts ($47.76 vs $46.48); lines 2 and 4 both bill 97110-GP-KX at $98.25 vs $48.37 \u2014 intra-claim amounts do not match.\",\"locator\":\"SV1 loops, lines 1\u20134\"},{\"artifact\":\"reference\",\"fact\":\"Duplicate match criteria include billed amount; differing amounts rule out intra-claim collision. True duplicate \u2192 do_not_resubmit; edit hard-coded, MACs cannot override, original claim's disposition governs.\",\"locator\":\"04-exact-duplicate.md (disposition section); carc-rarc-remedies.md \u00a75\"}],\"citations\":[{\"source\":\"04-exact-duplicate.md\",\"rule\":\"True duplicate \u2192 do_not_resubmit; OA-18 hard-coded and unappealable; original claim's disposition governs; use Telephone Reopenings if finding looks wrong.\"},{\"source\":\"00-group-codes.md\",\"rule\":\"Genuine exact duplicate (CARC 18, OA) \u2192 do_not_resubmit; OA is not patient liability.\"}]}}"
+}

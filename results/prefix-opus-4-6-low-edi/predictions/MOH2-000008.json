@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000008",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "Claim paid $67.61. Adjustments: CO-45 (contractual fee-schedule reduction, write off) and PR-2 (coinsurance $16.89 total). 271 confirms active coverage (EB*1, effective 2024-01-01, no termination). No denial \u2014 normal adjudication. Patient owes the PR-2 coinsurance balance.",
+  "usage": {
+    "input_tokens": 3,
+    "output_tokens": 1101,
+    "cache_read_input_tokens": 37020,
+    "cache_creation_input_tokens": 37738,
+    "cost_usd": 0.31010375,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "none",
+      "explanation": "Claim adjudicated correctly. CO-45 is the contractual fee-schedule write-off; PR-2 is patient coinsurance. No denial, no defect."
+    },
+    "next_action": {
+      "path": "bill_patient",
+      "detail": "Bill patient $16.89 coinsurance (PR-2: $5.81 + $5.54 + $5.54). Write off CO-45 amounts per contract."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP status 1 (processed primary), paid $67.61; adjustments CO-45 and PR-2 on all three lines"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "PR group code with CARC 2 (coinsurance) totaling $16.89 \u2014 patient responsibility"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*1 (active coverage) for DOS 2026-05-24, plan ATLANTIC SHORE ASSURANCE EPO, effective 2024-01-01"
+      }
+    ]
+  }
+}

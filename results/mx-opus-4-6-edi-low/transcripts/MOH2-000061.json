@@ -1,0 +1,97 @@
+{
+  "case_id": "MOH2-000061",
+  "run_id": "mx-opus-4-6-edi-low",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 4936,
+  "usage": {
+    "input_tokens": 3,
+    "cache_creation_input_tokens": 37916,
+    "cache_read_input_tokens": 37106,
+    "output_tokens": 1417,
+    "output_tokens_details": {
+      "thinking_tokens": 88
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 37916
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.3200648,
+  "cache_hit_rate": 0.494582,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All four lines denied OA-18 (exact duplicate). 835 CLP07=2623576767957 confirms prior adjudication. Claim billed CLM05-3=1 (original). 271 shows active coverage (EB*1, DTP*356 20240101). This is a true duplicate \u2014 same provider/member/DOS/procedures already on file. The original claim's disposition governs; do not resubmit.",
+    "resolution": {
+      "root_cause": {
+        "family": "exact_duplicate",
+        "explanation": "Claim PA22957514 billed as CLM05-3=1 matched an already-adjudicated claim (CLP07 2623576767957). All lines denied OA-18. Same provider, member, DOS 2026-07-05, and procedures."
+      },
+      "next_action": {
+        "path": "do_not_resubmit",
+        "detail": "Do not resubmit. Verify the original claim's payment status via portal/IVR using ICN 2623576767957. If paid, post and close. If denied, address that denial on its own merits."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All 4 lines carry CAS*OA*18, $0 paid; CLP*PA22957514*4 (denied); CLP07=2623576767957"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "MOA***N111 at claim level"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "CLM*PA22957514*240.86***11:B:1 \u2014 frequency code 1 (original), no REF*F8"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*1*IND*30 active coverage for DOS 2026-07-05; not an eligibility issue"
+        }
+      ],
+      "denial": {
+        "group": "OA",
+        "carc": "18",
+        "rarc": null,
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "citations": [
+        {
+          "source": "04-exact-duplicate.md",
+          "rule": "True duplicate \u2014 one service billed twice. Disposition do_not_resubmit. Hard-coded edit, unappealable, original's disposition governs."
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Every 837 with CLM05-3=1 is treated as brand-new; duplicate logic matches provider/member/DOS/procedure and fires the edit."
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All four lines denied OA-18 (exact duplicate). 835 CLP07=2623576767957 confirms prior adjudication. Claim billed CLM05-3=1 (original). 271 shows active coverage (EB*1, DTP*356 20240101). This is a true duplicate \u2014 same provider/member/DOS/procedures already on file. The original claim's disposition governs; do not resubmit.\",\"resolution\":{\"root_cause\":{\"family\":\"exact_duplicate\",\"explanation\":\"Claim PA22957514 billed as CLM05-3=1 matched an already-adjudicated claim (CLP07 2623576767957). All lines denied OA-18. Same provider, member, DOS 2026-07-05, and procedures.\"},\"next_action\":{\"path\":\"do_not_resubmit\",\"detail\":\"Do not resubmit. Verify the original claim's payment status via portal/IVR using ICN 2623576767957. If paid, post and close. If denied, address that denial on its own merits.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All 4 lines carry CAS*OA*18, $0 paid; CLP*PA22957514*4 (denied); CLP07=2623576767957\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"MOA***N111 at claim level\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"CLM*PA22957514*240.86***11:B:1 \u2014 frequency code 1 (original), no REF*F8\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*1*IND*30 active coverage for DOS 2026-07-05; not an eligibility issue\"}],\"denial\":{\"group\":\"OA\",\"carc\":\"18\",\"rarc\":null,\"level\":\"line\"},\"denied_line_idxs\":[1,2,3,4],\"citations\":[{\"source\":\"04-exact-duplicate.md\",\"rule\":\"True duplicate \u2014 one service billed twice. Disposition do_not_resubmit. Hard-coded edit, unappealable, original's disposition governs.\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Every 837 with CLM05-3=1 is treated as brand-new; duplicate logic matches provider/member/DOS/procedure and fires the edit.\"}]}}"
+}

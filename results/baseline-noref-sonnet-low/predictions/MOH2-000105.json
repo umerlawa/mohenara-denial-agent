@@ -1,0 +1,84 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000105",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "Every service line on claim PA28755879 was denied CO-16 (claim/service lacks information or has submission/billing error). The claim-level MOA remark N286 pinpoints the defect: missing/incomplete/invalid referring provider primary identifier. Reviewing the 837P, the claim party loops include a billing provider (loop 85, NPI 1110692305) and a rendering provider (loop 82, Mary Clark NPI 1992501921), but no referring provider loop (2310A) \u2014 the referring provider NPI was simply omitted. Medicare Part B requires a referring/ordering provider NPI on outpatient therapy claims billed under POS 11. The defect is a claim-data omission, not a substantive coverage dispute. Because the payer is Medicare Part B FFS, a frequency-7 replacement claim is not permitted (CLM05-3 must be 1); the correct correction path is a Clerical Error Reopening (CER) filed with Novitas, adding the referring provider's NPI. The group code CO means the $310.83 write-down is contractual and cannot be billed to the patient while the reopening is pending.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 2503,
+    "cache_read_input_tokens": 42481,
+    "cache_creation_input_tokens": 5110,
+    "cost_usd": 0.07640358,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "missing_referring_provider",
+      "explanation": "The 837P contained no referring provider loop (2310A). MOA remark N286 on the 835 confirms the payer rejected all four lines because the referring provider primary identifier (NPI) was absent. Medicare Part B requires a referring/ordering provider NPI on outpatient therapy claims; its omission triggered CO-16 across every service line."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "File a Clerical Error Reopening (CER) with Novitas Solutions Medicare Part B. Medicare Part B FFS does not accept frequency-7 replacement claims (CLM05-3 must remain 1); clerical omissions are corrected through a reopening per CMS Claims Processing Manual Ch. 34. In the reopening request, supply the referring provider's full name and NPI in loop 2310A. Obtain the referring provider's NPI from the ordering physician's records before submitting. Do not file a redetermination \u2014 this is a data omission, not a substantive coverage dispute. The reopening window is 1 year from the initial determination (production date 2026-09-23), so the deadline is 2027-09-23."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "MOA remark N286: 'missing/incomplete/invalid referring provider primary identifier' \u2014 identifies the specific missing data element that caused the denial.",
+        "locator": "Claim PA28755879, MOA segment"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All four service lines carry adjustment CO-16 ($310.83 total), group code CO \u2014 contractual obligation, provider liable, patient may not be billed.",
+        "locator": "Lines 1\u20134, CAS segments"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Claim party loops list only a billing provider (NPI 1110692305) and a rendering provider (Mary Clark, NPI 1992501921). No referring provider loop (2310A) is present.",
+        "locator": "837P party loops \u2014 no NM1*DN or NM1*P3 segment present"
+      },
+      {
+        "artifact": "reference",
+        "fact": "CARC 16 = 'Claim/service lacks information or has submission/billing error' \u2014 a claim-data defect, disposition 1a: for Medicare Part B FFS use reopening, not a replacement claim.",
+        "locator": "denial-lifecycle.md \u00a74 disposition 1a; \u00a75 rework mechanics"
+      },
+      {
+        "artifact": "reference",
+        "fact": "Medicare Part B FFS: CLM05-3 must be value 1 (original); frequency-7 replacement claims are rejected. Corrections for clerical omissions go through a Clerical Error Reopening per CMS Ch. 34.",
+        "locator": "denial-lifecycle.md \u00a75 (Medicare Part B FFS rework mechanics); \u00a76.2 (reopening)"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "16",
+      "rarc": "N286",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "citations": [
+      {
+        "source": "denial-lifecycle.md",
+        "rule": "\u00a74 disposition 1a \u2014 Medicare Part B FFS data defects corrected via reopening, not replacement claim or appeal"
+      },
+      {
+        "source": "denial-lifecycle.md",
+        "rule": "\u00a75 rework mechanics \u2014 Medicare Part B FFS: only CLM05-3 = 1 valid; corrections go through reopening or redetermination per CMS Ch. 34"
+      },
+      {
+        "source": "denial-lifecycle.md",
+        "rule": "\u00a76.2 reopening \u2014 clerical errors/minor omissions: 1-year window from initial determination, any reason"
+      },
+      {
+        "source": "denial-lifecycle.md",
+        "rule": "\u00a73.1 group code CO \u2014 contractual obligation, provider liable, patient may not be billed"
+      }
+    ]
+  }
+}

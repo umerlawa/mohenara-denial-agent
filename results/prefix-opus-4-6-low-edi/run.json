@@ -1,0 +1,11 @@
+{
+  "run_id": "prefix-opus-4-6-low-edi",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "low",
+  "thinking": "adaptive",
+  "input_format": "edi",
+  "slice": "eval/slices/full140.txt (stopped at 71)",
+  "n_cases": 71,
+  "note": "Pre-fix baseline. Stopped deliberately at 71 of 140 once scoring showed 78.5% and three specification defects were diagnosed. Kept as the before side of the comparison; cost_usd is the sum of its own predictions.",
+  "cost_usd": 7.015001
+}

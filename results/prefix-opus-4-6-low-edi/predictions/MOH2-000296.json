@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000296",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All three lines denied OA-18 (exact duplicate). Claim billed as original (CLM05-3=1). 835 CLP07 confirms prior adjudication exists (ICN 2607870789977). Services are identical provider/member/DOS/CPT \u2014 true duplicate. Group OA: no patient liability, no appeal rights. Original claim's disposition governs.",
+  "usage": {
+    "input_tokens": 3,
+    "output_tokens": 1221,
+    "cache_read_input_tokens": 68928,
+    "cache_creation_input_tokens": 5665,
+    "cost_usd": 0.11045127499999999,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "exact_duplicate",
+      "explanation": "All lines denied OA-18. Claim sent as CLM05-3=1 (original) but payer already adjudicated this provider/member/DOS/procedure combination under ICN 2607870789977."
+    },
+    "next_action": {
+      "path": "do_not_resubmit",
+      "detail": "Do not resubmit. Check status of original claim ICN 2607870789977 via portal/IVR. If it paid, post payment and close. If denied, address that denial on its own terms."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All three lines carry CAS*OA*18 \u2014 exact duplicate denial, $0 paid"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP07=2607870789977 confirms a prior adjudicated claim exists"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "CLM05-3=1 (original submission) \u2014 triggered duplicate edit against existing adjudication"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "MOA N111 \u2014 no appeal rights except on duplicate claim/service issue"
+      }
+    ],
+    "denial": {
+      "group": "OA",
+      "carc": "18",
+      "rarc": null,
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      1,
+      2,
+      3
+    ],
+    "citations": [
+      {
+        "source": "04-exact-duplicate.md",
+        "rule": "True duplicate \u2192 do_not_resubmit; hard-coded edit, unappealable; original's disposition governs"
+      },
+      {
+        "source": "02-resubmission-frequency.md",
+        "rule": "Every 837 with CLM05-3=1 is treated as brand-new; duplicate logic matches provider/member/DOS/procedure"
+      }
+    ]
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000199",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "Line 3 billed 97112:GP \u00d7 5 units but chart documents 31 timed minutes = 2 units (8-minute rule). CO-151 + N362 confirms MUE exceeded. Units were a keying error. Medicare Part B FFS \u2014 frequency 7 not accepted; vehicle is clerical-error reopening referencing ICN 2615618156708.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 915,
+    "cache_read_input_tokens": 31983,
+    "cache_creation_input_tokens": 5034,
+    "cost_usd": 0.0773729,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "mue_exceeded",
+      "explanation": "97112 billed 5 units; chart note documents 31 minutes which supports only 2 units. Billed units exceed the MUE due to a keying/conversion error."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Request clerical-error reopening with Novitas referencing ICN 2615618156708. Correct line 3 (97112:GP) from 5 units to 2 units. Do not resubmit as frequency 1 or 7.",
+      "resubmission_frequency_code": "7"
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Line 3 HC:97112:GP denied $214.95, CAS*CO*151*214.95, LQ*HE*N362",
+        "locator": "SVC*HC:97112:GP*214.95*0**5"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "97112 neuromuscular re-education documented at 31 minutes total, supporting 2 units per 8-minute rule",
+        "locator": "97112 (31 min)"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Line 3 billed 97112:GP with 5 units",
+        "locator": "SV1*HC:97112:GP*214.95*UN*5***1"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Claim adjudicated with payer control number 2615618156708, confirming adjudication and reopening eligibility",
+        "locator": "CLP*PA21657403*1*300.34*46.5*11.62*MB*2615618156708"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "151",
+      "rarc": "N362",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      2
+    ],
+    "citations": [
+      {
+        "source": "07-ncci-and-mue.md",
+        "rule": "MAI 2: correct_and_resubmit if units were a keying/conversion error"
+      },
+      {
+        "source": "02-resubmission-frequency.md",
+        "rule": "Part B/DME FFS: frequency 7 not accepted; use clerical-error reopening"
+      }
+    ]
+  }
+}

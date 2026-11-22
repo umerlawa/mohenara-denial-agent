@@ -1,0 +1,103 @@
+{
+  "case_id": "MOH2-000105",
+  "run_id": "frontier-sonnet-5-low-md",
+  "model": "claude-sonnet-5",
+  "effort": "low",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 6954,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 9524,
+    "cache_read_input_tokens": 161650,
+    "output_tokens": 3356,
+    "output_tokens_details": {
+      "thinking_tokens": 616
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 9524,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 893,
+        "cache_read_input_tokens": 57255,
+        "cache_creation_input_tokens": 982,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 982
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.089712,
+  "cache_hit_rate": 0.944328,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "CO-16 paired with RARC N286 identifies a missing/invalid referring provider NPI, per reference 09. Claim adjudicated (835 has payer claim control 2626660924906), so this is a data-defect denial requiring correction and resubmission to Novitas, not an appeal or patient bill.",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_referring_provider",
+        "explanation": "All 4 lines denied CO-16 with claim-level MOA N286 (missing/incomplete/invalid referring provider primary identifier); no referring provider NPI appears anywhere on the 837P claim."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Add valid referring/ordering provider name and NPI (verified in NPI Registry/PECOS) to the claim. Medicare Part B FFS accepts only CLM05-3=1 (frequency 7 rejected); since this claim was adjudicated (CLP07 present), submit via clerical-error reopening to Novitas rather than a fresh original if reopening is available."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Claim-level MOA N286 and line-level CO-16 on all 4 service lines; payer claim control number 2626660924906 present, status 4 (denied)",
+          "locator": "MOA/CAS segments"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "No referring/ordering provider loop present on the claim; only billing, rendering, and subscriber parties listed",
+          "locator": "837P party list"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CARC 16 + RARC N286 = missing/invalid referring provider primary identifier; disposition correct_and_resubmit, group CO never billable to patient",
+          "locator": "09-missing-referring-provider.md"
+        }
+      ],
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "16",
+        "rarc": "N286",
+        "level": "line"
+      },
+      "citations": [
+        {
+          "source": "09-missing-referring-provider.md",
+          "rule": "CO-16 + N286 identifies missing/invalid referring provider NPI; correct_and_resubmit, never appeal, never bill patient"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Medicare Part B/DME FFS does not accept frequency 7; use reopening or new original depending on adjudication status"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"CO-16 paired with RARC N286 identifies a missing/invalid referring provider NPI, per reference 09. Claim adjudicated (835 has payer claim control 2626660924906), so this is a data-defect denial requiring correction and resubmission to Novitas, not an appeal or patient bill.\",\"resolution\":{\"root_cause\":{\"family\":\"missing_referring_provider\",\"explanation\":\"All 4 lines denied CO-16 with claim-level MOA N286 (missing/incomplete/invalid referring provider primary identifier); no referring provider NPI appears anywhere on the 837P claim.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Add valid referring/ordering provider name and NPI (verified in NPI Registry/PECOS) to the claim. Medicare Part B FFS accepts only CLM05-3=1 (frequency 7 rejected); since this claim was adjudicated (CLP07 present), submit via clerical-error reopening to Novitas rather than a fresh original if reopening is available.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"Claim-level MOA N286 and line-level CO-16 on all 4 service lines; payer claim control number 2626660924906 present, status 4 (denied)\",\"locator\":\"MOA/CAS segments\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"No referring/ordering provider loop present on the claim; only billing, rendering, and subscriber parties listed\",\"locator\":\"837P party list\"},{\"artifact\":\"reference\",\"fact\":\"CARC 16 + RARC N286 = missing/invalid referring provider primary identifier; disposition correct_and_resubmit, group CO never billable to patient\",\"locator\":\"09-missing-referring-provider.md\"}],\"denied_line_idxs\":[0,1,2,3],\"denial\":{\"group\":\"CO\",\"carc\":\"16\",\"rarc\":\"N286\",\"level\":\"line\"},\"citations\":[{\"source\":\"09-missing-referring-provider.md\",\"rule\":\"CO-16 + N286 identifies missing/invalid referring provider NPI; correct_and_resubmit, never appeal, never bill patient\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Medicare Part B/DME FFS does not accept frequency 7; use reopening or new original depending on adjudication status\"}]}}"
+}

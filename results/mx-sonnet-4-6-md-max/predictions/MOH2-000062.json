@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000062",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "Keystone denied all four therapy lines PR-27 on commercial (CI) claim. The 271 for DOS 2025-06-17 returns EB*6 (inactive) with eligibility end 2025-05-31 \u2014 coverage lapsed 17 days before service. Group code PR establishes patient liability under reference 00. No QMB, Medicaid, NSA (no N830), or ACA grace-period-pend override is present in any artifact. Patient owes $204.23.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 5343,
+    "cache_read_input_tokens": 31309,
+    "cache_creation_input_tokens": 5061,
+    "cost_usd": 0.119374695,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "max",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "eligibility_terminated",
+      "explanation": "PR-27 all four lines. 271 shows EB*6 (inactive), eligibility end (DTP*357) 2025-05-31, plan date (DTP*291) 2025-06-17. Coverage terminated 17 days before service. Commercial CI, no successor payer on 271."
+    },
+    "next_action": {
+      "path": "bill_patient",
+      "detail": "Bill patient $204.23. KEYSTONE EPO coverage ended 2025-05-31; DOS is post-termination. Group code PR confirms patient liability; no applicable overrides. Issue patient statement citing 835 date 2025-07-28 and PR-27."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All four lines carry PR-27 ($39.90 + $43.36 + $77.22 + $43.75 = $204.23); group code PR = patient responsibility; claim-level MOA N30.",
+        "locator": "CAS PR-27 lines 1-4; MOA N30"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*6 (inactive coverage), DTP*357 eligibility end 2025-05-31, DTP*291 plan date 2025-06-17 \u2014 confirms coverage was inactive on the DOS.",
+        "locator": "ELG78719585; EB*6; DTP*357=20250531"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Filing indicator CI (commercial), payer responsibility P (primary), subscriber self (18) \u2014 no secondary payer on file.",
+        "locator": "CLM loop; SBR01=P; SBR02=18; CLM09=CI"
+      },
+      {
+        "artifact": "reference",
+        "fact": "CI + PR-27 + EB*6 + DTP*357 before DOS, no successor \u2192 bill_patient; PR group code = patient liable; overrides (QMB, Medicaid, NSA, ACA grace pend) all absent.",
+        "locator": "05-eligibility-terminated.md table row 3; 00-group-codes.md PR row"
+      }
+    ],
+    "denial": {
+      "group": "PR",
+      "carc": "27",
+      "rarc": null,
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "citations": [
+      {
+        "source": "05-eligibility-terminated.md",
+        "rule": "CI, EB*6 + DTP*357 before DOS, no successor, PR-27 \u2192 bill_patient"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "PR = patient liability; billable after overrides cleared"
+      }
+    ]
+  }
+}

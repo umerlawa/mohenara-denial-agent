@@ -1,0 +1,58 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4923,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 844,
+    "output_tokens_details": {
+      "thinking_tokens": 289
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4923
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "Both lines paid. CO-45 is a contractual fee-schedule write-off (not billable). PR-2 coinsurance ($5.81 + $5.54 = $11.35) is routine patient AR. Claim adjudicated correctly; no denial to resolve.",
+    "resolution": {
+      "root_cause": {
+        "family": "none",
+        "explanation": "Claim paid. CO-45 = fee schedule reduction (write-off); PR-2 = Medicare coinsurance owed by patient. No denial present."
+      },
+      "next_action": {
+        "path": "none",
+        "detail": "Post the $45.43 payment. Write off CO-45 adjustments ($10.43 + $15.84). Bill patient $11.35 PR-2 coinsurance in normal AR cycle."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP paid status 1; $45.43 paid of $83.05 billed; payer MB (Medicare Part B)",
+          "locator": "CLP*PA28821530*1*83.05*45.43"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CAS*CO*45 on both lines \u2014 fee schedule contractual write-off, not billable to patient",
+          "locator": "SVC 97116 CAS*CO*45*10.43; SVC 97140 CAS*CO*45*15.84"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CAS*PR*2 coinsurance $5.81 + $5.54 = $11.35 patient responsibility",
+          "locator": "SVC 97116 CAS*PR*2*5.81; SVC 97140 CAS*PR*2*5.54"
+        }
+      ],
+      "denial": null,
+      "denied_line_idxs": []
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"Both lines paid. CO-45 is a contractual fee-schedule write-off (not billable). PR-2 coinsurance ($5.81 + $5.54 = $11.35) is routine patient AR. Claim adjudicated correctly; no denial to resolve.\",\"resolution\":{\"root_cause\":{\"family\":\"none\",\"explanation\":\"Claim paid. CO-45 = fee schedule reduction (write-off); PR-2 = Medicare coinsurance owed by patient. No denial present.\"},\"next_action\":{\"path\":\"none\",\"detail\":\"Post the $45.43 payment. Write off CO-45 adjustments ($10.43 + $15.84). Bill patient $11.35 PR-2 coinsurance in normal AR cycle.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP paid status 1; $45.43 paid of $83.05 billed; payer MB (Medicare Part B)\",\"locator\":\"CLP*PA28821530*1*83.05*45.43\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CAS*CO*45 on both lines \u2014 fee schedule contractual write-off, not billable to patient\",\"locator\":\"SVC 97116 CAS*CO*45*10.43; SVC 97140 CAS*CO*45*15.84\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CAS*PR*2 coinsurance $5.81 + $5.54 = $11.35 patient responsibility\",\"locator\":\"SVC 97116 CAS*PR*2*5.81; SVC 97140 CAS*PR*2*5.54\"}],\"denial\":null,\"denied_line_idxs\":[]}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

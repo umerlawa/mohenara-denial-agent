@@ -1,0 +1,94 @@
+{
+  "case_id": "MOH2-000199",
+  "run_id": "final-opus-4-6-low-edi",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4780,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 37455,
+    "cache_read_input_tokens": 0,
+    "output_tokens": 725,
+    "output_tokens_details": {
+      "thinking_tokens": 119
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 37455
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.277451625,
+  "cache_hit_rate": 0.0,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "Line 3 (97112:GP) billed 5 units but chart documents 31 minutes = 2 units per the 8-minute rule. CO-151 + N362 = MUE exceeded. Units were a keying error \u2014 correct and resubmit with accurate unit count.",
+    "resolution": {
+      "root_cause": {
+        "family": "mue_exceeded",
+        "explanation": "97112:GP billed at 5 units; chart documents 31 timed minutes = 2 units. Billed units exceed the MUE, triggering CO-151 + N362 denial of the entire line."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Resubmit 97112:GP with 2 units (31 min \u00f7 15 = 2 per 8-minute rule). Medicare Part B: submit as new original CLM05-3=1. Do not send frequency 7.",
+        "resubmission_frequency_code": "7"
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "SVC*HC:97112:GP*214.95*0**5 denied with CAS*CO*151*214.95 and LQ*HE*N362",
+          "locator": "LX*1 third SVC segment"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "97112 neuromuscular re-education documented at 31 minutes total",
+          "locator": "treatment note 2026-05-10"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "LX*3 SV1*HC:97112:GP*214.95*UN*5 \u2014 5 units billed",
+          "locator": "LX*3"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "151",
+        "rarc": "N362",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        2
+      ],
+      "citations": [
+        {
+          "source": "07-ncci-and-mue.md",
+          "rule": "CO-151 + N362 = MUE exceeded; keying/conversion error \u2192 correct_and_resubmit"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Medicare Part B does not accept frequency 7; submit new original CLM05-3=1"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"Line 3 (97112:GP) billed 5 units but chart documents 31 minutes = 2 units per the 8-minute rule. CO-151 + N362 = MUE exceeded. Units were a keying error \u2014 correct and resubmit with accurate unit count.\",\"resolution\":{\"root_cause\":{\"family\":\"mue_exceeded\",\"explanation\":\"97112:GP billed at 5 units; chart documents 31 timed minutes = 2 units. Billed units exceed the MUE, triggering CO-151 + N362 denial of the entire line.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Resubmit 97112:GP with 2 units (31 min \u00f7 15 = 2 per 8-minute rule). Medicare Part B: submit as new original CLM05-3=1. Do not send frequency 7.\",\"resubmission_frequency_code\":\"7\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"SVC*HC:97112:GP*214.95*0**5 denied with CAS*CO*151*214.95 and LQ*HE*N362\",\"locator\":\"LX*1 third SVC segment\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"97112 neuromuscular re-education documented at 31 minutes total\",\"locator\":\"treatment note 2026-05-10\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"LX*3 SV1*HC:97112:GP*214.95*UN*5 \u2014 5 units billed\",\"locator\":\"LX*3\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"151\",\"rarc\":\"N362\",\"level\":\"line\"},\"denied_line_idxs\":[2],\"citations\":[{\"source\":\"07-ncci-and-mue.md\",\"rule\":\"CO-151 + N362 = MUE exceeded; keying/conversion error \u2192 correct_and_resubmit\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Medicare Part B does not accept frequency 7; submit new original CLM05-3=1\"}]}}"
+}

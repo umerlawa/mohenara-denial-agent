@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000117",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "835 denies both lines CO-29 (timely filing) with N211. However, 277CA shows claim TRC75364521 accepted (STC*A2:20) on 2025-01-27\u2014only 8 days after DOS 2025-01-19. This is within any commercial filing window. Payer is commercial (CI), not Medicare, so N211 \"may not appeal\" is inapplicable. Clearinghouse acceptance report is the strongest proof of timely filing per reference. Appeal to dispute the receipt date.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 4729,
+    "cache_read_input_tokens": 31983,
+    "cache_creation_input_tokens": 4824,
+    "cost_usd": 0.18081415,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "high",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "timely_filing",
+      "explanation": "Payer denied CO-29 + N211 on both lines. 277CA proves original claim accepted 2025-01-27, 8 days after DOS 2025-01-19\u2014well within any commercial filing limit. Payer's receipt-date determination is incorrect."
+    },
+    "next_action": {
+      "path": "appeal",
+      "detail": "Appeal to Liberty Bell with 277CA acceptance report (STC A2:20, 2025-01-27) as proof of timely filing. Dispute payer's receipt-date determination. Do not resubmit\u2014claim data is correct."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Both lines denied CAS*CO*29; MOA***N211; $0 paid; CLP status 4 (denied)",
+        "locator": "CAS*CO*29*91.91 and CAS*CO*29*46.71"
+      },
+      {
+        "artifact": "ack_277ca.edi",
+        "fact": "Claim TRC75364521 accepted (STC*A2:20) on 2025-01-27\u20148 days post-DOS",
+        "locator": "STC*A2:20*20250127*WQ*138.62"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "DOS 2025-01-19; filing indicator CI (commercial); CLM05-3=1 original",
+        "locator": "DTP*472*D8*20250119; SBR*P*18*******CI; CLM*PA24642236*138.62***11:B:1"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "Coverage active (EB*1) from 2024-01-01, no termination date; patient eligible on DOS",
+        "locator": "EB*1*IND*30**LIBERTY BELL HEALTH PLANS POS; DTP*356*D8*20240101"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "29",
+      "rarc": "N211",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1
+    ],
+    "citations": [
+      {
+        "source": "03-timely-filing.md",
+        "rule": "Proof of an accepted submission inside the window \u2192 appeal with the clearinghouse acceptance report: dispute the receipt date, don't plead forgiveness"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO on commercial (CI) is the payer's assertion; not an automatic write-off off Medicare FFS"
+      }
+    ]
+  }
+}

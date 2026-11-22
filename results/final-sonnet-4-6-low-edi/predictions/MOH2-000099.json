@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000099",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All three lines carry OA-22 (\"another payer is primary\"). The 271 returns EB*R for Novitas Solutions Medicare Part B FFS with MSG \"PLAN IS PRIMARY PAYER FOR THIS MEMBER.\" The claim was filed SBR*P to Keystone (CI). Claim-level MOA MA04 confirms primary payer adjudication data is missing \u2014 because it was never billed to Medicare first.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1374,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 5014,
+    "cost_usd": 0.05383686,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "cob_other_primary",
+      "explanation": "Claim billed SBR*P to Keystone Commercial; 271 EB*R shows Novitas Solutions Medicare Part B FFS is primary. OA-22 on all three lines confirms Keystone is secondary."
+    },
+    "next_action": {
+      "path": "resubmit_other_payer",
+      "detail": "Bill Medicare Part B (Novitas Solutions, NPI/PI 1846349352) as primary first. Then rebill Keystone as secondary with Medicare's EOB/adjudication data in SBR/AMT/CAS loops to satisfy MA04."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CAS*OA*22 on all three service lines; MOA MA04 at claim level \u2014 another payer is primary and primary adjudication data is absent",
+        "locator": "CAS segments under each SVC; MOA***MA04"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*R for Novitas Solutions Medicare Part B FFS with MSG 'PLAN IS PRIMARY PAYER FOR THIS MEMBER'; EB*1 (active) for Keystone as secondary",
+        "locator": "EB*R loop, NM1*PR*2*NOVITAS SOLUTIONS MEDICARE PART B, MSG segment"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "SBR*P*18*******CI \u2014 claim filed with Keystone as primary payer",
+        "locator": "SBR segment, HL*2 loop"
+      }
+    ],
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "denial": {
+      "group": "OA",
+      "carc": "22",
+      "rarc": "MA04",
+      "level": "line"
+    },
+    "citations": [
+      {
+        "source": "06-cob-other-primary.md",
+        "rule": "CARC 22 alone \u2192 resubmit_other_payer; MA04 on rebill to Keystone requires primary adjudication data in SBR/AMT/CAS loops"
+      },
+      {
+        "source": "01-carc-rarc-index.md",
+        "rule": "CARC 22: care may be covered by another payer per COB \u2014 bill primary, then secondary"
+      }
+    ]
+  }
+}

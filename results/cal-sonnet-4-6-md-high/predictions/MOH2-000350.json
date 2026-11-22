@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000350",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "All three therapy lines carry OA-18 (exact duplicate) with MOA N111. The 835 has payer claim control 2606743684675, confirming prior adjudication. The 837P was submitted 2026-02-20 as CLM05-3=1; the payer matched it against an already-adjudicated prior claim for the same provider/member/DOS/procedures. Duplicate edits are hard-coded and unappealable on Medicare Part B. The prior claim's disposition governs.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 4826,
+    "cache_read_input_tokens": 31309,
+    "cache_creation_input_tokens": 4981,
+    "cost_usd": 0.11051419500000001,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "high",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "exact_duplicate",
+      "explanation": "All three lines denied OA-18. 835 carries payer claim control 2606743684675, confirming prior adjudication. Frequency-1 original submitted 2026-02-20 collided with an already-adjudicated prior claim for the same provider/member/DOS/procedures."
+    },
+    "next_action": {
+      "path": "do_not_resubmit",
+      "detail": "Check prior claim status via portal/IVR. If original paid, post and close. If pending, hold. If disposition appears wrong, request a Telephone Reopening \u2014 do not resubmit; Medicare Part B duplicate edit is hard-coded and unappealable."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Lines 1\u20133 all carry OA-18 adjustments ($40.47, $96.76, $50.12); CLP07 = 2606743684675 confirms a prior adjudicated claim is on file",
+        "locator": "CAS segments lines 1\u20133; CLP segment field 07"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "MOA N111: no appeal right except duplicate claim/service issue",
+        "locator": "MOA segment"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "CLM05-3 = 1 (original claim frequency); submitted 2026-02-20 \u2014 treated as brand-new and matched against the prior adjudicated claim",
+        "locator": "CLM segment Loop 2300"
+      },
+      {
+        "artifact": "reference",
+        "fact": "OA-18 exact duplicate: edit is hard-coded, MACs cannot override or bypass; do_not_resubmit; prior claim's disposition governs; Telephone Reopening is the only vehicle if disposition is wrong",
+        "locator": "04-exact-duplicate.md \u00a7Disposition; 00-group-codes.md duplicate row"
+      }
+    ],
+    "denial": {
+      "group": "OA",
+      "carc": "18",
+      "rarc": "N111",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "citations": [
+      {
+        "source": "04-exact-duplicate.md",
+        "rule": "True duplicate \u2192 do_not_resubmit; OA-18 edit hard-coded, unappealable; prior claim's disposition governs; use Telephone Reopening if disposition is wrong"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "Genuine exact duplicate (CARC 18, OA) \u2192 do_not_resubmit; original claim's disposition governs"
+      }
+    ]
+  }
+}

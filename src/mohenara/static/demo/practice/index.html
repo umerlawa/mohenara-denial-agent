@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mohenara</title>
+<!--
+  DESIGN TEMPLATE — NO DATA LIVES IN THIS FILE.
+  Every value, count, name, dollar amount, status, and sentence shown in this view is
+  computed from the uploaded cases and their resolution outputs at runtime.
+  Elements marked data-bind="..." are binding points. Elements marked data-region="..."
+  are containers populated from backend data. Text shown as an HTML comment describes
+  intent only and must never be rendered as literal content.
+-->
+<style>
+  :root{--bg:#f6f7f9;--card:#fff;--border:#e3e6ea;--text:#1c2733;--dim:#67737f;
+        --blue:#2563eb;--bluebg:#e8effd;--green:#0e9f6e;--greenbg:#e6f7f1;
+        --amber:#b45309;--amberbg:#fdf3e7;--red:#b91c1c;--redbg:#fdecec;--purple:#6d28d9;--purplebg:#f1ecfd}
+  *{box-sizing:border-box;margin:0;padding:0}
+  /* The template gates whole regions on the `hidden` attribute, but a class
+     that sets display (grid, flex, inline-block) overrides the UA's
+     [hidden]{display:none}. Restore the attribute's meaning. */
+  [hidden]{display:none!important}
+  body{background:var(--bg);color:var(--text);font-family:-apple-system,'Segoe UI',sans-serif;min-height:100vh}
+  .wrap{max-width:860px;margin:0 auto;padding:26px 20px 70px}
+  header{display:flex;align-items:center;gap:14px;margin-bottom:4px}
+  .logo img{height:26px;display:block}
+  .spacer{flex:1}
+  .timer{font-variant-numeric:tabular-nums;color:var(--dim);font-size:14px}
+  .subhead{color:var(--dim);font-size:13.5px;margin-bottom:16px}
+  .statrow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:10px}
+  .stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px}
+  .stat b{font-size:19px;display:block;font-variant-numeric:tabular-nums}
+  .stat span{font-size:10.5px;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;line-height:1.3;display:block;margin-top:2px}
+  .stat.recover b{color:var(--green)} .stat.patient b{color:var(--amber)}
+  .stat.noaction b{color:var(--dim)} .stat.waiting b{color:var(--purple)}
+  .actionbar{display:flex;align-items:center;gap:12px;margin:8px 0 18px}
+  .handled{color:var(--dim);font-size:13px}
+  .primaryBtn{margin-left:auto;background:var(--blue);color:#fff;border:none;border-radius:8px;padding:12px 24px;font-size:15px;font-weight:700;cursor:pointer}
+  .primaryBtn:disabled{background:#c4ccd4;cursor:default}
+  .sectionTitle{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--dim);margin:22px 0 10px}
+  .dropzone{border:2px dashed var(--border);border-radius:14px;background:var(--card);
+            padding:46px 20px;text-align:center;color:var(--dim);font-size:14px;cursor:pointer;
+            min-height:320px;display:flex;flex-direction:column;align-items:center;
+            justify-content:center;gap:16px}
+  .dropzone.dragover{border-color:var(--blue);background:var(--bluebg)}
+  .dropzone.compact{min-height:0;padding:22px 20px}
+  .dropList{display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--text)}
+  .dropList div::before{content:'\2713  ';color:var(--green);font-weight:700}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:15px 18px;margin-bottom:10px;transition:border-color .4s}
+  .cardTop{display:flex;gap:16px;align-items:flex-start}
+  .card.done{border-color:#bfe8d9}
+  .card.parked{border-color:#d6c6f5}
+  .amt{font-weight:800;font-size:17px;min-width:82px;font-variant-numeric:tabular-nums}
+  .info{flex:1;min-width:0}
+  .who{font-weight:700;font-size:14.5px}
+  .meta{color:var(--dim);font-size:12px;margin:2px 0 5px}
+  .desc{font-size:13px;color:#33404d;line-height:1.45}
+  .flag{display:inline-block;background:var(--amberbg);color:var(--amber);font-size:10.5px;font-weight:700;border-radius:4px;padding:2px 6px;margin-left:6px;vertical-align:1px}
+  .denialTag{display:inline-block;background:var(--redbg);color:var(--red);font-size:10.5px;font-weight:700;border-radius:4px;padding:2px 6px;margin-left:6px;vertical-align:1px}
+  .card.done .denialTag,.card.parked .denialTag{display:none}
+  .status{min-width:240px;text-align:right}
+  .chip{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;border-radius:999px;padding:6px 11px;background:#eef1f4;color:var(--dim);transition:all .3s}
+  .chip.working{background:var(--bluebg);color:var(--blue)}
+  .chip.working .dot{width:7px;height:7px;border-radius:50%;background:var(--blue);animation:blink 1s infinite}
+  @keyframes blink{50%{opacity:.25}}
+  .chip.ok{background:var(--greenbg);color:var(--green)}
+  .chip.hold{background:var(--purplebg);color:var(--purple)}
+  .outcome{display:none;font-size:12.5px;font-weight:600;margin-top:7px;text-align:right;line-height:1.4}
+  .outcome.green{color:var(--green)} .outcome.amber{color:var(--amber)} .outcome.gray{color:var(--dim)}
+  .card.done .outcome{display:block}
+  .why{display:none;margin-top:11px;border-top:1px dashed var(--border);padding-top:10px}
+  .card.done .why{display:block}
+  .why summary{font-size:12px;font-weight:700;color:var(--blue);cursor:pointer;list-style:none}
+  .why summary::before{content:'▸ '} .why[open] summary::before{content:'▾ '}
+  .whyBody{font-size:12.5px;color:#33404d;line-height:1.55;margin-top:7px}
+  .sources{font-size:11.5px;color:var(--dim);margin-top:5px}
+  .ask{display:none;margin-top:12px;background:var(--purplebg);border:1px solid #d6c6f5;border-radius:10px;padding:12px 14px}
+  .card.parked .ask{display:block}
+  .askQ{font-size:13px;font-weight:600;color:var(--purple);margin-bottom:9px;line-height:1.45}
+  .askRow{display:flex;gap:8px}
+  .askRow input{flex:1;border:1px solid #cbb8f0;border-radius:7px;padding:9px 11px;font-size:13px}
+  .askRow button{background:var(--purple);color:#fff;border:none;border-radius:7px;padding:9px 16px;font-weight:700;font-size:13px;cursor:pointer}
+  .breakdowns{display:none;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+  .panel{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+  .panel h3{font-size:12px;text-transform:uppercase;letter-spacing:.7px;color:var(--dim);margin-bottom:10px}
+  .row{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid #f0f2f4}
+  .row:last-child{border:none}
+  .row b{font-variant-numeric:tabular-nums}
+  .summaryBanner{display:none;background:var(--green);color:#fff;border-radius:14px;padding:24px 28px;margin-top:20px;text-align:center}
+  .summaryBanner h2{font-size:20px;margin-bottom:5px}
+  .summaryBanner p{opacity:.93;font-size:14px}
+  .ghostBtn{background:var(--card);border:1px solid var(--border);color:var(--text);
+            border-radius:8px;padding:11px 18px;font-size:14px;font-weight:600;cursor:pointer}
+  .stopBtn{background:var(--card);border:1px solid #f0bcbc;color:var(--red);
+           border-radius:8px;padding:11px 18px;font-size:14px;font-weight:700;cursor:pointer}
+  .histPanel{position:fixed;top:0;right:0;bottom:0;width:360px;background:var(--card);
+             border-left:1px solid var(--border);box-shadow:-10px 0 34px rgba(15,23,32,.10);
+             padding:18px;overflow:auto;z-index:40}
+  .histHead{display:flex;align-items:center;justify-content:space-between;
+            font-size:13px;font-weight:700;margin-bottom:8px}
+  .histRow{display:flex;align-items:center;gap:10px;padding:10px 6px;
+           border-bottom:1px solid #f0f2f4;cursor:pointer;font-size:13px}
+  .histRow:hover{background:#f6f8fb}
+  .hdot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+  .hdot.done{background:var(--green)} .hdot.need{background:var(--purple)}
+  .hdot.fail{background:var(--red)}  .hdot.run{background:var(--blue)}
+  /* The template's *{margin:0} reset also removes the UA's dialog{margin:auto},
+     which is what centres a modal -- without this it pins to the top-left and
+     its backdrop starts where the content happens to end. */
+  dialog.detail{border:none;border-radius:14px;padding:0;width:min(780px,94vw);
+                margin:auto;box-shadow:0 30px 80px rgba(15,23,32,.28)}
+  dialog.detail::backdrop{background:rgba(15,23,32,.45)}
+  .detailWrap{padding:24px 28px;overflow:auto;max-height:86vh;position:relative}
+  .xBtn{background:none;border:none;font-size:22px;line-height:1;color:var(--dim);
+        cursor:pointer;padding:4px 8px}
+  .dTitle{font-size:17px;font-weight:800;padding-right:30px}
+  .dMeta{color:var(--dim);font-size:12.5px;margin:3px 0 2px}
+  .dSec{margin-top:18px}
+  .dSec h4{font-size:11px;text-transform:uppercase;letter-spacing:.7px;
+           color:var(--dim);margin-bottom:7px}
+  .dBody{font-size:13px;line-height:1.55;color:#33404d}
+  .dPre{background:#f2f4f7;border:1px solid var(--border);border-radius:8px;
+        padding:10px 12px;font-family:ui-monospace,Menlo,Consolas,monospace;
+        font-size:11.5px;line-height:1.6;white-space:pre;overflow:auto;max-height:260px}
+  .dPre .chg{color:var(--green);font-weight:700}
+  .dRow{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap}
+  .dRow button{background:var(--card);border:1px solid var(--border);border-radius:7px;
+               padding:9px 14px;font-size:13px;font-weight:600;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <!-- Brand: company logo image only. No product-name suffix text. -->
+    <div class="logo"><img data-bind="logo-src" alt="Mohenara"></div>
+    <div class="spacer"></div>
+    <!-- Elapsed time for the current batch run; hidden until a run starts. -->
+    <div class="timer" data-bind="elapsed-time" hidden></div>
+  </header>
+
+  <!-- One-line batch status, always computed. Empty until cases exist. -->
+  <div class="subhead" data-bind="batch-status"></div>
+
+  <!-- Owner-facing money stats. All five values computed from uploaded 835s and
+       resolution outputs. -->
+  <div class="statrow" data-region="stats" hidden>
+    <div class="stat"><b data-bind="total-denied"></b><span>Total denied</span></div>
+    <div class="stat recover"><b data-bind="recoverable"></b><span>Recoverable from insurer</span></div>
+    <div class="stat patient"><b data-bind="patient-responsibility"></b><span>Patient responsibility</span></div>
+    <div class="stat noaction"><b data-bind="no-action"></b><span>Already paid / no action</span></div>
+    <div class="stat waiting"><b data-bind="waiting-on-answer"></b><span>Waiting on your answer</span></div>
+  </div>
+
+  <div class="actionbar" data-region="actions" hidden>
+    <!-- e.g. "N of M claims handled", computed. -->
+    <div class="handled" data-bind="handled-count"></div>
+    <button class="ghostBtn" data-action="history">History</button>
+    <!-- Starts the concurrent run of all uploaded cases against the backend. -->
+    <button class="primaryBtn" data-action="resolve-all">Resolve all</button>
+    <!-- The panic button: stops every queued and running denial. -->
+    <button class="stopBtn" data-action="stop-all" hidden>Stop</button>
+    <button class="ghostBtn" data-action="new-batch" hidden>New batch</button>
+  </div>
+
+  <!-- Upload entry point: visible when no cases are loaded. -->
+  <div class="dropzone" data-region="dropzone">
+    <span data-bind="dropzone-instruction"></span>
+  </div>
+
+  <!-- Cases that entered awaiting_human. Hidden while empty. -->
+  <div data-region="inbox-section" hidden>
+    <div class="sectionTitle"></div>
+    <div data-region="inbox"></div>
+  </div>
+
+  <div data-region="queue-section" hidden>
+    <div class="sectionTitle"></div>
+    <div data-region="queue"></div>
+  </div>
+
+  <!-- Post-run analytics, computed from the batch. Hidden until every case is final. -->
+  <div class="breakdowns" data-region="breakdowns">
+    <div class="panel"><h3></h3><div data-region="by-payer"></div></div>
+    <div class="panel"><h3></h3><div data-region="by-reason"></div></div>
+  </div>
+
+  <!-- Completion banner: computed from batch totals and elapsed time. -->
+  <div class="summaryBanner" data-region="summary">
+    <h2 data-bind="summary-headline"></h2>
+    <p data-bind="summary-subline"></p>
+  </div>
+
+  <!-- Past cases from this deployment's queue; rows open the detail dialog. -->
+  <div class="histPanel" data-region="history-panel" hidden>
+    <div class="histHead">Past cases
+      <button class="xBtn" data-action="hist-close" title="Close">&#215;</button>
+    </div>
+    <div data-region="history-list"></div>
+  </div>
+
+  <!-- Per-case detail: everything a biller needs to act on the resolution.
+       Closes on the X, a click outside, or Escape. -->
+  <dialog class="detail" data-region="detail">
+    <div class="detailWrap">
+      <button class="xBtn" style="position:absolute;top:12px;right:14px"
+              data-action="detail-close" title="Close">&#215;</button>
+      <div data-region="detail-body"></div>
+    </div>
+  </dialog>
+
+  <!-- CASE CARD TEMPLATE: cloned once per uploaded case; every field bound from
+       parsed case data or resolution output. Chip stages advance on real backend
+       pipeline events per case, never timers. -->
+  <template id="case-card">
+    <div class="card">
+      <div class="cardTop">
+        <div class="amt" data-bind="denied-amount"></div>
+        <div class="info">
+          <div class="who">
+            <span data-bind="patient-name"></span>
+            <span class="denialTag" data-bind="denied-tag"></span>
+            <span class="flag" data-bind="deadline-flag" hidden></span>
+          </div>
+          <div class="meta" data-bind="payer-dos-service"></div>
+          <div class="desc" data-bind="denial-plain-sentence"></div>
+        </div>
+        <div class="status">
+          <span class="chip" data-bind="stage-chip"></span>
+          <div class="outcome" data-bind="outcome-line"></div>
+        </div>
+      </div>
+      <div class="ask">
+        <div class="askQ" data-bind="human-question"></div>
+        <div class="askRow">
+          <input data-bind="answer-input">
+          <button data-action="send-answer"></button>
+        </div>
+      </div>
+      <details class="why">
+        <summary data-bind="why-label"></summary>
+        <div class="whyBody" data-bind="why-text"></div>
+        <div class="sources" data-bind="why-sources"></div>
+      </details>
+    </div>
+  </template>
+
+</div>
+
+<script>
+// Runtime for the practice-audience view. Everything rendered is computed from
+// the uploaded cases (parsed server-side from the 835 bytes) or from the real
+// resolution outputs; the only literals below are UI copy -- labels, sentence
+// scaffolds keyed on backend enums -- never a name, amount, payer or outcome
+// of any particular case.
+const $ = s => document.querySelector(s);
+const bind = (root, name) => root.querySelector(`[data-bind="${name}"]`);
+const region = name => document.querySelector(`[data-region="${name}"]`);
+
+const fmt = n => n == null ? '' :
+  '$' + Number(n).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const prettyDate = iso => {
+  const d = new Date(iso + 'T00:00:00Z');
+  return isNaN(d) ? iso : d.toLocaleDateString('en-US',
+    {month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC'});
+};
+const elapsedText = ms => {
+  const s = Math.floor(ms / 1000);
+  return s >= 60 ? `${Math.floor(s / 60)}m ${s % 60}s` : `${s}s`;
+};
+
+// Plain-English copy keyed on the backend's own enums. The KEY is the model's
+// determination; only the phrasing lives here.
+const FAMILY = {
+  none:                       {label: 'No denial found',                sentence: 'No actionable denial was found on this claim.'},
+  cob_other_primary:          {label: 'Other insurance is primary',     sentence: 'Denied because another insurance plan is primary for this patient.'},
+  eligibility_terminated:     {label: 'Coverage had ended',             sentence: "Denied because the patient's coverage had ended by the date of service."},
+  exact_duplicate:            {label: 'Duplicate claim',                sentence: 'Denied as a duplicate of a claim the payer already processed.'},
+  missing_referring_provider: {label: 'Missing referring provider',     sentence: 'Denied because the claim did not name the referring provider.'},
+  missing_therapy_modifier:   {label: 'Missing therapy modifier',       sentence: 'Denied because the therapy services were billed without their required discipline modifier.'},
+  mue_exceeded:               {label: 'Units over the daily limit',     sentence: "Denied because the billed units exceeded the payer's daily limit for that service."},
+  ncci_ptp_no59:              {label: 'Services billed together',       sentence: 'Denied because two of the billed procedures are not payable together as submitted.'},
+  threshold_no_kx:            {label: 'Therapy threshold attestation',  sentence: 'Denied because therapy charges passed the annual threshold without the required attestation.'},
+  timely_filing:              {label: 'Filed too late',                 sentence: 'Denied because the claim reached the payer after its filing deadline.'},
+};
+
+const PATHS = {
+  correct_and_resubmit: {bucket: 'recover',  cls: 'green', line: a => `${a} recoverable — resubmit the corrected claim`},
+  appeal:               {bucket: 'recover',  cls: 'green', line: a => `${a} recoverable — appeal with documentation`},
+  resubmit_other_payer: {bucket: 'recover',  cls: 'green', line: a => `${a} recoverable — resubmit to the correct payer`},
+  bill_patient:         {bucket: 'patient',  cls: 'amber', line: a => `${a} is the patient's responsibility`},
+  do_not_resubmit:      {bucket: 'noaction', cls: 'gray',  line: () => 'Already handled — no further action needed'},
+  none:                 {bucket: 'noaction', cls: 'gray',  line: () => 'No action needed'},
+};
+
+const SOURCE_NAMES = {
+  'remit_835.edi': 'the payer remittance', 'claim_837p.edi': 'the submitted claim',
+  'chart_note.txt': 'the chart note', 'eligibility_270.edi': 'the eligibility request',
+  'eligibility_271.edi': 'the eligibility response', 'ack_277ca.edi': 'the claim acknowledgment',
+  'case.md': 'the case file', 'reference': 'payer policy reference', 'human_input': 'your answer',
+};
+
+// Billing-code tokens must not reach this audience; the reasoning does. This
+// strips code citations from prose without rewriting what the prose claims,
+// and translates transaction numbers into the documents they name. The
+// lookarounds on the document numbers keep dollar amounts and larger figures
+// ("$835.00", "1,271") out of reach.
+const DOC_WORDS = {'835': 'payer remittance', '837P': 'submitted claim',
+  '837': 'submitted claim', '277CA': 'claim acknowledgment',
+  '271': 'eligibility response', '270': 'eligibility request'};
+function scrub(text){
+  return String(text || '')
+    .replace(/\b(?:CO|PR|OA|PI|CR)[-\s]?\d{1,3}\b/g, '')
+    .replace(/\b(?:N|M|MA)\d{2,3}\b/g, '')
+    .replace(/(?<![$\d.,])\b(835|837P?|277CA|27[01])\b(?!\.?\d)/g,
+             (_, d) => DOC_WORDS[d] || d)
+    .replace(/\b(?:CLP|CLM|MOA|CAS|SVC|SV1|LQ|NM1|DTM|SBR|DTP|EB|REF|PLB)(?:\d+|\*[A-Z0-9]+)?(?:-\d+)?\b/g, '')
+    .replace(/\b(?:CARC|RARC|X12|NCCI PTP|NCCI)\b/gi, '')
+    .replace(/\(\s*[\/,;\s]*\)/g, '')
+    .replace(/\s*\/\s*(?=[\s,.;)])/g, '')
+    .replace(/[ \t]{2,}/g, ' ')
+    .replace(/\s+([,.;:])/g, '$1')
+    .replace(/([(—-])\s+([,.;)])/g, '$1$2')
+    .trim();
+}
+
+// ---- state ------------------------------------------------------------------
+// One entry per uploaded case, in upload order. `parsed` is the deterministic
+// 835 header; `view` is the resolution view once the run lands.
+const CASES = [];
+let RUNNING = false, STARTED = false, T0 = null, TICK = null, POLL = null;
+
+// The timer measures WORK, not waiting. It accumulates across pauses: it
+// stops while every case is either final or waiting on a human answer, and
+// resumes when an answer restarts a resolve. A timer that kept counting
+// through a parked night would report the night, not the work.
+let BASE_MS = 0;
+const timerEl = () => bind(document, 'elapsed-time');
+function timerText(){ return elapsedText(BASE_MS + (T0 ? Date.now() - T0 : 0)); }
+function startTick(){
+  if (TICK) return;
+  T0 = Date.now();
+  timerEl().hidden = false;
+  TICK = setInterval(() => { timerEl().textContent = timerText(); }, 1000);
+}
+function pauseTick(){
+  if (!TICK) return;
+  clearInterval(TICK); TICK = null;
+  BASE_MS += Date.now() - T0; T0 = null;
+  timerEl().textContent = timerText();
+}
+
+// ---- upload -----------------------------------------------------------------
+const drop = region('dropzone');
+const FIRST_INSTRUCTION =
+  'Drop denial case files here — single cases or a whole folder of them — or click to browse';
+bind(document, 'dropzone-instruction').textContent = FIRST_INSTRUCTION;
+bind(document, 'logo-src').src = '/assets/logo.svg';
+
+// The list of what has been loaded so far, inside the dropzone itself: the
+// person dropping folders needs to SEE them land, and needs the zone to stay
+// open for the next one. Nothing runs until Resolve all.
+const dropList = document.createElement('div');
+dropList.className = 'dropList';
+dropList.setAttribute('data-bind', 'drop-list');
+drop.appendChild(dropList);
+
+const picker = document.createElement('input');
+picker.type = 'file'; picker.multiple = true; picker.hidden = true;
+picker.accept = '.edi,.md,.txt';
+picker.setAttribute('data-bind', 'file-picker');
+drop.appendChild(picker);
+drop.addEventListener('click', () => picker.click());
+picker.onchange = async e => { await intake([{dir: null, files: [...e.target.files]}]); e.target.value = ''; };
+
+const KEEP = /\.(edi|md|txt)$/i;
+function walkEntry(entry, out, depth){
+  if (!entry || depth > 4) return Promise.resolve();
+  if (entry.isFile)
+    return new Promise(res => entry.file(f => { out.push(f); res(); }, () => res()));
+  if (!entry.isDirectory) return Promise.resolve();
+  const rd = entry.createReader();
+  return new Promise(res => {
+    const next = () => rd.readEntries(async batch => {
+      if (!batch.length) return res();
+      for (const en of batch) await walkEntry(en, out, depth + 1);
+      next();
+    }, () => res());
+    next();
+  });
+}
+
+// Grouping: each dropped FOLDER is one case; each loose .md is one case; all
+// remaining loose files together are one case (an artifact set dropped as files).
+async function groupsFromDrop(dt){
+  const groups = [];
+  const loose = [];
+  const items = [...(dt.items || [])];
+  const entries = items.map(i => i.webkitGetAsEntry ? i.webkitGetAsEntry() : null);
+  if (entries.some(Boolean)){
+    for (const en of entries){
+      if (!en) continue;
+      if (en.isDirectory){
+        const files = [];
+        await walkEntry(en, files, 0);
+        groups.push({dir: en.name, files});
+      } else {
+        await walkEntry(en, loose, 0);
+      }
+    }
+  } else {
+    loose.push(...(dt.files || []));
+  }
+  const keep = fs => fs.filter(f => KEEP.test(f.name) && !f.name.startsWith('.'));
+  const mds = keep(loose).filter(f => /\.md$/i.test(f.name));
+  const rest = keep(loose).filter(f => !/\.md$/i.test(f.name));
+  for (const m of mds) groups.push({dir: null, files: [m]});
+  if (rest.length) groups.push({dir: null, files: rest});
+  return groups.map(g => ({...g, files: keep(g.files)})).filter(g => g.files.length);
+}
+
+drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('dragover'); });
+drop.addEventListener('dragleave', () => drop.classList.remove('dragover'));
+drop.addEventListener('drop', async e => {
+  e.preventDefault(); drop.classList.remove('dragover');
+  if (RUNNING || STARTED) return;
+  await intake(await groupsFromDrop(e.dataTransfer));
+});
+
+async function intake(groups){
+  const payload = [];
+  for (const g of groups){
+    const files = {};
+    for (const f of g.files) files[f.name.split('/').pop()] = await f.text();
+    if (!Object.keys(files).length) continue;
+    const names = Object.keys(files);
+    payload.push({
+      label: g.dir || (names.length === 1 ? names[0] : null),
+      input_format: names.every(n => /\.md$/i.test(n)) ? 'md' : 'edi',
+      files,
+    });
+  }
+  if (!payload.length) return;
+  const res = await fetch('/api/demo/parse', {
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({cases: payload})});
+  if (!res.ok) return;
+  const parsed = await res.json();
+  parsed.forEach((p, i) => {
+    const c = {key: `c${CASES.length}`, label: p.label, files: payload[i].files,
+               input_format: payload[i].input_format, parsed: p,
+               jobId: null, state: 'loaded', view: null, bucket: null};
+    CASES.push(c);
+    region('queue').appendChild(makeCard(c));
+    const row = document.createElement('div');
+    const n = Object.keys(c.files).length;
+    row.textContent = `${c.label} · ${n} file${n > 1 ? 's' : ''}`;
+    dropList.appendChild(row);
+  });
+  refreshChrome();
+}
+
+// ---- cards ------------------------------------------------------------------
+function makeCard(c){
+  const node = document.getElementById('case-card').content.firstElementChild.cloneNode(true);
+  node.dataset.key = c.key;
+  const p = c.parsed;
+  bind(node, 'denied-amount').textContent = fmt(p.denied);
+  bind(node, 'patient-name').textContent = p.patient_name || c.label || '';
+  bind(node, 'denied-tag').textContent = 'Denied';
+  bind(node, 'payer-dos-service').textContent = [
+    p.payer, p.date_of_service && prettyDate(p.date_of_service),
+    p.service_count && `${p.service_count} service${p.service_count > 1 ? 's' : ''}`,
+  ].filter(Boolean).join(' · ');
+  bind(node, 'denial-plain-sentence').textContent =
+    p.billed != null ? `Billed ${fmt(p.billed)} — ${fmt(p.denied)} of it denied.` : '';
+  setChip(node, '', 'Ready');
+  bind(node, 'why-label').textContent = 'Why this decision';
+  node.querySelector('[data-action=send-answer]').textContent = 'Send';
+  const input = bind(node, 'answer-input');
+  input.placeholder = 'Type what you found out…';
+  node.querySelector('[data-action=send-answer]').onclick = () => sendAnswer(c, node);
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') sendAnswer(c, node); });
+  // The whole card opens its detail -- except the controls that do something
+  // else already (the answer form, the why-toggle).
+  node.addEventListener('click', e => {
+    if (e.target.closest('button, input, summary, details, .ask')) return;
+    openDetail(c.jobId, c);
+  });
+  return node;
+}
+
+function setChip(node, cls, label){
+  const chip = bind(node, 'stage-chip');
+  chip.className = 'chip' + (cls ? ' ' + cls : '');
+  chip.innerHTML = cls === 'working' ? '<span class="dot"></span>' : '';
+  chip.appendChild(document.createTextNode(label));
+}
+
+const CHIP_FOR = {
+  queued:      ['', 'Queued'],
+  reading:     ['working', 'Reading the payer files'],
+  resolving:   ['working', 'Working the denial'],
+  needs_input: ['hold', 'Needs your answer'],
+  resolved:    ['ok', 'Done'],
+  failed:      ['', 'Could not finish'],
+  cancelling:  ['', 'Stopping…'],
+  cancelled:   ['', 'Stopped'],
+};
+const FINAL_STATES = ['resolved', 'failed', 'cancelled'];
+const ACTIVE_STATES = ['queued', 'reading', 'resolving', 'cancelling'];
+
+// ---- chrome (stats, subhead, actions) ---------------------------------------
+function totals(){
+  const t = {denied: 0, recover: 0, patient: 0, noaction: 0, waiting: 0, finals: 0};
+  for (const c of CASES){
+    t.denied += c.parsed.denied || 0;
+    if (c.state === 'needs_input') t.waiting += c.parsed.denied || 0;
+    if (c.state === 'resolved' && c.bucket) t[c.bucket] += c.parsed.denied || 0;
+    if (FINAL_STATES.includes(c.state)) t.finals++;
+  }
+  return t;
+}
+
+function refreshChrome(){
+  const n = CASES.length;
+  if (!n) return;
+  // The dropzone stays open for more folders until the run actually starts;
+  // it just shrinks and restates itself once something has landed.
+  region('dropzone').hidden = STARTED;
+  region('dropzone').classList.add('compact');
+  bind(document, 'dropzone-instruction').textContent =
+    'Drop more cases or folders here — then click Resolve all';
+  region('stats').hidden = false;
+  region('actions').hidden = false;
+  region('queue-section').hidden = false;
+  region('queue-section').querySelector('.sectionTitle').textContent = 'Denial queue';
+  const t = totals();
+  bind(document, 'total-denied').textContent = fmt(t.denied);
+  bind(document, 'recoverable').textContent = fmt(t.recover);
+  bind(document, 'patient-responsibility').textContent = fmt(t.patient);
+  bind(document, 'no-action').textContent = fmt(t.noaction);
+  bind(document, 'waiting-on-answer').textContent = fmt(t.waiting);
+  bind(document, 'handled-count').textContent = `${t.finals} of ${n} claims handled`;
+  bind(document, 'batch-status').textContent =
+    !RUNNING && !t.finals ? `${n} denial${n > 1 ? 's' : ''} loaded — ${fmt(t.denied)} denied in total`
+    : t.finals < n ? `Working ${n} denial${n > 1 ? 's' : ''} — ${t.finals} finished`
+    : `All ${n} denial${n > 1 ? 's' : ''} handled`;
+
+  const active = CASES.some(c => c.jobId && ACTIVE_STATES.includes(c.state));
+  $('[data-action=stop-all]').hidden = !active;
+  $('[data-action=new-batch]').hidden = !n || active;
+  $('[data-action=resolve-all]').disabled = RUNNING || !CASES.some(c => !c.jobId);
+
+  const inboxEmpty = !region('inbox').children.length;
+  region('inbox-section').hidden = inboxEmpty;
+  if (!inboxEmpty)
+    region('inbox-section').querySelector('.sectionTitle').textContent = 'Needs your answer';
+}
+
+// ---- the run ----------------------------------------------------------------
+$('[data-action=resolve-all]').onclick = async () => {
+  if (RUNNING || !CASES.length) return;
+  const pending = CASES.filter(c => !c.jobId);
+  if (!pending.length) return;
+  RUNNING = true;
+  $('[data-action=resolve-all]').disabled = true;
+  const res = await fetch('/api/batch', {
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({denials: pending.map(c => ({
+      label: c.label, input_format: c.input_format, files: c.files}))})});
+  if (!res.ok){
+    RUNNING = false; $('[data-action=resolve-all]').disabled = false;
+    return;
+  }
+  const jobs = await res.json();
+  STARTED = true;
+  jobs.forEach((j, i) => {
+    pending[i].jobId = j.id;
+    const node = cardOf(pending[i]);
+    node.dataset.job = j.id;
+    setChip(node, ...CHIP_FOR.queued);
+  });
+  startTick();
+  POLL = setInterval(pollOnce, 800);
+  refreshChrome();
+};
+
+$('[data-action=stop-all]').onclick = async () => {
+  const btn = $('[data-action=stop-all]');
+  btn.disabled = true;
+  try { await fetch('/api/queue/cancel-all', {method: 'POST'}); } catch {}
+  btn.disabled = false;
+  // The chips follow the server's own states from the next poll on.
+};
+
+const cardOf = c => document.querySelector(`[data-key="${c.key}"]`);
+
+async function pollOnce(){
+  let list;
+  try { list = await (await fetch('/api/queue')).json(); } catch { return; }
+  const byId = Object.fromEntries(list.map(j => [j.id, j]));
+  for (const c of CASES){
+    const job = c.jobId && byId[c.jobId];
+    if (!job || job.state === c.state) continue;
+    const node = cardOf(c);
+    c.state = job.state;
+    setChip(node, ...(CHIP_FOR[job.state] || CHIP_FOR.queued));
+    if (['resolved', 'needs_input', 'failed', 'cancelled'].includes(job.state))
+      await landCase(c, node);
+  }
+  refreshChrome();
+  const submitted = CASES.filter(c => c.jobId);
+  if (submitted.length && submitted.every(c => FINAL_STATES.includes(c.state))){
+    finishBatch();
+    return;
+  }
+  // Nothing being worked but not finished either: every remaining case is
+  // waiting on a human. Stop the clock and the polling; answering restarts both.
+  if (!submitted.some(c => ACTIVE_STATES.includes(c.state))){
+    pauseTick();
+    clearInterval(POLL); POLL = null;
+  }
+}
+
+async function landCase(c, node){
+  let view = null;
+  try { view = await (await fetch(`/api/demo/view/${c.jobId}`)).json(); } catch {}
+  c.view = view;
+  if (c.state === 'needs_input'){
+    node.classList.remove('done');
+    node.classList.add('parked');
+    bind(node, 'human-question').textContent = view?.question || '';
+    region('inbox').appendChild(node);
+    return;
+  }
+  node.classList.remove('parked');
+  if (c.state === 'failed' || c.state === 'cancelled'){
+    c.bucket = null;
+    node.classList.remove('done');
+    if (node.parentElement !== region('queue')) region('queue').appendChild(node);
+    return;
+  }
+  // Resolved: bucket it, state the outcome, show the reasoning.
+  const r = view || {};
+  const path = r.next_action?.path;
+  const meta = PATHS[path] || PATHS.none;
+  c.bucket = meta.bucket;
+  node.classList.add('done');
+  const out = bind(node, 'outcome-line');
+  out.className = 'outcome ' + meta.cls;
+  out.textContent = meta.line(fmt(c.parsed.denied));
+  const fam = FAMILY[r.root_cause?.family];
+  const sentence = fam && r.root_cause?.family !== 'none'
+    ? fam.sentence : scrub(r.root_cause?.explanation);
+  if (sentence) bind(node, 'denial-plain-sentence').textContent = sentence;
+  bind(node, 'why-text').textContent = scrub(r.rationale);
+  const arts = new Set();
+  for (const m of [...(r.annotations?.anchored || []), ...(r.annotations?.unanchored || [])])
+    if (m.artifact && m.artifact !== 'none') arts.add(m.artifact);
+  if ((r.answers || []).length) arts.add('human_input');
+  bind(node, 'why-sources').textContent = arts.size
+    ? 'Based on ' + [...arts].map(a => SOURCE_NAMES[a] || a).join(', ') : '';
+  deadlineFlag(node, r.job?.filing_deadline);
+  if (node.parentElement !== region('queue')) region('queue').appendChild(node);
+}
+
+// Urgency only when the resolution established a filing deadline; the flag is
+// date arithmetic on that deadline, never an invented number.
+function deadlineFlag(node, deadline){
+  const flag = bind(node, 'deadline-flag');
+  const d = deadline && new Date(deadline + 'T00:00:00Z');
+  if (!d || isNaN(d)) return;
+  const days = Math.ceil((d - Date.now()) / 86_400_000);
+  if (days > 0 && days <= 45){
+    flag.textContent = `File within ${days} day${days > 1 ? 's' : ''}`;
+    flag.hidden = false;
+  }
+}
+
+// ---- answering a parked case ------------------------------------------------
+async function sendAnswer(c, node){
+  const input = bind(node, 'answer-input');
+  const text = input.value.trim();
+  if (!text || !c.jobId){ input.focus(); return; }
+  const btn = node.querySelector('[data-action=send-answer]');
+  btn.disabled = true;
+  const res = await fetch(`/api/queue/${c.jobId}/answer`, {
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({answer: text})});
+  btn.disabled = false;
+  if (!res.ok) return;
+  input.value = '';
+  node.classList.remove('parked');
+  c.state = 'resolving';
+  setChip(node, ...CHIP_FOR.resolving);
+  region('queue').appendChild(node);
+  startTick();
+  if (!POLL) POLL = setInterval(pollOnce, 800);
+  refreshChrome();
+}
+
+// ---- completion -------------------------------------------------------------
+function finishBatch(){
+  clearInterval(POLL); POLL = null;
+  pauseTick();
+  RUNNING = false;
+  STARTED = false;                 // the intake reopens for the next cases
+  const t = totals();
+  const n = CASES.length;
+  const took = timerText();
+  bind(document, 'batch-status').textContent =
+    `All ${n} denial${n > 1 ? 's' : ''} handled in ${took}`;
+
+  const rows = (regionName, pairs) => {
+    const el = region(regionName);
+    el.innerHTML = '';
+    for (const [k, v] of pairs){
+      const row = document.createElement('div');
+      row.className = 'row';
+      const name = document.createElement('span'); name.textContent = k;
+      const amt = document.createElement('b'); amt.textContent = fmt(v);
+      row.append(name, amt);
+      el.appendChild(row);
+    }
+  };
+  const sumBy = keyOf => {
+    const acc = new Map();
+    for (const c of CASES){
+      const k = keyOf(c);
+      if (k) acc.set(k, (acc.get(k) || 0) + (c.parsed.denied || 0));
+    }
+    return [...acc.entries()].sort((a, b) => b[1] - a[1]);
+  };
+  rows('by-payer', sumBy(c => c.parsed.payer || c.label));
+  rows('by-reason', sumBy(c => FAMILY[c.view?.root_cause?.family]?.label
+                               || (c.state === 'cancelled' ? 'Stopped'
+                                   : c.state === 'failed' ? 'Could not finish' : null)));
+  region('by-payer').previousElementSibling.textContent = 'By payer';
+  region('by-reason').previousElementSibling.textContent = 'By denial reason';
+  region('breakdowns').style.display = 'grid';
+
+  bind(document, 'summary-headline').textContent =
+    `${fmt(t.recover)} identified for recovery`;
+  const bits = [];
+  if (t.patient) bits.push(`${fmt(t.patient)} to collect from patients`);
+  if (t.noaction) bits.push(`${fmt(t.noaction)} needing no further action`);
+  bind(document, 'summary-subline').textContent =
+    `${n} denial${n > 1 ? 's' : ''} worked in ${took}` +
+    (bits.length ? ' — ' + bits.join(', ') : '');
+  region('summary').style.display = 'block';
+  refreshChrome();
+}
+
+// ---- new batch --------------------------------------------------------------
+$('[data-action=new-batch]').onclick = () => {
+  CASES.length = 0;
+  RUNNING = STARTED = false;
+  BASE_MS = 0; T0 = null;
+  clearInterval(POLL); POLL = null;
+  clearInterval(TICK); TICK = null;
+  region('queue').innerHTML = '';
+  region('inbox').innerHTML = '';
+  dropList.innerHTML = '';
+  region('stats').hidden = true;
+  region('actions').hidden = true;
+  region('inbox-section').hidden = true;
+  region('queue-section').hidden = true;
+  region('breakdowns').style.display = '';
+  region('summary').style.display = '';
+  region('history-panel').hidden = true;
+  timerEl().hidden = true;
+  bind(document, 'batch-status').textContent = '';
+  drop.classList.remove('compact');
+  region('dropzone').hidden = false;
+  bind(document, 'dropzone-instruction').textContent = FIRST_INSTRUCTION;
+};
+
+// ---- history ----------------------------------------------------------------
+// Every past case on this deployment's queue, newest first. A row opens the
+// same detail dialog a card click does, so a finished batch's output is never
+// more than two clicks away.
+const DOT_FOR = s => s === 'resolved' ? 'done' : s === 'needs_input' ? 'need'
+  : (s === 'failed' || s === 'cancelled') ? 'fail' : 'run';
+
+$('[data-action=history]').onclick = async () => {
+  const panel = region('history-panel');
+  panel.hidden = false;
+  const list = region('history-list');
+  list.innerHTML = '';
+  let past = [];
+  try { past = await (await fetch('/api/queue')).json(); } catch {}
+  past.sort((a, b) => (b.updated_at || '').localeCompare(a.updated_at || ''));
+  if (!past.length){
+    const row = document.createElement('div');
+    row.className = 'histRow';
+    row.textContent = 'No cases yet';
+    list.appendChild(row);
+    return;
+  }
+  for (const j of past){
+    const row = document.createElement('div');
+    row.className = 'histRow';
+    const dot = document.createElement('span');
+    dot.className = `hdot ${DOT_FOR(j.state)}`;
+    const name = document.createElement('span');
+    name.style.flex = '1';
+    name.textContent = j.case_id || j.label || j.id;
+    const amt = document.createElement('span');
+    amt.style.color = 'var(--dim)';
+    amt.textContent = j.billed_amount != null ? fmt(j.billed_amount) : '';
+    row.append(dot, name, amt);
+    row.onclick = () => { panel.hidden = true; openDetail(j.id, null); };
+    list.appendChild(row);
+  }
+};
+$('[data-action=hist-close]').onclick = () => { region('history-panel').hidden = true; };
+
+// ---- the detail dialog ------------------------------------------------------
+// What a biller needs to ACT on a resolution: the corrected claim itself when
+// there is one, how to submit it, deadlines, the reasoning, and the paper
+// trail -- copyable and downloadable. Everything shown comes from the case's
+// parsed header and its resolution view; nothing is composed from anywhere
+// else.
+const dlg = document.querySelector('[data-region=detail]');
+const dBody = document.querySelector('[data-region=detail-body]');
+dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+$('[data-action=detail-close]').onclick = () => dlg.close();
+
+function el(tag, cls, text){
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (text != null) n.textContent = text;
+  return n;
+}
+
+function sourceNames(view){
+  const arts = new Set();
+  for (const m of [...(view?.annotations?.anchored || []),
+                   ...(view?.annotations?.unanchored || [])])
+    if (m.artifact && m.artifact !== 'none') arts.add(m.artifact);
+  if ((view?.answers || []).length) arts.add('human_input');
+  return [...arts].map(a => SOURCE_NAMES[a] || a);
+}
+
+function download(name, text){
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], {type: 'text/plain'}));
+  a.download = name;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+async function openDetail(jobId, c){
+  let view = c?.view || null;
+  if (jobId){
+    try { view = await (await fetch(`/api/demo/view/${jobId}`)).json(); } catch {}
+  }
+  renderDetail(c, view);
+  if (!dlg.open) dlg.showModal();
+}
+
+function renderDetail(c, view){
+  dBody.innerHTML = '';
+  const p = c?.parsed || {};
+  const job = view?.job || {};
+  const textParts = [];
+  const put = (node, txt) => { dBody.appendChild(node); if (txt) textParts.push(txt); };
+
+  const title = p.patient_name || job.case_id || c?.label || 'Case detail';
+  put(el('div', 'dTitle', title), title);
+  const meta = [p.payer || job.payer,
+                p.date_of_service && prettyDate(p.date_of_service),
+                p.claim_id && `claim ${p.claim_id}`].filter(Boolean).join(' · ');
+  if (meta) put(el('div', 'dMeta', meta), meta);
+  const money = p.billed != null
+    ? `Billed ${fmt(p.billed)} — ${fmt(p.denied)} denied` : '';
+  if (money) put(el('div', 'dMeta', money), money);
+
+  const state = c?.state || job.state;
+  const path = view?.next_action?.path;
+  if (state === 'resolved' && path){
+    const m = PATHS[path] || PATHS.none;
+    const line = m.line(fmt(p.denied));
+    const o = el('div', 'dSec');
+    o.appendChild(el('div', `outcome ${m.cls}`, line));
+    o.firstChild.style.display = 'block';
+    o.firstChild.style.textAlign = 'left';
+    put(o, `Outcome: ${line}`);
+  } else if (state){
+    const label = (CHIP_FOR[state] || ['', state])[1];
+    put(el('div', 'dMeta', `Status: ${label}`), `Status: ${label}`);
+  }
+
+  if ((state === 'needs_input' || job.state === 'needs_input') && view?.question){
+    const sec = el('div', 'dSec');
+    sec.appendChild(el('h4', null, 'Waiting on your answer'));
+    sec.appendChild(el('div', 'dBody', view.question));
+    put(sec, `Waiting on: ${view.question}`);
+  }
+
+  // What to submit.
+  const corrected = view?.corrected;
+  const freq = view?.next_action?.resubmission_frequency_code;
+  if (corrected && corrected.text){
+    const sec = el('div', 'dSec');
+    sec.appendChild(el('h4', null, 'Corrected claim — ready to resubmit'));
+    const how = freq === '7' ? 'Submit as a replacement claim (frequency code 7).'
+      : freq === '8' ? 'Submit as a void/replace (frequency code 8).'
+      : 'Submit as a new original claim.';
+    sec.appendChild(el('div', 'dBody', how));
+    const pre = el('pre', 'dPre');
+    const changed = new Set((corrected.changed || []).map(ch => ch.line));
+    corrected.text.split('\n').forEach((lineTxt, i) => {
+      const span = el('span', changed.has(i + 1) ? 'chg' : null, lineTxt + '\n');
+      pre.appendChild(span);
+    });
+    sec.appendChild(pre);
+    for (const ch of corrected.changed || []){
+      sec.appendChild(el('div', 'dMeta',
+        `Line ${ch.line}: ${ch.before} → ${ch.after}` +
+        (ch.why ? ` — ${scrub(ch.why)}` : '')));
+    }
+    put(sec, `${how}\n\n--- corrected claim ---\n${corrected.text}`);
+  } else if (path && path !== 'correct_and_resubmit'){
+    const sec = el('div', 'dSec');
+    const heads = {appeal: 'Appeal package', resubmit_other_payer: 'Resubmit to the correct payer',
+                   bill_patient: 'Patient responsibility', do_not_resubmit: 'No resubmission',
+                   none: 'No action needed'};
+    sec.appendChild(el('h4', null, heads[path] || 'Next step'));
+    const detail = scrub(view?.next_action?.detail);
+    if (detail) sec.appendChild(el('div', 'dBody', detail));
+    put(sec, `${heads[path] || 'Next step'}: ${detail}`);
+  }
+
+  if (job.filing_deadline){
+    const d = new Date(job.filing_deadline + 'T00:00:00Z');
+    const days = Math.ceil((d - Date.now()) / 86_400_000);
+    const line = `File by ${prettyDate(job.filing_deadline)}` +
+      (days > 0 ? ` — ${days} day${days > 1 ? 's' : ''} left` : ' — deadline passed');
+    const sec = el('div', 'dSec');
+    sec.appendChild(el('h4', null, 'Filing deadline'));
+    sec.appendChild(el('div', 'dBody', line));
+    put(sec, line);
+  }
+
+  if (view?.rationale){
+    const sec = el('div', 'dSec');
+    sec.appendChild(el('h4', null, 'Why this decision'));
+    const why = scrub(view.rationale);
+    sec.appendChild(el('div', 'dBody', why));
+    const src = sourceNames(view);
+    if (src.length) sec.appendChild(el('div', 'dMeta', 'Based on ' + src.join(', ')));
+    put(sec, `Why: ${why}` + (src.length ? `\nBased on ${src.join(', ')}` : ''));
+  }
+
+  for (const a of view?.answers || []){
+    const sec = el('div', 'dSec');
+    sec.appendChild(el('h4', null, 'Verified with human input'));
+    sec.appendChild(el('div', 'dBody', `Q: ${a.question || ''}`));
+    sec.appendChild(el('div', 'dBody', `A: ${a.answer || ''}`));
+    if ((a.documents || []).length)
+      sec.appendChild(el('div', 'dMeta', 'Documents: ' + a.documents.join(', ')));
+    put(sec, `Q: ${a.question}\nA: ${a.answer}`);
+  }
+
+  const stem = (p.claim_id || job.case_id || c?.label || 'case').replace(/[^\w.-]+/g, '_');
+  const row = el('div', 'dRow');
+  const copyBtn = el('button', null, 'Copy details');
+  copyBtn.setAttribute('data-action', 'detail-copy');
+  copyBtn.onclick = async () => {
+    try { await navigator.clipboard.writeText(textParts.join('\n\n')); } catch {}
+    copyBtn.textContent = 'Copied';
+    setTimeout(() => { copyBtn.textContent = 'Copy details'; }, 1200);
+  };
+  row.appendChild(copyBtn);
+  const dlBtn = el('button', null, 'Download summary');
+  dlBtn.setAttribute('data-action', 'detail-download');
+  dlBtn.onclick = () => download(`${stem}.resolution.txt`, textParts.join('\n\n') + '\n');
+  row.appendChild(dlBtn);
+  if (corrected && corrected.text){
+    const claimBtn = el('button', null, 'Download corrected claim');
+    claimBtn.setAttribute('data-action', 'detail-download-claim');
+    claimBtn.onclick = () => download(`${stem}.CORRECTED.edi`, corrected.text + '\n');
+    row.appendChild(claimBtn);
+  }
+  dBody.appendChild(row);
+}
+</script>
+</body>
+</html>

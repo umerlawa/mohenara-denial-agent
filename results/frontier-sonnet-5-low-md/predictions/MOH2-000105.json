@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000105",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "CO-16 paired with RARC N286 identifies a missing/invalid referring provider NPI, per reference 09. Claim adjudicated (835 has payer claim control 2626660924906), so this is a data-defect denial requiring correction and resubmission to Novitas, not an appeal or patient bill.",
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 3356,
+    "cache_read_input_tokens": 161650,
+    "cache_creation_input_tokens": 9524,
+    "cost_usd": 0.089712,
+    "model": "claude-sonnet-5",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "missing_referring_provider",
+      "explanation": "All 4 lines denied CO-16 with claim-level MOA N286 (missing/incomplete/invalid referring provider primary identifier); no referring provider NPI appears anywhere on the 837P claim."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Add valid referring/ordering provider name and NPI (verified in NPI Registry/PECOS) to the claim. Medicare Part B FFS accepts only CLM05-3=1 (frequency 7 rejected); since this claim was adjudicated (CLP07 present), submit via clerical-error reopening to Novitas rather than a fresh original if reopening is available."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Claim-level MOA N286 and line-level CO-16 on all 4 service lines; payer claim control number 2626660924906 present, status 4 (denied)",
+        "locator": "MOA/CAS segments"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "No referring/ordering provider loop present on the claim; only billing, rendering, and subscriber parties listed",
+        "locator": "837P party list"
+      },
+      {
+        "artifact": "reference",
+        "fact": "CARC 16 + RARC N286 = missing/invalid referring provider primary identifier; disposition correct_and_resubmit, group CO never billable to patient",
+        "locator": "09-missing-referring-provider.md"
+      }
+    ],
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "16",
+      "rarc": "N286",
+      "level": "line"
+    },
+    "citations": [
+      {
+        "source": "09-missing-referring-provider.md",
+        "rule": "CO-16 + N286 identifies missing/invalid referring provider NPI; correct_and_resubmit, never appeal, never bill patient"
+      },
+      {
+        "source": "02-resubmission-frequency.md",
+        "rule": "Medicare Part B/DME FFS does not accept frequency 7; use reopening or new original depending on adjudication status"
+      }
+    ]
+  }
+}

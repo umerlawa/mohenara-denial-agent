@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000233",
+  "input_format": "edi",
+  "status": "awaiting_human",
+  "rationale": "Lines 1-3 (97110 GP) denied CO-236 + N20, the PTP failure signature; 97150 paid, so 97110 is the Column Two code. The chart note documents a clearly demarcated later portion, different body region, unrelated goal \u2014 which would support a bypass modifier only if the pair's CCMI is 1. The 835 carries neither the partner code nor the CCMI, and the card requires a lookup or a park rather than a guess.",
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1032,
+    "cache_read_input_tokens": 92798,
+    "cache_creation_input_tokens": 7222,
+    "cost_usd": 0.1173565,
+    "model": "claude-opus-5",
+    "effort": "low",
+    "calls": 1
+  },
+  "awaiting_human": {
+    "question": "In the CMS NCCI PTP edit file for the DOS quarter (2026-06-25), what is the Correct Coding Modifier Indicator (CCMI) for the 97150 / 97110 pair?",
+    "why_needed": "CCMI 1, with the documented distinct portion/body region, supports appending XE (or 59) to the 97110 lines via a Medicare Part B clerical-error reopening. CCMI 0 makes the edit unbypassable and the three lines a write-off.",
+    "asked_of": "internal",
+    "blocks": [
+      "next_action.path"
+    ]
+  }
+}

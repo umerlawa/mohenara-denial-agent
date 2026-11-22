@@ -1,0 +1,107 @@
+{
+  "case_id": "MOH2-000350",
+  "run_id": "frontier-sonnet-5-low-edi",
+  "model": "claude-sonnet-5",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4742,
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 8258,
+    "cache_read_input_tokens": 103952,
+    "output_tokens": 2656,
+    "output_tokens_details": {
+      "thinking_tokens": 718
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 8258,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 977,
+        "cache_read_input_tokens": 55239,
+        "cache_creation_input_tokens": 1732,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1732
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.06800339999999999,
+  "cache_hit_rate": 0.926373,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All three lines denied CAS*OA*18 (exact duplicate) with MOA N111, group OA \u2014 an adjudicated claim (CLP07 present) matched against one already on file for this provider/member/DOS/procedure combination. Per 04-exact-duplicate.md, this is a hard-coded, unappealable duplicate edit; the fix is not resubmission but checking the original claim's status and closing this one.",
+    "resolution": {
+      "root_cause": {
+        "family": "exact_duplicate",
+        "explanation": "CAS*OA*18 on all three service lines (97110, 97140, 97530), MOA N111, claim adjudicated (CLP07=2606743684675, MB). Matches an already-processed claim for this provider/member/DOS/procedures; no modifier/repeat-service indicator distinguishes these from a prior submission."
+      },
+      "next_action": {
+        "path": "do_not_resubmit",
+        "detail": "Do not resend. Verify the original claim's status via payer portal/IVR \u2014 if paid, post payment and close; if it appears wrong, request a telephone reopening rather than a new claim or appeal. Never bill patient (group OA)."
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2
+      ],
+      "denial": {
+        "level": "line",
+        "group": "OA",
+        "carc": "18",
+        "rarc": null
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CAS*OA*18 on all three SVC lines (97110 $40.47, 97140 $96.76, 97530 $50.12), each paid $0",
+          "locator": "CAS segments"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "MOA***N111 at claim level; CLP*PA23982247*4*187.35*0**MB*2606743684675*11*1 shows claim adjudicated with a payer control number",
+          "locator": "MOA, CLP segments"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Single original claim submission, no frequency/replacement code indicating a correction",
+          "locator": "CLM*PA23982247*187.35***11:B:1*Y*A*Y*Y"
+        }
+      ],
+      "citations": [
+        {
+          "source": "04-exact-duplicate.md",
+          "rule": "CARC 18 under group OA with adjudicated CLP07 present = true exact duplicate; disposition do_not_resubmit, never bill_patient, no appeal rights, hard-coded edit"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "Genuine exact duplicate (CARC 18, OA) -> do_not_resubmit"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All three lines denied CAS*OA*18 (exact duplicate) with MOA N111, group OA \u2014 an adjudicated claim (CLP07 present) matched against one already on file for this provider/member/DOS/procedure combination. Per 04-exact-duplicate.md, this is a hard-coded, unappealable duplicate edit; the fix is not resubmission but checking the original claim's status and closing this one.\",\"resolution\":{\"root_cause\":{\"family\":\"exact_duplicate\",\"explanation\":\"CAS*OA*18 on all three service lines (97110, 97140, 97530), MOA N111, claim adjudicated (CLP07=2606743684675, MB). Matches an already-processed claim for this provider/member/DOS/procedures; no modifier/repeat-service indicator distinguishes these from a prior submission.\"},\"next_action\":{\"path\":\"do_not_resubmit\",\"detail\":\"Do not resend. Verify the original claim's status via payer portal/IVR \u2014 if paid, post payment and close; if it appears wrong, request a telephone reopening rather than a new claim or appeal. Never bill patient (group OA).\"},\"denied_line_idxs\":[0,1,2],\"denial\":{\"level\":\"line\",\"group\":\"OA\",\"carc\":\"18\",\"rarc\":null},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CAS*OA*18 on all three SVC lines (97110 $40.47, 97140 $96.76, 97530 $50.12), each paid $0\",\"locator\":\"CAS segments\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"MOA***N111 at claim level; CLP*PA23982247*4*187.35*0**MB*2606743684675*11*1 shows claim adjudicated with a payer control number\",\"locator\":\"MOA, CLP segments\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Single original claim submission, no frequency/replacement code indicating a correction\",\"locator\":\"CLM*PA23982247*187.35***11:B:1*Y*A*Y*Y\"}],\"citations\":[{\"source\":\"04-exact-duplicate.md\",\"rule\":\"CARC 18 under group OA with adjudicated CLP07 present = true exact duplicate; disposition do_not_resubmit, never bill_patient, no appeal rights, hard-coded edit\"},{\"source\":\"00-group-codes.md\",\"rule\":\"Genuine exact duplicate (CARC 18, OA) -> do_not_resubmit\"}]}}"
+}

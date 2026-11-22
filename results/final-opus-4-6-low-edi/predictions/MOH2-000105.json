@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000105",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "835 shows claim-level denial: CO-16 with MOA N286 on all lines. N286 = missing/invalid referring provider. The 837P has no ordering/referring provider loop (NM1*DN/DQ). Medicare Part B requires it. Eligibility active (EB*1). Fix: add referring provider NPI and resubmit as new original (CLM05-3=1).",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 700,
+    "cache_read_input_tokens": 32421,
+    "cache_creation_input_tokens": 5091,
+    "cost_usd": 0.07209317500000001,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "missing_referring_provider",
+      "explanation": "Claim billed without an ordering/referring provider NPI. 835 carries CO-16 + N286 at claim level; all four lines denied $0."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Add the referring/ordering provider name and NPI (verify in PECOS). Resubmit as a new original claim (CLM05-3=1). Do not use frequency 7 on Medicare Part B.",
+      "resubmission_frequency_code": "7"
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "MOA***N286 at claim level; all lines CAS*CO*16 with $0 paid",
+        "locator": "MOA and CAS segments"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "No NM1*DN or NM1*DQ (referring/ordering provider) loop present in the claim",
+        "locator": "Claim loops"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*1*IND*30 \u2014 active coverage on DOS 2026-08-06",
+        "locator": "EB segment"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP*PA28755879*4 \u2014 claim status 4 (denied); payer claim number 2626660924906 confirms adjudication",
+        "locator": "CLP segment"
+      }
+    ],
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "16",
+      "rarc": "N286",
+      "level": "claim"
+    },
+    "citations": [
+      {
+        "source": "09-missing-referring-provider.md",
+        "rule": "CO-16 + N286: correct referring NPI and resubmit as new original on Medicare Part B (CLM05-3=1)"
+      },
+      {
+        "source": "01-carc-rarc-index.md",
+        "rule": "CARC 16 + N286 = missing/invalid referring provider primary identifier; fix and resubmit"
+      }
+    ]
+  }
+}

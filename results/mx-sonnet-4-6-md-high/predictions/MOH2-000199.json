@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000199",
+  "input_format": "md",
+  "status": "awaiting_human",
+  "rationale": "Lines 1\u20132 (97110-GP \u00d71 each) paid correctly \u2014 CO-45 fee-schedule write-off, PR-2 coinsurance; no action. Line 3 (97112-GP, 5 units, $214.95) denied CO-151 + N362 (MUE exceeded). Chart note documents 31 minutes of 97112; the 8-minute rule supports 2 units, not 5 as billed. Next-action path turns on the MAI for 97112 in the CMS MUE table: MAI 1/2 \u2192 correct_and_resubmit (Part B: clerical-error reopening, 2 units); MAI 3 \u2192 appeal to MAC with records.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 8318,
+    "cache_read_input_tokens": 31309,
+    "cache_creation_input_tokens": 5049,
+    "cost_usd": 0.168412695,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "high",
+    "calls": 1
+  },
+  "awaiting_human": {
+    "question": "What is the MAI (Medically Unlikely Edit Adjudication Indicator) for CPT 97112 in the CMS NCCI MUE table effective Q2 2026 (DOS 2026-05-10)?",
+    "why_needed": "MAI 1 or 2 routes to correct_and_resubmit \u2014 Part B FFS vehicle is a clerical-error reopening, rebilling 2 units (31 documented minutes under the 8-minute rule). MAI 3 routes to appeal to the MAC with treatment notes. The prescribed action differs.",
+    "blocks": [
+      "next_action.path"
+    ],
+    "asked_of": "provider"
+  }
+}

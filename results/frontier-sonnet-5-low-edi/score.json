@@ -1,0 +1,254 @@
+{
+  "n_labeled": 15,
+  "n_predictions": 15,
+  "n_unlabeled_predictions": 0,
+  "unlabeled_prediction_ids": [],
+  "accuracy": 0.866667,
+  "root_cause_accuracy": 0.933333,
+  "next_action_accuracy": 0.866667,
+  "correct": 13,
+  "line_level": {
+    "scored": 15,
+    "correct": 14,
+    "unanswered": 1,
+    "accuracy": 0.933333
+  },
+  "failure_reasons": {
+    "awaiting_human": 1,
+    "wrong_next_action": 1
+  },
+  "by_family": {
+    "cob_other_primary": {
+      "total": 2,
+      "correct": 2,
+      "accuracy": 1.0
+    },
+    "eligibility_terminated": {
+      "total": 2,
+      "correct": 2,
+      "accuracy": 1.0
+    },
+    "exact_duplicate": {
+      "total": 2,
+      "correct": 1,
+      "accuracy": 0.5
+    },
+    "missing_referring_provider": {
+      "total": 2,
+      "correct": 2,
+      "accuracy": 1.0
+    },
+    "missing_therapy_modifier": {
+      "total": 2,
+      "correct": 2,
+      "accuracy": 1.0
+    },
+    "mue_exceeded": {
+      "total": 1,
+      "correct": 1,
+      "accuracy": 1.0
+    },
+    "ncci_ptp_no59": {
+      "total": 1,
+      "correct": 0,
+      "accuracy": 0.0
+    },
+    "none": {
+      "total": 1,
+      "correct": 1,
+      "accuracy": 1.0
+    },
+    "threshold_no_kx": {
+      "total": 1,
+      "correct": 1,
+      "accuracy": 1.0
+    },
+    "timely_filing": {
+      "total": 1,
+      "correct": 1,
+      "accuracy": 1.0
+    }
+  },
+  "per_case": [
+    {
+      "case_id": "MOH2-000061",
+      "correct": false,
+      "family_correct": true,
+      "path_correct": false,
+      "reason": "wrong_next_action",
+      "expected_family": "exact_duplicate",
+      "expected_path": "do_not_resubmit",
+      "got_family": "exact_duplicate",
+      "got_path": "correct_and_resubmit",
+      "trap": false
+    },
+    {
+      "case_id": "MOH2-000062",
+      "correct": true,
+      "family_correct": true,
+      "path_correct": true,
+      "reason": null,
+      "expected_family": "eligibility_terminated",
+      "expected_path": "bill_patient",
+      "got_family": "eligibility_terminated",
+      "got_path": "bill_patient",
+      "trap": false
+    },
+    {
+      "case_id": "MOH2-000105",
+      "correct": true,
+      "family_correct": true,
+      "path_correct": true,
+      "reason": null,
+      "expected_family": "missing_referring_provider",
+      "expected_path": "correct_and_resubmit",
+      "got_family": "missing_referring_provider",
+      "got_path": "correct_and_resubmit",
+      "trap": false
+    },
+    {
+      "case_id": "MOH2-000117",
+      "correct": true,
+      "family_correct": true,
+      "path_correct": true,
+      "reason": null,
+      "expected_family": "timely_filing",
+      "expected_path": "appeal",
+      "got_family": "timely_filing",
+      "got_path": "appeal",
+      "trap": false
+    },
+    {
+      "case_id": "MOH2-000147",
+      "correct": true,
+      "family_correct": true,
+      "path_correct": true,
+      "reason": null,
+      "expected_family": "missing_therapy_modifier",
+      "expected_path": "correct_and_resubmit",
+      "got_family": "missing_therapy_modifier",
+      "got_path": "correct_and_resubmit",
+      "trap": false
+    },
+    {
+      "case_id": "MOH2-000199",
+      "correct": true,
+      "family_correct": true,
+      "path_correct": true,
+      "reason": null,
+      "expected_family": "mue_exceeded",
+      "expected_path": "correct_and_resubmit",
+      "got_family": "mue_exceeded",
+      "got_path": "correct_and_resubmit",
+      "trap": false
+    },
+    {
+      "case_id": "MOH2-000233",
+      "correct": false,
+      "family_correct": false,
+      "path_correct": false,
+      "reason": "awaiting_human",
+      "expected_family": "ncci_ptp_no59",
+      "expected_path": "correct_and_resubmit",
+      "got_family": null,
+      "got_path": null,
+      "trap": false
+    },
+    {
+      "case_id": "MOH2-000263",
+      "correct": true,
+      "family_correct": true,
+      "path_correct": true,
+      "reason": null,
+      "expected_family": "none",
+      "expected_path": "none",
+      "got_family": "none",
+      "got_path": "none",
+      "trap": false
+    },
+    {
+      "case_id": "MOH2-000350",
+      "correct": true,
+      "family_correct": true,
+      "path_correct": true,
+      "reason": null,
+      "expected_family": "exact_duplicate",
+      "expected_path": "do_not_resubmit",
+      "got_family": "exact_duplicate",
+      "got_path": "do_not_resubmit",
+      "trap": false
+    },
+    {
+      "case_id": "MOH2-000441",
+      "correct": true,
+      "family_correct": true,
+      "path_correct": true,
+      "reason": null,
+      "expected_family": "missing_therapy_modifier",
+      "expected_path": "correct_and_resubmit",
+      "got_family": "missing_therapy_modifier",
+      "got_path": "correct_and_resubmit",
+      "trap": false
+    },
+    {
+      "case_id": "MOH2-000490",
+      "correct": true,
+      "family_correct": true,
+      "path_correct": true,
+      "reason": null,
+      "expected_family": "cob_other_primary",
+      "expected_path": "resubmit_other_payer",
+      "got_family": "cob_other_primary",
+      "got_path": "resubmit_other_payer",
+      "trap": false
+    },
+    {
+      "case_id": "MOH2-000587",
+      "correct": true,
+      "family_correct": true,
+      "path_correct": true,
+      "reason": null,
+      "expected_family": "eligibility_terminated",
+      "expected_path": "bill_patient",
+      "got_family": "eligibility_terminated",
+      "got_path": "bill_patient",
+      "trap": false
+    },
+    {
+      "case_id": "MOH2-000612",
+      "correct": true,
+      "family_correct": true,
+      "path_correct": true,
+      "reason": null,
+      "expected_family": "missing_referring_provider",
+      "expected_path": "correct_and_resubmit",
+      "got_family": "missing_referring_provider",
+      "got_path": "correct_and_resubmit",
+      "trap": false
+    },
+    {
+      "case_id": "MOH2-000638",
+      "correct": true,
+      "family_correct": true,
+      "path_correct": true,
+      "reason": null,
+      "expected_family": "cob_other_primary",
+      "expected_path": "resubmit_other_payer",
+      "got_family": "cob_other_primary",
+      "got_path": "resubmit_other_payer",
+      "trap": false
+    },
+    {
+      "case_id": "MOH2-000711",
+      "correct": true,
+      "family_correct": true,
+      "path_correct": true,
+      "reason": null,
+      "expected_family": "threshold_no_kx",
+      "expected_path": "correct_and_resubmit",
+      "got_family": "threshold_no_kx",
+      "got_path": "correct_and_resubmit",
+      "trap": false
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000334",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "DOS 2025-06-21. 277CA (DTP*050) shows payer received claim 2025-07-10 \u2014 19 days post-DOS, well within any commercial filing limit. Yet 835 denies CO-29 + N211. The clearinghouse acceptance report proves timely filing; appeal to dispute the payer's receipt-date determination.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1248,
+    "cache_read_input_tokens": 31983,
+    "cache_creation_input_tokens": 4812,
+    "cost_usd": 0.08500415,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "timely_filing",
+      "explanation": "Payer denied CO-29 but 277CA confirms claim accepted 2025-07-10, only 19 days after DOS 2025-06-21. Denial is erroneous \u2014 timely proof exists."
+    },
+    "next_action": {
+      "path": "appeal",
+      "detail": "Appeal with clearinghouse acceptance report showing receipt 2025-07-10 (DTP*050 on 277CA trace TRC86768843). Dispute payer's filing-date determination."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Both lines denied CAS*CO*29, MOA N211, $0 paid, CI filing indicator"
+      },
+      {
+        "artifact": "ack_277ca.edi",
+        "fact": "STC*A2:20*20250710 and DTP*050*D8*20250710 confirm payer accepted claim 19 days after DOS"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "DOS 2025-06-21, same trace TRC86768843 as 277CA acceptance"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "29",
+      "rarc": "N211",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      1,
+      2
+    ],
+    "citations": [
+      {
+        "source": "03-timely-filing.md",
+        "rule": "Proof of an accepted submission inside the window \u2192 appeal with the clearinghouse acceptance report: dispute the receipt date"
+      }
+    ]
+  }
+}

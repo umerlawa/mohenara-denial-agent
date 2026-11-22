@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000061",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "All four lines denied OA-18 with claim-level MOA N111. Claim filed as frequency 1 (original) to Medicare Part B. Payer matched provider/member/DOS/procedure against an already-adjudicated prior claim (CLP07 2623576767957 confirms adjudication). Duplicate edit is hard-coded, unappealable, and MACs cannot override it. OA group means no patient liability. The original claim's disposition governs payment.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 3206,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 37095,
+    "cost_usd": 0.343204125,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "max",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "exact_duplicate",
+      "explanation": "All four lines denied OA-18 with MOA N111. Claim submitted as CLM05-3=1 (original) matched against an already-adjudicated prior claim. Medicare Part B duplicate edit fired on provider/member/DOS/procedure."
+    },
+    "next_action": {
+      "path": "do_not_resubmit",
+      "detail": "Check original claim status via Novitas portal or IVR (payer control 2623576767957). If original paid, post that payment and close. If original denied on merits, address that denial. Do not resubmit this claim."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All 4 lines carry OA-18 ($47.76, $98.25, $46.48, $48.37), $0 paid, claim-level MOA N111",
+        "locator": "CAS segment all lines; MOA segment"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP07 = 2623576767957 confirms claim was adjudicated (not rejected)",
+        "locator": "CLP segment"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "CLM05-3 = 1 (original claim) \u2014 sent as brand-new, triggering duplicate match against prior adjudicated claim",
+        "locator": "CLM segment"
+      },
+      {
+        "artifact": "reference",
+        "fact": "True duplicate \u2192 do_not_resubmit; hard-coded edit, MACs cannot override; OA is never patient liability",
+        "locator": "04-exact-duplicate.md"
+      }
+    ],
+    "denial": {
+      "group": "OA",
+      "carc": "18",
+      "rarc": null,
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "citations": [
+      {
+        "source": "04-exact-duplicate.md",
+        "rule": "True duplicate \u2014 one service, billed once, sent twice. Disposition do_not_resubmit, family exact_duplicate. Duplicate edit is hard-coded, MACs cannot override or bypass it."
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "OA = liability not stated; not billable. Pursue wrong payer / duplicate / COB."
+      }
+    ]
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000441",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "All three therapy lines (97110, 97140, 97530) denied CO-4/N822: required therapy discipline modifier (GP/GO/GN) missing from every line. Claim was accepted and adjudicated (835 with CLP07 2610383773597), so this is a returned-unprocessable pattern per CO-4/N822 \u2014 new original claim required. Filing indicator MB (Medicare Part B). DOS 2026-02-19; today 2026-08-12 \u2014 within the 1-year Medicare filing window.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 805,
+    "cache_read_input_tokens": 31309,
+    "cache_creation_input_tokens": 4924,
+    "cost_usd": 0.04393257,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "missing_therapy_modifier",
+      "explanation": "97110, 97140, 97530 billed without GP/GO/GN on all three lines. CO-4 + N822 on every line confirms required discipline modifier absent."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Submit a new original claim (CLM05-3=1, no REF*F8) appending GP to all three lines (physical therapy plan of care). Do not appeal; do not use frequency 7. Act before 2027-02-19 (Medicare 1-year filing limit)."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Lines 1\u20133: CO-4 + N822 on 97110, 97140, 97530 \u2014 'missing procedure modifier(s)'",
+        "locator": "service lines 1\u20133"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "No modifier on any of the three therapy lines as submitted",
+        "locator": "procedure lines 1\u20133"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "PT treatment note documents physical therapy services; plan of care is PT \u2192 modifier GP required",
+        "locator": "PT treatment note 2026-02-19"
+      },
+      {
+        "artifact": "reference",
+        "fact": "CO-4/N822 = returned unprocessable; remedy is new original claim CLM05-3=1, not appeal or frequency 7 (therapy-modifiers-and-threshold.md \u00a78.1)",
+        "locator": "reference/08-therapy-modifiers.md \u00a78.1"
+      }
+    ],
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "4",
+      "rarc": "N822",
+      "level": "line"
+    },
+    "citations": [
+      {
+        "source": "08-therapy-modifiers.md",
+        "rule": "CO-4+N822 on always-therapy CPTs = missing GP/GO/GN; remedy is new original claim CLM05-3=1"
+      },
+      {
+        "source": "02-resubmission-frequency.md",
+        "rule": "Medicare Part B: frequency 7 not accepted; front-end returned \u2192 new original, no REF*F8"
+      }
+    ]
+  }
+}

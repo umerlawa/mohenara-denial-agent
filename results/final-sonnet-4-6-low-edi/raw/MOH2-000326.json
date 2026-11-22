@@ -1,0 +1,38 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4931,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 995,
+    "output_tokens_details": {
+      "thinking_tokens": 617
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4931
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "awaiting_human",
+    "rationale": "Line 2 (97110:GP) denied CO-236 + N20 \u2014 confirmed NCCI PTP edit. Disposition turns entirely on CCMI for the 97150/97110 pair in the Q2 2026 PTP edit file: CCMI=1 \u2192 correct_and_resubmit with modifier; CCMI=0 \u2192 do_not_resubmit. The 835 carries neither the partner code nor the CCMI. Reference 07 is explicit: look it up or ask, never guess.",
+    "awaiting_human": {
+      "question": "What is the CCMI (Column Modifier Indicator) for the 97150 / 97110 code pair in the Q2 2026 (April\u2013June) CMS NCCI PTP edit table?",
+      "why_needed": "CCMI=1 means a modifier can bypass the edit \u2192 correct_and_resubmit with the appropriate modifier on line 2. CCMI=0 means the edit is absolute \u2192 do_not_resubmit and write off. The 835 does not carry this value and it cannot be inferred from the artifacts.",
+      "blocks": [
+        "root_cause.family",
+        "next_action.path"
+      ],
+      "asked_of": "internal"
+    }
+  },
+  "result": "{\"status\":\"awaiting_human\",\"rationale\":\"Line 2 (97110:GP) denied CO-236 + N20 \u2014 confirmed NCCI PTP edit. Disposition turns entirely on CCMI for the 97150/97110 pair in the Q2 2026 PTP edit file: CCMI=1 \u2192 correct_and_resubmit with modifier; CCMI=0 \u2192 do_not_resubmit. The 835 carries neither the partner code nor the CCMI. Reference 07 is explicit: look it up or ask, never guess.\",\"awaiting_human\":{\"question\":\"What is the CCMI (Column Modifier Indicator) for the 97150 / 97110 code pair in the Q2 2026 (April\u2013June) CMS NCCI PTP edit table?\",\"why_needed\":\"CCMI=1 means a modifier can bypass the edit \u2192 correct_and_resubmit with the appropriate modifier on line 2. CCMI=0 means the edit is absolute \u2192 do_not_resubmit and write off. The 835 does not carry this value and it cannot be inferred from the artifacts.\",\"blocks\":[\"root_cause.family\",\"next_action.path\"],\"asked_of\":\"internal\"}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

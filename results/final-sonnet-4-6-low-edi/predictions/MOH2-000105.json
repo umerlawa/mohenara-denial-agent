@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000105",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All four lines denied CO-16/N286: referring provider loop absent from the 837P. The claim carried rendering provider (NM1*82 CLARK/1992501921) but no ordering/referring NM1*DN segment. Medicare Part B FFS \u2014 resubmit as new original CLM05-3=1; frequency 7 is not accepted on Part B.",
+  "usage": {
+    "input_tokens": 3,
+    "output_tokens": 1777,
+    "cache_read_input_tokens": 68585,
+    "cache_creation_input_tokens": 6139,
+    "cost_usd": 0.077286825,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "missing_referring_provider",
+      "explanation": "837P contains no referring/ordering provider loop. All four lines carry CO-16+N286 (missing/invalid referring provider primary identifier). CLP07=2626660924906 confirms adjudication."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Add the ordering/referring provider NM1*DN segment with verified name and NPI (confirm in NPI Registry and PECOS). Resubmit as a new original claim CLM05-3=1 \u2014 frequency 7 is rejected on Medicare Part B FFS. No REF*F8."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CAS*CO*16 on all four SVC lines; MOA N286 at claim level",
+        "locator": "MOA***N286; CAS*CO*16*103.9 / 49.89 / 113.43 / 43.61"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "No NM1*DN (referring provider) segment anywhere in the claim",
+        "locator": "Loop 2310 \u2014 only NM1*82 rendering provider present"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP07=2626660924906 confirms claim adjudicated on Medicare Part B (MB)",
+        "locator": "CLP*PA28755879*4*310.83*0**MB*2626660924906"
+      },
+      {
+        "artifact": "reference",
+        "fact": "CO-16+N286 \u2192 correct_and_resubmit; Part B accepts only CLM05-3=1",
+        "locator": "09-missing-referring-provider.md \u2014 Disposition and Part B frequency rows"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "16",
+      "rarc": "N286",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "citations": [
+      {
+        "source": "09-missing-referring-provider.md",
+        "rule": "CO-16+N286 = missing/invalid referring provider NPI \u2192 correct_and_resubmit; Part B CLM05-3=1 only"
+      },
+      {
+        "source": "02-resubmission-frequency.md",
+        "rule": "Frequency 7 not accepted on Medicare Part B/DME FFS \u2014 use new original (1)"
+      }
+    ]
+  }
+}

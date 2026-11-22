@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000199",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "Lines 1\u20132 (97110-GP) paid with CO-45 write-off and PR-2 coinsurance \u2014 no action needed. Line 3 (97112-GP, 5 units) denied CO-151 + N362: billed 5 units for 31 documented minutes, which supports at most 2\u20133 units. This is a keying/conversion error. Medicare Part B does not accept frequency 7; resubmit as a new original.",
+  "usage": {
+    "input_tokens": 3,
+    "output_tokens": 1679,
+    "cache_read_input_tokens": 67667,
+    "cache_creation_input_tokens": 5993,
+    "cost_usd": 0.07476463500000001,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "mue_exceeded",
+      "explanation": "Line 3 (97112-GP) billed 5 units for 31 timed minutes. CO-151 + N362 = units exceed MUE. Chart note supports 2\u20133 units; 5 is a billing error."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Resubmit line 3 (97112-GP) with corrected units (2\u20133 per your MAC's 8-minute rule for 31 minutes). Medicare Part B: CLM05-3=1 only \u2014 frequency 7 is not accepted. Lines 1\u20132 need no action."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Line 3: CO-151 + RARC N362, $214.95 fully denied \u2014 units exceed acceptable maximum",
+        "locator": "Line 3, 97112-GP, 5 UN"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "97112 documented as 31 minutes on 2026-05-10",
+        "locator": "PT treatment note 2026-05-10"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Line 3 billed 5 units for 97112-GP \u2014 inconsistent with 31 documented minutes",
+        "locator": "Line 3, 97112-GP, 5 UN"
+      },
+      {
+        "artifact": "reference",
+        "fact": "CO-151 + N362 = MUE exceeded; keying error \u2192 correct_and_resubmit; Part B CLM05-3=1 only",
+        "locator": "07-ncci-and-mue.md \u00a7b; 02-resubmission-frequency.md Part B row"
+      }
+    ],
+    "denied_line_idxs": [
+      2
+    ],
+    "citations": [
+      {
+        "source": "07-ncci-and-mue.md",
+        "rule": "CO-151 + N362 = MUE exceeded; keying/conversion error \u2192 correct_and_resubmit"
+      },
+      {
+        "source": "02-resubmission-frequency.md",
+        "rule": "Medicare Part B does not accept frequency 7; submit as new original CLM05-3=1"
+      }
+    ]
+  }
+}

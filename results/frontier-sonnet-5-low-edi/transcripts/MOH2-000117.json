@@ -1,0 +1,106 @@
+{
+  "case_id": "MOH2-000117",
+  "run_id": "frontier-sonnet-5-low-edi",
+  "model": "claude-sonnet-5",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4391,
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 9173,
+    "cache_read_input_tokens": 103709,
+    "output_tokens": 3818,
+    "output_tokens_details": {
+      "thinking_tokens": 1874
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 9173,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 981,
+        "cache_read_input_tokens": 54996,
+        "cache_creation_input_tokens": 2890,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 2890
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.0818623,
+  "cache_hit_rate": 0.918706,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "835 denies both lines CO-29 (timely filing expired) with RARC N211. But the 277CA for this exact claim (same TRC75364521) shows STC*A2:20 \u2014 accepted into the payer's adjudication system on 2025-01-27, only 8 days after the 2025-01-19 DOS, well inside any plausible filing window. This is a clearinghouse/payer acceptance report, the strongest proof under the timely-filing card, and it contradicts the payer's denial. The remedy is to appeal and dispute the receipt date using that acceptance record, not to write off or refile.",
+    "resolution": {
+      "root_cause": {
+        "family": "timely_filing",
+        "explanation": "CO-29 denial on both lines despite a 277CA (STC*A2:20) showing the identical claim (TRC75364521) was accepted into the payer's system 2025-01-27, 8 days post-DOS \u2014 evidence the claim was in fact filed timely."
+      },
+      "next_action": {
+        "path": "appeal",
+        "detail": "File appeal disputing the CO-29 receipt-date finding; attach the 277CA acceptance report (STC*A2:20, 2025-01-27) as proof of timely submission for DOS 2025-01-19. Do not resubmit as a new/corrected claim."
+      },
+      "denied_line_idxs": [
+        0,
+        1
+      ],
+      "denial": {
+        "level": "line",
+        "group": "CO",
+        "carc": "29",
+        "rarc": "N211"
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CAS*CO*29 on both SVC lines (97110, 97140), MOA*N211",
+          "locator": "CLP*PA24642236 / SVC segments"
+        },
+        {
+          "artifact": "ack_277ca.edi",
+          "fact": "STC*A2:20 accepted for processing 2025-01-27, TRN*2*TRC75364521 matching the 837's BHT TRC",
+          "locator": "STC segment / TRN segment"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "DOS 2025-01-19 (DTP*472), same claim control PA24642236 and TRC75364521",
+          "locator": "CLM/DTP/BHT segments"
+        }
+      ],
+      "citations": [
+        {
+          "source": "03-timely-filing.md",
+          "rule": "Proof accepted (clearinghouse/payer acceptance report) leads to appeal, dispute the receipt date, don't plead forgiveness"
+        },
+        {
+          "source": "01-carc-rarc-index.md",
+          "rule": "CARC 29: filing limit expired; write off unless proof of timely acceptance exists"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"835 denies both lines CO-29 (timely filing expired) with RARC N211. But the 277CA for this exact claim (same TRC75364521) shows STC*A2:20 \u2014 accepted into the payer's adjudication system on 2025-01-27, only 8 days after the 2025-01-19 DOS, well inside any plausible filing window. This is a clearinghouse/payer acceptance report, the strongest proof under the timely-filing card, and it contradicts the payer's denial. The remedy is to appeal and dispute the receipt date using that acceptance record, not to write off or refile.\",\"resolution\":{\"root_cause\":{\"family\":\"timely_filing\",\"explanation\":\"CO-29 denial on both lines despite a 277CA (STC*A2:20) showing the identical claim (TRC75364521) was accepted into the payer's system 2025-01-27, 8 days post-DOS \u2014 evidence the claim was in fact filed timely.\"},\"next_action\":{\"path\":\"appeal\",\"detail\":\"File appeal disputing the CO-29 receipt-date finding; attach the 277CA acceptance report (STC*A2:20, 2025-01-27) as proof of timely submission for DOS 2025-01-19. Do not resubmit as a new/corrected claim.\"},\"denied_line_idxs\":[0,1],\"denial\":{\"level\":\"line\",\"group\":\"CO\",\"carc\":\"29\",\"rarc\":\"N211\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CAS*CO*29 on both SVC lines (97110, 97140), MOA*N211\",\"locator\":\"CLP*PA24642236 / SVC segments\"},{\"artifact\":\"ack_277ca.edi\",\"fact\":\"STC*A2:20 accepted for processing 2025-01-27, TRN*2*TRC75364521 matching the 837's BHT TRC\",\"locator\":\"STC segment / TRN segment\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"DOS 2025-01-19 (DTP*472), same claim control PA24642236 and TRC75364521\",\"locator\":\"CLM/DTP/BHT segments\"}],\"citations\":[{\"source\":\"03-timely-filing.md\",\"rule\":\"Proof accepted (clearinghouse/payer acceptance report) leads to appeal, dispute the receipt date, don't plead forgiveness\"},{\"source\":\"01-carc-rarc-index.md\",\"rule\":\"CARC 29: filing limit expired; write off unless proof of timely acceptance exists\"}]}}"
+}

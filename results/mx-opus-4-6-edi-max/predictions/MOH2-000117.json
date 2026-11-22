@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000117",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "Both lines denied CO-29 (timely filing) with MOA N211. However, the 277CA shows STC*A2:20 with DTP*050 of 2025-01-27 \u2014 the claim was accepted 8 days after DOS 2025-01-19, well within any commercial filing limit. Per reference, proof of an accepted submission inside the window \u2192 appeal with the clearinghouse acceptance report, disputing the payer's receipt date. 271 confirms active coverage (EB*1, effective 2024-01-01, no termination).",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 3930,
+    "cache_read_input_tokens": 31983,
+    "cache_creation_input_tokens": 4824,
+    "cost_usd": 0.15884165,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "max",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "timely_filing",
+      "explanation": "Payer denied CO-29 claiming filing limit expired, but 277CA proves claim accepted 2025-01-27 \u2014 8 days after DOS 2025-01-19. Denial is erroneous; claim was timely."
+    },
+    "next_action": {
+      "path": "appeal",
+      "detail": "Appeal with 277CA acceptance report (STC A2:20, received 2025-01-27) proving timely submission 8 days post-DOS. Dispute payer's receipt date; do not plead forgiveness."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CAS*CO*29 on both lines ($91.91 + $46.71); MOA***N211; CLP status 4 denied; payer claim number 2530598850660",
+        "locator": "CAS/MOA segments"
+      },
+      {
+        "artifact": "ack_277ca.edi",
+        "fact": "STC*A2:20*20250127 \u2014 claim accepted; DTP*050*D8*20250127 \u2014 payer receipt date January 27, 2025",
+        "locator": "STC and DTP*050 segments"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "DOS 2025-01-19 (DTP*472*D8*20250119); filing indicator CI (commercial); same trace TRC75364521 links to 277CA",
+        "locator": "DTP*472 and SBR segments"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*1*IND*30 \u2014 active coverage; DTP*356*D8*20240101 effective date; no DTP*357 termination",
+        "locator": "EB and DTP segments"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "29",
+      "rarc": "N211",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1
+    ],
+    "citations": [
+      {
+        "source": "03-timely-filing.md",
+        "rule": "Proof of an accepted submission inside the window \u2192 appeal with the clearinghouse acceptance report: dispute the receipt date, don't plead forgiveness"
+      },
+      {
+        "source": "03-timely-filing.md",
+        "rule": "Proof accepted: clearinghouse/payer acceptance report (strongest)"
+      }
+    ]
+  }
+}

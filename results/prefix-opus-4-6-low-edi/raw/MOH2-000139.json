@@ -1,0 +1,72 @@
+{
+  "usage": {
+    "input_tokens": 3,
+    "cache_creation_input_tokens": 5785,
+    "cache_read_input_tokens": 68792,
+    "output_tokens": 1511,
+    "output_tokens_details": {
+      "thinking_tokens": 359
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5785
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "DOS 2025-01-30. 277CA shows claim accepted 2025-02-16 (STC*A2:20, 17 days post-DOS). 835 dated 2025-11-08 denies both lines CO-29 with N211. Commercial payer (CI). Provider has clearinghouse acceptance proof showing timely receipt well within any commercial filing window. Appeal disputing the receipt date.",
+    "resolution": {
+      "root_cause": {
+        "family": "timely_filing",
+        "explanation": "Payer denied CO-29 (filing limit expired) but the 277CA proves the claim was accepted 2025-02-16, only 17 days after DOS 2025-01-30 \u2014 well within any commercial filing limit."
+      },
+      "next_action": {
+        "path": "appeal",
+        "detail": "Appeal with the 277CA acceptance report (2025-02-16, STC*A2:20) proving payer receipt 17 days post-DOS. Dispute the receipt date; do not plead forgiveness."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Both lines denied CAS*CO*29 with MOA N211; $0 paid; payer Liberty Bell Health Plans (CI).",
+          "locator": "CAS*CO*29 on lines 1-2"
+        },
+        {
+          "artifact": "ack_277ca.edi",
+          "fact": "STC*A2:20 on 2025-02-16 confirms claim TRC12150848 was accepted by the payer, 17 days after DOS.",
+          "locator": "STC*A2:20*20250216"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "DOS 2025-01-30; filing indicator CI (commercial); BHT reference TRC12150848 matches the 277CA.",
+          "locator": "DTP*472*D8*20250130; SBR***CI"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "29",
+        "rarc": "N211",
+        "level": "claim"
+      },
+      "denied_line_idxs": [
+        1,
+        2
+      ],
+      "citations": [
+        {
+          "source": "03-timely-filing.md",
+          "rule": "Proof of accepted submission inside the window \u2192 appeal with clearinghouse acceptance report: dispute the receipt date."
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"DOS 2025-01-30. 277CA shows claim accepted 2025-02-16 (STC*A2:20, 17 days post-DOS). 835 dated 2025-11-08 denies both lines CO-29 with N211. Commercial payer (CI). Provider has clearinghouse acceptance proof showing timely receipt well within any commercial filing window. Appeal disputing the receipt date.\",\"resolution\":{\"root_cause\":{\"family\":\"timely_filing\",\"explanation\":\"Payer denied CO-29 (filing limit expired) but the 277CA proves the claim was accepted 2025-02-16, only 17 days after DOS 2025-01-30 \u2014 well within any commercial filing limit.\"},\"next_action\":{\"path\":\"appeal\",\"detail\":\"Appeal with the 277CA acceptance report (2025-02-16, STC*A2:20) proving payer receipt 17 days post-DOS. Dispute the receipt date; do not plead forgiveness.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"Both lines denied CAS*CO*29 with MOA N211; $0 paid; payer Liberty Bell Health Plans (CI).\",\"locator\":\"CAS*CO*29 on lines 1-2\"},{\"artifact\":\"ack_277ca.edi\",\"fact\":\"STC*A2:20 on 2025-02-16 confirms claim TRC12150848 was accepted by the payer, 17 days after DOS.\",\"locator\":\"STC*A2:20*20250216\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"DOS 2025-01-30; filing indicator CI (commercial); BHT reference TRC12150848 matches the 277CA.\",\"locator\":\"DTP*472*D8*20250130; SBR***CI\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"29\",\"rarc\":\"N211\",\"level\":\"claim\"},\"denied_line_idxs\":[1,2],\"citations\":[{\"source\":\"03-timely-filing.md\",\"rule\":\"Proof of accepted submission inside the window \u2192 appeal with clearinghouse acceptance report: dispute the receipt date.\"}]}}",
+  "model": "us.anthropic.claude-opus-4-6-v1"
+}

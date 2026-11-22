@@ -1,0 +1,56 @@
+{
+  "case_id": "MOH2-000682",
+  "run_id": "final-sonnet-4-6-low-edi",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 5069,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5144,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1369,
+    "output_tokens_details": {
+      "thinking_tokens": 910
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5144
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.05429061,
+  "cache_hit_rate": 0.860516,
+  "model_output": {
+    "status": "awaiting_human",
+    "rationale": "Lines 0 and 2 paid normally (CO-45 write-off + PR-2 coinsurance). Line 1 (97110) is denied CO-236 + N20 \u2014 NCCI PTP edit. 97110 has no bypass modifier; 97112 on line 0 already carries 59. The chart note documents a separate session for 97110. Whether a modifier can be appended turns entirely on the CCMI for the 97110 pair in the Q3 2026 PTP edit file \u2014 CCMI=1 \u2192 correct_and_resubmit (reopening + modifier); CCMI=0 \u2192 do_not_resubmit. The 835 carries neither the partner code nor the CCMI.",
+    "awaiting_human": {
+      "question": "What is the CCMI (Column-to-Column Modifier Indicator) for the 97110 PTP pair \u2014 97110 vs 97112 and/or 97110 vs 97150 \u2014 in the CMS NCCI PTP edit file effective Q3 2026 (July 1, 2026)?",
+      "why_needed": "CCMI=1 allows a bypass modifier and routes to correct_and_resubmit (clerical-error reopening, Medicare Part B); CCMI=0 means the edit is absolute and the action is do_not_resubmit. The chart note supports a separate-session defense but that is only relevant if CCMI=1.",
+      "asked_of": "internal",
+      "blocks": [
+        "root_cause.family",
+        "next_action.path"
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"awaiting_human\",\"rationale\":\"Lines 0 and 2 paid normally (CO-45 write-off + PR-2 coinsurance). Line 1 (97110) is denied CO-236 + N20 \u2014 NCCI PTP edit. 97110 has no bypass modifier; 97112 on line 0 already carries 59. The chart note documents a separate session for 97110. Whether a modifier can be appended turns entirely on the CCMI for the 97110 pair in the Q3 2026 PTP edit file \u2014 CCMI=1 \u2192 correct_and_resubmit (reopening + modifier); CCMI=0 \u2192 do_not_resubmit. The 835 carries neither the partner code nor the CCMI.\",\"awaiting_human\":{\"question\":\"What is the CCMI (Column-to-Column Modifier Indicator) for the 97110 PTP pair \u2014 97110 vs 97112 and/or 97110 vs 97150 \u2014 in the CMS NCCI PTP edit file effective Q3 2026 (July 1, 2026)?\",\"why_needed\":\"CCMI=1 allows a bypass modifier and routes to correct_and_resubmit (clerical-error reopening, Medicare Part B); CCMI=0 means the edit is absolute and the action is do_not_resubmit. The chart note supports a separate-session defense but that is only relevant if CCMI=1.\",\"asked_of\":\"internal\",\"blocks\":[\"root_cause.family\",\"next_action.path\"]}}"
+}

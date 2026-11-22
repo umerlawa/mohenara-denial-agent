@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000187",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All three lines denied OA-18 (exact duplicate). Two 97110:GP:KX lines billed same DOS with different charges ($49.22/$48.11) and chart documents two distinct 15/16-min therapeutic exercise sessions. This is a false duplicate \u2014 repeat service missing modifier 76. Medicare Part B FFS does not accept frequency 7; modifier 76 is reopening-eligible.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 952,
+    "cache_read_input_tokens": 31983,
+    "cache_creation_input_tokens": 4990,
+    "cost_usd": 0.07808789999999999,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "exact_duplicate",
+      "explanation": "Two 97110:GP:KX lines on the same DOS triggered the duplicate edit. Chart documents two distinct timed sessions (15 min, 16 min) \u2014 repeat service lacking modifier 76 to distinguish them."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Request a clerical-error reopening (modifier 76 is reopening-eligible on Part B). Append modifier 76 to the second 97110 line. Reference ICN 2626166488912. Do not resubmit as a new original \u2014 it will duplicate again."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All three lines carry CAS*OA*18 (exact duplicate), $0 paid, CLP07=2626166488912"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Two 97110:GP:KX lines billed on same DOS 20260623 with no distinguishing modifier (76/77)"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "Two separate 97110 sessions documented: 15 min and 16 min therapeutic exercise \u2014 distinct repeat services"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*1 active coverage for DOS 20260623, Medicare Part B FFS (MB)"
+      }
+    ],
+    "denial": {
+      "group": "OA",
+      "carc": "18",
+      "rarc": null,
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      1,
+      2,
+      3
+    ],
+    "citations": [
+      {
+        "source": "04-exact-duplicate.md",
+        "rule": "False duplicate \u2014 repeat/bilateral service without distinguishing modifier \u2192 correct_and_resubmit; Medicare Part B: clerical-error reopening, modifier 76 is reopening-eligible"
+      },
+      {
+        "source": "02-resubmission-frequency.md",
+        "rule": "Part B/DME FFS: frequency 7 not accepted; use clerical-error reopening (1 yr)"
+      }
+    ]
+  }
+}

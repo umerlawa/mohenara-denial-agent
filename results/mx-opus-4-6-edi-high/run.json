@@ -1,0 +1,19 @@
+{
+  "run_id": "mx-opus-4-6-edi-high",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "high",
+  "thinking": "adaptive",
+  "input_format": "edi",
+  "slice": "eval/slices/dev5.txt",
+  "n_cases": 5,
+  "counts": {
+    "resolved": 5,
+    "awaiting_human": 0,
+    "failed": 0
+  },
+  "cost_usd": 1.021505,
+  "cost_per_case_usd": 0.204301,
+  "wall_seconds": 387.3,
+  "spend_total_after": 13.130293,
+  "failures": []
+}

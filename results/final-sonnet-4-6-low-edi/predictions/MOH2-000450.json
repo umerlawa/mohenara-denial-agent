@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000450",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "835 carries PR-27 on all 5 lines. 271 shows EB*6 with DTP*357 = 20250430 (termination) and DTP*356 = 20240101; DOS is 20250510 \u2014 after coverage ended. Filing indicator CI (commercial). PR group code + commercial plan + confirmed termination before DOS = bill_patient after overrides. No QMB, Medicaid, NSA, or ACA grace-period indicators present.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1221,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 5224,
+    "cost_usd": 0.05217861,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "eligibility_terminated",
+      "explanation": "271 confirms coverage ended 2025-04-30 (DTP*357). DOS 2025-05-10 is 10 days post-termination. All 5 lines carry PR-27 on a CI commercial claim."
+    },
+    "next_action": {
+      "path": "bill_patient",
+      "detail": "Send patient a balance-due statement for $236.41. Confirm no QMB, Medicaid, or NSA override before collecting. No corrected claim or appeal warranted."
+    },
+    "evidence": [
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*6 IND 30 KEYSTONE COMMERCIAL HEALTH EPO; DTP*357*D8*20250430 \u2014 coverage terminated April 30, 2025",
+        "locator": "EB/DTP segments"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All 5 SVC lines carry CAS*PR*27 \u2014 patient responsibility, expenses after coverage terminated",
+        "locator": "CAS segments lines 1-5"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "SBR*P*18*******CI \u2014 commercial filing indicator; DOS 20250510 on all lines",
+        "locator": "SBR / DTP*472 segments"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "DTP*291*D8*20250510 \u2014 inquiry was for the exact DOS; no successor coverage or EB*R present",
+        "locator": "DTP*291"
+      }
+    ],
+    "denial": {
+      "group": "PR",
+      "carc": "27",
+      "rarc": "N30",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "citations": [
+      {
+        "source": "05-eligibility-terminated.md",
+        "rule": "CI + EB*6 + DTP*357 before DOS + PR-27 \u2192 bill_patient after overrides cleared"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "PR = patient liability; commercial CO-27 is not automatic write-off but PR-27 is billable"
+      }
+    ]
+  }
+}

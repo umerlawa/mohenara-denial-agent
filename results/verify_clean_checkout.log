@@ -1,0 +1,102 @@
+=== 2026-08-13T08:49:55Z log: /home/user/mohenara-tathastu/results/verify_clean_checkout.log
+=== 2026-08-13T08:49:56Z cloning HEAD (3414e6d) into /tmp/claude-0/-home-user-mohenara-tathastu/c92e8a72-ea06-598a-843e-22022fd94ab9/scratchpad/clean-verify
+3414e6d Separate invented provenance from a citation of the wrong kind
+=== 2026-08-13T08:49:58Z building the environment
+=== 2026-08-13T08:50:38Z make verify VERIFY_LIVE=1
+ledger: /home/user/mohenara-tathastu/results/spend.json
+.venv/bin/python -c "import json,jsonschema; \
+jsonschema.Draft202012Validator.check_schema(json.load(open('schema/resolution.json'))); \
+print('schema/resolution.json valid (draft 2020-12)')"
+schema/resolution.json valid (draft 2020-12)
+.venv/bin/python -m pytest eval/test_score.py -q -k schema_invalid
+..                                                                       [100%]
+2 passed, 16 deselected in 0.31s
+.venv/bin/python -m pytest eval/test_score.py -q
+..................                                                       [100%]
+18 passed in 2.60s
+.venv/bin/python -m pytest eval/test_loader.py -q
+...........                                                              [100%]
+11 passed in 0.15s
+.venv/bin/python -m pytest eval/test_leakage.py -q
+.........                                                                [100%]
+9 passed in 50.54s
+.venv/bin/python -m pytest eval/test_makefile.py -q
+......                                                                   [100%]
+6 passed in 0.04s
+.venv/bin/python -m pytest eval/test_billing_paths.py -q
+....                                                                     [100%]
+4 passed in 0.55s
+.venv/bin/python -m pytest eval/test_inbox_reparking.py -q
+....                                                                     [100%]
+4 passed in 0.60s
+.venv/bin/python -m pytest eval/test_citations.py -q
+.
+  note: 2/837 citations (0.24%) name a case artifact rather than a reference file: {'eligibility_271.edi': 2}
+...                                                                     [100%]
+4 passed in 0.07s
+# Offline: reads results/ and the HTTP layer, and calls no model. It was
+# gated behind VERIFY_LIVE=1, which hid 128 free tests from verify-offline.
+.venv/bin/python -m pytest eval/test_token_accounting.py -q
+........................................................................ [ 39%]
+........................................................................ [ 79%]
+......................................                                   [100%]
+182 passed in 1.69s
+.venv/bin/python -m pytest eval/test_budget_isolation.py -q
+...........                                                              [100%]
+11 passed in 0.05s
+.........                                                                [100%]
+9 passed in 49.47s
+....                                                                     [100%]
+4 passed in 237.33s (0:03:57)
+[WebServer] INFO:     Started server process [17879]
+[WebServer] INFO:     Waiting for application startup.
+[WebServer] INFO:     Application startup complete.
+[WebServer] INFO:     Uvicorn running on http://127.0.0.1:8765 (Press CTRL+C to quit)
+[WebServer] INFO:     127.0.0.1:56756 - "GET /api/spend HTTP/1.1" 200 OK
+
+Running 5 tests using 1 worker
+
+[WebServer] INFO:     127.0.0.1:56772 - "GET / HTTP/1.1" 200 OK
+[WebServer] INFO:     127.0.0.1:56772 - "GET /api/spend HTTP/1.1" 200 OK
+[WebServer] INFO:     127.0.0.1:56774 - "GET /api/inbox HTTP/1.1" 200 OK
+[WebServer] INFO:     127.0.0.1:56774 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+[WebServer] INFO:     127.0.0.1:56774 - "POST /api/resolve HTTP/1.1" 200 OK
+[WebServer] INFO:     127.0.0.1:56774 - "GET /api/spend HTTP/1.1" 200 OK
+[WebServer] INFO:     127.0.0.1:54690 - "GET /api/inbox HTTP/1.1" 200 OK
+  ✓  1 [chromium] › tests/journeys.spec.js:40:1 › journey 1: run an md case and see root cause, next action, and nonzero cost (42.9s)
+[WebServer] INFO:     127.0.0.1:54704 - "GET / HTTP/1.1" 200 OK
+[WebServer] INFO:     127.0.0.1:54704 - "GET /api/spend HTTP/1.1" 200 OK
+[WebServer] INFO:     127.0.0.1:54708 - "GET /api/inbox HTTP/1.1" 200 OK
+[WebServer] INFO:     127.0.0.1:54708 - "POST /api/resolve HTTP/1.1" 200 OK
+[WebServer] INFO:     127.0.0.1:54708 - "GET /api/spend HTTP/1.1" 200 OK
+[WebServer] INFO:     127.0.0.1:56642 - "GET /api/inbox HTTP/1.1" 200 OK
+  ✓  2 [chromium] › tests/journeys.spec.js:62:1 › journey 2: run an edi case and see the same (25.6s)
+[WebServer] INFO:     127.0.0.1:56646 - "GET / HTTP/1.1" 200 OK
+[WebServer] INFO:     127.0.0.1:56646 - "GET /api/spend HTTP/1.1" 200 OK
+[WebServer] INFO:     127.0.0.1:56654 - "GET /api/inbox HTTP/1.1" 200 OK
+[WebServer] INFO:     127.0.0.1:56654 - "POST /api/resolve HTTP/1.1" 200 OK
+[WebServer] INFO:     127.0.0.1:56654 - "GET /api/spend HTTP/1.1" 200 OK
+[WebServer] INFO:     127.0.0.1:50726 - "GET /api/inbox HTTP/1.1" 200 OK
+[WebServer] INFO:     127.0.0.1:50726 - "GET /api/inbox HTTP/1.1" 200 OK
+[WebServer] INFO:     127.0.0.1:50726 - "POST /api/inbox/MOH2-000000/answer HTTP/1.1" 200 OK
+[WebServer] INFO:     127.0.0.1:40582 - "GET /api/spend HTTP/1.1" 200 OK
+[WebServer] INFO:     127.0.0.1:50726 - "GET /api/inbox HTTP/1.1" 200 OK
+  ✓  3 [chromium] › tests/journeys.spec.js:76:1 › journey 3: awaiting-human inbox, end to end (39.5s)
+[WebServer] INFO:     127.0.0.1:40584 - "GET / HTTP/1.1" 200 OK
+[WebServer] INFO:     127.0.0.1:40588 - "GET /api/inbox HTTP/1.1" 200 OK
+[WebServer] INFO:     127.0.0.1:40584 - "GET /api/spend HTTP/1.1" 200 OK
+[WebServer] INFO:     127.0.0.1:40588 - "GET /api/runs HTTP/1.1" 200 OK
+[WebServer] INFO:     127.0.0.1:40588 - "GET /api/runs/baseline-noref-sonnet-low HTTP/1.1" 200 OK
+  ✓  4 [chromium] › tests/journeys.spec.js:119:1 › journey 4: results view shows numbers identical to results/ on disk (494ms)
+[WebServer] INFO:     127.0.0.1:40598 - "GET / HTTP/1.1" 200 OK
+[WebServer] INFO:     127.0.0.1:40598 - "GET /api/spend HTTP/1.1" 200 OK
+[WebServer] INFO:     127.0.0.1:40614 - "GET /api/inbox HTTP/1.1" 200 OK
+[WebServer] INFO:     127.0.0.1:40614 - "POST /api/resolve HTTP/1.1" 200 OK
+[WebServer] INFO:     127.0.0.1:40614 - "GET /api/spend HTTP/1.1" 200 OK
+[WebServer] INFO:     127.0.0.1:60872 - "GET /api/inbox HTTP/1.1" 200 OK
+  ✓  5 [chromium] › tests/journeys.spec.js:150:1 › journey 5: upload an EDI artifact set and resolve it (29.7s)
+
+  5 passed (2.4m)
+
+  verify: all suites green -- offline AND live.
+=== 2026-08-13T08:58:50Z clean-checkout verification finished

@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000199",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "Lines 1-2 paid normally (CO-45 contractual, PR-2 coinsurance = routine AR). Line 3 is the denial: CO-151 + N362 = MUE units exceeded. Chart note documents only 31 timed minutes of 97112, supporting 2 units not the 5 billed \u2014 a keying/quantity error, correctable regardless of MAI tier. Part B FFS does not accept frequency 7, so the vehicle is a clerical-error reopening.",
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2149,
+    "cache_read_input_tokens": 93053,
+    "cache_creation_input_tokens": 8099,
+    "cost_usd": 0.15089025,
+    "model": "claude-opus-5",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "mue_exceeded",
+      "explanation": "835 line 3: 97112-GP, 5 units, CO-151 with N362 (units exceed acceptable maximum), $214.95 denied in full. Chart note documents 31 minutes of 97112 \u2014 supports 2 units, not 5."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "File a clerical-error reopening with Novitas on line 3 only, correcting 97112-GP from 5 units to 2 units. Do not send frequency 7 \u2014 Part B FFS rejects it. Do not appeal; do not bill the patient (group CO)."
+    },
+    "denied_line_idxs": [
+      2
+    ],
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "locator": "SVC line 3 / CAS",
+        "fact": "97112-GP 5 units denied $214.95 under CO-151 with RARC N362"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "locator": "PT note 2026-05-10",
+        "fact": "97112 documented at 31 minutes, supporting 2 timed units; total timed minutes 60"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "locator": "line 3 SV1",
+        "fact": "97112-GP billed 5 UN on DOS 2026-05-10"
+      },
+      {
+        "artifact": "reference",
+        "locator": "07-ncci-and-mue.md",
+        "fact": "CO-151+N362 is the MUE signature; keying/quantity error \u2192 correct_and_resubmit; never bill patient (CO)"
+      }
+    ],
+    "citations": [
+      {
+        "source": "07-ncci-and-mue.md",
+        "rule": "CO-151 + N362 = MUE exceeded; excess units from a keying error are corrected and resubmitted, never billed to the patient."
+      },
+      {
+        "source": "02-resubmission-frequency.md",
+        "rule": "Medicare Part B FFS does not accept CLM05-3 = 7; use a clerical-error reopening."
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO on a Medicare FFS (MB) remit is never billable to the patient."
+      }
+    ]
+  }
+}

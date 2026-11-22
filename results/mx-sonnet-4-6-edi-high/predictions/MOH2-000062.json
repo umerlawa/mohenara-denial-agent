@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000062",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "271 confirms coverage ended 2025-05-31 (EB*6, DTP*357); DOS is 2025-06-17 \u2014 17 days post-termination. Payer issued PR-27 on all four lines under commercial (CI) filing. Group PR means patient owes the balance. No overrides: no QMB, no successor payer (no EB*R in 271), no NSA (no N830), no grace-period indicators.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 5301,
+    "cache_read_input_tokens": 31309,
+    "cache_creation_input_tokens": 5091,
+    "cost_usd": 0.11880544500000001,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "high",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "eligibility_terminated",
+      "explanation": "271 shows EB*6 + DTP*357*D8*20250531; DOS 2025-06-17 is 17 days after termination. Payer assigned PR-27 on all four lines."
+    },
+    "next_action": {
+      "path": "bill_patient",
+      "detail": "Bill patient the full $204.23 balance. Group PR on CI claim; overrides not triggered. Confirm no QMB or retroactive Medicaid eligibility before billing."
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "denial": {
+      "group": "PR",
+      "carc": "27",
+      "rarc": "N30",
+      "level": "line"
+    },
+    "evidence": [
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*6 + DTP*356*D8*20240101 + DTP*357*D8*20250531: Keystone EPO coverage terminated May 31, 2025",
+        "locator": "EB/DTP segments"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "DOS 2025-06-17 on all four lines; SBR*P*18 filing indicator CI (commercial)",
+        "locator": "DTP*472; SBR"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CAS*PR*27 on each of four SVC lines; $0 paid; $204.23 assigned to patient responsibility",
+        "locator": "CLP + 4\u00d7 CAS"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "No EB*R present \u2014 no successor or other payer active on the DOS",
+        "locator": "EB segment (only one EB*6 returned)"
+      }
+    ],
+    "citations": [
+      {
+        "source": "05-eligibility-terminated.md",
+        "rule": "CI, EB*6 + DTP*357 before DOS, no successor: PR-27 \u2192 bill_patient once overrides cleared"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "PR = Patient Responsibility; billable after QMB/Medicaid/NSA/ABN overrides checked"
+      }
+    ]
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "case_id": "MOH2-000079",
+  "run_id": "final-opus-4-6-low-edi",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 4580,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4893,
+    "cache_read_input_tokens": 31983,
+    "output_tokens": 1409,
+    "output_tokens_details": {
+      "thinking_tokens": 768
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4893
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.089988525,
+  "cache_hit_rate": 0.867265,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "835 shows CO-22 on both lines with MOA MA04. 271 confirms EB*R naming Novitas Medicare Part B FFS as another payer with MSG \"PLAN IS PRIMARY PAYER FOR THIS MEMBER.\" Claim was filed to Liberty Bell as primary (SBR*P, CI) but Medicare is primary. Bill Medicare first, then rebill Liberty Bell as secondary with Medicare's adjudication data.",
+    "resolution": {
+      "root_cause": {
+        "family": "cob_other_primary",
+        "explanation": "Claim billed to Liberty Bell Health Plans as primary, but 271 shows Medicare Part B (Novitas) is primary payer. CO-22 denied both lines; MA04 confirms primary payer adjudication data missing."
+      },
+      "next_action": {
+        "path": "resubmit_other_payer",
+        "detail": "Bill Novitas Medicare Part B FFS (payer ID 1846349352) as primary. Upon adjudication, rebill Liberty Bell as secondary with SBR01=S and Medicare's payment/adjustment data in loops 2320/2430."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Both lines denied CO-22 $42.18 and $45.49; MOA MA04; $0 paid; CLP status 4 (denied)"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*R*IND*30**NOVITAS SOLUTIONS MEDICARE PART B FFS with MSG 'PLAN IS PRIMARY PAYER FOR THIS MEMBER'"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "SBR*P*18*******CI \u2014 filed to Liberty Bell as primary commercial"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*1*IND*30 confirms Liberty Bell active coverage but Medicare is primary per payer's COB record"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "22",
+        "rarc": "MA04",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        1,
+        2
+      ],
+      "citations": [
+        {
+          "source": "06-cob-other-primary.md",
+          "rule": "CARC 22 alone \u2192 resubmit_other_payer. Bill the true primary, then rebill this payer as secondary carrying the primary's adjudication data."
+        },
+        {
+          "source": "06-cob-other-primary.md",
+          "rule": "EB*R proves another payer is on the record; MSG identifies primary order"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"835 shows CO-22 on both lines with MOA MA04. 271 confirms EB*R naming Novitas Medicare Part B FFS as another payer with MSG \\\"PLAN IS PRIMARY PAYER FOR THIS MEMBER.\\\" Claim was filed to Liberty Bell as primary (SBR*P, CI) but Medicare is primary. Bill Medicare first, then rebill Liberty Bell as secondary with Medicare's adjudication data.\",\"resolution\":{\"root_cause\":{\"family\":\"cob_other_primary\",\"explanation\":\"Claim billed to Liberty Bell Health Plans as primary, but 271 shows Medicare Part B (Novitas) is primary payer. CO-22 denied both lines; MA04 confirms primary payer adjudication data missing.\"},\"next_action\":{\"path\":\"resubmit_other_payer\",\"detail\":\"Bill Novitas Medicare Part B FFS (payer ID 1846349352) as primary. Upon adjudication, rebill Liberty Bell as secondary with SBR01=S and Medicare's payment/adjustment data in loops 2320/2430.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"Both lines denied CO-22 $42.18 and $45.49; MOA MA04; $0 paid; CLP status 4 (denied)\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*R*IND*30**NOVITAS SOLUTIONS MEDICARE PART B FFS with MSG 'PLAN IS PRIMARY PAYER FOR THIS MEMBER'\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"SBR*P*18*******CI \u2014 filed to Liberty Bell as primary commercial\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*1*IND*30 confirms Liberty Bell active coverage but Medicare is primary per payer's COB record\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"22\",\"rarc\":\"MA04\",\"level\":\"line\"},\"denied_line_idxs\":[1,2],\"citations\":[{\"source\":\"06-cob-other-primary.md\",\"rule\":\"CARC 22 alone \u2192 resubmit_other_payer. Bill the true primary, then rebill this payer as secondary carrying the primary's adjudication data.\"},{\"source\":\"06-cob-other-primary.md\",\"rule\":\"EB*R proves another payer is on the record; MSG identifies primary order\"}]}}"
+}

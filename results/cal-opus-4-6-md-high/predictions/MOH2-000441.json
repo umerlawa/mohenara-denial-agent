@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000441",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "All three lines (97110, 97140, 97530) denied CO-4 + N822. These are always-therapy CPTs billed without GP/GO/GN. Chart note confirms PT plan of care \u2192 GP required. Medicare Part B unprocessable: no appeal rights, resubmit as new original with GP modifier appended to each line.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1776,
+    "cache_read_input_tokens": 31983,
+    "cache_creation_input_tokens": 4924,
+    "cost_usd": 0.10029415,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "high",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "missing_therapy_modifier",
+      "explanation": "Always-therapy codes 97110, 97140, 97530 billed without the required discipline modifier. Chart note confirms physical therapy plan of care; GP modifier is missing from all three lines."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Append modifier GP to all three lines (97110, 97140, 97530). Submit as a new original claim (CLM05-3 = 1, no REF*F8). Do not appeal \u2014 no appeal rights on an unprocessable claim. Filing deadline 2027-02-19; act promptly."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All three lines denied CO-4 with RARC N822 (missing procedure modifier), $0 paid.",
+        "locator": "CAS segment lines 1-3"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "CPTs 97110, 97140, 97530 billed with no GP/GO/GN modifier on any line.",
+        "locator": "SV1 segments lines 1-3"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "'PT treatment note 2026-02-19' \u2014 physical therapy plan of care, confirming GP is the correct modifier.",
+        "locator": "First line"
+      },
+      {
+        "artifact": "reference",
+        "fact": "CO-4 + N822 on always-therapy CPTs = unprocessable, no appeal rights; resubmit as new original with discipline modifier.",
+        "locator": "therapy-modifiers-and-threshold.md \u00a78.1"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "4",
+      "rarc": "N822",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      1,
+      2,
+      3
+    ],
+    "citations": [
+      {
+        "source": "therapy-modifiers-and-threshold.md",
+        "rule": "CO-4 + N822 on always-therapy CPTs without GP/GO/GN \u2192 correct_and_resubmit as new original (CLM05-3 = 1)"
+      },
+      {
+        "source": "resubmission-and-frequency-codes.md",
+        "rule": "Medicare Part B does not accept frequency 7; unprocessable claims resubmit as new original, no REF*F8"
+      }
+    ]
+  }
+}

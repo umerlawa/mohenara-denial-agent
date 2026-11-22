@@ -1,0 +1,94 @@
+{
+  "case_id": "MOH2-000116",
+  "run_id": "final-sonnet-4-6-low-edi",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4476,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4875,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1410,
+    "output_tokens_details": {
+      "thinking_tokens": 626
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4875
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.053857485000000004,
+  "cache_hit_rate": 0.866836,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "Both lines carry OA-18 (exact duplicate). The 835 has a payer claim control number (CLP07=2627695771104), confirming adjudication. The 837P was submitted CLM05-3=1 (original), meaning a prior claim for the same member/DOS/procedures was already on file. MOA N111 confirms no appeal right. Disposition: do_not_resubmit; check the original claim's status via portal/IVR and post payment if it paid.",
+    "resolution": {
+      "root_cause": {
+        "family": "exact_duplicate",
+        "explanation": "Both lines adjudicated OA-18. Payer control number CLP07=2627695771104 confirms prior adjudication existed. This 837P (CLM05-3=1) collided with that prior claim on member/DOS/procedure match."
+      },
+      "next_action": {
+        "path": "do_not_resubmit",
+        "detail": "Do not resubmit. Look up ICN 2627695771104 on the Novitas portal to find the original claim's disposition. If it paid, post and close. If it denied, work that claim's denial. Do not send another original \u2014 duplicate edit is hard-coded and unbypassable."
+      },
+      "denial": {
+        "group": "OA",
+        "carc": "18",
+        "rarc": "N111",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CAS*OA*18 on both SVC lines; CLP07=2627695771104 confirms adjudicated prior claim exists",
+          "locator": "SVC lines 97140 and 97110"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "MOA N111 \u2014 no appeal right except to dispute the duplicate finding itself",
+          "locator": "MOA segment"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "CLM05-3=1 (original frequency), so this was treated as a new claim and matched against the prior adjudicated record",
+          "locator": "CLM*PA24460688*126.09***11:B:1"
+        }
+      ],
+      "citations": [
+        {
+          "source": "04-exact-duplicate.md",
+          "rule": "OA-18 true duplicate \u2192 do_not_resubmit; hard-coded edit, no appeal rights; original claim's disposition governs"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "CLM05-3=1 treated as brand-new; duplicate logic matches provider/member/DOS/procedure and fires the edit"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"Both lines carry OA-18 (exact duplicate). The 835 has a payer claim control number (CLP07=2627695771104), confirming adjudication. The 837P was submitted CLM05-3=1 (original), meaning a prior claim for the same member/DOS/procedures was already on file. MOA N111 confirms no appeal right. Disposition: do_not_resubmit; check the original claim's status via portal/IVR and post payment if it paid.\",\"resolution\":{\"root_cause\":{\"family\":\"exact_duplicate\",\"explanation\":\"Both lines adjudicated OA-18. Payer control number CLP07=2627695771104 confirms prior adjudication existed. This 837P (CLM05-3=1) collided with that prior claim on member/DOS/procedure match.\"},\"next_action\":{\"path\":\"do_not_resubmit\",\"detail\":\"Do not resubmit. Look up ICN 2627695771104 on the Novitas portal to find the original claim's disposition. If it paid, post and close. If it denied, work that claim's denial. Do not send another original \u2014 duplicate edit is hard-coded and unbypassable.\"},\"denial\":{\"group\":\"OA\",\"carc\":\"18\",\"rarc\":\"N111\",\"level\":\"line\"},\"denied_line_idxs\":[0,1],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CAS*OA*18 on both SVC lines; CLP07=2627695771104 confirms adjudicated prior claim exists\",\"locator\":\"SVC lines 97140 and 97110\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"MOA N111 \u2014 no appeal right except to dispute the duplicate finding itself\",\"locator\":\"MOA segment\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"CLM05-3=1 (original frequency), so this was treated as a new claim and matched against the prior adjudicated record\",\"locator\":\"CLM*PA24460688*126.09***11:B:1\"}],\"citations\":[{\"source\":\"04-exact-duplicate.md\",\"rule\":\"OA-18 true duplicate \u2192 do_not_resubmit; hard-coded edit, no appeal rights; original claim's disposition governs\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"CLM05-3=1 treated as brand-new; duplicate logic matches provider/member/DOS/procedure and fires the edit\"}]}}"
+}

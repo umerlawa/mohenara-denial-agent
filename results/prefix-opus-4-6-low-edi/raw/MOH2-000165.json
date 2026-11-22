@@ -1,0 +1,83 @@
+{
+  "usage": {
+    "input_tokens": 3,
+    "cache_creation_input_tokens": 5902,
+    "cache_read_input_tokens": 69049,
+    "output_tokens": 1379,
+    "output_tokens_details": {
+      "thinking_tokens": 50
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5902
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "All four lines denied OA-18 (exact duplicate). Claim billed as CLM05-3=1 (original). 835 CLP07=2612932445387 confirms a prior adjudicated claim exists. True duplicate \u2014 same provider/member/DOS/procedures already on file. Do not resubmit; check original claim's payment status.",
+    "resolution": {
+      "root_cause": {
+        "family": "exact_duplicate",
+        "explanation": "All lines denied OA-18. Claim sent as frequency 1 but payer already adjudicated an identical claim (CLP07 2612932445387) for same provider/member/DOS/CPTs."
+      },
+      "next_action": {
+        "path": "do_not_resubmit",
+        "detail": "Do not resubmit. Verify original claim 2612932445387 status via portal/IVR. If it paid, post payment and close. If denied, address that denial on the original."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All four lines carry CAS*OA*18 \u2014 exact duplicate denial under group OA.",
+          "locator": "CAS segments lines 1-4"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP07=2612932445387 confirms a prior adjudicated claim exists.",
+          "locator": "CLP segment"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "CLM05-3=1 (original), no REF*F8 \u2014 resubmission treated as new and matched against existing adjudication.",
+          "locator": "CLM segment"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "MOA***N111 \u2014 no appeal rights on duplicate.",
+          "locator": "MOA segment"
+        }
+      ],
+      "denial": {
+        "group": "OA",
+        "carc": "18",
+        "rarc": null,
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "citations": [
+        {
+          "source": "04-exact-duplicate.md",
+          "rule": "True duplicate \u2014 disposition do_not_resubmit; edit is hard-coded, unappealable; original claim's disposition governs."
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Every 837 with CLM05-3=1 is treated as brand-new; duplicate logic fires the edit which MACs cannot override."
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"All four lines denied OA-18 (exact duplicate). Claim billed as CLM05-3=1 (original). 835 CLP07=2612932445387 confirms a prior adjudicated claim exists. True duplicate \u2014 same provider/member/DOS/procedures already on file. Do not resubmit; check original claim's payment status.\",\"resolution\":{\"root_cause\":{\"family\":\"exact_duplicate\",\"explanation\":\"All lines denied OA-18. Claim sent as frequency 1 but payer already adjudicated an identical claim (CLP07 2612932445387) for same provider/member/DOS/CPTs.\"},\"next_action\":{\"path\":\"do_not_resubmit\",\"detail\":\"Do not resubmit. Verify original claim 2612932445387 status via portal/IVR. If it paid, post payment and close. If denied, address that denial on the original.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All four lines carry CAS*OA*18 \u2014 exact duplicate denial under group OA.\",\"locator\":\"CAS segments lines 1-4\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP07=2612932445387 confirms a prior adjudicated claim exists.\",\"locator\":\"CLP segment\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"CLM05-3=1 (original), no REF*F8 \u2014 resubmission treated as new and matched against existing adjudication.\",\"locator\":\"CLM segment\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"MOA***N111 \u2014 no appeal rights on duplicate.\",\"locator\":\"MOA segment\"}],\"denial\":{\"group\":\"OA\",\"carc\":\"18\",\"rarc\":null,\"level\":\"line\"},\"denied_line_idxs\":[1,2,3,4],\"citations\":[{\"source\":\"04-exact-duplicate.md\",\"rule\":\"True duplicate \u2014 disposition do_not_resubmit; edit is hard-coded, unappealable; original claim's disposition governs.\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Every 837 with CLM05-3=1 is treated as brand-new; duplicate logic fires the edit which MACs cannot override.\"}]}}",
+  "model": "us.anthropic.claude-opus-4-6-v1"
+}

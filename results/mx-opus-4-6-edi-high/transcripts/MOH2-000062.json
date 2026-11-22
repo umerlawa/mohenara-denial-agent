@@ -1,0 +1,97 @@
+{
+  "case_id": "MOH2-000062",
+  "run_id": "mx-opus-4-6-edi-high",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "high",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 4890,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5091,
+    "cache_read_input_tokens": 31983,
+    "output_tokens": 2885,
+    "output_tokens_details": {
+      "thinking_tokens": 2239
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5091
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.13193977499999998,
+  "cache_hit_rate": 0.862634,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All lines denied PR-27 with MOA N30. 271 for DOS 2025-06-17 returns EB*6 (inactive) with DTP*357=20250531\u2014coverage ended 17 days before the service. Filing indicator CI (commercial); PR group code assigns patient liability. No overrides apply: no QMB, no Medicaid, no successor payer, no EB*R, no ACA grace-period pend. Bill the patient.",
+    "resolution": {
+      "root_cause": {
+        "family": "eligibility_terminated",
+        "explanation": "Patient's Keystone Commercial Health EPO coverage terminated 2025-05-31 per 271 EB*6/DTP*357. DOS 2025-06-17 is after termination. Payer correctly denied PR-27 on all lines."
+      },
+      "next_action": {
+        "path": "bill_patient",
+        "detail": "Issue patient statement for $204.23. Coverage confirmed inactive for DOS. No other payer identified in 271. Verify with patient whether new coverage exists before billing."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All four lines carry CAS*PR*27; MOA N30; CLP06=CI (commercial); $0 paid, $204.23 patient responsibility."
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*6*IND*30 (inactive) with DTP*357*D8*20250531 confirms coverage ended May 31, 2025\u2014before DOS June 17, 2025."
+        },
+        {
+          "artifact": "eligibility_270.edi",
+          "fact": "DTP*291*D8*20250617 confirms the eligibility inquiry was run for the actual DOS."
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "SBR*P*18*******CI and DOS 20250617; no secondary payer segment present."
+        }
+      ],
+      "denial": {
+        "group": "PR",
+        "carc": "27",
+        "rarc": "N30",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "citations": [
+        {
+          "source": "05-eligibility-terminated.md",
+          "rule": "CI, EB*6 + 357 before DOS, no successor: PR-27 \u2192 bill_patient, once overrides clear"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "PR = Patient Responsibility; billable after QMB/Medicaid/NSA/ABN overrides cleared"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All lines denied PR-27 with MOA N30. 271 for DOS 2025-06-17 returns EB*6 (inactive) with DTP*357=20250531\u2014coverage ended 17 days before the service. Filing indicator CI (commercial); PR group code assigns patient liability. No overrides apply: no QMB, no Medicaid, no successor payer, no EB*R, no ACA grace-period pend. Bill the patient.\",\"resolution\":{\"root_cause\":{\"family\":\"eligibility_terminated\",\"explanation\":\"Patient's Keystone Commercial Health EPO coverage terminated 2025-05-31 per 271 EB*6/DTP*357. DOS 2025-06-17 is after termination. Payer correctly denied PR-27 on all lines.\"},\"next_action\":{\"path\":\"bill_patient\",\"detail\":\"Issue patient statement for $204.23. Coverage confirmed inactive for DOS. No other payer identified in 271. Verify with patient whether new coverage exists before billing.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All four lines carry CAS*PR*27; MOA N30; CLP06=CI (commercial); $0 paid, $204.23 patient responsibility.\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*6*IND*30 (inactive) with DTP*357*D8*20250531 confirms coverage ended May 31, 2025\u2014before DOS June 17, 2025.\"},{\"artifact\":\"eligibility_270.edi\",\"fact\":\"DTP*291*D8*20250617 confirms the eligibility inquiry was run for the actual DOS.\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"SBR*P*18*******CI and DOS 20250617; no secondary payer segment present.\"}],\"denial\":{\"group\":\"PR\",\"carc\":\"27\",\"rarc\":\"N30\",\"level\":\"line\"},\"denied_line_idxs\":[1,2,3,4],\"citations\":[{\"source\":\"05-eligibility-terminated.md\",\"rule\":\"CI, EB*6 + 357 before DOS, no successor: PR-27 \u2192 bill_patient, once overrides clear\"},{\"source\":\"00-group-codes.md\",\"rule\":\"PR = Patient Responsibility; billable after QMB/Medicaid/NSA/ABN overrides cleared\"}]}}"
+}

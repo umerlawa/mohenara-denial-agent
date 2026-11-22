@@ -1,0 +1,105 @@
+{
+  "case_id": "MOH2-000061",
+  "run_id": "mx-sonnet-4-6-edi-max",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "max",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 4936,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 36432,
+    "cache_read_input_tokens": 0,
+    "output_tokens": 19692,
+    "output_tokens_details": {
+      "thinking_tokens": 18594
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 36432
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.4752066,
+  "cache_hit_rate": 0.0,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All four lines carry OA-18 (exact duplicate). The 837P itself bills 97140 twice (LX1, LX3) and 97110 twice (LX2, LX4) on the same DOS without a distinguishing modifier \u2014 duplicate edit fired on the repeated CPT/DOS pairs. Chart note confirms both code pairs were legitimately performed in separate timed blocks. Claim adjudicated (CLP07 present). MB = Medicare Part B FFS: vehicle is clerical-error reopening; frequency 7 is rejected.",
+    "resolution": {
+      "root_cause": {
+        "family": "exact_duplicate",
+        "explanation": "OA-18 on all four lines. 97140 billed on LX1 and LX3; 97110 on LX2 and LX4 \u2014 same DOS, same GP:KX modifiers, no modifier 76 distinguishing the second instances. Duplicate edit fired on repeated CPT/DOS pairs within the claim."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "File clerical-error reopening with Novitas. Add modifier 76 to LX3 (second 97140) and LX4 (second 97110) \u2014 modifier 76 is reopening-eligible on Part B. Frequency 7 is not accepted on Medicare Part B FFS."
+      },
+      "denial": {
+        "group": "OA",
+        "carc": "18",
+        "level": "line",
+        "rarc": null
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CAS*OA*18 on all four service lines; CLP02=4 (denied); $0 paid; CLP07=2623576767957 confirms adjudication",
+          "locator": "CLP and four SVC/CAS segments"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "97140 billed on LX1 (1 unit, $47.76) and LX3 (1 unit, $46.48); 97110 billed on LX2 (2 units) and LX4 (1 unit); all DOS 20260705; no modifier 76 on second instances",
+          "locator": "LX*1\u2013LX*4 / SV1 segments"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "Two distinct 97140 timed blocks (15 min, 14 min) and two 97110 blocks (31 min, 16 min) documented for 2026-07-05 \u2014 services were legitimately performed",
+          "locator": "PT treatment note 2026-07-05"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Filing indicator MB (Medicare Part B FFS); clerical-error reopening required for adjudicated Part B claim; frequency 7 rejected on Part B",
+          "locator": "CLP*PA22957514...MB"
+        }
+      ],
+      "citations": [
+        {
+          "source": "04-exact-duplicate.md",
+          "rule": "False duplicate (same CPT, same DOS, no distinguishing modifier) \u2192 correct_and_resubmit; Part B FFS: clerical-error reopening, modifier 76 on reopening-eligible list"
+        },
+        {
+          "source": "01-carc-rarc-index.md",
+          "rule": "CARC 18 exact duplicate (OA): true dup \u2192 do_not_resubmit; repeat/bilateral service without modifier \u2192 correct_and_resubmit"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Part B / DME FFS: frequency 7 not accepted; reopening (1 yr) or redetermination (120 days) for adjudicated claims"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All four lines carry OA-18 (exact duplicate). The 837P itself bills 97140 twice (LX1, LX3) and 97110 twice (LX2, LX4) on the same DOS without a distinguishing modifier \u2014 duplicate edit fired on the repeated CPT/DOS pairs. Chart note confirms both code pairs were legitimately performed in separate timed blocks. Claim adjudicated (CLP07 present). MB = Medicare Part B FFS: vehicle is clerical-error reopening; frequency 7 is rejected.\",\"resolution\":{\"root_cause\":{\"family\":\"exact_duplicate\",\"explanation\":\"OA-18 on all four lines. 97140 billed on LX1 and LX3; 97110 on LX2 and LX4 \u2014 same DOS, same GP:KX modifiers, no modifier 76 distinguishing the second instances. Duplicate edit fired on repeated CPT/DOS pairs within the claim.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"File clerical-error reopening with Novitas. Add modifier 76 to LX3 (second 97140) and LX4 (second 97110) \u2014 modifier 76 is reopening-eligible on Part B. Frequency 7 is not accepted on Medicare Part B FFS.\"},\"denial\":{\"group\":\"OA\",\"carc\":\"18\",\"level\":\"line\",\"rarc\":null},\"denied_line_idxs\":[0,1,2,3],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CAS*OA*18 on all four service lines; CLP02=4 (denied); $0 paid; CLP07=2623576767957 confirms adjudication\",\"locator\":\"CLP and four SVC/CAS segments\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"97140 billed on LX1 (1 unit, $47.76) and LX3 (1 unit, $46.48); 97110 billed on LX2 (2 units) and LX4 (1 unit); all DOS 20260705; no modifier 76 on second instances\",\"locator\":\"LX*1\u2013LX*4 / SV1 segments\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"Two distinct 97140 timed blocks (15 min, 14 min) and two 97110 blocks (31 min, 16 min) documented for 2026-07-05 \u2014 services were legitimately performed\",\"locator\":\"PT treatment note 2026-07-05\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"Filing indicator MB (Medicare Part B FFS); clerical-error reopening required for adjudicated Part B claim; frequency 7 rejected on Part B\",\"locator\":\"CLP*PA22957514...MB\"}],\"citations\":[{\"source\":\"04-exact-duplicate.md\",\"rule\":\"False duplicate (same CPT, same DOS, no distinguishing modifier) \u2192 correct_and_resubmit; Part B FFS: clerical-error reopening, modifier 76 on reopening-eligible list\"},{\"source\":\"01-carc-rarc-index.md\",\"rule\":\"CARC 18 exact duplicate (OA): true dup \u2192 do_not_resubmit; repeat/bilateral service without modifier \u2192 correct_and_resubmit\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Part B / DME FFS: frequency 7 not accepted; reopening (1 yr) or redetermination (120 days) for adjudicated claims\"}]}}"
+}

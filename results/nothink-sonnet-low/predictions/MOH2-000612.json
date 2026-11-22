@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000612",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "All three lines denied CO-16 with MOA N286 (missing/incomplete/invalid referring provider primary identifier). The 837P lists billing and rendering providers but no referring/ordering provider loop. This is a data defect on an adjudicated Medicare Part B claim. Eligibility was active on DOS. Correct and resubmit as a new original (CLM05-3=1) with the referring provider NPI populated.",
+  "usage": {
+    "input_tokens": 3,
+    "output_tokens": 1571,
+    "cache_read_input_tokens": 67599,
+    "cache_creation_input_tokens": 5805,
+    "cost_usd": 0.07218469500000001,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "missing_referring_provider",
+      "explanation": "All three lines carry CO-16 + MOA N286. The 837P has no referring/ordering provider loop. Medicare Part B requires a referring provider NPI for therapy claims billed at POS 11."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Add the ordering/referring provider name and NPI (verified against PECOS) to the 837P. Submit as a new original CLM05-3=1 \u2014 Medicare Part B does not accept frequency 7. Timely filing clock is running; DOS 2026-07-20, deadline 2027-07-20."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "MOA N286 at claim level; CO-16 on all three lines totaling $220.86 paid $0",
+        "locator": "CLP PA25851339; MOA N286; CAS CO-16 lines 1-3"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Parties listed: billing provider, rendering provider (Mary Clark NPI 1992501921), subscriber \u2014 no referring/ordering provider loop present",
+        "locator": "837P Loop 2300 parties"
+      },
+      {
+        "artifact": "ack_277ca.edi",
+        "fact": "Claim accepted for adjudication (A2/status 20) on 2026-08-05; 835 CLP07 2625180081827 confirms adjudication",
+        "locator": "277CA status A2; 835 CLP07"
+      }
+    ],
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "16",
+      "rarc": "N286",
+      "level": "line"
+    },
+    "citations": [
+      {
+        "source": "09-missing-referring-provider.md",
+        "rule": "CO-16+N286 = missing/invalid referring provider NPI; fix data, resubmit new original; Medicare Part B accepts CLM05-3=1 only"
+      },
+      {
+        "source": "02-resubmission-frequency.md",
+        "rule": "Medicare Part B does not accept frequency 7; adjudicated data defect \u2192 new original CLM05-3=1"
+      }
+    ]
+  }
+}

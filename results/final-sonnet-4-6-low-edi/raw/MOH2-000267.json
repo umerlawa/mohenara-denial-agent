@@ -1,0 +1,73 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4978,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1508,
+    "output_tokens_details": {
+      "thinking_tokens": 802
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4978
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "All three lines denied CO-119/N435 (therapy threshold, no KX). The 837P shows GP on every line but no KX modifier. The chart note for 2026-05-26 documents skilled medical necessity. Record justifies KX; modifier was simply omitted. Medicare Part B FFS \u2014 clerical-error reopening, not a replacement claim.",
+    "resolution": {
+      "root_cause": {
+        "family": "threshold_no_kx",
+        "explanation": "CO-119+N435 on all three lines. 837P carries GP but no KX on any service line. Chart note dated 2026-05-26 documents continued medical necessity, supporting KX attestation."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Submit a clerical-error reopening to Novitas (ICN 2619052433323) appending KX to all three lines. Part B FFS does not accept frequency 7. Include chart note. Reopening window: 1 year from DOS 2026-05-26."
+      },
+      "denial": {
+        "group": "CO",
+        "carc": "119",
+        "rarc": "N435",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All three SVC lines carry CAS*CO*119 with $0 paid; MOA N435; CLP07=2619052433323 confirms adjudication.",
+          "locator": "CLP/SVC/CAS segments"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "SV1 qualifiers for all three lines show only GP modifier \u2014 no KX on any line.",
+          "locator": "LX*1\u20133, SV1 segments"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "Note dated 2026-05-26 states 'skilled services remain medically necessary,' supporting KX attestation.",
+          "locator": "final sentence"
+        }
+      ],
+      "citations": [
+        {
+          "source": "08-therapy-modifiers.md",
+          "rule": "CO-119+N435, no KX, record justifies threshold \u2192 correct_and_resubmit via clerical-error reopening; Part B has no frequency 7."
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"All three lines denied CO-119/N435 (therapy threshold, no KX). The 837P shows GP on every line but no KX modifier. The chart note for 2026-05-26 documents skilled medical necessity. Record justifies KX; modifier was simply omitted. Medicare Part B FFS \u2014 clerical-error reopening, not a replacement claim.\",\"resolution\":{\"root_cause\":{\"family\":\"threshold_no_kx\",\"explanation\":\"CO-119+N435 on all three lines. 837P carries GP but no KX on any service line. Chart note dated 2026-05-26 documents continued medical necessity, supporting KX attestation.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Submit a clerical-error reopening to Novitas (ICN 2619052433323) appending KX to all three lines. Part B FFS does not accept frequency 7. Include chart note. Reopening window: 1 year from DOS 2026-05-26.\"},\"denial\":{\"group\":\"CO\",\"carc\":\"119\",\"rarc\":\"N435\",\"level\":\"line\"},\"denied_line_idxs\":[0,1,2],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All three SVC lines carry CAS*CO*119 with $0 paid; MOA N435; CLP07=2619052433323 confirms adjudication.\",\"locator\":\"CLP/SVC/CAS segments\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"SV1 qualifiers for all three lines show only GP modifier \u2014 no KX on any line.\",\"locator\":\"LX*1\u20133, SV1 segments\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"Note dated 2026-05-26 states 'skilled services remain medically necessary,' supporting KX attestation.\",\"locator\":\"final sentence\"}],\"citations\":[{\"source\":\"08-therapy-modifiers.md\",\"rule\":\"CO-119+N435, no KX, record justifies threshold \u2192 correct_and_resubmit via clerical-error reopening; Part B has no frequency 7.\"}]}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000490",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "Liberty Bell denied all three lines CO-22 (another payer per COB) with MOA MA04, but its own 271 eligibility response for this DOS states explicitly 'PLAN IS PRIMARY PAYER FOR THIS MEMBER' and shows Liberty Bell as EB*1 active coverage with Medicare only as EB*R (other/additional). The 837P was billed correctly as primary (SBR payer responsibility P) to Liberty Bell. The claim data is right and the payer's own record contradicts its denial reason, so this is not a routing/COB-order defect to resubmit elsewhere nor a completeness defect to fix and resend \u2014 it is a wrong determination to appeal, citing the 271.",
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 3557,
+    "cache_read_input_tokens": 104356,
+    "cache_creation_input_tokens": 9363,
+    "cost_usd": 0.0798567,
+    "model": "claude-sonnet-5",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "cob_other_primary",
+      "explanation": "All 3 lines denied CO-22 (another payer per COB), claim-level MOA MA04, but Liberty Bell's own 271 for the DOS confirms it is primary ('PLAN IS PRIMARY PAYER FOR THIS MEMBER'); Medicare appears only as EB*R other/additional payer, not primary."
+    },
+    "next_action": {
+      "path": "appeal",
+      "detail": "Appeal the CO-22 denial to Liberty Bell, attaching the 271 eligibility response (ELG31652538, DTP*291=2026-01-29) showing Liberty Bell active/primary and its own payer message confirming primary status. Do not resubmit to Medicare or rebill with COB data."
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "denial": {
+      "level": "line",
+      "group": "CO",
+      "carc": "22",
+      "rarc": "MA04"
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All 3 service lines carry CO-22 'care may be covered by another payer per coordination of benefits', $0 paid; claim-level MOA MA04.",
+        "locator": "service lines 1-3; MOA segment"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "For plan date 2026-01-29, benefit EB*1 shows Liberty Bell active coverage and payer message states 'PLAN IS PRIMARY PAYER FOR THIS MEMBER'; Medicare (Novitas) listed only as EB*R other/additional payer.",
+        "locator": "271 response, DTP*291=20260129"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Claim billed to Liberty Bell as primary (payer responsibility P), consistent with the eligibility response.",
+        "locator": "837P claim header"
+      }
+    ],
+    "citations": [
+      {
+        "source": "06-cob-other-primary.md",
+        "rule": "EB*R proves another payer exists, not which is primary; order and liability determined by the payer's own eligibility record, not the CARC alone."
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "Claim data right; determination wrong -> appeal."
+      }
+    ]
+  }
+}

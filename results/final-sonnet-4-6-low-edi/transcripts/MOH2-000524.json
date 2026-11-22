@@ -1,0 +1,102 @@
+{
+  "case_id": "MOH2-000524",
+  "run_id": "final-sonnet-4-6-low-edi-dev25",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 5081,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5193,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1733,
+    "output_tokens_details": {
+      "thinking_tokens": 878
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5193
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.060498735,
+  "cache_hit_rate": 0.859374,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All five lines carry CO-27. The 271 shows EB*6 (inactive) with DTP*357 termination date 2025-09-30; DOS is 2025-10-15 \u2014 coverage was lapsed. Filing indicator is CI (commercial). Under reference 05, hold-harmless binds only active members; this patient was outside the plan on DOS. No QMB, Medicaid, NSA, or ACA grace-period override is present. Billable to patient once overrides confirmed clear (reference flags commercial CO-27 as unconfirmed by primary source; verify with payer before billing).",
+    "resolution": {
+      "root_cause": {
+        "family": "eligibility_terminated",
+        "explanation": "Coverage terminated 2025-09-30 per 271 DTP*357; DOS is 2025-10-15. Commercial payer CI. All five lines denied CO-27."
+      },
+      "next_action": {
+        "path": "bill_patient",
+        "detail": "Verify no active overrides (QMB, Medicaid, NSA, ACA grace period), then bill patient for $385.98. Confirm with Delaware Valley Mutual that CO-27 is not a write-off under the participation agreement before sending the patient statement."
+      },
+      "denial": {
+        "group": "CO",
+        "carc": "27",
+        "rarc": "N30",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All five SVC lines carry CAS*CO*27; $0 paid on all; MOA N30.",
+          "locator": "CAS segments under each SVC"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*6 (inactive) for individual outpatient coverage; DTP*357 D8 20250930 \u2014 termination before DOS.",
+          "locator": "EB*6 / DTP*357 segment"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "SBR*P*18*******CI \u2014 commercial filing indicator; no secondary payer listed.",
+          "locator": "Loop 2000B SBR"
+        },
+        {
+          "artifact": "reference",
+          "fact": "co27: CI + EB*6 + DTP*357 before DOS + no successor \u2192 bill_patient once overrides clear; hold-harmless runs to members only.",
+          "locator": "05-eligibility-terminated.md, CI row"
+        }
+      ],
+      "citations": [
+        {
+          "source": "05-eligibility-terminated.md",
+          "rule": "CI, EB*6 + DTP*357 before DOS, no successor: CO-27 \u2192 bill_patient once overrides clear"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "CO on commercial is payer assertion; binding instrument is participation agreement hold-harmless, which reaches members only"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All five lines carry CO-27. The 271 shows EB*6 (inactive) with DTP*357 termination date 2025-09-30; DOS is 2025-10-15 \u2014 coverage was lapsed. Filing indicator is CI (commercial). Under reference 05, hold-harmless binds only active members; this patient was outside the plan on DOS. No QMB, Medicaid, NSA, or ACA grace-period override is present. Billable to patient once overrides confirmed clear (reference flags commercial CO-27 as unconfirmed by primary source; verify with payer before billing).\",\"resolution\":{\"root_cause\":{\"family\":\"eligibility_terminated\",\"explanation\":\"Coverage terminated 2025-09-30 per 271 DTP*357; DOS is 2025-10-15. Commercial payer CI. All five lines denied CO-27.\"},\"next_action\":{\"path\":\"bill_patient\",\"detail\":\"Verify no active overrides (QMB, Medicaid, NSA, ACA grace period), then bill patient for $385.98. Confirm with Delaware Valley Mutual that CO-27 is not a write-off under the participation agreement before sending the patient statement.\"},\"denial\":{\"group\":\"CO\",\"carc\":\"27\",\"rarc\":\"N30\",\"level\":\"line\"},\"denied_line_idxs\":[0,1,2,3,4],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All five SVC lines carry CAS*CO*27; $0 paid on all; MOA N30.\",\"locator\":\"CAS segments under each SVC\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*6 (inactive) for individual outpatient coverage; DTP*357 D8 20250930 \u2014 termination before DOS.\",\"locator\":\"EB*6 / DTP*357 segment\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"SBR*P*18*******CI \u2014 commercial filing indicator; no secondary payer listed.\",\"locator\":\"Loop 2000B SBR\"},{\"artifact\":\"reference\",\"fact\":\"co27: CI + EB*6 + DTP*357 before DOS + no successor \u2192 bill_patient once overrides clear; hold-harmless runs to members only.\",\"locator\":\"05-eligibility-terminated.md, CI row\"}],\"citations\":[{\"source\":\"05-eligibility-terminated.md\",\"rule\":\"CI, EB*6 + DTP*357 before DOS, no successor: CO-27 \u2192 bill_patient once overrides clear\"},{\"source\":\"00-group-codes.md\",\"rule\":\"CO on commercial is payer assertion; binding instrument is participation agreement hold-harmless, which reaches members only\"}]}}"
+}

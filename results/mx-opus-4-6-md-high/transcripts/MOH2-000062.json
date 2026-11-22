@@ -1,0 +1,96 @@
+{
+  "case_id": "MOH2-000062",
+  "run_id": "mx-opus-4-6-md-high",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "high",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 6898,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5061,
+    "cache_read_input_tokens": 31983,
+    "output_tokens": 2202,
+    "output_tokens_details": {
+      "thinking_tokens": 1489
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5061
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.112951025,
+  "cache_hit_rate": 0.863332,
+  "model_output": {
+    "rationale": "835 shows PR-27 on all four lines, $204.23 total patient responsibility. 271 confirms EB*6 (inactive) with DTP*357 = 2025-05-31 \u2014 coverage ended before DOS 2025-06-17. Filing indicator CI (commercial). No EB*R (no other payer). No QMB, Medicaid, NSA, or ACA grace period overrides present. PR on commercial with confirmed terminated coverage = bill patient.",
+    "resolution": {
+      "root_cause": {
+        "family": "eligibility_terminated",
+        "explanation": "Patient's KEYSTONE COMMERCIAL HEALTH EPO coverage ended 2025-05-31 per 271 (EB*6, DTP*357). DOS 2025-06-17 is 17 days after termination. No successor payer on file."
+      },
+      "next_action": {
+        "path": "bill_patient",
+        "detail": "Issue patient statement for $204.23. Coverage confirmed inactive for DOS. No hold-harmless applies \u2014 patient was not a member on the service date."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All four lines carry PR-27 (Patient Responsibility: expenses incurred after coverage terminated), totaling $204.23",
+          "locator": "CAS segments lines 1-4"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*6 (inactive), eligibility end DTP*357 = 2025-05-31, plan date DTP*291 = 2025-06-17 \u2014 coverage terminated before DOS",
+          "locator": "EB and DTP segments"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "No EB*R segment \u2014 no other/additional payer on file for this member on the DOS",
+          "locator": "271 response"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Filing indicator CI (commercial), subscriber relationship 18 (self), payer responsibility P (primary)",
+          "locator": "SBR segment"
+        }
+      ],
+      "denial": {
+        "group": "PR",
+        "carc": "27",
+        "rarc": null,
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "citations": [
+        {
+          "source": "05-eligibility-terminated.md",
+          "rule": "CI, EB*6 + 357 before DOS, no successor: PR-27 \u2192 bill_patient once overrides clear"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "PR = patient liable, after QMB / 42 CFR 447.15 / NSA / ABN-validity overrides"
+        }
+      ]
+    },
+    "status": "resolved"
+  },
+  "raw_text": "{\"rationale\":\"835 shows PR-27 on all four lines, $204.23 total patient responsibility. 271 confirms EB*6 (inactive) with DTP*357 = 2025-05-31 \u2014 coverage ended before DOS 2025-06-17. Filing indicator CI (commercial). No EB*R (no other payer). No QMB, Medicaid, NSA, or ACA grace period overrides present. PR on commercial with confirmed terminated coverage = bill patient.\",\"resolution\":{\"root_cause\":{\"family\":\"eligibility_terminated\",\"explanation\":\"Patient's KEYSTONE COMMERCIAL HEALTH EPO coverage ended 2025-05-31 per 271 (EB*6, DTP*357). DOS 2025-06-17 is 17 days after termination. No successor payer on file.\"},\"next_action\":{\"path\":\"bill_patient\",\"detail\":\"Issue patient statement for $204.23. Coverage confirmed inactive for DOS. No hold-harmless applies \u2014 patient was not a member on the service date.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All four lines carry PR-27 (Patient Responsibility: expenses incurred after coverage terminated), totaling $204.23\",\"locator\":\"CAS segments lines 1-4\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*6 (inactive), eligibility end DTP*357 = 2025-05-31, plan date DTP*291 = 2025-06-17 \u2014 coverage terminated before DOS\",\"locator\":\"EB and DTP segments\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"No EB*R segment \u2014 no other/additional payer on file for this member on the DOS\",\"locator\":\"271 response\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Filing indicator CI (commercial), subscriber relationship 18 (self), payer responsibility P (primary)\",\"locator\":\"SBR segment\"}],\"denial\":{\"group\":\"PR\",\"carc\":\"27\",\"rarc\":null,\"level\":\"line\"},\"denied_line_idxs\":[0,1,2,3],\"citations\":[{\"source\":\"05-eligibility-terminated.md\",\"rule\":\"CI, EB*6 + 357 before DOS, no successor: PR-27 \u2192 bill_patient once overrides clear\"},{\"source\":\"00-group-codes.md\",\"rule\":\"PR = patient liable, after QMB / 42 CFR 447.15 / NSA / ABN-validity overrides\"}]},\"status\":\"resolved\"}"
+}

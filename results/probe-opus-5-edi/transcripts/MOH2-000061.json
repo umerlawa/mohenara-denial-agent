@@ -1,0 +1,107 @@
+{
+  "case_id": "MOH2-000061",
+  "run_id": "probe-opus-5-edi",
+  "model": "claude-opus-5",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4936,
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 51043,
+    "cache_read_input_tokens": 49636,
+    "output_tokens": 2247,
+    "output_tokens_details": {
+      "thinking_tokens": 453
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 51043,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 893,
+        "cache_read_input_tokens": 49636,
+        "cache_creation_input_tokens": 1407,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1407
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.40003175,
+  "cache_hit_rate": 0.492993,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All four lines carry OA-18 with MOA N111 and $0 paid; CLP07 shows an adjudicated payer control number, so an earlier claim for this provider/member/DOS/procedures already exists. Every line denied \u2014 including the first occurrence of each code \u2014 so this is a whole-claim collision, not an unmodified repeat line. OA is never patient liability, and the duplicate edit is hard-coded and unappealable.",
+    "resolution": {
+      "root_cause": {
+        "family": "exact_duplicate",
+        "explanation": "835 CLP shows payer control number 2623576767957 (adjudicated); all four SVC lines adjusted CAS*OA*18 for the full billed amount with MOA N111. Exact duplicate of an earlier claim for the same provider/member/DOS 20260705/procedures."
+      },
+      "next_action": {
+        "path": "do_not_resubmit",
+        "detail": "Do not resend in any form. Check the original claim's status via Novitas portal/IVR and post its payment or denial. If the duplicate edit itself looks wrong, use Telephone Reopenings; do not file a redetermination or a corrected claim."
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All four SVC lines adjusted CAS*OA*18 (exact duplicate), $0 paid",
+          "locator": "CAS*OA*18 on L1-L4"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP07 payer claim control number 2623576767957 present \u2014 claim adjudicated, not front-end rejected",
+          "locator": "CLP*PA22957514*4*240.86*0**MB*2623576767957"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "MOA N111 accompanies the duplicate denial",
+          "locator": "MOA***N111"
+        },
+        {
+          "artifact": "ack_277ca.edi",
+          "fact": "STC A2:20 \u2014 accepted at the clearinghouse, no front-end rejection",
+          "locator": "STC*A2:20"
+        }
+      ],
+      "citations": [
+        {
+          "source": "04-exact-duplicate.md",
+          "rule": "OA-18 + N111 with adjudicated CLP07 = true exact duplicate; do_not_resubmit, edit hard-coded and unappealable"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "Genuine exact duplicate (CARC 18, OA) \u2192 do_not_resubmit; OA is never patient liability"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All four lines carry OA-18 with MOA N111 and $0 paid; CLP07 shows an adjudicated payer control number, so an earlier claim for this provider/member/DOS/procedures already exists. Every line denied \u2014 including the first occurrence of each code \u2014 so this is a whole-claim collision, not an unmodified repeat line. OA is never patient liability, and the duplicate edit is hard-coded and unappealable.\",\"resolution\":{\"root_cause\":{\"family\":\"exact_duplicate\",\"explanation\":\"835 CLP shows payer control number 2623576767957 (adjudicated); all four SVC lines adjusted CAS*OA*18 for the full billed amount with MOA N111. Exact duplicate of an earlier claim for the same provider/member/DOS 20260705/procedures.\"},\"next_action\":{\"path\":\"do_not_resubmit\",\"detail\":\"Do not resend in any form. Check the original claim's status via Novitas portal/IVR and post its payment or denial. If the duplicate edit itself looks wrong, use Telephone Reopenings; do not file a redetermination or a corrected claim.\"},\"denied_line_idxs\":[0,1,2,3],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All four SVC lines adjusted CAS*OA*18 (exact duplicate), $0 paid\",\"locator\":\"CAS*OA*18 on L1-L4\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP07 payer claim control number 2623576767957 present \u2014 claim adjudicated, not front-end rejected\",\"locator\":\"CLP*PA22957514*4*240.86*0**MB*2623576767957\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"MOA N111 accompanies the duplicate denial\",\"locator\":\"MOA***N111\"},{\"artifact\":\"ack_277ca.edi\",\"fact\":\"STC A2:20 \u2014 accepted at the clearinghouse, no front-end rejection\",\"locator\":\"STC*A2:20\"}],\"citations\":[{\"source\":\"04-exact-duplicate.md\",\"rule\":\"OA-18 + N111 with adjudicated CLP07 = true exact duplicate; do_not_resubmit, edit hard-coded and unappealable\"},{\"source\":\"00-group-codes.md\",\"rule\":\"Genuine exact duplicate (CARC 18, OA) \u2192 do_not_resubmit; OA is never patient liability\"}]}}"
+}

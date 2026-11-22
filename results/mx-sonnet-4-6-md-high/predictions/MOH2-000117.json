@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000117",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "CO-29 on both lines; MOA N211. Filing indicator is CI (commercial) \u2014 N211's \"no appeal\" language is backed by 42 CFR 405.926 on Medicare FFS only; it carries no statutory force on a commercial claim. The 277CA (ACK75364521, 2025-01-27, status A2 / claim status 20) is a clearinghouse acceptance report showing the claim passed front-end edits 8 days post-DOS, well within any commercial timely-filing window. Per reference 03-timely-filing.md, this is the strongest proof of timely submission; dispute the payer's receipt date via formal appeal.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 7431,
+    "cache_read_input_tokens": 31309,
+    "cache_creation_input_tokens": 4817,
+    "cost_usd": 0.15282019500000002,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "high",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "timely_filing",
+      "explanation": "Both lines denied CO-29. 277CA (ACK75364521, 2025-01-27) shows claim received with status A2/code 20 \u2014 8 days post-DOS \u2014 contradicting the payer's untimely-filing assertion."
+    },
+    "next_action": {
+      "path": "appeal",
+      "detail": "File formal appeal attaching 277CA ACK75364521 (received 2025-01-27, A2, status code 20) as proof of timely receipt. Cite that N211 bars appeal only on Medicare FFS (42 CFR 405.926), not CI commercial. Dispute payer's receipt date; do not plead forgiveness."
+    },
+    "denial": {
+      "group": "CO",
+      "carc": "29",
+      "rarc": "N211",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1
+    ],
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Lines 1\u20132 CO-29 ($138.62 total denied); MOA N211 ('you may not appeal this decision'); CI filing indicator.",
+        "locator": "CAS CO-29 lines 1\u20132; MOA N211"
+      },
+      {
+        "artifact": "ack_277ca.edi",
+        "fact": "Received date (DTP 050) 2025-01-27; status A2 (accepted for adjudication); claim status code 20; references TRC75364521 \u2014 8 days post-DOS.",
+        "locator": "ACK75364521 date 20250127"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "DOS 2025-01-19; filing indicator CI (commercial); no prior 277CA rejection in record.",
+        "locator": "CLM DOS 2025-01-19; SBR09 CI"
+      },
+      {
+        "artifact": "reference",
+        "fact": "Clearinghouse acceptance report is strongest proof of timely filing; N211's appeal bar is Medicare FFS only (42 CFR 405.926); commercial CO-29 with proof \u2192 appeal.",
+        "locator": "03-timely-filing.md \u00a78; 00-group-codes.md next_action ladder"
+      }
+    ],
+    "citations": [
+      {
+        "source": "03-timely-filing.md",
+        "rule": "Proof of an accepted submission inside the window \u2192 appeal with the clearinghouse acceptance report; N211 no-appeal bar applies only to Medicare FFS under 42 CFR 405.926"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "Claim data right; determination wrong \u2192 appeal"
+      }
+    ]
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000711",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "All three PT lines (97140-GP, 97530-GP, 97110-GP) carry CO-119 + MOA N435 \u2014 the Medicare therapy-threshold denial. The 837P shows only the GP modifier on every line; KX is absent. The chart note dated 2026-07-08 explicitly states \"skilled services remain medically necessary,\" providing the on-file justification required to support KX attestation. Part B FFS does not accept frequency 7; the fix vehicle is a clerical-error reopening to append KX.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 2967,
+    "cache_read_input_tokens": 31309,
+    "cache_creation_input_tokens": 4993,
+    "cost_usd": 0.07989019500000001,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "high",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "threshold_no_kx",
+      "explanation": "CO-119 + N435 on all three lines. KX modifier absent from every line in the 837P. Chart note for DOS 2026-07-08 documents medical necessity and states skilled services remain warranted."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Submit a clerical-error reopening to Novitas adding KX to lines 1\u20133 (97140-GP-KX, 97530-GP-KX, 97110-GP-KX). Part B FFS rejects frequency 7; use the reopening pathway. Window open until 2027-07-08. Reference PCN 2622720095805."
+    },
+    "denial": {
+      "group": "CO",
+      "carc": "119",
+      "rarc": "N435",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Lines 1\u20133: CO-119 ($48.39, $56.18, $42.59); MOA N435 \u2014 threshold denial, $0 paid.",
+        "locator": "CAS segments lines 1\u20133; MOA N435"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "All three lines billed with modifier GP only \u2014 KX absent.",
+        "locator": "SV1 lines 1\u20133, modifier fields"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "DOS 2026-07-08: 'skilled services remain medically necessary' \u2014 on-file justification supports KX attestation.",
+        "locator": "Final sentence of PT treatment note"
+      },
+      {
+        "artifact": "reference",
+        "fact": "CO-119 + N435, no KX, record justifies threshold: correct_and_resubmit via clerical-error reopening; Part B FFS does not accept frequency 7.",
+        "locator": "08-therapy-modifiers.md, threshold_no_kx table row 1"
+      }
+    ],
+    "citations": [
+      {
+        "source": "08-therapy-modifiers.md",
+        "rule": "CO-119 + N435 with no KX and record already justified \u2192 correct_and_resubmit via clerical-error reopening; Part B has no frequency 7"
+      },
+      {
+        "source": "02-resubmission-frequency.md",
+        "rule": "Part B / DME FFS: frequency 7 not accepted \u2014 reopening or redetermination only"
+      }
+    ]
+  }
+}

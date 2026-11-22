@@ -1,0 +1,85 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000061",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "All four service lines on claim PA22957514 were denied with group code OA / CARC 18 (exact duplicate claim/service). The MOA remark N111 on the claim level confirms \"no appeal right except duplicate claim/service issue.\" Per denial-lifecycle.md \u00a77 and \u00a711, Medicare exact-duplicate edits (OA-18) are hard-coded and MACs cannot override them; the correct recourse if the provider believes the duplicate finding is wrong is a Telephone Reopening with Novitas \u2014 NOT a new claim submission and NOT a standard appeal. Resubmitting the same claim would generate a fresh OA-18 denial and risk program-integrity scrutiny. The 277CA shows the claim was accepted for adjudication (A2/status 20), so this is a true denial, not an unprocessable return. The chart note documents a legitimate two-block physical therapy session (two bouts each of 97140 and 97110 on 2026-07-05), which is clinically supportable, but the payer's system flagged this claim as a duplicate \u2014 most likely because a prior claim for the same DOS/member/provider combination was already on file and adjudicated. The provider must call Novitas Provider Services (800-555-1234) and request a Telephone Reopening to: (1) identify the controlling claim number that triggered the duplicate edit; (2) confirm whether that prior claim was paid, denied, or is still in process; and (3) resolve the conflict through the reopening channel if no prior adjudication exists. No new claim or formal appeal should be filed.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 3312,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 47593,
+    "cost_usd": 0.250975725,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "exact_duplicate",
+      "explanation": "All four lines carry OA-18 (exact duplicate claim/service). MOA remark N111 confirms no standard appeal right. Medicare exact-duplicate edits are hard-coded; a prior claim for the same DOS/member/rendering provider combination is controlling this denial."
+    },
+    "next_action": {
+      "path": "do_not_resubmit",
+      "detail": "Do not resubmit \u2014 another original claim will immediately receive OA-18 again and may trigger program-integrity review. Call Novitas Provider Services (800-555-1234) and request a Telephone Reopening for claim PA22957514 (payer claim control 2623576767957). Ask the representative to identify the controlling prior claim number for DOS 2026-07-05, member 1ER2YR8UK79, rendering NPI 1913425846. If no paid prior claim exists, the MAC can resolve the duplicate flag through the reopening without a new submission. If a prior claim was paid, reconcile the accounts and close this duplicate. Do not file a standard redetermination \u2014 N111 forecloses that path for this denial type."
+    },
+    "denial": {
+      "group": "OA",
+      "carc": "18",
+      "rarc": null,
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All four service lines carry group code OA, CARC 18 ($47.76, $98.25, $46.48, $48.37 respectively), total $240.86 denied, paid $0.",
+        "locator": "CAS segments, lines 1\u20134"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "MOA remark N111 at claim level: 'no appeal right except duplicate claim/service issue' \u2014 forecloses standard redetermination.",
+        "locator": "MOA segment, claim PA22957514"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Claim PA22957514 submitted 2026-08-02 as frequency 1 (original claim) for DOS 2026-07-05; same procedure codes 97140-GP-KX (\u00d72 lines) and 97110-GP-KX (\u00d72 lines) billed on a single claim.",
+        "locator": "CLM05-3 = 1; SV1 lines 1\u20134"
+      },
+      {
+        "artifact": "ack_277ca.edi",
+        "fact": "Clearinghouse accepted the claim for adjudication (status A2 / claim status code 20) on 2026-08-02 \u2014 claim was adjudicated, not returned unprocessable, so this is a denial with OA-18, not an MA130 rejection.",
+        "locator": "STC segment, TRC37561769"
+      },
+      {
+        "artifact": "reference",
+        "fact": "CARC 18 with group OA on Medicare: 'Medicare exact-duplicate edits are hard-coded; MACs cannot override or bypass them \u2026 if you believe the duplicate finding is wrong, use Telephone Reopenings, not a new claim.' Resubmitting risks program-integrity action.",
+        "locator": "denial-lifecycle.md \u00a77, CARC/RARC anchors \u00a711"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "Chart note for 2026-07-05 documents two bouts of 97140 (15 min + 14 min) and two bouts of 97110 (31 min + 16 min) in a single session \u2014 clinically consistent with the four billed lines, supporting a Telephone Reopening argument that the billed claim was not a duplicate submission.",
+        "locator": "PT treatment note 2026-07-05"
+      }
+    ],
+    "citations": [
+      {
+        "source": "denial-lifecycle.md",
+        "rule": "\u00a77: CARC 18 on Medicare \u2014 exact-duplicate edits are hard-coded and non-overridable; correct action is Telephone Reopening, not a new claim or standard appeal."
+      },
+      {
+        "source": "denial-lifecycle.md",
+        "rule": "\u00a711: CARC 18 text \u2014 'Exact duplicate claim/service (Use only with Group Code OA \u2026)'; RARC N522 pairing; Noridian Reason Code 18/N522 guidance."
+      },
+      {
+        "source": "denial-lifecycle.md",
+        "rule": "\u00a77: 'Do not resubmit' table \u2014 repeat duplicate submissions trigger program-integrity action; resubmission is the correct remedy only for 277CA rejections, not OA-18 denials."
+      }
+    ]
+  }
+}

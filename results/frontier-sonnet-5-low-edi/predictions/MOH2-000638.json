@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000638",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "CO-22 on all three lines with MOA MA04, and the 271 for the DOS shows Novitas Medicare Part B FFS as an active primary payer ('PLAN IS PRIMARY PAYER FOR THIS MEMBER'), while the claim was billed to Delaware Valley Mutual as primary. Per 06-cob-other-primary.md, CARC 22 means coverage order is wrong, not a completeness defect \u2014 bill the true primary (Medicare) first, then resubmit here as secondary with Medicare's adjudication data.",
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2854,
+    "cache_read_input_tokens": 103978,
+    "cache_creation_input_tokens": 8417,
+    "cost_usd": 0.07038610000000001,
+    "model": "claude-sonnet-5",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "cob_other_primary",
+      "explanation": "Claim billed Delaware Valley Mutual as primary (SBR*P*18), but 271 for the DOS shows Novitas Solutions Medicare Part B FFS is primary payer for this member. All 3 lines denied CO-22 with MOA MA04."
+    },
+    "next_action": {
+      "path": "resubmit_other_payer",
+      "detail": "Bill Novitas Solutions Medicare Part B FFS as primary for DOS 2026-06-04. After adjudication, resubmit to Delaware Valley Mutual as secondary carrying Medicare's SBR/AMT/CAS adjudication data to avoid MA04."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All three SVC lines carry CAS*CO*22 (another payer may be primary per COB); claim-level MOA*MA04.",
+        "locator": "CAS*CO*22*41.66 / 40.82 / 40.03"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*R for Novitas Solutions Medicare Part B FFS with MSG 'PLAN IS PRIMARY PAYER FOR THIS MEMBER', effective 2024-01-01, covers the DOS.",
+        "locator": "EB*R*IND*30**NOVITAS SOLUTIONS MEDICARE PART B FFS"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Claim was submitted to Delaware Valley Mutual as primary payer (SBR01=P).",
+        "locator": "SBR*P*18*******CI"
+      }
+    ],
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "22",
+      "rarc": null,
+      "level": "line"
+    },
+    "citations": [
+      {
+        "source": "06-cob-other-primary.md",
+        "rule": "CARC 22 alone -> resubmit_other_payer; bill the true primary then rebill this payer as secondary with primary's adjudication data."
+      },
+      {
+        "source": "06-cob-other-primary.md",
+        "rule": "EB*R plus a named payer proves another payer is on record for the DOS."
+      }
+    ]
+  }
+}

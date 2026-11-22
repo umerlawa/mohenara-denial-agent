@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000105",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "835 shows CO-16 on all lines with claim-level MOA N286 (missing/invalid referring provider). The 837P lists billing and rendering providers but no ordering/referring provider. Therapy codes (97110, 97140, 97112) require a referring provider NPI. Medicare Part B, fully denied, no MA130. Correct and resubmit as a new original (frequency 1; Part B does not accept 7).",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 2590,
+    "cache_read_input_tokens": 31983,
+    "cache_creation_input_tokens": 5110,
+    "cost_usd": 0.1239579,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "high",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "missing_referring_provider",
+      "explanation": "Claim billed therapy CPTs without an ordering/referring provider. 835 returns CO-16 + N286 on all lines. 837P has no referring provider loop \u2014 the NPI is absent from the submission."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Verify the ordering physician's NPI and PECOS enrollment. Add the referring provider loop to the 837P. Resubmit as a new original claim (CLM05-3 = 1, no REF*F8). Do not appeal."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All lines denied CO-16; claim-level MOA N286 (missing/invalid referring provider primary identifier)",
+        "locator": "CAS CO*16; MOA N286"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "No ordering/referring provider party listed \u2014 only billing (NPI 1110692305) and rendering (NPI 1992501921)",
+        "locator": "Parties on claim"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "Active coverage (EB*1) effective 2024-01-01 for DOS 2026-08-06 \u2014 eligibility not at issue",
+        "locator": "benefit: 1, plan date 2026-08-06"
+      },
+      {
+        "artifact": "ack_277ca.edi",
+        "fact": "Claim accepted for adjudication (A2/20) on 2026-08-26 \u2014 was processed, not front-end rejected",
+        "locator": "Status A2, code 20"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "16",
+      "rarc": "N286",
+      "level": "claim"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "citations": [
+      {
+        "source": "09-missing-referring-provider.md",
+        "rule": "CO-16 + N286: ordering/referring NPI absent or invalid; correct and resubmit as new original on Part B"
+      },
+      {
+        "source": "01-carc-rarc-index.md",
+        "rule": "CARC 16 defect named by paired RARC; fix, resubmit. N286: verify NPI in PECOS, resubmit"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO on Medicare FFS: never bill the patient; provider-side data defect \u2192 correct_and_resubmit"
+      }
+    ]
+  }
+}

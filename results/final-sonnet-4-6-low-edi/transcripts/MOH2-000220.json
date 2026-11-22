@@ -1,0 +1,99 @@
+{
+  "case_id": "MOH2-000220",
+  "run_id": "final-sonnet-4-6-low-edi",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4425,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4842,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 2623,
+    "output_tokens_details": {
+      "thinking_tokens": 1788
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4842
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.07373586,
+  "cache_hit_rate": 0.867618,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "Both lines carry CO-29 + N211. DOS 2024-07-19; Medicare 1-year limit = 2025-07-19. The 837P hitting Novitas was dated 2025-10-13 \u2014 86 days late. However, the 277CA shows a front-end acceptance (A2:20) on 2024-07-23, four days after DOS, proving the original claim was received within the filing window. Per timely-filing.md, a 277CA acceptance report is the strongest proof of timely filing; CO-29 is disputable.",
+    "resolution": {
+      "root_cause": {
+        "family": "timely_filing",
+        "explanation": "837P submitted 2025-10-13 \u2014 past the 1-year Medicare deadline from DOS 2024-07-19. But the 277CA (2024-07-23) shows A2 front-end acceptance of the original, timely submission."
+      },
+      "next_action": {
+        "path": "appeal",
+        "detail": "File a Medicare redetermination disputing the receipt date. Attach the 277CA A2:20 acceptance from 2024-07-23 as proof the original claim was received within the 1-year window. Do not plead forgiveness \u2014 dispute that filing was late."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CAS*CO*29 on both service lines; MOA N211; $0 paid; DOS 2024-07-19",
+          "locator": "CLP/SVC/CAS segments"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "CLM05-3=1 (original); ISA date 2025-10-13 \u2014 86 days past the 1-year Medicare filing limit",
+          "locator": "ISA segment + CLM*PA27526776"
+        },
+        {
+          "artifact": "ack_277ca.edi",
+          "fact": "STC*A2:20 acceptance dated 2024-07-23 for TRC40749676, matching the 837P BHT reference \u2014 original received within the filing window",
+          "locator": "STC and BHT segments"
+        },
+        {
+          "artifact": "reference",
+          "fact": "Timely-filing.md: clearinghouse acceptance report is the strongest proof; appeal to dispute receipt date, not plead forgiveness. N211 applied in error when timely filing is provable (R3118CP).",
+          "locator": "03-timely-filing.md \u00a78, \u00a79.1"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "29",
+        "rarc": "N211",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1
+      ],
+      "citations": [
+        {
+          "source": "03-timely-filing.md",
+          "rule": "Proof of accepted submission inside the window \u2192 appeal with clearinghouse acceptance report"
+        },
+        {
+          "source": "03-timely-filing.md",
+          "rule": "Medicare FFS: 1 calendar year from DOS; 42 CFR 424.44"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"Both lines carry CO-29 + N211. DOS 2024-07-19; Medicare 1-year limit = 2025-07-19. The 837P hitting Novitas was dated 2025-10-13 \u2014 86 days late. However, the 277CA shows a front-end acceptance (A2:20) on 2024-07-23, four days after DOS, proving the original claim was received within the filing window. Per timely-filing.md, a 277CA acceptance report is the strongest proof of timely filing; CO-29 is disputable.\",\"resolution\":{\"root_cause\":{\"family\":\"timely_filing\",\"explanation\":\"837P submitted 2025-10-13 \u2014 past the 1-year Medicare deadline from DOS 2024-07-19. But the 277CA (2024-07-23) shows A2 front-end acceptance of the original, timely submission.\"},\"next_action\":{\"path\":\"appeal\",\"detail\":\"File a Medicare redetermination disputing the receipt date. Attach the 277CA A2:20 acceptance from 2024-07-23 as proof the original claim was received within the 1-year window. Do not plead forgiveness \u2014 dispute that filing was late.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CAS*CO*29 on both service lines; MOA N211; $0 paid; DOS 2024-07-19\",\"locator\":\"CLP/SVC/CAS segments\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"CLM05-3=1 (original); ISA date 2025-10-13 \u2014 86 days past the 1-year Medicare filing limit\",\"locator\":\"ISA segment + CLM*PA27526776\"},{\"artifact\":\"ack_277ca.edi\",\"fact\":\"STC*A2:20 acceptance dated 2024-07-23 for TRC40749676, matching the 837P BHT reference \u2014 original received within the filing window\",\"locator\":\"STC and BHT segments\"},{\"artifact\":\"reference\",\"fact\":\"Timely-filing.md: clearinghouse acceptance report is the strongest proof; appeal to dispute receipt date, not plead forgiveness. N211 applied in error when timely filing is provable (R3118CP).\",\"locator\":\"03-timely-filing.md \u00a78, \u00a79.1\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"29\",\"rarc\":\"N211\",\"level\":\"line\"},\"denied_line_idxs\":[0,1],\"citations\":[{\"source\":\"03-timely-filing.md\",\"rule\":\"Proof of accepted submission inside the window \u2192 appeal with clearinghouse acceptance report\"},{\"source\":\"03-timely-filing.md\",\"rule\":\"Medicare FFS: 1 calendar year from DOS; 42 CFR 424.44\"}]}}"
+}

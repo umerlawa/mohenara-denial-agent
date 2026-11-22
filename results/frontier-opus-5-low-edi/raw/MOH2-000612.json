@@ -1,0 +1,98 @@
+{
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 7658,
+    "cache_read_input_tokens": 92546,
+    "output_tokens": 2310,
+    "output_tokens_details": {
+      "thinking_tokens": 192
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 7658,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1027,
+        "cache_read_input_tokens": 49434,
+        "cache_creation_input_tokens": 1336,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1336
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "835 denies all three lines CO-16 with MOA N286 (missing/incomplete/invalid referring provider primary identifier). CARC 16 is inert alone; N286 names the defect \u2014 the ordering/referring NPI is invalid or not PECOS-eligible to order/refer. Submitted-claim data defect, so rework not appeal. Medicare Part B FFS accepts only CLM05-3=1.",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_referring_provider",
+        "explanation": "835 line-level CAS*CO*16 on all three lines plus claim-level MOA***N286. Referring provider submitted as NM1*82 CLARK, MARY, NPI 1992501921; payer rejects that identifier as invalid/not eligible to order or refer."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Verify MARY CLARK NPI 1992501921 in the NPI Registry and PECOS, including specialty eligibility to order/refer on DOS 2026-07-20. Correct the referring name/NPI and resubmit to Novitas as a new original claim, CLM05-3=1, no REF*F8. Do not appeal; do not bill the patient."
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All three SVC lines adjusted CAS*CO*16, $0 paid; claim-level MOA***N286",
+          "locator": "CAS*CO*16 / MOA***N286"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Referring provider submitted as NM1*82*1*CLARK*MARY****XX*1992501921",
+          "locator": "NM1*82"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Payer Novitas Solutions Medicare Part B, filing indicator MB",
+          "locator": "CLP*PA25851339*4*220.86*0**MB"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CO-16 + N286 = invalid referring provider ID; correct_and_resubmit, Part B frequency 1 only, never appeal, never bill patient",
+          "locator": "09-missing-referring-provider.md"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "16",
+        "rarc": "N286",
+        "level": "line"
+      },
+      "citations": [
+        {
+          "source": "09-missing-referring-provider.md",
+          "rule": "CO-16 + N286 = missing/invalid referring provider; verify NPI in PECOS, correct and resubmit as new original"
+        },
+        {
+          "source": "01-carc-rarc-index.md",
+          "rule": "CARC 16 defect named by paired RARC; N286 = invalid referring provider identifier"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "CO on Medicare FFS never billable to patient; provider-side data defect routes to correct_and_resubmit"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"835 denies all three lines CO-16 with MOA N286 (missing/incomplete/invalid referring provider primary identifier). CARC 16 is inert alone; N286 names the defect \u2014 the ordering/referring NPI is invalid or not PECOS-eligible to order/refer. Submitted-claim data defect, so rework not appeal. Medicare Part B FFS accepts only CLM05-3=1.\",\"resolution\":{\"root_cause\":{\"family\":\"missing_referring_provider\",\"explanation\":\"835 line-level CAS*CO*16 on all three lines plus claim-level MOA***N286. Referring provider submitted as NM1*82 CLARK, MARY, NPI 1992501921; payer rejects that identifier as invalid/not eligible to order or refer.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Verify MARY CLARK NPI 1992501921 in the NPI Registry and PECOS, including specialty eligibility to order/refer on DOS 2026-07-20. Correct the referring name/NPI and resubmit to Novitas as a new original claim, CLM05-3=1, no REF*F8. Do not appeal; do not bill the patient.\"},\"denied_line_idxs\":[0,1,2],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All three SVC lines adjusted CAS*CO*16, $0 paid; claim-level MOA***N286\",\"locator\":\"CAS*CO*16 / MOA***N286\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Referring provider submitted as NM1*82*1*CLARK*MARY****XX*1992501921\",\"locator\":\"NM1*82\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"Payer Novitas Solutions Medicare Part B, filing indicator MB\",\"locator\":\"CLP*PA25851339*4*220.86*0**MB\"},{\"artifact\":\"reference\",\"fact\":\"CO-16 + N286 = invalid referring provider ID; correct_and_resubmit, Part B frequency 1 only, never appeal, never bill patient\",\"locator\":\"09-missing-referring-provider.md\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"16\",\"rarc\":\"N286\",\"level\":\"line\"},\"citations\":[{\"source\":\"09-missing-referring-provider.md\",\"rule\":\"CO-16 + N286 = missing/invalid referring provider; verify NPI in PECOS, correct and resubmit as new original\"},{\"source\":\"01-carc-rarc-index.md\",\"rule\":\"CARC 16 defect named by paired RARC; N286 = invalid referring provider identifier\"},{\"source\":\"00-group-codes.md\",\"rule\":\"CO on Medicare FFS never billable to patient; provider-side data defect routes to correct_and_resubmit\"}]}}",
+  "model": "claude-opus-5"
+}

@@ -1,0 +1,82 @@
+{
+  "usage": {
+    "input_tokens": 3,
+    "cache_creation_input_tokens": 6285,
+    "cache_read_input_tokens": 68449,
+    "output_tokens": 2103,
+    "output_tokens_details": {
+      "thinking_tokens": 466
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 6285
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "All three lines denied CO-16 + MOA N286. The 837P has a rendering provider (NM1*82 LOPEZ/1390221007) but no ordering/referring provider loop. N286 = missing/invalid referring provider primary identifier. Medicare Part B, claim adjudicated (CLP07 = 2605064650927). Correct the claim with the referring provider NPI and resubmit as a new original.",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_referring_provider",
+        "explanation": "All three lines carry CO-16 + MOA N286. The 837P contains NM1*82 (rendering) but no referring/ordering provider loop. N286 = missing/incomplete/invalid referring provider primary identifier."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Add the ordering/referring provider name and NPI to the claim. Verify the NPI in the NPI Registry and PECOS. Resubmit as CLM05-3=1 (new original; Part B does not accept frequency 7). No REF*F8 needed."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "MOA N286 at claim level; all three lines CAS*CO*16 \u2014 full denial, $0 paid.",
+          "locator": "MOA***N286; SVC lines 1-3 CAS*CO*16"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "NM1*82 rendering provider present (LOPEZ/1390221007); no referring provider loop present.",
+          "locator": "NM1*82*1*LOPEZ*DOROTHY****XX*1390221007"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Claim adjudicated: CLP07 = 2605064650927 (payer claim control number present).",
+          "locator": "CLP*PA28427820*4*145.54*0**MB*2605064650927"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CO-16 + N286 \u2192 correct_and_resubmit; fix referring provider NPI; Part B accepts only CLM05-3=1.",
+          "locator": "09-missing-referring-provider.md"
+        }
+      ],
+      "denied_line_idxs": [
+        0,
+        1,
+        2
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "16",
+        "rarc": "N286",
+        "level": "line"
+      },
+      "citations": [
+        {
+          "source": "09-missing-referring-provider.md",
+          "rule": "CO-16 + N286 = missing/invalid referring provider NPI; disposition correct_and_resubmit; Part B frequency 1 only"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Part B FFS does not accept CLM05-3=7; submit new original with CLM05-3=1, no REF*F8"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"All three lines denied CO-16 + MOA N286. The 837P has a rendering provider (NM1*82 LOPEZ/1390221007) but no ordering/referring provider loop. N286 = missing/invalid referring provider primary identifier. Medicare Part B, claim adjudicated (CLP07 = 2605064650927). Correct the claim with the referring provider NPI and resubmit as a new original.\",\"resolution\":{\"root_cause\":{\"family\":\"missing_referring_provider\",\"explanation\":\"All three lines carry CO-16 + MOA N286. The 837P contains NM1*82 (rendering) but no referring/ordering provider loop. N286 = missing/incomplete/invalid referring provider primary identifier.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Add the ordering/referring provider name and NPI to the claim. Verify the NPI in the NPI Registry and PECOS. Resubmit as CLM05-3=1 (new original; Part B does not accept frequency 7). No REF*F8 needed.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"MOA N286 at claim level; all three lines CAS*CO*16 \u2014 full denial, $0 paid.\",\"locator\":\"MOA***N286; SVC lines 1-3 CAS*CO*16\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"NM1*82 rendering provider present (LOPEZ/1390221007); no referring provider loop present.\",\"locator\":\"NM1*82*1*LOPEZ*DOROTHY****XX*1390221007\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"Claim adjudicated: CLP07 = 2605064650927 (payer claim control number present).\",\"locator\":\"CLP*PA28427820*4*145.54*0**MB*2605064650927\"},{\"artifact\":\"reference\",\"fact\":\"CO-16 + N286 \u2192 correct_and_resubmit; fix referring provider NPI; Part B accepts only CLM05-3=1.\",\"locator\":\"09-missing-referring-provider.md\"}],\"denied_line_idxs\":[0,1,2],\"denial\":{\"group\":\"CO\",\"carc\":\"16\",\"rarc\":\"N286\",\"level\":\"line\"},\"citations\":[{\"source\":\"09-missing-referring-provider.md\",\"rule\":\"CO-16 + N286 = missing/invalid referring provider NPI; disposition correct_and_resubmit; Part B frequency 1 only\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Part B FFS does not accept CLM05-3=7; submit new original with CLM05-3=1, no REF*F8\"}]}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

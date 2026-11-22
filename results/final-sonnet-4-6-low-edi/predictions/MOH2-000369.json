@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000369",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All three lines carry CO-16 + MOA N286 at claim level. N286 = missing/incomplete/invalid referring provider identifier. The 837P has a rendering provider (NM1*82, LEWIS NANCY, NPI 1913425846) but no referring/ordering provider loop. Medicare Part B therapy requires an ordering/referring NPI. Claim adjudicated (CLP07 = 2607274456446); payer is MB FFS.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1180,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 4944,
+    "cost_usd": 0.05034711,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "missing_referring_provider",
+      "explanation": "837P contains no referring provider loop. All three lines denied CO-16/N286 \u2014 missing/invalid referring provider primary identifier. Medicare Part B requires ordering/referring NPI for therapy services."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Verify ordering/referring provider name and NPI in PECOS. Add the referring provider loop to the claim. Submit as new original (CLM05-3=1) \u2014 Part B FFS does not accept frequency 7. No REF*F8. Act promptly: filing clock ran from DOS 2026-01-28.",
+      "resubmission_frequency_code": "7"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "MOA N286 at claim level; all three SVC lines carry CAS*CO*16",
+        "locator": "CLP loop, MOA segment"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "No NM1*DN or referring provider loop present; only rendering provider NM1*82 (LEWIS NANCY, NPI 1913425846)",
+        "locator": "837P claim loop"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP07 = 2607274456446 confirms claim adjudicated; payer filing indicator MB (Medicare Part B FFS)",
+        "locator": "CLP*PA28654159*4*247.78*0**MB*2607274456446"
+      },
+      {
+        "artifact": "reference",
+        "fact": "CO-16+N286: correct and resubmit; Part B accepts only CLM05-3=1, not frequency 7",
+        "locator": "09-missing-referring-provider.md"
+      }
+    ],
+    "citations": [
+      {
+        "source": "09-missing-referring-provider.md",
+        "rule": "CO-16+N286 = data defect; correct_and_resubmit; Part B frequency 1 only"
+      },
+      {
+        "source": "02-resubmission-frequency.md",
+        "rule": "Part B FFS: frequency 7 not accepted; new original claim only"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "16",
+      "rarc": "N286",
+      "level": "claim"
+    }
+  }
+}

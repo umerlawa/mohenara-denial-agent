@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000613",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All three lines adjudicated and paid. CO-45 = contractual fee-schedule write-off; PR-2 = standard Medicare Part B coinsurance. CLP status code 1 (paid), payer control number present. No denial codes. Routine AR \u2014 PR-2 coinsurance may be billed to patient in the normal course, but that is not a denial remedy.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1047,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 5071,
+    "cost_usd": 0.048676485,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "none",
+      "explanation": "Claim adjudicated and paid. CO-45 fee-schedule reductions and PR-2 coinsurance are routine Medicare Part B adjustments, not denials."
+    },
+    "next_action": {
+      "path": "none",
+      "detail": "Post payment. Write off CO-45 amounts. Bill patient the PR-2 coinsurance ($5.54 + $5.81 + $7.01 = $18.36) through normal AR."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP status 1 (paid); $73.49 paid of $132.05 billed; payer claim control number 2622521177296 present.",
+        "locator": "CLP segment"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All adjustments are CO-45 (fee schedule write-off) and PR-2 (coinsurance); no denial CARC on any line.",
+        "locator": "CAS segments, all three SVC loops"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*1 active coverage for DOS 2026-07-12; effective 2024-01-01, no termination date.",
+        "locator": "EB*1 + DTP*356 segments"
+      }
+    ],
+    "denied_line_idxs": [],
+    "citations": [
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO = contractual write-off, not billable; PR = patient responsibility, billable after overrides"
+      },
+      {
+        "source": "01-carc-rarc-index.md",
+        "rule": "CARC 45 = contractual write-off; CARC 2 = coinsurance/deductible (PR)"
+      }
+    ]
+  }
+}

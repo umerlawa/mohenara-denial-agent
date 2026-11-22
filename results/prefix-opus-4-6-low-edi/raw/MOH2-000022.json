@@ -1,0 +1,81 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5050,
+    "cache_read_input_tokens": 31983,
+    "output_tokens": 729,
+    "output_tokens_details": {
+      "thinking_tokens": 56
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5050
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "Line 2 (97140:GP) billed 7 units but chart documents only 15 minutes (1 unit). CO-151 + N362 = units exceed MUE. Chart note confirms only 1 unit furnished. Billed units were a keying error. Correct and resubmit with accurate units.",
+    "resolution": {
+      "root_cause": {
+        "family": "mue_exceeded",
+        "explanation": "97140 billed at 7 units; chart note documents 15 minutes of manual therapy = 1 unit. Units exceed the MUE, and the chart confirms this was a keying/billing error, not legitimately furnished units."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Resubmit line 2 (97140:GP) with 1 unit. Medicare Part B: submit as clerical-error reopening referencing ICN 2606593004856. Do not use frequency 7.",
+        "resubmission_frequency_code": "7"
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Line 2 HC:97140:GP denied $321.51, CAS*CO*151*321.51 with LQ*HE*N362 \u2014 MUE exceeded",
+          "locator": "SVC/CAS/LQ segments for line 2"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "97140:GP billed with 7 units (SV1*HC:97140:GP*321.51*UN*7)",
+          "locator": "LX*2 SV1 segment"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "97140 documented as 15 minutes \u2014 one 15-min unit, not 7 units",
+          "locator": "97140 (15 min): manual therapy"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CO-151 + N362 = MUE exceeded; keying error \u2192 correct_and_resubmit",
+          "locator": "07-ncci-and-mue.md \u00a7(b)"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "151",
+        "rarc": "N362",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        1
+      ],
+      "citations": [
+        {
+          "source": "07-ncci-and-mue.md",
+          "rule": "CO-151 + N362: units exceed MUE; MAI keying error \u2192 correct_and_resubmit"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Medicare Part B does not accept frequency 7; use clerical-error reopening"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"Line 2 (97140:GP) billed 7 units but chart documents only 15 minutes (1 unit). CO-151 + N362 = units exceed MUE. Chart note confirms only 1 unit furnished. Billed units were a keying error. Correct and resubmit with accurate units.\",\"resolution\":{\"root_cause\":{\"family\":\"mue_exceeded\",\"explanation\":\"97140 billed at 7 units; chart note documents 15 minutes of manual therapy = 1 unit. Units exceed the MUE, and the chart confirms this was a keying/billing error, not legitimately furnished units.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Resubmit line 2 (97140:GP) with 1 unit. Medicare Part B: submit as clerical-error reopening referencing ICN 2606593004856. Do not use frequency 7.\",\"resubmission_frequency_code\":\"7\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"Line 2 HC:97140:GP denied $321.51, CAS*CO*151*321.51 with LQ*HE*N362 \u2014 MUE exceeded\",\"locator\":\"SVC/CAS/LQ segments for line 2\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"97140:GP billed with 7 units (SV1*HC:97140:GP*321.51*UN*7)\",\"locator\":\"LX*2 SV1 segment\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"97140 documented as 15 minutes \u2014 one 15-min unit, not 7 units\",\"locator\":\"97140 (15 min): manual therapy\"},{\"artifact\":\"reference\",\"fact\":\"CO-151 + N362 = MUE exceeded; keying error \u2192 correct_and_resubmit\",\"locator\":\"07-ncci-and-mue.md \u00a7(b)\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"151\",\"rarc\":\"N362\",\"level\":\"line\"},\"denied_line_idxs\":[1],\"citations\":[{\"source\":\"07-ncci-and-mue.md\",\"rule\":\"CO-151 + N362: units exceed MUE; MAI keying error \u2192 correct_and_resubmit\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Medicare Part B does not accept frequency 7; use clerical-error reopening\"}]}}",
+  "model": "us.anthropic.claude-opus-4-6-v1"
+}

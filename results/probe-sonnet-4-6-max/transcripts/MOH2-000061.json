@@ -1,0 +1,95 @@
+{
+  "case_id": "MOH2-000061",
+  "run_id": "probe-sonnet-4-6-max",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "max",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 6892,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 36421,
+    "cache_read_input_tokens": 0,
+    "output_tokens": 19221,
+    "output_tokens_details": {
+      "thinking_tokens": 18217
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 36421
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.467389725,
+  "cache_hit_rate": 0.0,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "OA-18 on every line and MOA N111 confirm exact duplicate \u2014 hard-coded Medicare edit, unappealable. CLP07 proves the claim was adjudicated, so a prior claim for this member/DOS/procedures already exists at Novitas. PA22957514 cannot be cleared by any resubmission or redetermination. The prior claim's disposition governs; portal/IVR lookup is the only required step.",
+    "resolution": {
+      "root_cause": {
+        "family": "exact_duplicate",
+        "explanation": "All 4 lines carry OA-18; claim-level MOA N111 confirms no appeal right. A prior claim for member 1ER2YR8UK79, DOS 2026-07-05, procedures 97140/97110 was already adjudicated at Novitas when PA22957514 was submitted as CLM05-3=1."
+      },
+      "next_action": {
+        "path": "do_not_resubmit",
+        "detail": "OA-18 is hard-coded and unappealable; stop resubmitting PA22957514. Query Novitas portal or IVR for the prior claim on DOS 2026-07-05. If it paid, post and close. If it was denied, address that claim via Telephone Reopenings \u2014 not a new submission."
+      },
+      "denial": {
+        "group": "OA",
+        "carc": "18",
+        "level": "line",
+        "rarc": null
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CAS OA-18 on all four service lines ($47.76, $98.25, $46.48, $48.37) \u2014 exact duplicate adjustment consuming entire billed amount on every line",
+          "locator": "Lines 1\u20134, CAS01=OA CAS02=18"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Claim-level MOA N111: 'no appeal right except duplicate claim/service issue' \u2014 confirms Medicare's unappealable hard-coded duplicate edit applied",
+          "locator": "CLP PA22957514, MOA N111"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP07=2623576767957 \u2014 payer claim control number assigned, proving the claim was adjudicated (not rejected front-end), which requires a prior adjudicated claim to have collided with",
+          "locator": "CLP segment, element 07"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "CLM05-3=1 (original claim frequency) with no REF*F8 \u2014 submitted as a brand-new original; duplicate logic matched against the already-adjudicated prior claim for same provider/member/DOS/procedure",
+          "locator": "Loop 2300 CLM05-3"
+        }
+      ],
+      "citations": [
+        {
+          "source": "04-exact-duplicate.md",
+          "rule": "True duplicate OA-18: do_not_resubmit; edit is hard-coded, MACs cannot override or bypass it, no appeal rights; prior claim's disposition governs \u2014 check portal/IVR, if paid post and close, if denied use Telephone Reopenings on the prior claim"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "OA (Other Adjustments): liability unstated, not billable; pursue the original claim's disposition rather than resubmitting or billing the patient"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"OA-18 on every line and MOA N111 confirm exact duplicate \u2014 hard-coded Medicare edit, unappealable. CLP07 proves the claim was adjudicated, so a prior claim for this member/DOS/procedures already exists at Novitas. PA22957514 cannot be cleared by any resubmission or redetermination. The prior claim's disposition governs; portal/IVR lookup is the only required step.\",\"resolution\":{\"root_cause\":{\"family\":\"exact_duplicate\",\"explanation\":\"All 4 lines carry OA-18; claim-level MOA N111 confirms no appeal right. A prior claim for member 1ER2YR8UK79, DOS 2026-07-05, procedures 97140/97110 was already adjudicated at Novitas when PA22957514 was submitted as CLM05-3=1.\"},\"next_action\":{\"path\":\"do_not_resubmit\",\"detail\":\"OA-18 is hard-coded and unappealable; stop resubmitting PA22957514. Query Novitas portal or IVR for the prior claim on DOS 2026-07-05. If it paid, post and close. If it was denied, address that claim via Telephone Reopenings \u2014 not a new submission.\"},\"denial\":{\"group\":\"OA\",\"carc\":\"18\",\"level\":\"line\",\"rarc\":null},\"denied_line_idxs\":[0,1,2,3],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CAS OA-18 on all four service lines ($47.76, $98.25, $46.48, $48.37) \u2014 exact duplicate adjustment consuming entire billed amount on every line\",\"locator\":\"Lines 1\u20134, CAS01=OA CAS02=18\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"Claim-level MOA N111: 'no appeal right except duplicate claim/service issue' \u2014 confirms Medicare's unappealable hard-coded duplicate edit applied\",\"locator\":\"CLP PA22957514, MOA N111\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP07=2623576767957 \u2014 payer claim control number assigned, proving the claim was adjudicated (not rejected front-end), which requires a prior adjudicated claim to have collided with\",\"locator\":\"CLP segment, element 07\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"CLM05-3=1 (original claim frequency) with no REF*F8 \u2014 submitted as a brand-new original; duplicate logic matched against the already-adjudicated prior claim for same provider/member/DOS/procedure\",\"locator\":\"Loop 2300 CLM05-3\"}],\"citations\":[{\"source\":\"04-exact-duplicate.md\",\"rule\":\"True duplicate OA-18: do_not_resubmit; edit is hard-coded, MACs cannot override or bypass it, no appeal rights; prior claim's disposition governs \u2014 check portal/IVR, if paid post and close, if denied use Telephone Reopenings on the prior claim\"},{\"source\":\"00-group-codes.md\",\"rule\":\"OA (Other Adjustments): liability unstated, not billable; pursue the original claim's disposition rather than resubmitting or billing the patient\"}]}}"
+}

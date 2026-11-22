@@ -1,0 +1,38 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4579,
+    "cache_read_input_tokens": 31983,
+    "output_tokens": 985,
+    "output_tokens_details": {
+      "thinking_tokens": 608
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4579
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "rationale": "All three lines denied CO-29 (timely filing expired) with MOA N211. Payer is commercial (CI). DOS 2025-04-16; 837 created 2025-08-10 (116 days). 271 confirms active coverage (EB*1). CO = provider liability, never billable to patient. To appeal, provider needs proof of an accepted submission within the payer's filing window. No such proof exists in the artifacts, and the payer's specific filing limit is unknown.",
+    "status": "awaiting_human",
+    "awaiting_human": {
+      "question": "Does the practice have a clearinghouse acceptance report (or payer acknowledgment) showing this claim was originally submitted within Keystone Commercial Health's filing deadline? What is Keystone's contractual filing limit for participating providers?",
+      "why_needed": "CO-29 is either a write-off (do_not_resubmit) if genuinely late, or appealable if proof exists that the claim was accepted inside the window. The 837 on file is dated 2025-08-10 (116 days post-DOS), which may exceed a 90-day par limit. Without proof of earlier timely submission, the claim must be written off.",
+      "blocks": [
+        "root_cause.family",
+        "next_action.path"
+      ],
+      "asked_of": "internal"
+    }
+  },
+  "result": "{\"rationale\":\"All three lines denied CO-29 (timely filing expired) with MOA N211. Payer is commercial (CI). DOS 2025-04-16; 837 created 2025-08-10 (116 days). 271 confirms active coverage (EB*1). CO = provider liability, never billable to patient. To appeal, provider needs proof of an accepted submission within the payer's filing window. No such proof exists in the artifacts, and the payer's specific filing limit is unknown.\",\"status\":\"awaiting_human\",\"awaiting_human\":{\"question\":\"Does the practice have a clearinghouse acceptance report (or payer acknowledgment) showing this claim was originally submitted within Keystone Commercial Health's filing deadline? What is Keystone's contractual filing limit for participating providers?\",\"why_needed\":\"CO-29 is either a write-off (do_not_resubmit) if genuinely late, or appealable if proof exists that the claim was accepted inside the window. The 837 on file is dated 2025-08-10 (116 days post-DOS), which may exceed a 90-day par limit. Without proof of earlier timely submission, the claim must be written off.\",\"blocks\":[\"root_cause.family\",\"next_action.path\"],\"asked_of\":\"internal\"}}",
+  "model": "us.anthropic.claude-opus-4-6-v1"
+}

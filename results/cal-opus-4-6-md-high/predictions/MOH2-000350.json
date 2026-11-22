@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000350",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "All three lines denied OA-18 (exact duplicate) with claim-level N111. The 835 carries payer claim control number 2606743684675, confirming adjudication. The 837P was submitted as frequency 1 (original) with no REF*F8. Chart note shows a single encounter with distinct CPT codes \u2014 no bilateral or repeat service needing a distinguishing modifier. This is a true duplicate: the same claim was sent twice. The prior claim's disposition governs payment.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1797,
+    "cache_read_input_tokens": 31983,
+    "cache_creation_input_tokens": 4981,
+    "cost_usd": 0.101263525,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "high",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "exact_duplicate",
+      "explanation": "Claim submitted as original (frequency 1) duplicates a previously adjudicated claim for the same provider/member/DOS/procedures. No bilateral or repeat service present \u2014 97110, 97140, 97530 are distinct codes in a single encounter."
+    },
+    "next_action": {
+      "path": "do_not_resubmit",
+      "detail": "Do not resubmit. Check original claim status via Novitas portal/IVR using payer control number 2606743684675. If original paid, post payment and close. If original denied, address that denial. If status unclear, use Telephone Reopenings."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All lines carry OA-18 (exact duplicate); claim-level MOA N111 (no appeal right except duplicate issue); payer claim control 2606743684675 confirms adjudication.",
+        "locator": "CAS OA*18; MOA N111; CLP07 2606743684675"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "CLM05-3 = 1 (original claim), no REF*F8 \u2014 submitted as a brand-new claim against an already-adjudicated prior.",
+        "locator": "CLM05-3 frequency 1"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "Single encounter on 2026-01-13 with distinct CPT codes (97110, 97140, 97530) \u2014 no repeat or bilateral service requiring a distinguishing modifier.",
+        "locator": "PT treatment note 2026-01-13"
+      },
+      {
+        "artifact": "reference",
+        "fact": "True duplicate under OA is hard-coded, unappealable, never patient liability; prior claim's disposition governs.",
+        "locator": "04-exact-duplicate.md"
+      }
+    ],
+    "denial": {
+      "group": "OA",
+      "carc": "18",
+      "level": "claim",
+      "rarc": "N111"
+    },
+    "denied_line_idxs": [
+      1,
+      2,
+      3
+    ],
+    "citations": [
+      {
+        "source": "04-exact-duplicate.md",
+        "rule": "True duplicate \u2014 one service, billed once, sent twice. Disposition do_not_resubmit. The duplicate edit is hard-coded, MACs cannot override or bypass it."
+      },
+      {
+        "source": "02-resubmission-frequency.md",
+        "rule": "Every 837 with CLM05-3=1 is treated as brand-new; duplicate logic matches provider/member/DOS/procedure and fires the edit."
+      }
+    ]
+  }
+}

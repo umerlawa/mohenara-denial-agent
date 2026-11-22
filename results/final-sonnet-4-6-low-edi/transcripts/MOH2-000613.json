@@ -1,0 +1,85 @@
+{
+  "case_id": "MOH2-000613",
+  "run_id": "final-sonnet-4-6-low-edi",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4811,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5071,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1047,
+    "output_tokens_details": {
+      "thinking_tokens": 412
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5071
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.048676485,
+  "cache_hit_rate": 0.862222,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All three lines adjudicated and paid. CO-45 = contractual fee-schedule write-off; PR-2 = standard Medicare Part B coinsurance. CLP status code 1 (paid), payer control number present. No denial codes. Routine AR \u2014 PR-2 coinsurance may be billed to patient in the normal course, but that is not a denial remedy.",
+    "resolution": {
+      "root_cause": {
+        "family": "none",
+        "explanation": "Claim adjudicated and paid. CO-45 fee-schedule reductions and PR-2 coinsurance are routine Medicare Part B adjustments, not denials."
+      },
+      "next_action": {
+        "path": "none",
+        "detail": "Post payment. Write off CO-45 amounts. Bill patient the PR-2 coinsurance ($5.54 + $5.81 + $7.01 = $18.36) through normal AR."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP status 1 (paid); $73.49 paid of $132.05 billed; payer claim control number 2622521177296 present.",
+          "locator": "CLP segment"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All adjustments are CO-45 (fee schedule write-off) and PR-2 (coinsurance); no denial CARC on any line.",
+          "locator": "CAS segments, all three SVC loops"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*1 active coverage for DOS 2026-07-12; effective 2024-01-01, no termination date.",
+          "locator": "EB*1 + DTP*356 segments"
+        }
+      ],
+      "denied_line_idxs": [],
+      "citations": [
+        {
+          "source": "00-group-codes.md",
+          "rule": "CO = contractual write-off, not billable; PR = patient responsibility, billable after overrides"
+        },
+        {
+          "source": "01-carc-rarc-index.md",
+          "rule": "CARC 45 = contractual write-off; CARC 2 = coinsurance/deductible (PR)"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All three lines adjudicated and paid. CO-45 = contractual fee-schedule write-off; PR-2 = standard Medicare Part B coinsurance. CLP status code 1 (paid), payer control number present. No denial codes. Routine AR \u2014 PR-2 coinsurance may be billed to patient in the normal course, but that is not a denial remedy.\",\"resolution\":{\"root_cause\":{\"family\":\"none\",\"explanation\":\"Claim adjudicated and paid. CO-45 fee-schedule reductions and PR-2 coinsurance are routine Medicare Part B adjustments, not denials.\"},\"next_action\":{\"path\":\"none\",\"detail\":\"Post payment. Write off CO-45 amounts. Bill patient the PR-2 coinsurance ($5.54 + $5.81 + $7.01 = $18.36) through normal AR.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP status 1 (paid); $73.49 paid of $132.05 billed; payer claim control number 2622521177296 present.\",\"locator\":\"CLP segment\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"All adjustments are CO-45 (fee schedule write-off) and PR-2 (coinsurance); no denial CARC on any line.\",\"locator\":\"CAS segments, all three SVC loops\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*1 active coverage for DOS 2026-07-12; effective 2024-01-01, no termination date.\",\"locator\":\"EB*1 + DTP*356 segments\"}],\"denied_line_idxs\":[],\"citations\":[{\"source\":\"00-group-codes.md\",\"rule\":\"CO = contractual write-off, not billable; PR = patient responsibility, billable after overrides\"},{\"source\":\"01-carc-rarc-index.md\",\"rule\":\"CARC 45 = contractual write-off; CARC 2 = coinsurance/deductible (PR)\"}]}}"
+}

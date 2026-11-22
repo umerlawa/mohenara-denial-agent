@@ -1,0 +1,79 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5091,
+    "cache_read_input_tokens": 31983,
+    "output_tokens": 760,
+    "output_tokens_details": {
+      "thinking_tokens": 223
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5091
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "PR-27 + N30 on a commercial (CI) claim. 271 for DOS 2025-06-17 shows EB*6 with DTP*357 = 2025-05-31 \u2014 coverage ended 17 days before service. No successor payer (no EB*R), no QMB/Medicaid override. PR group = patient liable.",
+    "resolution": {
+      "root_cause": {
+        "family": "eligibility_terminated",
+        "explanation": "Patient's Keystone Commercial Health EPO plan terminated 2025-05-31. DOS 2025-06-17 is after coverage end. 271 confirms EB*6 with DTP*357 before DOS."
+      },
+      "next_action": {
+        "path": "bill_patient",
+        "detail": "Issue patient statement for $204.23. Confirm no other active coverage with patient before billing."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All four lines denied PR-27; MOA N30; $0 paid; payer filing indicator CI"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*6 (inactive) for service type 30; DTP*357 = 20250531 (plan end before DOS 20250617)"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "No EB*R segment \u2014 no other payer on file for this member"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "SBR*P*18*******CI \u2014 commercial individual policy, primary"
+        }
+      ],
+      "denied_line_idxs": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "denial": {
+        "group": "PR",
+        "carc": "27",
+        "rarc": "N30",
+        "level": "line"
+      },
+      "citations": [
+        {
+          "source": "05-eligibility-terminated.md",
+          "rule": "CI, EB*6 + 357 before DOS, no successor: PR-27 \u2192 bill_patient"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "PR = patient liable, after overrides cleared"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"PR-27 + N30 on a commercial (CI) claim. 271 for DOS 2025-06-17 shows EB*6 with DTP*357 = 2025-05-31 \u2014 coverage ended 17 days before service. No successor payer (no EB*R), no QMB/Medicaid override. PR group = patient liable.\",\"resolution\":{\"root_cause\":{\"family\":\"eligibility_terminated\",\"explanation\":\"Patient's Keystone Commercial Health EPO plan terminated 2025-05-31. DOS 2025-06-17 is after coverage end. 271 confirms EB*6 with DTP*357 before DOS.\"},\"next_action\":{\"path\":\"bill_patient\",\"detail\":\"Issue patient statement for $204.23. Confirm no other active coverage with patient before billing.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All four lines denied PR-27; MOA N30; $0 paid; payer filing indicator CI\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*6 (inactive) for service type 30; DTP*357 = 20250531 (plan end before DOS 20250617)\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"No EB*R segment \u2014 no other payer on file for this member\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"SBR*P*18*******CI \u2014 commercial individual policy, primary\"}],\"denied_line_idxs\":[1,2,3,4],\"denial\":{\"group\":\"PR\",\"carc\":\"27\",\"rarc\":\"N30\",\"level\":\"line\"},\"citations\":[{\"source\":\"05-eligibility-terminated.md\",\"rule\":\"CI, EB*6 + 357 before DOS, no successor: PR-27 \u2192 bill_patient\"},{\"source\":\"00-group-codes.md\",\"rule\":\"PR = patient liable, after overrides cleared\"}]}}",
+  "model": "us.anthropic.claude-opus-4-6-v1"
+}

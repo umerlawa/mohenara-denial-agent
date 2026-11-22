@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000147",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "All five lines carry CO-4 + N822 on always-therapy CPTs (97530, 97140, 97116) with only KX\u2014no GP/GO/GN discipline modifier. Per reference 08, this is an unprocessable return with no appeal rights. Resubmit as a new original claim with the appropriate therapy modifier appended.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 674,
+    "cache_read_input_tokens": 31983,
+    "cache_creation_input_tokens": 5254,
+    "cost_usd": 0.0722579,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "missing_therapy_modifier",
+      "explanation": "Lines billed with KX only; GP/GO/GN therapy discipline modifier missing on CPTs 97530, 97140, 97116. MAC returned CO-4 + N822."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Append GP (physical therapy plan of care) to all five lines alongside KX. Submit as a new original claim (CLM05-3 = 1). Do not appeal. Filing deadline runs from DOS 2026-06-05.",
+      "resubmission_frequency_code": "7"
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All lines denied CO-4 with RARC N822 (missing procedure modifier)",
+        "locator": "CAS segments lines 1-5"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Lines carry only modifier KX; no GP/GO/GN present",
+        "locator": "SV1 segments"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "PT treatment note documents physical therapy services (therapeutic activities, manual therapy, gait training)"
+      },
+      {
+        "artifact": "reference",
+        "fact": "CO-4 + N822 on therapy CPTs without GP/GO/GN \u2192 correct_and_resubmit as new original claim (CLM05-3=1)",
+        "locator": "therapy-modifiers-and-threshold.md \u00a78.1"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "4",
+      "rarc": "N822",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "citations": [
+      {
+        "source": "therapy-modifiers-and-threshold.md",
+        "rule": "CO-4 + N822 on always-therapy CPTs missing GP/GO/GN \u2192 new original claim with modifier appended"
+      },
+      {
+        "source": "resubmission-and-frequency-codes.md",
+        "rule": "Medicare Part B FFS: only CLM05-3 = 1 accepted; frequency 7 not valid"
+      }
+    ]
+  }
+}

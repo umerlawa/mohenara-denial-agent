@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000187",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All three lines carry OA-18 on an adjudicated claim (835 has CLP07 2626166488912). MOA N111 corroborates. The 277CA shows A2:20 \u2014 claim accepted and forwarded; it adjudicated and collided with a prior submission. True exact duplicate: do not resubmit. Check portal/IVR for original claim disposition; if it paid, post and close.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1187,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 4990,
+    "cost_usd": 0.05065236,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "exact_duplicate",
+      "explanation": "All three lines denied OA-18. 835 carries payer claim control number 2626166488912 confirming adjudication. Claim PA26154675 was submitted twice as CLM05-3=1; duplicate edit fired on all lines."
+    },
+    "next_action": {
+      "path": "do_not_resubmit",
+      "detail": "Do not resubmit. Pull original claim status via MAC portal or IVR using ICN 2626166488912. If original paid, post and close. If original is still pending, hold. If disposition is disputed, request Telephone Reopening \u2014 not a new claim."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP*PA26154675*4 \u2014 status 4 (denied), $0 paid; CLP07=2626166488912 confirms adjudication",
+        "locator": "CLP segment"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CAS*OA*18 on all three service lines \u2014 exact duplicate, group OA",
+        "locator": "SVC lines 1\u20133"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "CLM05-3=1 on all lines \u2014 submitted as original, colliding with prior adjudicated claim",
+        "locator": "CLM segment"
+      },
+      {
+        "artifact": "ack_277ca.edi",
+        "fact": "STC*A2:20 \u2014 claim accepted and forwarded to payer; not a front-end rejection",
+        "locator": "STC segment"
+      }
+    ],
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "denial": {
+      "group": "OA",
+      "carc": "18",
+      "rarc": "N111",
+      "level": "line"
+    },
+    "citations": [
+      {
+        "source": "04-exact-duplicate.md",
+        "rule": "OA-18 on adjudicated claim = true duplicate \u2192 do_not_resubmit; duplicate edit hard-coded, unappealable; original claim's disposition governs"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "OA = liability unstated, not billable; never bill_patient"
+      }
+    ]
+  }
+}

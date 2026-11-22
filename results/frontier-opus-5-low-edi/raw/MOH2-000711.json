@@ -1,0 +1,78 @@
+{
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 7278,
+    "cache_read_input_tokens": 92613,
+    "output_tokens": 1565,
+    "output_tokens_details": {
+      "thinking_tokens": 122
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 7278,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 729,
+        "cache_read_input_tokens": 49501,
+        "cache_creation_input_tokens": 889,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 889
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "835 denies all three therapy lines CO-119 + MOA N435 \u2014 the Medicare therapy KX-threshold denial. The 837P lines carry GP but no KX. The 2026-07-08 chart note documents skilled, medically necessary therapy on the DOS, so the justification exists. Fix is to add KX (GP stays) via Part B clerical-error reopening; CO is provider liability, never billable, and appeal is not the vehicle when KX was simply omitted.",
+    "resolution": {
+      "root_cause": {
+        "family": "threshold_no_kx",
+        "explanation": "CO-119 + N435 on all lines: KX threshold reached. 837P lines 97140/97530/97110 billed with GP only, no KX modifier, though the chart note documents medically necessary skilled therapy for the DOS."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Append KX to each line (keep GP) and file a Part B clerical-error reopening with Novitas (1 year from DOS 2026-07-08). Do not send frequency 7 \u2014 Part B rejects it. Do not appeal or bill the patient."
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CAS*CO*119 on all three SVC lines with MOA N435",
+          "locator": "CLP/MOA/CAS"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "SV1 lines carry GP only; no KX modifier",
+          "locator": "LX*1-3"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "2026-07-08: 45 timed minutes, skilled services remain medically necessary",
+          "locator": "note body"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CO-119+N435, no KX, record justifies therapy past threshold \u2192 correct_and_resubmit via reopening; CO not billable",
+          "locator": "08-therapy-modifiers.md (b)"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"835 denies all three therapy lines CO-119 + MOA N435 \u2014 the Medicare therapy KX-threshold denial. The 837P lines carry GP but no KX. The 2026-07-08 chart note documents skilled, medically necessary therapy on the DOS, so the justification exists. Fix is to add KX (GP stays) via Part B clerical-error reopening; CO is provider liability, never billable, and appeal is not the vehicle when KX was simply omitted.\",\"resolution\":{\"root_cause\":{\"family\":\"threshold_no_kx\",\"explanation\":\"CO-119 + N435 on all lines: KX threshold reached. 837P lines 97140/97530/97110 billed with GP only, no KX modifier, though the chart note documents medically necessary skilled therapy for the DOS.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Append KX to each line (keep GP) and file a Part B clerical-error reopening with Novitas (1 year from DOS 2026-07-08). Do not send frequency 7 \u2014 Part B rejects it. Do not appeal or bill the patient.\"},\"denied_line_idxs\":[0,1,2],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CAS*CO*119 on all three SVC lines with MOA N435\",\"locator\":\"CLP/MOA/CAS\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"SV1 lines carry GP only; no KX modifier\",\"locator\":\"LX*1-3\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"2026-07-08: 45 timed minutes, skilled services remain medically necessary\",\"locator\":\"note body\"},{\"artifact\":\"reference\",\"fact\":\"CO-119+N435, no KX, record justifies therapy past threshold \u2192 correct_and_resubmit via reopening; CO not billable\",\"locator\":\"08-therapy-modifiers.md (b)\"}]}}",
+  "model": "claude-opus-5"
+}

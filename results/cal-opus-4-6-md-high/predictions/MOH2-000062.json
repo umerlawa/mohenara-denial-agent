@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000062",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "271 confirms EB*6 (inactive) with eligibility end DTP*357 = 2025-05-31, before DOS 2025-06-17. All lines carry PR-27 under filing indicator CI (commercial). No EB*R, no successor payer, no Medicare secondary, no QMB or other override. PR on a commercial plan with confirmed terminated coverage = patient liability.",
+  "usage": {
+    "input_tokens": 3,
+    "output_tokens": 2333,
+    "cache_read_input_tokens": 69027,
+    "cache_creation_input_tokens": 6895,
+    "cost_usd": 0.149541975,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "high",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "eligibility_terminated",
+      "explanation": "Patient's Keystone Commercial EPO coverage ended 2025-05-31 per 271 (EB*6, DTP*357). DOS 2025-06-17 is 17 days after termination. Payer correctly denied PR-27 on all lines."
+    },
+    "next_action": {
+      "path": "bill_patient",
+      "detail": "Issue patient statement for $204.23. Coverage was inactive on DOS; PR group assigns liability to the patient. No other payer identified in the 271. Confirm no successor coverage before billing."
+    },
+    "evidence": [
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*6 (inactive), eligibility end DTP*357 = 2025-05-31, before DOS 2025-06-17",
+        "locator": "benefit line 1"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All four lines adjusted PR-27 (patient responsibility, coverage terminated), total $204.23",
+        "locator": "CAS segments lines 1-4"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Filing indicator CI (commercial insurance); no secondary payer indicated",
+        "locator": "CLP06"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "No EB*R (other payer) present; only EB*6 inactive coverage returned",
+        "locator": "response benefit section"
+      }
+    ],
+    "denial": {
+      "group": "PR",
+      "carc": "27",
+      "rarc": null,
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "citations": [
+      {
+        "source": "05-eligibility-terminated.md",
+        "rule": "CI, EB*6 + DTP*357 before DOS, no successor: PR-27 \u2192 bill_patient"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "PR = Patient Responsibility, billable after overrides cleared"
+      }
+    ]
+  }
+}

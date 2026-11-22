@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000075",
+  "input_format": "edi",
+  "status": "awaiting_human",
+  "rationale": "Line 1 (97140) denied CO-236 = NCCI PTP edit, with 97150 as the Column One code (paid). The 835 carries neither the partner code nor the Column One/Column Two Indicator (CCMI). Per ncci-ptp-carc-236.md \u00a75/\u00a78, the CCMI for the 97150\u201397140 pair in the Q3 2026 PTP edit file determines whether a modifier bypass is permitted (CCMI=1) or the denial stands (CCMI=0). Cannot resolve without it.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 705,
+    "cache_read_input_tokens": 32421,
+    "cache_creation_input_tokens": 4948,
+    "cost_usd": 0.07124755,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "awaiting_human": {
+    "question": "What is the CCMI (Column One/Column Two Correct Coding Indicator) for the 97150\u201397140 pair in the CMS NCCI PTP edit file for Q3 2026 (effective 2026-07-01)? It will be 0, 1, or 9.",
+    "why_needed": "CCMI=1 means a modifier (59/X-) can bypass the edit and the claim should be corrected and resubmitted via reopening; CCMI=0 means the edit is absolute and the line must be written off. The 835 does not carry this value.",
+    "blocks": [
+      "root_cause.family",
+      "next_action.path"
+    ]
+  }
+}

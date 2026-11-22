@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000557",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "835 carries PR-27 on all four lines (CI commercial). 271 shows EB*6 with DTP*357=20250630; DOS is 20250706 \u2014 six days after termination. Group code PR means patient liability. No QMB, Medicaid, NSA, or ACA grace-period indicators present. Hold-harmless clause does not apply: patient was not a covered member on the DOS.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1155,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 5088,
+    "cost_usd": 0.05052861,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "eligibility_terminated",
+      "explanation": "Coverage ended 2025-06-30 per 271 DTP*357; DOS 2025-07-06 is after termination. Payer issued PR-27 (patient responsibility) on all four lines."
+    },
+    "next_action": {
+      "path": "bill_patient",
+      "detail": "Confirm no QMB/Medicaid/NSA override applies, then bill Karen Lewis $229.89 for DOS 2025-07-06. Provide an itemized statement citing the payer's coverage termination as of 2025-06-30."
+    },
+    "denial": {
+      "group": "PR",
+      "carc": "27",
+      "rarc": "N30",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All four SVC lines carry CAS*PR*27 for the full billed amount; $0 paid; MOA N30 at claim level.",
+        "locator": "CAS*PR*27 on each SVC loop"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*6 (inactive) with DTP*357=20250630 \u2014 coverage terminated June 30 2025.",
+        "locator": "EB*6*IND*30 / DTP*357*D8*20250630"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Filing indicator CI (commercial); DOS 20250706 \u2014 six days after termination.",
+        "locator": "SBR*P*18*******CI; DTP*472*D8*20250706"
+      },
+      {
+        "artifact": "reference",
+        "fact": "05-eligibility-terminated.md: CI + EB*6 + DTP*357 before DOS + PR-27 \u2192 bill_patient once overrides cleared; hold-harmless does not reach non-members.",
+        "locator": "05-eligibility-terminated.md table row 3"
+      }
+    ],
+    "citations": [
+      {
+        "source": "05-eligibility-terminated.md",
+        "rule": "CI payer, EB*6 + DTP*357 before DOS, PR-27 \u2192 bill_patient after overrides cleared"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "PR = patient responsibility; billable after override check"
+      }
+    ]
+  }
+}

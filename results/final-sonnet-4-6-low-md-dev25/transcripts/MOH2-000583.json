@@ -1,0 +1,90 @@
+{
+  "case_id": "MOH2-000583",
+  "run_id": "final-sonnet-4-6-low-md-dev25",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 6570,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4975,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1438,
+    "output_tokens_details": {
+      "thinking_tokens": 671
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4975
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.054731985000000004,
+  "cache_hit_rate": 0.864476,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All three lines carry OA-18 (exact duplicate) with MOA N111. The 835 contains CLP07 2609339242981, confirming the claim adjudicated \u2014 a prior claim for same provider/member/DOS/procedures already exists on file. CLM05-3=1 on this submission triggered duplicate matching. No bilateral or repeat-service indicator; single-session PT note. do_not_resubmit; locate the original claim's disposition via portal/IVR and post payment if it paid.",
+    "resolution": {
+      "root_cause": {
+        "family": "exact_duplicate",
+        "explanation": "OA-18 on all three lines; MOA N111. CLP07 2609339242981 confirms adjudication. This claim (CLM05-3=1, submitted 2026-03-09) duplicates a prior adjudicated claim for the same provider/member/DOS/procedures."
+      },
+      "next_action": {
+        "path": "do_not_resubmit",
+        "detail": "Do not resubmit. Duplicate edit is hard-coded and unappealable. Locate the original claim via portal/IVR using payer control 2609339242981. If original paid, post and close. If pending, hold. Use Telephone Reopening only if the duplicate finding is incorrect."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "OA-18 on all three service lines; MOA N111; CLP07 = 2609339242981 confirms prior adjudication.",
+          "locator": "CLP/CAS segments; MOA"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "CLM05-3 = 1 (original claim frequency); resubmitting as original triggers duplicate matching against the already-adjudicated claim.",
+          "locator": "CLM segment CLM05-3"
+        },
+        {
+          "artifact": "reference",
+          "fact": "OA-18 true duplicate \u2192 do_not_resubmit; edit is hard-coded, MACs cannot override; prior claim's disposition governs.",
+          "locator": "04-exact-duplicate.md \u00a7Disposition"
+        }
+      ],
+      "denied_line_idxs": [
+        0,
+        1,
+        2
+      ],
+      "denial": {
+        "group": "OA",
+        "carc": "18",
+        "rarc": "N111",
+        "level": "line"
+      },
+      "citations": [
+        {
+          "source": "04-exact-duplicate.md",
+          "rule": "True duplicate OA-18 \u2192 do_not_resubmit; hard-coded edit, unappealable; prior claim disposition governs"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "OA = liability unstated, not billable; never bill_patient"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All three lines carry OA-18 (exact duplicate) with MOA N111. The 835 contains CLP07 2609339242981, confirming the claim adjudicated \u2014 a prior claim for same provider/member/DOS/procedures already exists on file. CLM05-3=1 on this submission triggered duplicate matching. No bilateral or repeat-service indicator; single-session PT note. do_not_resubmit; locate the original claim's disposition via portal/IVR and post payment if it paid.\",\"resolution\":{\"root_cause\":{\"family\":\"exact_duplicate\",\"explanation\":\"OA-18 on all three lines; MOA N111. CLP07 2609339242981 confirms adjudication. This claim (CLM05-3=1, submitted 2026-03-09) duplicates a prior adjudicated claim for the same provider/member/DOS/procedures.\"},\"next_action\":{\"path\":\"do_not_resubmit\",\"detail\":\"Do not resubmit. Duplicate edit is hard-coded and unappealable. Locate the original claim via portal/IVR using payer control 2609339242981. If original paid, post and close. If pending, hold. Use Telephone Reopening only if the duplicate finding is incorrect.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"OA-18 on all three service lines; MOA N111; CLP07 = 2609339242981 confirms prior adjudication.\",\"locator\":\"CLP/CAS segments; MOA\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"CLM05-3 = 1 (original claim frequency); resubmitting as original triggers duplicate matching against the already-adjudicated claim.\",\"locator\":\"CLM segment CLM05-3\"},{\"artifact\":\"reference\",\"fact\":\"OA-18 true duplicate \u2192 do_not_resubmit; edit is hard-coded, MACs cannot override; prior claim's disposition governs.\",\"locator\":\"04-exact-duplicate.md \u00a7Disposition\"}],\"denied_line_idxs\":[0,1,2],\"denial\":{\"group\":\"OA\",\"carc\":\"18\",\"rarc\":\"N111\",\"level\":\"line\"},\"citations\":[{\"source\":\"04-exact-duplicate.md\",\"rule\":\"True duplicate OA-18 \u2192 do_not_resubmit; hard-coded edit, unappealable; prior claim disposition governs\"},{\"source\":\"00-group-codes.md\",\"rule\":\"OA = liability unstated, not billable; never bill_patient\"}]}}"
+}

@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000350",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "All three lines carry OA-18 with MOA N111. The 835 exists with payer claim control 2606743684675, confirming adjudication. Chart note shows a single treatment session on 2026-01-13; no bilateral or repeat-service scenario. This is a true duplicate: the same claim was submitted twice. OA group is never patient-billable. Do not resubmit; verify original claim disposition via portal/IVR.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1137,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 4981,
+    "cost_usd": 0.049790235,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "exact_duplicate",
+      "explanation": "All three lines denied OA-18 (exact duplicate) with MOA N111. The 835 carries payer claim control 2606743684675, confirming the claim adjudicated. Chart note shows one session; no repeat/bilateral service to distinguish."
+    },
+    "next_action": {
+      "path": "do_not_resubmit",
+      "detail": "Stop. Check the original claim's disposition via Novitas portal or IVR using member 6AN7D82UC08 and DOS 2026-01-13. If original paid, post and close. If original denied, address that denial on its own merits. Do not bill the patient \u2014 group OA carries no patient liability."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All three service lines carry OA-18 ($187.35 total) with MOA N111; payer claim control 2606743684675 confirms adjudication.",
+        "locator": "CAS segments, MOA, CLP07"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "CLM05-3 = 1 (original); same provider/member/DOS/procedures as the already-adjudicated claim triggers the duplicate edit.",
+        "locator": "CLM segment, frequency 1"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "Single treatment session 2026-01-13 with three therapy codes \u2014 no repeat or bilateral service that would require a distinguishing modifier.",
+        "locator": "PT treatment note 2026-01-13"
+      }
+    ],
+    "denial": {
+      "group": "OA",
+      "carc": "18",
+      "rarc": null,
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "citations": [
+      {
+        "source": "04-exact-duplicate.md",
+        "rule": "True duplicate OA-18 \u2192 do_not_resubmit; hard-coded edit, no appeal rights, original claim disposition governs."
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "OA = liability unstated, not billable to patient."
+      }
+    ]
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000009",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All 5 lines carry CAS*CO*27. 271 shows EB*6 (inactive) with DTP*357=20260531; DOS is 20260607 \u2014 service rendered 7 days after coverage terminated. Payer is commercial CI (EPO), not Medicare FFS. Reference 05 routes CI + CO-27 + EB*6/357 before DOS + no successor payer to bill_patient once overrides clear. No QMB, Medicaid, or NSA indicators present.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1182,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 5211,
+    "cost_usd": 0.051481485,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "eligibility_terminated",
+      "explanation": "271 confirms coverage end date 2026-05-31 (DTP*357); DOS is 2026-06-07. All 5 lines denied CO-27. Commercial CI plan, no successor payer in 271."
+    },
+    "next_action": {
+      "path": "bill_patient",
+      "detail": "Verify no QMB/Medicaid/NSA override applies, then bill patient Samuel Lopez for $326.59. Hold-harmless clause does not protect a non-member on the DOS. Send standard patient statement with EOB."
+    },
+    "evidence": [
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*6 with DTP*357*D8*20260531 \u2014 coverage terminated 2026-05-31",
+        "locator": "EB/DTP segments"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All 5 SVC lines carry CAS*CO*27; $0 paid; payer filing indicator CI",
+        "locator": "CLP and CAS segments"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "SBR*P*18*******CI \u2014 commercial primary, DOS 2026-06-07",
+        "locator": "SBR and DTP*472 segments"
+      }
+    ],
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "27",
+      "rarc": "N30",
+      "level": "line"
+    },
+    "citations": [
+      {
+        "source": "05-eligibility-terminated.md",
+        "rule": "CI + EB*6 + DTP*357 before DOS + CO-27 \u2192 bill_patient once overrides clear"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "Hold-harmless reaches members for covered services; coverage ended before DOS puts patient outside it"
+      }
+    ]
+  }
+}

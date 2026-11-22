@@ -1,0 +1,81 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4812,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1616,
+    "output_tokens_details": {
+      "thinking_tokens": 756
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4812
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "Both lines denied CO-29 (timely filing expired) with N211. But the 277CA shows STC*A2:20 on 2025-07-10 \u2014 the claim was accepted by the clearinghouse 19 days after the 2025-06-21 DOS, well inside any commercial window. Payer is CI (commercial), so N211 does not invoke 42 CFR 405.926 and does not bar appeal. The CO-29 is disputable with the acceptance report.",
+    "resolution": {
+      "root_cause": {
+        "family": "timely_filing",
+        "explanation": "CO-29 on both lines; payer claims filing limit expired. 277CA STC*A2:20 dated 2025-07-10 proves electronic acceptance 19 days post-DOS \u2014 within any commercial limit."
+      },
+      "next_action": {
+        "path": "appeal",
+        "detail": "File redetermination/appeal citing erroneous CO-29. Attach the 277CA (TRN TRC86768843, STC A2:20, 2025-07-10) as proof of timely receipt. N211 does not bar commercial appeals. Dispute payer's receipt date \u2014 do not plead forgiveness."
+      },
+      "denial": {
+        "group": "CO",
+        "carc": "29",
+        "rarc": "N211",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CAS*CO*29*46.34 and CAS*CO*29*44.6 on both service lines; $0 paid; MOA N211",
+          "locator": "SVC lines 1 and 2"
+        },
+        {
+          "artifact": "ack_277ca.edi",
+          "fact": "STC*A2:20*20250710 \u2014 clearinghouse accepted claim on 2025-07-10, 19 days after DOS",
+          "locator": "STC segment, HL*4"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "DOS 20250621; SBR*P*18*******CI \u2014 commercial payer, primary",
+          "locator": "DTP*472 and SBR"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CO-29 with proof of accepted submission inside window \u2192 appeal with clearinghouse acceptance report; N211 bar applies only to Medicare FFS under 42 CFR 405.926",
+          "locator": "03-timely-filing.md \u00a7disposition, \u00a79.1"
+        }
+      ],
+      "citations": [
+        {
+          "source": "03-timely-filing.md",
+          "rule": "Proof of accepted submission inside filing window \u2192 appeal; dispute receipt date with clearinghouse acceptance report"
+        },
+        {
+          "source": "03-timely-filing.md",
+          "rule": "42 CFR 405.926 (N211 bar) applies only to Medicare FFS redeterminations, not commercial"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"Both lines denied CO-29 (timely filing expired) with N211. But the 277CA shows STC*A2:20 on 2025-07-10 \u2014 the claim was accepted by the clearinghouse 19 days after the 2025-06-21 DOS, well inside any commercial window. Payer is CI (commercial), so N211 does not invoke 42 CFR 405.926 and does not bar appeal. The CO-29 is disputable with the acceptance report.\",\"resolution\":{\"root_cause\":{\"family\":\"timely_filing\",\"explanation\":\"CO-29 on both lines; payer claims filing limit expired. 277CA STC*A2:20 dated 2025-07-10 proves electronic acceptance 19 days post-DOS \u2014 within any commercial limit.\"},\"next_action\":{\"path\":\"appeal\",\"detail\":\"File redetermination/appeal citing erroneous CO-29. Attach the 277CA (TRN TRC86768843, STC A2:20, 2025-07-10) as proof of timely receipt. N211 does not bar commercial appeals. Dispute payer's receipt date \u2014 do not plead forgiveness.\"},\"denial\":{\"group\":\"CO\",\"carc\":\"29\",\"rarc\":\"N211\",\"level\":\"line\"},\"denied_line_idxs\":[0,1],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CAS*CO*29*46.34 and CAS*CO*29*44.6 on both service lines; $0 paid; MOA N211\",\"locator\":\"SVC lines 1 and 2\"},{\"artifact\":\"ack_277ca.edi\",\"fact\":\"STC*A2:20*20250710 \u2014 clearinghouse accepted claim on 2025-07-10, 19 days after DOS\",\"locator\":\"STC segment, HL*4\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"DOS 20250621; SBR*P*18*******CI \u2014 commercial payer, primary\",\"locator\":\"DTP*472 and SBR\"},{\"artifact\":\"reference\",\"fact\":\"CO-29 with proof of accepted submission inside window \u2192 appeal with clearinghouse acceptance report; N211 bar applies only to Medicare FFS under 42 CFR 405.926\",\"locator\":\"03-timely-filing.md \u00a7disposition, \u00a79.1\"}],\"citations\":[{\"source\":\"03-timely-filing.md\",\"rule\":\"Proof of accepted submission inside filing window \u2192 appeal; dispute receipt date with clearinghouse acceptance report\"},{\"source\":\"03-timely-filing.md\",\"rule\":\"42 CFR 405.926 (N211 bar) applies only to Medicare FFS redeterminations, not commercial\"}]}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

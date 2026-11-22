@@ -1,0 +1,55 @@
+{
+  "case_id": "MOH2-000075",
+  "run_id": "final-sonnet-4-6-low-edi-dev25",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4676,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4948,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1080,
+    "output_tokens_details": {
+      "thinking_tokens": 714
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4948
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.04871361,
+  "cache_hit_rate": 0.865112,
+  "model_output": {
+    "status": "awaiting_human",
+    "rationale": "Line 0 (97140) denied CO-236/N20 \u2014 confirmed NCCI PTP edit. Chart note documents a separate session and distinct body region, which could support a bypass modifier \u2014 but the CCMI for the 97140/97150 pair on the DOS-quarter PTP edit file determines whether a modifier is allowed (CCMI=1), disallowed (CCMI=0), or challengeable (CCMI=9). The 835 does not carry the CCMI; the reference requires a lookup before routing.",
+    "awaiting_human": {
+      "question": "What is the CCMI (Column Two Most Intensive indicator) for the CPT 97140 / 97150 pair in the NCCI PTP edit file effective Q3 2026 (DOS 2026-07-18)?",
+      "why_needed": "CCMI=1 \u2192 correct_and_resubmit with a bypass modifier; CCMI=0 \u2192 do_not_resubmit (write off); CCMI=9 \u2192 appeal the edit's applicability. The disposition is different in each case and cannot be determined without this value.",
+      "blocks": [
+        "next_action.path"
+      ],
+      "asked_of": "internal"
+    }
+  },
+  "raw_text": "{\"status\":\"awaiting_human\",\"rationale\":\"Line 0 (97140) denied CO-236/N20 \u2014 confirmed NCCI PTP edit. Chart note documents a separate session and distinct body region, which could support a bypass modifier \u2014 but the CCMI for the 97140/97150 pair on the DOS-quarter PTP edit file determines whether a modifier is allowed (CCMI=1), disallowed (CCMI=0), or challengeable (CCMI=9). The 835 does not carry the CCMI; the reference requires a lookup before routing.\",\"awaiting_human\":{\"question\":\"What is the CCMI (Column Two Most Intensive indicator) for the CPT 97140 / 97150 pair in the NCCI PTP edit file effective Q3 2026 (DOS 2026-07-18)?\",\"why_needed\":\"CCMI=1 \u2192 correct_and_resubmit with a bypass modifier; CCMI=0 \u2192 do_not_resubmit (write off); CCMI=9 \u2192 appeal the edit's applicability. The disposition is different in each case and cannot be determined without this value.\",\"blocks\":[\"next_action.path\"],\"asked_of\":\"internal\"}}"
+}

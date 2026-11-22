@@ -1,0 +1,83 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5091,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1072,
+    "output_tokens_details": {
+      "thinking_tokens": 281
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5091
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "271 confirms coverage terminated 20250531 (DTP*357); DOS is 20250617 \u2014 after termination. Payer is commercial CI. All four lines carry PR-27, making the balance patient responsibility. No QMB, Medicaid, NSA, or ACA grace-period indicators present. Hold-harmless clause does not reach this patient: she was not a covered member on the DOS.",
+    "resolution": {
+      "root_cause": {
+        "family": "eligibility_terminated",
+        "explanation": "271 shows EB*6 with DTP*357=20250531; DOS 20250617 falls after coverage ended. Payer CI, group code PR \u2014 patient owes the balance."
+      },
+      "next_action": {
+        "path": "bill_patient",
+        "detail": "Send patient a statement for $204.23. Attach the 835 and 271 showing termination date 20250531. Confirm no QMB/Medicaid enrollment before collecting."
+      },
+      "denial": {
+        "group": "PR",
+        "carc": "27",
+        "rarc": "N30",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "evidence": [
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*6 (inactive coverage) with DTP*357*D8*20250531 \u2014 coverage terminated 20250531",
+          "locator": "EB*6*IND*30 / DTP*357"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "DOS 20250617 for all four lines \u2014 after termination date",
+          "locator": "DTP*472*D8*20250617 (all LX segments)"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All four lines adjusted CAS*PR*27 \u2014 patient responsibility, coverage terminated",
+          "locator": "CAS*PR*27 on SVC lines 1\u20134"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Filing indicator CI (commercial); CLP status 4 (denied); $0 paid, $204.23 patient responsibility",
+          "locator": "CLP*PA27132865*4*204.23*0*204.23*CI"
+        }
+      ],
+      "citations": [
+        {
+          "source": "05-eligibility-terminated.md",
+          "rule": "CI + EB*6 + DTP*357 before DOS, PR-27 \u2192 bill_patient after overrides cleared"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "PR = patient responsible; hold-harmless reaches members only \u2014 no coverage on DOS removes protection"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"271 confirms coverage terminated 20250531 (DTP*357); DOS is 20250617 \u2014 after termination. Payer is commercial CI. All four lines carry PR-27, making the balance patient responsibility. No QMB, Medicaid, NSA, or ACA grace-period indicators present. Hold-harmless clause does not reach this patient: she was not a covered member on the DOS.\",\"resolution\":{\"root_cause\":{\"family\":\"eligibility_terminated\",\"explanation\":\"271 shows EB*6 with DTP*357=20250531; DOS 20250617 falls after coverage ended. Payer CI, group code PR \u2014 patient owes the balance.\"},\"next_action\":{\"path\":\"bill_patient\",\"detail\":\"Send patient a statement for $204.23. Attach the 835 and 271 showing termination date 20250531. Confirm no QMB/Medicaid enrollment before collecting.\"},\"denial\":{\"group\":\"PR\",\"carc\":\"27\",\"rarc\":\"N30\",\"level\":\"line\"},\"denied_line_idxs\":[0,1,2,3],\"evidence\":[{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*6 (inactive coverage) with DTP*357*D8*20250531 \u2014 coverage terminated 20250531\",\"locator\":\"EB*6*IND*30 / DTP*357\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"DOS 20250617 for all four lines \u2014 after termination date\",\"locator\":\"DTP*472*D8*20250617 (all LX segments)\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"All four lines adjusted CAS*PR*27 \u2014 patient responsibility, coverage terminated\",\"locator\":\"CAS*PR*27 on SVC lines 1\u20134\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"Filing indicator CI (commercial); CLP status 4 (denied); $0 paid, $204.23 patient responsibility\",\"locator\":\"CLP*PA27132865*4*204.23*0*204.23*CI\"}],\"citations\":[{\"source\":\"05-eligibility-terminated.md\",\"rule\":\"CI + EB*6 + DTP*357 before DOS, PR-27 \u2192 bill_patient after overrides cleared\"},{\"source\":\"00-group-codes.md\",\"rule\":\"PR = patient responsible; hold-harmless reaches members only \u2014 no coverage on DOS removes protection\"}]}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

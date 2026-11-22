@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000539",
+  "input_format": "edi",
+  "status": "awaiting_human",
+  "rationale": "Line 1 (97140 \u00d7 9 units) denied CO-151 + N362 \u2014 MUE exceeded. Lines 2\u20134 (97110) adjudicated normally with CO-45 write-off and PR-2 coinsurance. Chart note documents only 15 min (1 unit) of 97140, so units are wrong regardless. But the correction vehicle on Medicare Part B depends on the MAI for 97140: MAI 1/2 \u2192 correct-and-resubmit (clerical reopening); MAI 3 \u2192 appeal with records. MAI is not in any artifact or reference file.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 2380,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 5176,
+    "cost_usd": 0.07110411,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "awaiting_human": {
+    "question": "What is the MAI (Medically Unlikely Edit Adjudication Indicator) for CPT 97140 in the CMS MUE table effective for DOS 2026-06-24 (Q2 2026)?",
+    "why_needed": "MAI 1 or 2 \u2192 clerical-error reopening to correct units from 9 to 1; MAI 3 \u2192 redetermination appeal with records. The chart note supports only 1 unit either way, but the vehicle (reopening vs. appeal) differs and the filing clock is running.",
+    "blocks": [
+      "next_action.path"
+    ],
+    "asked_of": "internal"
+  }
+}

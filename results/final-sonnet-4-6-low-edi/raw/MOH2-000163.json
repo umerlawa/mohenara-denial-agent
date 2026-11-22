@@ -1,0 +1,74 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5020,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 2089,
+    "output_tokens_details": {
+      "thinking_tokens": 1267
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5020
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "97112 denied CO-151+N362 (MUE exceeded). Chart note documents 16 minutes for 97112; at the 8-minute rule that supports 1 unit. Claim billed 6 units \u2014 a billing-entry error. Medicare Part B adjudicated (CLP07 present); correct to 1 unit via clerical-error reopening. Lines 0 and 2 paid with routine CO-45/PR-2; no action needed there.",
+    "resolution": {
+      "root_cause": {
+        "family": "mue_exceeded",
+        "explanation": "97112 billed 6 units; chart note records only 16 timed minutes (= 1 unit under the 8-minute rule). CO-151+N362 confirms MUE exceeded. Billed units are a data-entry error."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Submit a clerical-error reopening to the MAC correcting 97112 to 1 unit. ICN 2608202939516. Do not use frequency 7 \u2014 Medicare Part B rejects it. Lines 1 and 3 need no action."
+      },
+      "denied_line_idxs": [
+        1
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "SVC HC:97112:GP billed 6 units, paid $0; CAS*CO*151*323.64 + LQ*HE*N362 \u2014 full-line MUE denial",
+          "locator": "SVC/CAS/LQ segment, second service line"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "97112 timed at 16 minutes on 2026-02-05 \u2014 supports exactly 1 unit",
+          "locator": "97112 (16 min) entry"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP07=2608202939516 confirms claim adjudicated; payer MB (Medicare Part B)",
+          "locator": "CLP segment"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CO-151+N362 = MUE exceeded; keying/conversion error \u2192 correct_and_resubmit; Part B frequency 7 not accepted \u2014 use clerical-error reopening",
+          "locator": "07-ncci-and-mue.md MAI table; 02-resubmission-frequency.md Part B row"
+        }
+      ],
+      "citations": [
+        {
+          "source": "07-ncci-and-mue.md",
+          "rule": "CO-151+N362 MUE exceeded; keying error \u2192 correct_and_resubmit"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Medicare Part B does not accept frequency 7; use clerical-error reopening"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"97112 denied CO-151+N362 (MUE exceeded). Chart note documents 16 minutes for 97112; at the 8-minute rule that supports 1 unit. Claim billed 6 units \u2014 a billing-entry error. Medicare Part B adjudicated (CLP07 present); correct to 1 unit via clerical-error reopening. Lines 0 and 2 paid with routine CO-45/PR-2; no action needed there.\",\"resolution\":{\"root_cause\":{\"family\":\"mue_exceeded\",\"explanation\":\"97112 billed 6 units; chart note records only 16 timed minutes (= 1 unit under the 8-minute rule). CO-151+N362 confirms MUE exceeded. Billed units are a data-entry error.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Submit a clerical-error reopening to the MAC correcting 97112 to 1 unit. ICN 2608202939516. Do not use frequency 7 \u2014 Medicare Part B rejects it. Lines 1 and 3 need no action.\"},\"denied_line_idxs\":[1],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"SVC HC:97112:GP billed 6 units, paid $0; CAS*CO*151*323.64 + LQ*HE*N362 \u2014 full-line MUE denial\",\"locator\":\"SVC/CAS/LQ segment, second service line\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"97112 timed at 16 minutes on 2026-02-05 \u2014 supports exactly 1 unit\",\"locator\":\"97112 (16 min) entry\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP07=2608202939516 confirms claim adjudicated; payer MB (Medicare Part B)\",\"locator\":\"CLP segment\"},{\"artifact\":\"reference\",\"fact\":\"CO-151+N362 = MUE exceeded; keying/conversion error \u2192 correct_and_resubmit; Part B frequency 7 not accepted \u2014 use clerical-error reopening\",\"locator\":\"07-ncci-and-mue.md MAI table; 02-resubmission-frequency.md Part B row\"}],\"citations\":[{\"source\":\"07-ncci-and-mue.md\",\"rule\":\"CO-151+N362 MUE exceeded; keying error \u2192 correct_and_resubmit\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Medicare Part B does not accept frequency 7; use clerical-error reopening\"}]}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

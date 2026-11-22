@@ -1,0 +1,83 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5123,
+    "cache_read_input_tokens": 32421,
+    "output_tokens": 742,
+    "output_tokens_details": {
+      "thinking_tokens": 83
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5123
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "All four lines denied OA-18 (exact duplicate) with MOA N111. Claim was adjudicated (CLP07=2623576767957). Filed as CLM05-3=1 original. A prior claim for this provider/member/DOS/procedures already exists. True duplicate \u2014 hard-coded edit, unappealable. Check original claim's payment status.",
+    "resolution": {
+      "root_cause": {
+        "family": "exact_duplicate",
+        "explanation": "All lines carry OA-18. Payer matched provider/member/DOS/procedures against an already-adjudicated claim (CLP07 2623576767957). Sent as frequency 1 original, triggering the duplicate edit."
+      },
+      "next_action": {
+        "path": "do_not_resubmit",
+        "detail": "Do not resubmit. Verify original claim status via portal/IVR. If original paid, post payment and close. If original denied, address that denial. If disposition appears wrong, request telephone reopening."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All four SVC lines carry CAS*OA*18, $0 paid, MOA N111",
+          "locator": "CAS segments"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP07=2623576767957 confirms prior adjudication exists",
+          "locator": "CLP*PA22957514*4*240.86*0**MB*2623576767957"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "CLM05-3=1 (original submission), no REF*F8 \u2014 treated as new claim and matched against existing",
+          "locator": "CLM*PA22957514*240.86***11:B:1"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*1 active coverage on DOS 2026-07-05 \u2014 not an eligibility issue",
+          "locator": "EB*1*IND*30"
+        }
+      ],
+      "denial": {
+        "group": "OA",
+        "carc": "18",
+        "rarc": null,
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "citations": [
+        {
+          "source": "04-exact-duplicate.md",
+          "rule": "True duplicate \u2014 do_not_resubmit; hard-coded edit, MACs cannot override; original claim disposition governs"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Every 837 with CLM05-3=1 is treated as brand-new; duplicate logic matches provider/member/DOS/procedure"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"All four lines denied OA-18 (exact duplicate) with MOA N111. Claim was adjudicated (CLP07=2623576767957). Filed as CLM05-3=1 original. A prior claim for this provider/member/DOS/procedures already exists. True duplicate \u2014 hard-coded edit, unappealable. Check original claim's payment status.\",\"resolution\":{\"root_cause\":{\"family\":\"exact_duplicate\",\"explanation\":\"All lines carry OA-18. Payer matched provider/member/DOS/procedures against an already-adjudicated claim (CLP07 2623576767957). Sent as frequency 1 original, triggering the duplicate edit.\"},\"next_action\":{\"path\":\"do_not_resubmit\",\"detail\":\"Do not resubmit. Verify original claim status via portal/IVR. If original paid, post payment and close. If original denied, address that denial. If disposition appears wrong, request telephone reopening.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All four SVC lines carry CAS*OA*18, $0 paid, MOA N111\",\"locator\":\"CAS segments\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP07=2623576767957 confirms prior adjudication exists\",\"locator\":\"CLP*PA22957514*4*240.86*0**MB*2623576767957\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"CLM05-3=1 (original submission), no REF*F8 \u2014 treated as new claim and matched against existing\",\"locator\":\"CLM*PA22957514*240.86***11:B:1\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*1 active coverage on DOS 2026-07-05 \u2014 not an eligibility issue\",\"locator\":\"EB*1*IND*30\"}],\"denial\":{\"group\":\"OA\",\"carc\":\"18\",\"rarc\":null,\"level\":\"line\"},\"denied_line_idxs\":[0,1,2,3],\"citations\":[{\"source\":\"04-exact-duplicate.md\",\"rule\":\"True duplicate \u2014 do_not_resubmit; hard-coded edit, MACs cannot override; original claim disposition governs\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Every 837 with CLM05-3=1 is treated as brand-new; duplicate logic matches provider/member/DOS/procedure\"}]}}",
+  "model": "us.anthropic.claude-opus-4-6-v1"
+}

@@ -1,0 +1,66 @@
+{
+  "usage": {
+    "input_tokens": 3,
+    "cache_creation_input_tokens": 37864,
+    "cache_read_input_tokens": 36346,
+    "output_tokens": 1957,
+    "output_tokens_details": {
+      "thinking_tokens": 558
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 37864
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "835 CLP02=1 (processed as primary), paid $67.61. All three lines carry CO-45 (contractual fee-schedule reduction) and PR-2 (patient coinsurance). 271 confirms EB*1 active coverage, no termination, effective 2024-01-01 through DOS 2026-05-24. GP modifier present on all lines per PT plan of care. This is a clean adjudication; only action is collecting the $16.89 patient balance.",
+    "resolution": {
+      "root_cause": {
+        "family": "none",
+        "explanation": "Claim adjudicated and paid. CO-45 is contractual fee-schedule reduction; PR-2 is patient coinsurance. No denial codes present."
+      },
+      "next_action": {
+        "path": "bill_patient",
+        "detail": "Collect $16.89 patient coinsurance: $5.81 (line 1) + $5.54 (line 2) + $5.54 (line 3) per PR-2. Write off $40.59 CO-45 contractual adjustments per participation agreement. No resubmission needed."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP02=1 processed as primary, $67.61 paid; all lines CAS*CO*45 (fee-schedule write-off) and CAS*PR*2 (coinsurance)",
+          "locator": "CLP*PA27416586*1*125.09*67.61"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*1 active individual coverage effective 2024-01-01, no termination date for DOS 2026-05-24",
+          "locator": "EB*1*IND*30 / DTP*356*D8*20240101"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "All therapy lines billed GP modifier, SBR*P filing indicator CI (commercial primary)",
+          "locator": "SV1*HC:97110:GP / SV1*HC:97140:GP"
+        }
+      ],
+      "citations": [
+        {
+          "source": "00-group-codes.md",
+          "rule": "PR = patient responsibility, billable; CO = contractual write-off, not billable to patient"
+        },
+        {
+          "source": "01-carc-rarc-index.md",
+          "rule": "CARC 45 contractual write-off per fee schedule; CARC 2 coinsurance owed by patient"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"835 CLP02=1 (processed as primary), paid $67.61. All three lines carry CO-45 (contractual fee-schedule reduction) and PR-2 (patient coinsurance). 271 confirms EB*1 active coverage, no termination, effective 2024-01-01 through DOS 2026-05-24. GP modifier present on all lines per PT plan of care. This is a clean adjudication; only action is collecting the $16.89 patient balance.\",\"resolution\":{\"root_cause\":{\"family\":\"none\",\"explanation\":\"Claim adjudicated and paid. CO-45 is contractual fee-schedule reduction; PR-2 is patient coinsurance. No denial codes present.\"},\"next_action\":{\"path\":\"bill_patient\",\"detail\":\"Collect $16.89 patient coinsurance: $5.81 (line 1) + $5.54 (line 2) + $5.54 (line 3) per PR-2. Write off $40.59 CO-45 contractual adjustments per participation agreement. No resubmission needed.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP02=1 processed as primary, $67.61 paid; all lines CAS*CO*45 (fee-schedule write-off) and CAS*PR*2 (coinsurance)\",\"locator\":\"CLP*PA27416586*1*125.09*67.61\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*1 active individual coverage effective 2024-01-01, no termination date for DOS 2026-05-24\",\"locator\":\"EB*1*IND*30 / DTP*356*D8*20240101\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"All therapy lines billed GP modifier, SBR*P filing indicator CI (commercial primary)\",\"locator\":\"SV1*HC:97110:GP / SV1*HC:97140:GP\"}],\"citations\":[{\"source\":\"00-group-codes.md\",\"rule\":\"PR = patient responsibility, billable; CO = contractual write-off, not billable to patient\"},{\"source\":\"01-carc-rarc-index.md\",\"rule\":\"CARC 45 contractual write-off per fee schedule; CARC 2 coinsurance owed by patient\"}]}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

@@ -1,0 +1,68 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5403,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 945,
+    "output_tokens_details": {
+      "thinking_tokens": 312
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5403
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "All 5 lines paid. CO-45 = contractual fee-schedule write-offs (standard Medicare FFS). PR-2 = patient coinsurance. No denial codes. 271 confirms active coverage (EB*1, effective 2024-01-01). CLP status 1 = processed as primary. $159.53 paid, $39.87 patient coinsurance due. No rework needed.",
+    "resolution": {
+      "root_cause": {
+        "family": "none",
+        "explanation": "Claim adjudicated correctly. CO-45 adjustments are standard Medicare fee-schedule write-offs; PR-2 amounts are patient coinsurance. No denial."
+      },
+      "next_action": {
+        "path": "none",
+        "detail": "Post $159.53 payment. Write off CO-45 amounts. Bill patient $39.87 (PR-2 coinsurance) through normal AR."
+      },
+      "denial": null,
+      "denied_line_idxs": [],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP*PA26982471*1*312.23*159.53 \u2014 status 1 (processed as primary), $159.53 paid",
+          "locator": "CLP segment"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All 5 lines carry CAS*CO*45 (fee-schedule write-off) and CAS*PR*2 (coinsurance); no denial CARC on any line",
+          "locator": "SVC/CAS segments"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*1 active coverage, DTP*356 effective 2024-01-01 \u2014 patient insured on DOS 2026-06-07",
+          "locator": "EB segment"
+        }
+      ],
+      "citations": [
+        {
+          "source": "00-group-codes.md",
+          "rule": "CO = contractual write-off, never bill patient; PR-2 = coinsurance, billable to patient in normal AR"
+        },
+        {
+          "source": "01-carc-rarc-index.md",
+          "rule": "CARC 45 = exceeds fee schedule; CO group = provider write-off"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"All 5 lines paid. CO-45 = contractual fee-schedule write-offs (standard Medicare FFS). PR-2 = patient coinsurance. No denial codes. 271 confirms active coverage (EB*1, effective 2024-01-01). CLP status 1 = processed as primary. $159.53 paid, $39.87 patient coinsurance due. No rework needed.\",\"resolution\":{\"root_cause\":{\"family\":\"none\",\"explanation\":\"Claim adjudicated correctly. CO-45 adjustments are standard Medicare fee-schedule write-offs; PR-2 amounts are patient coinsurance. No denial.\"},\"next_action\":{\"path\":\"none\",\"detail\":\"Post $159.53 payment. Write off CO-45 amounts. Bill patient $39.87 (PR-2 coinsurance) through normal AR.\"},\"denial\":null,\"denied_line_idxs\":[],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP*PA26982471*1*312.23*159.53 \u2014 status 1 (processed as primary), $159.53 paid\",\"locator\":\"CLP segment\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"All 5 lines carry CAS*CO*45 (fee-schedule write-off) and CAS*PR*2 (coinsurance); no denial CARC on any line\",\"locator\":\"SVC/CAS segments\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*1 active coverage, DTP*356 effective 2024-01-01 \u2014 patient insured on DOS 2026-06-07\",\"locator\":\"EB segment\"}],\"citations\":[{\"source\":\"00-group-codes.md\",\"rule\":\"CO = contractual write-off, never bill patient; PR-2 = coinsurance, billable to patient in normal AR\"},{\"source\":\"01-carc-rarc-index.md\",\"rule\":\"CARC 45 = exceeds fee schedule; CO group = provider write-off\"}]}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

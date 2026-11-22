@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000587",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "271 shows coverage terminated 2025-05-31 (DTP*357), DOS is 2025-06-12 \u2014 after termination. Remit denies all 4 lines PR-27/N30. Commercial payer (CI); no QMB/Medicaid/ACA-grace/hold-harmless override applies since patient had no active coverage on the DOS. PR is billable to the patient once overrides clear.",
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2276,
+    "cache_read_input_tokens": 104031,
+    "cache_creation_input_tokens": 8127,
+    "cost_usd": 0.0638917,
+    "model": "claude-sonnet-5",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "eligibility_terminated",
+      "explanation": "271 for DOS 2025-06-12 shows EB*6 (inactive) with DTP*357=20250531 (termination before DOS) and no successor coverage. 835 denies all 4 lines PR-27/N30, consistent with coverage having ended before the DOS."
+    },
+    "next_action": {
+      "path": "bill_patient",
+      "detail": "Bill patient Robert Wilson for all 4 lines ($181.22 total) \u2014 PR-27, coverage terminated 2025-05-31, DOS 2025-06-12, no override applies."
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "denial": {
+      "level": "line",
+      "group": "PR",
+      "carc": "27",
+      "rarc": "N30"
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All 4 service lines carry CAS*PR*27 with MOA*N30, claim filing indicator CI (commercial)",
+        "locator": "CAS segments, lines 1-4"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*6 (inactive) for DOS 2025-06-12, DTP*356=20240101, DTP*357=20250531 \u2014 termination precedes DOS by 12 days, no successor payer",
+        "locator": "EB/DTP segments"
+      }
+    ],
+    "citations": [
+      {
+        "source": "05-eligibility-terminated.md",
+        "rule": "CI, EB*6 + 357 before DOS, no successor: PR-27 \u2192 bill_patient"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "PR balance, overrides cleared \u2192 bill_patient"
+      }
+    ]
+  }
+}

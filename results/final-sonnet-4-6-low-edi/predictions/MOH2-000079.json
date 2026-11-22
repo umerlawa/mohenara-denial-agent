@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000079",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "835 carries CO-22 on both lines and MOA MA04. The 271 for DOS 2026-07-02 returns EB*R for Novitas Solutions Medicare Part B FFS with MSG \"PLAN IS PRIMARY PAYER FOR THIS MEMBER.\" Claim was filed SBR*P (primary) to Liberty Bell (CI). Medicare is primary; Liberty Bell is secondary. Bill Novitas first, then rebill Liberty Bell as secondary with Medicare's adjudication data to clear MA04.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1835,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 4893,
+    "cost_usd": 0.060944235,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "cob_other_primary",
+      "explanation": "Claim billed Liberty Bell as primary (SBR*P/CI). 271 shows EB*R \u2014 Novitas Medicare Part B is primary for this member on DOS 2026-07-02. CO-22 confirms COB order wrong; MA04 flags missing primary adjudication data."
+    },
+    "next_action": {
+      "path": "resubmit_other_payer",
+      "detail": "Submit original claim (CLM05-3=1) to Novitas Solutions Medicare Part B (NPI 1846349352) as primary. Once Medicare EOB is received, rebill Liberty Bell as secondary with SBR01=S, Medicare CAS/AMT/SVD data in 2320/2430 loops to satisfy MA04."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CAS*CO*22 on both service lines; MOA MA04 at claim level; payer CI (commercial)",
+        "locator": "CLP/MOA/SVC segments"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*R for NOVITAS SOLUTIONS MEDICARE PART B FFS with MSG PLAN IS PRIMARY PAYER FOR THIS MEMBER, DTP*356 effective 2024-01-01",
+        "locator": "EB*R loop"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "SBR*P*18*******CI \u2014 filed to Liberty Bell as primary",
+        "locator": "SBR segment HL*2"
+      },
+      {
+        "artifact": "reference",
+        "fact": "CARC 22 \u2192 resubmit_other_payer; MA04 on secondary claim \u2192 supply primary adjudication data and rebill same payer",
+        "locator": "06-cob-other-primary.md"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "22",
+      "rarc": "MA04",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1
+    ],
+    "citations": [
+      {
+        "source": "06-cob-other-primary.md",
+        "rule": "CARC 22 \u2192 resubmit_other_payer; MA04 \u2192 correct_and_resubmit to same payer with primary adjudication data"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO-22: bill true primary, never appeal disclaiming payer"
+      }
+    ]
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000490",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "271 shows EB*R with NOVITAS SOLUTIONS MEDICARE PART B FFS as another active payer. Claim was filed CI with payer responsibility P (primary) to Liberty Bell, but Liberty Bell's own 271 message states \"PLAN IS PRIMARY PAYER FOR THIS MEMBER\" \u2014 yet all three lines denied CO-22 (another payer primary) and the MOA is MA04 (primary payer identity missing). The COB order is wrong: Medicare Part B is the true primary. Bill Medicare first, then rebill Liberty Bell as secondary with Medicare's adjudication data.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 891,
+    "cache_read_input_tokens": 31309,
+    "cache_creation_input_tokens": 5033,
+    "cost_usd": 0.045801195,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "cob_other_primary",
+      "explanation": "271 for DOS 2026-01-29 returns EB*R naming NOVITAS SOLUTIONS MEDICARE PART B FFS as another active payer. All three lines carry CO-22; MOA MA04 confirms primary adjudication data was not supplied. Claim was routed to Liberty Bell as primary in error."
+    },
+    "next_action": {
+      "path": "resubmit_other_payer",
+      "detail": "Bill Medicare Part B (Novitas) as primary. After Medicare adjudicates, rebill Liberty Bell as secondary on a new 837P with SBR01=S, Medicare's payment/adjustment data in 2320 CAS/AMT loops, and CLP07 from the Medicare 835. Do not appeal Liberty Bell."
+    },
+    "evidence": [
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*R benefit row names NOVITAS SOLUTIONS MEDICARE PART B FFS as other/additional payer active on 2026-01-29",
+        "locator": "benefit: R \u2026 plan: NOVITAS SOLUTIONS MEDICARE PART B FFS"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All three service lines denied CO-22 ($173.49 total); MOA MA04 at claim level confirms primary payer identity/adjudication data absent",
+        "locator": "CAS CO-22 lines 1-3; MOA MA04"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Claim filed with payer responsibility P (primary) to Liberty Bell \u2014 no Medicare adjudication data supplied",
+        "locator": "SBR payer responsibility P; filing indicator CI"
+      }
+    ],
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "22",
+      "rarc": "MA04",
+      "level": "line"
+    },
+    "citations": [
+      {
+        "source": "06-cob-other-primary.md",
+        "rule": "CARC 22 alone \u2192 resubmit_other_payer; MA04 at claim level = completeness defect (primary adjudication data missing). Bill true primary first, then rebill this payer as secondary."
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO-22 with EB*R: coverage active and misordered, never billable to patient; resubmit_other_payer."
+      }
+    ]
+  }
+}

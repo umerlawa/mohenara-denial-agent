@@ -1,0 +1,101 @@
+{
+  "case_id": "MOH2-000067",
+  "run_id": "final-opus-4-6-low-edi",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4615,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4971,
+    "cache_read_input_tokens": 32421,
+    "output_tokens": 704,
+    "output_tokens_details": {
+      "thinking_tokens": 38
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4971
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.071378175,
+  "cache_hit_rate": 0.867011,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "835 shows claim-level denial: CO-16 with MOA N286 on all three lines. N286 = missing/invalid referring provider NPI. The 837P has no referring/ordering provider loop (Loop 2310A absent). Medicare Part B requires ordering/referring NPI for therapy services. Correct and resubmit as new original (CLM05-3=1) with valid referring provider NPI.",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_referring_provider",
+        "explanation": "Claim denied CO-16 + N286 at claim level. No ordering/referring provider NPI in the 837P. Medicare Part B requires it for therapy CPTs 97110/97140/97112."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Add the ordering/referring provider name and NPI (verify in PECOS) to the 837P. Resubmit as a new original claim (CLM05-3=1). Do not use frequency 7 on Part B.",
+        "resubmission_frequency_code": "7"
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP status 4 (denied), MOA***N286 at claim level; all three SVC lines carry CAS*CO*16.",
+          "locator": "MOA, CAS segments"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "No referring/ordering provider loop (NM1*DN or NM1*DK) present in the claim.",
+          "locator": "Claim loops"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*1 active coverage for DOS 2026-07-20; eligibility is not the issue.",
+          "locator": "EB*1*IND*30"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CO-16 + N286 = missing referring provider NPI; correct and resubmit as new original on Part B.",
+          "locator": "09-missing-referring-provider.md"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "16",
+        "rarc": "N286",
+        "level": "claim"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2
+      ],
+      "citations": [
+        {
+          "source": "09-missing-referring-provider.md",
+          "rule": "CO-16 + N286: correct referring NPI and resubmit as new original (CLM05-3=1) on Medicare Part B"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Part B FFS does not accept frequency 7; resubmit as original 1"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"835 shows claim-level denial: CO-16 with MOA N286 on all three lines. N286 = missing/invalid referring provider NPI. The 837P has no referring/ordering provider loop (Loop 2310A absent). Medicare Part B requires ordering/referring NPI for therapy services. Correct and resubmit as new original (CLM05-3=1) with valid referring provider NPI.\",\"resolution\":{\"root_cause\":{\"family\":\"missing_referring_provider\",\"explanation\":\"Claim denied CO-16 + N286 at claim level. No ordering/referring provider NPI in the 837P. Medicare Part B requires it for therapy CPTs 97110/97140/97112.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Add the ordering/referring provider name and NPI (verify in PECOS) to the 837P. Resubmit as a new original claim (CLM05-3=1). Do not use frequency 7 on Part B.\",\"resubmission_frequency_code\":\"7\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP status 4 (denied), MOA***N286 at claim level; all three SVC lines carry CAS*CO*16.\",\"locator\":\"MOA, CAS segments\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"No referring/ordering provider loop (NM1*DN or NM1*DK) present in the claim.\",\"locator\":\"Claim loops\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*1 active coverage for DOS 2026-07-20; eligibility is not the issue.\",\"locator\":\"EB*1*IND*30\"},{\"artifact\":\"reference\",\"fact\":\"CO-16 + N286 = missing referring provider NPI; correct and resubmit as new original on Part B.\",\"locator\":\"09-missing-referring-provider.md\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"16\",\"rarc\":\"N286\",\"level\":\"claim\"},\"denied_line_idxs\":[0,1,2],\"citations\":[{\"source\":\"09-missing-referring-provider.md\",\"rule\":\"CO-16 + N286: correct referring NPI and resubmit as new original (CLM05-3=1) on Medicare Part B\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Part B FFS does not accept frequency 7; resubmit as original 1\"}]}}"
+}

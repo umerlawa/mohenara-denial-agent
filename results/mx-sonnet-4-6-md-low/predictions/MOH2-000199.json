@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000199",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "Lines 1\u20132 (97110-GP) paid with CO-45 write-off and PR-2 coinsurance \u2014 no action needed. Line 3 (97112-GP, 5 units) denied CO-151/N362 (MUE exceeded). Chart note shows 31 minutes of 97112; 8-minute rule yields 2 units, not 5 billed. Units are a keying error. Medicare Part B: frequency 7 not accepted; remedy is clerical-error reopening with corrected units.",
+  "usage": {
+    "input_tokens": 3,
+    "output_tokens": 2572,
+    "cache_read_input_tokens": 67667,
+    "cache_creation_input_tokens": 7163,
+    "cost_usd": 0.094325385,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "mue_exceeded",
+      "explanation": "97112-GP billed 5 units; chart note shows 31 minutes, supporting 2 units under the 8-minute rule. CO-151/N362 denied line 3 in full."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "File clerical-error reopening (Part B MB; frequency 7 not accepted). Correct line 3 only: 97112-GP from 5 units to 2 units. Do not resend lines 1\u20132."
+    },
+    "denied_line_idxs": [
+      2
+    ],
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Line 3: 97112-GP, 5 units, CO-151 + N362, $214.95 denied in full",
+        "locator": "CAS CO-151/N362, line PA21657403L3"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "97112 performed 31 minutes; 8-minute rule supports 2 units (15+16 min), not 5",
+        "locator": "97112 (31 min) entry"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Line 3 billed 5 UN for 97112-GP",
+        "locator": "Loop 2400, line PA21657403L3"
+      },
+      {
+        "artifact": "reference",
+        "fact": "CO-151/N362 = MUE exceeded; keying error \u2192 correct_and_resubmit; Part B reopening, not frequency 7",
+        "locator": "07-ncci-and-mue.md \u00a7b; 02-resubmission-frequency.md Part B row"
+      }
+    ],
+    "citations": [
+      {
+        "source": "07-ncci-and-mue.md",
+        "rule": "CO-151 + N362 = MUE exceeded; units keying/conversion error \u2192 correct_and_resubmit"
+      },
+      {
+        "source": "02-resubmission-frequency.md",
+        "rule": "Medicare Part B FFS: frequency 7 not accepted; use clerical-error reopening"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "151",
+      "rarc": "N362",
+      "level": "line"
+    }
+  }
+}

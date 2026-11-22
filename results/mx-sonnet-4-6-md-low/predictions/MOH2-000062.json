@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000062",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "271 shows EB*6 (inactive), eligibility end 2025-05-31, DOS 2025-06-17 \u2014 coverage terminated 17 days before the service. All four lines carry PR-27. Filing indicator CI, group code PR: patient is liable. No QMB, Medicaid, NSA, or ACA grace-period indicator present. No successor payer in the 271.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1198,
+    "cache_read_input_tokens": 31309,
+    "cache_creation_input_tokens": 5061,
+    "cost_usd": 0.050982195,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "eligibility_terminated",
+      "explanation": "Coverage ended 2025-05-31 (271 DTP*357); DOS 2025-06-17 falls outside the benefit period. PR-27 on a CI claim places liability on the patient, not the provider."
+    },
+    "next_action": {
+      "path": "bill_patient",
+      "detail": "Bill Jessica Harris $204.23. Confirm no QMB, Medicaid, or retro-reinstatement applies, then send a patient statement referencing the Keystone EOB and the 2025-05-31 termination date."
+    },
+    "evidence": [
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*6 (inactive), DTP*357 = 2025-05-31 \u2014 coverage ended before DOS 2025-06-17",
+        "locator": "ELG78719585"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All four lines adjusted PR-27; claim-level patient responsibility = $204.23; filing indicator CI",
+        "locator": "CLP PA27132865, CAS lines 1\u20134"
+      },
+      {
+        "artifact": "reference",
+        "fact": "PR-27 on CI with EB*6 + DTP*357 before DOS and no successor payer \u2192 bill_patient after overrides cleared",
+        "locator": "05-eligibility-terminated.md, disposition table row 3"
+      }
+    ],
+    "denial": {
+      "group": "PR",
+      "carc": "27",
+      "rarc": "N30",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "citations": [
+      {
+        "source": "05-eligibility-terminated.md",
+        "rule": "CI, EB*6 + DTP*357 before DOS, no successor: PR-27 \u2192 bill_patient after overrides cleared"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "PR = patient responsible; billable after QMB/Medicaid/NSA/ABN overrides checked"
+      }
+    ]
+  }
+}

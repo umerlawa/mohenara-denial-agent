@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000627",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "Line 0 (97110, 8 units) denied CO-151 + N362 = MUE exceeded. Chart documents 29 minutes of 97110, supporting at most 2 units by the 8-minute rule. Billed 8 units is a keying/overcoding error. Medicare Part B (MB) \u2014 frequency 7 not accepted; vehicle is clerical-error reopening. Lines 1\u20132 (97140) adjudicated normally: CO-45 write-off + PR-2 coinsurance.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 2877,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 5030,
+    "cost_usd": 0.07870236,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "mue_exceeded",
+      "explanation": "97110 billed 8 units on one line; chart note documents 29 minutes of therapeutic exercise (\u22642 billable units). CO-151 + N362 confirms MUE exceeded. Overcoded units, not a coverage issue."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "File a clerical-error reopening with Novitas Part B (frequency 7 not accepted on Part B). Correct 97110 units to 2 (29 documented minutes). Cite ICN 2624383166146 from CLP07. Lines 1\u20132 need no action."
+    },
+    "denied_line_idxs": [
+      0
+    ],
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "SVC HC:97110:GP paid $0; CAS*CO*151*307.28 + LQ*HE*N362 \u2014 MUE exceeded, full denial of line 0",
+        "locator": "SVC/CAS/LQ under LX*1"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "97110 documented at 29 minutes; by 8-minute rule supports at most 2 units, not the 8 billed",
+        "locator": "PT treatment note 2026-07-13"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "SV1*HC:97110:GP*307.28*UN*8 \u2014 8 units submitted on a single line",
+        "locator": "LX*1 / SV1"
+      },
+      {
+        "artifact": "reference",
+        "fact": "CO-151+N362 = MUE exceeded; miscoded units \u2192 correct_and_resubmit; Part B does not accept frequency 7 \u2014 use clerical-error reopening",
+        "locator": "07-ncci-and-mue.md \u00a7(b); 02-resubmission-frequency.md \u00a7Part B"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "151",
+      "rarc": "N362",
+      "level": "line"
+    },
+    "citations": [
+      {
+        "source": "07-ncci-and-mue.md",
+        "rule": "CO-151+N362 = MUE exceeded; miscoded units \u2192 correct_and_resubmit"
+      },
+      {
+        "source": "02-resubmission-frequency.md",
+        "rule": "Part B/DME FFS: frequency 7 not accepted; use reopening (1 yr) or redetermination"
+      }
+    ]
+  }
+}

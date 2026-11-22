@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000067",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "All three lines denied CO-16 with MOA N286 (missing/incomplete/invalid referring provider). The 837P party list shows billing, rendering, subscriber, and payer loops but no referring provider loop. Medicare Part B requires an ordering/referring NPI; its absence is a data defect, not a coverage dispute. Claim adjudicated (835 with CLP07 2625095686411); remedy is a new original \u2014 Part B does not accept frequency 7. DOS 2026-07-20; 1-year filing limit runs to 2027-07-20.",
+  "usage": {
+    "input_tokens": 3,
+    "output_tokens": 1853,
+    "cache_read_input_tokens": 68486,
+    "cache_creation_input_tokens": 6051,
+    "cost_usd": 0.078145155,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "missing_referring_provider",
+      "explanation": "837P has no referring provider loop. MOA N286 on the 835 confirms the referring provider NPI is absent. CO-16 fires on all three lines."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Add the ordering/referring provider name and NPI (verified against NPI Registry and PECOS) to the claim. Resubmit as a new original CLM05-3=1 \u2014 frequency 7 is not accepted on Medicare Part B. Filing deadline 2027-07-20."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "MOA N286 at claim level; CO-16 on all three lines, $231.87 total denied.",
+        "locator": "CLP PA24729290; MOA N286; CAS CO-16 lines 1\u20133"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Party loops list billing (85), rendering (82), subscriber (IL), and payer (PR) \u2014 no referring provider loop present.",
+        "locator": "837P loop 2310 parties"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP07 = 2625095686411 confirms claim adjudicated; filing indicator MB (Medicare Part B).",
+        "locator": "CLP segment"
+      },
+      {
+        "artifact": "reference",
+        "fact": "N286 = missing/incomplete/invalid referring provider NPI; remedy is correct-and-resubmit as new original on Part B (frequency 7 rejected).",
+        "locator": "09-missing-referring-provider.md"
+      }
+    ],
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "16",
+      "rarc": "N286",
+      "level": "line"
+    },
+    "citations": [
+      {
+        "source": "09-missing-referring-provider.md",
+        "rule": "CO-16+N286 = data defect; correct-and-resubmit new original CLM05-3=1 on Medicare Part B"
+      },
+      {
+        "source": "02-resubmission-frequency.md",
+        "rule": "Part B does not accept frequency 7; use CLM05-3=1, no REF*F8"
+      }
+    ]
+  }
+}

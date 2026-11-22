@@ -1,0 +1,98 @@
+{
+  "case_id": "MOH2-000117",
+  "run_id": "mx-sonnet-4-6-md-max",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "max",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 6295,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4817,
+    "cache_read_input_tokens": 31309,
+    "output_tokens": 11562,
+    "output_tokens_details": {
+      "thinking_tokens": 10487
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4817
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.220981695,
+  "cache_hit_rate": 0.866613,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "DOS 2025-01-19, commercial CI. Both lines CO-29/N211. The 277CA shows A2 acceptance 2025-01-27 \u2014 only 8 days post-DOS, inside any commercial window \u2014 which is the strongest form of timely-filing proof. N211 is a Medicare-FFS marker; Liberty Bell is a commercial CI payer with no statutory authority to bar appeal. The exception to write-off exists: an accepted-in-window clearinghouse report.",
+    "resolution": {
+      "root_cause": {
+        "family": "timely_filing",
+        "explanation": "CO-29 both lines; 837P envelope dated 2025-10-15 (~269 days post-DOS). However 277CA (A2, received 2025-01-27) proves a timely-accepted submission 8 days post-DOS \u2014 the payer's receipt date is disputable."
+      },
+      "next_action": {
+        "path": "appeal",
+        "detail": "Appeal both CO-29 lines to Liberty Bell citing 277CA ACK75364521 (A2 accepted for adjudication, received 2025-01-27) as proof of timely receipt. N211 is Medicare-specific and does not bar commercial appeal. Do not bill patient \u2014 group code CO."
+      },
+      "denial": {
+        "group": "CO",
+        "carc": "29",
+        "rarc": "N211",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Both lines 97110-GP and 97140-GP denied CO-29 ($138.62 total); MOA N211; filing indicator CI (commercial, not Medicare FFS).",
+          "locator": "CAS CO-29 lines 1\u20132; MOA N211"
+        },
+        {
+          "artifact": "ack_277ca.edi",
+          "fact": "A2 (accepted for adjudication), status code 20, received date 2025-01-27 \u2014 8 days after DOS 2025-01-19; trace TRC75364521.",
+          "locator": "DTP 050 2025-01-27; STC A2:20; REF TRC75364521"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "837P transmission envelope dated 2025-10-15; same trace TRC75364521 \u2014 later than 277CA, indicating resubmission after an earlier timely-filed original.",
+          "locator": "ISA date 251015; REF TRC75364521"
+        },
+        {
+          "artifact": "reference",
+          "fact": "03-timely-filing.md: 'clearinghouse/payer acceptance report (strongest)' proof; remedy is appeal disputing receipt date. 00-group-codes.md: CO-29 write-off only 'with no exception' \u2014 the 277CA A2 is the exception.",
+          "locator": "03-timely-filing.md \u00a78 Proof accepted row; 00-group-codes.md next_action ladder final row"
+        }
+      ],
+      "citations": [
+        {
+          "source": "03-timely-filing.md",
+          "rule": "Proof of an accepted submission inside the window \u2192 appeal with the clearinghouse acceptance report: dispute the receipt date, don't plead forgiveness."
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "CO with no appeal basis or rights exhausted; CARC 29 with no exception \u2192 do_not_resubmit. Exception present here: 277CA A2 acceptance."
+        },
+        {
+          "source": "01-carc-rarc-index.md",
+          "rule": "CARC 29: filing limit expired; N211 is the Medicare FFS pairing \u2014 inapplicable to CI commercial payer."
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"DOS 2025-01-19, commercial CI. Both lines CO-29/N211. The 277CA shows A2 acceptance 2025-01-27 \u2014 only 8 days post-DOS, inside any commercial window \u2014 which is the strongest form of timely-filing proof. N211 is a Medicare-FFS marker; Liberty Bell is a commercial CI payer with no statutory authority to bar appeal. The exception to write-off exists: an accepted-in-window clearinghouse report.\",\"resolution\":{\"root_cause\":{\"family\":\"timely_filing\",\"explanation\":\"CO-29 both lines; 837P envelope dated 2025-10-15 (~269 days post-DOS). However 277CA (A2, received 2025-01-27) proves a timely-accepted submission 8 days post-DOS \u2014 the payer's receipt date is disputable.\"},\"next_action\":{\"path\":\"appeal\",\"detail\":\"Appeal both CO-29 lines to Liberty Bell citing 277CA ACK75364521 (A2 accepted for adjudication, received 2025-01-27) as proof of timely receipt. N211 is Medicare-specific and does not bar commercial appeal. Do not bill patient \u2014 group code CO.\"},\"denial\":{\"group\":\"CO\",\"carc\":\"29\",\"rarc\":\"N211\",\"level\":\"line\"},\"denied_line_idxs\":[0,1],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"Both lines 97110-GP and 97140-GP denied CO-29 ($138.62 total); MOA N211; filing indicator CI (commercial, not Medicare FFS).\",\"locator\":\"CAS CO-29 lines 1\u20132; MOA N211\"},{\"artifact\":\"ack_277ca.edi\",\"fact\":\"A2 (accepted for adjudication), status code 20, received date 2025-01-27 \u2014 8 days after DOS 2025-01-19; trace TRC75364521.\",\"locator\":\"DTP 050 2025-01-27; STC A2:20; REF TRC75364521\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"837P transmission envelope dated 2025-10-15; same trace TRC75364521 \u2014 later than 277CA, indicating resubmission after an earlier timely-filed original.\",\"locator\":\"ISA date 251015; REF TRC75364521\"},{\"artifact\":\"reference\",\"fact\":\"03-timely-filing.md: 'clearinghouse/payer acceptance report (strongest)' proof; remedy is appeal disputing receipt date. 00-group-codes.md: CO-29 write-off only 'with no exception' \u2014 the 277CA A2 is the exception.\",\"locator\":\"03-timely-filing.md \u00a78 Proof accepted row; 00-group-codes.md next_action ladder final row\"}],\"citations\":[{\"source\":\"03-timely-filing.md\",\"rule\":\"Proof of an accepted submission inside the window \u2192 appeal with the clearinghouse acceptance report: dispute the receipt date, don't plead forgiveness.\"},{\"source\":\"00-group-codes.md\",\"rule\":\"CO with no appeal basis or rights exhausted; CARC 29 with no exception \u2192 do_not_resubmit. Exception present here: 277CA A2 acceptance.\"},{\"source\":\"01-carc-rarc-index.md\",\"rule\":\"CARC 29: filing limit expired; N211 is the Medicare FFS pairing \u2014 inapplicable to CI commercial payer.\"}]}}"
+}

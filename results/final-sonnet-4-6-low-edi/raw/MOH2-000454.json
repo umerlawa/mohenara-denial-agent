@@ -1,0 +1,72 @@
+{
+  "usage": {
+    "input_tokens": 3,
+    "cache_creation_input_tokens": 6662,
+    "cache_read_input_tokens": 68717,
+    "output_tokens": 1879,
+    "output_tokens_details": {
+      "thinking_tokens": 497
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 6662
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "Claim adjudicated and paid. CO-45 on all four lines is the contractual fee-schedule write-off; PR-2 is standard Part B 20% coinsurance. Billed $199.66 = paid $99.67 + CO-45 $75.08 + PR-2 $24.91. No line was denied.",
+    "resolution": {
+      "root_cause": {
+        "family": "none",
+        "explanation": "All four lines paid at Medicare allowed amounts. CO-45 is the contractual fee-schedule adjustment; PR-2 is Part B coinsurance. Claim fully adjudicated; no denial present."
+      },
+      "next_action": {
+        "path": "none",
+        "detail": "Post $99.67 payment. Write off $75.08 CO-45. Bill patient $24.91 PR-2 coinsurance in normal AR cycle."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP status 1 (processed as primary), paid $99.67 of $199.66 billed; payer MB; CLP07 = 2607861725706.",
+          "locator": "CLP*PA23148614*1*199.66*99.67*24.91*MB*2607861725706"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Every service line carries CAS*CO*45 (fee-schedule write-off) and CAS*PR*2 (coinsurance); no denial CARC on any line.",
+          "locator": "SVC lines 1-4, CAS segments"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Math balances: $199.66 = $99.67 paid + $75.08 CO-45 + $24.91 PR-2.",
+          "locator": "BPR*I*99.67"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*1 active coverage for DOS 2026-01-26; no termination date; Medicare Part B FFS confirmed.",
+          "locator": "EB*1*IND*30**NOVITAS SOLUTIONS MEDICARE PART B FFS"
+        }
+      ],
+      "denied_line_idxs": [],
+      "citations": [
+        {
+          "source": "00-group-codes.md",
+          "rule": "root_cause.family none \u2192 next_action none; PR-2 coinsurance is routine AR, not a denial remedy"
+        },
+        {
+          "source": "01-carc-rarc-index.md",
+          "rule": "CARC 45 with CO = contractual fee-schedule write-off, not a denial"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"Claim adjudicated and paid. CO-45 on all four lines is the contractual fee-schedule write-off; PR-2 is standard Part B 20% coinsurance. Billed $199.66 = paid $99.67 + CO-45 $75.08 + PR-2 $24.91. No line was denied.\",\"resolution\":{\"root_cause\":{\"family\":\"none\",\"explanation\":\"All four lines paid at Medicare allowed amounts. CO-45 is the contractual fee-schedule adjustment; PR-2 is Part B coinsurance. Claim fully adjudicated; no denial present.\"},\"next_action\":{\"path\":\"none\",\"detail\":\"Post $99.67 payment. Write off $75.08 CO-45. Bill patient $24.91 PR-2 coinsurance in normal AR cycle.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP status 1 (processed as primary), paid $99.67 of $199.66 billed; payer MB; CLP07 = 2607861725706.\",\"locator\":\"CLP*PA23148614*1*199.66*99.67*24.91*MB*2607861725706\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"Every service line carries CAS*CO*45 (fee-schedule write-off) and CAS*PR*2 (coinsurance); no denial CARC on any line.\",\"locator\":\"SVC lines 1-4, CAS segments\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"Math balances: $199.66 = $99.67 paid + $75.08 CO-45 + $24.91 PR-2.\",\"locator\":\"BPR*I*99.67\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*1 active coverage for DOS 2026-01-26; no termination date; Medicare Part B FFS confirmed.\",\"locator\":\"EB*1*IND*30**NOVITAS SOLUTIONS MEDICARE PART B FFS\"}],\"denied_line_idxs\":[],\"citations\":[{\"source\":\"00-group-codes.md\",\"rule\":\"root_cause.family none \u2192 next_action none; PR-2 coinsurance is routine AR, not a denial remedy\"},{\"source\":\"01-carc-rarc-index.md\",\"rule\":\"CARC 45 with CO = contractual fee-schedule write-off, not a denial\"}]}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

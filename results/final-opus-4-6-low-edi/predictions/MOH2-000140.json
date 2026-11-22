@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000140",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "835 shows all lines denied CO-22 with MOA MA04. 271 confirms EB*R naming \"NOVITAS SOLUTIONS MEDICARE PART B FFS\" as primary payer for this member on the DOS. Claim was billed to Liberty Bell as primary (SBR*P, CI) without Medicare's adjudication data. MA04 = completeness defect: primary payer data missing. Per reference, correct_and_resubmit to same payer with primary's payment data; never resubmit_other_payer for MA04.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1874,
+    "cache_read_input_tokens": 32421,
+    "cache_creation_input_tokens": 5005,
+    "cost_usd": 0.103786925,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "cob_other_primary",
+      "explanation": "Claim billed to Liberty Bell as primary but Medicare Part B (Novitas) is the primary payer per the 271. CO-22 + MA04: primary adjudication data missing from the secondary claim."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Bill Medicare Part B (Novitas, payer ID 1846349352) as primary first. Then resubmit to Liberty Bell as secondary with frequency 7 + REF*F8*2605114385066, populating SBR/AMT/CAS with Medicare's adjudication.",
+      "resubmission_frequency_code": "7"
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All three lines denied CAS*CO*22 with MOA MA04; CLP07=2605114385066",
+        "locator": "CAS segments and MOA line"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*R*IND*30**NOVITAS SOLUTIONS MEDICARE PART B FFS with MSG 'PLAN IS PRIMARY PAYER FOR THIS MEMBER'",
+        "locator": "EB*R and MSG segments"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "SBR*P*18*******CI \u2014 billed Liberty Bell as primary, commercial filing indicator",
+        "locator": "SBR segment"
+      },
+      {
+        "artifact": "reference",
+        "fact": "MA04 = correct_and_resubmit to same payer with primary's SBR/AMT/CAS; never resubmit_other_payer",
+        "locator": "06-cob-other-primary.md"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "22",
+      "rarc": "MA04",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "citations": [
+      {
+        "source": "06-cob-other-primary.md",
+        "rule": "MA04 \u2192 correct_and_resubmit to the same payer: populate primary SBR/AMT/CAS. Never resubmit_other_payer."
+      },
+      {
+        "source": "02-resubmission-frequency.md",
+        "rule": "Commercial: frequency 7 + REF*F8 with CLP07 from 835"
+      }
+    ]
+  }
+}

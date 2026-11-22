@@ -1,0 +1,98 @@
+{
+  "case_id": "MOH2-000121",
+  "run_id": "final-sonnet-4-6-low-edi",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4775,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5026,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 2601,
+    "output_tokens_details": {
+      "thinking_tokens": 1808
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5026
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.07413186,
+  "cache_hit_rate": 0.863277,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "97140 was billed at 7 units; the chart note documents 30 minutes = 2 units. CO-151 + N362 fired on the MUE. This is a keying error, not a volume-of-care dispute. Medicare Part B was adjudicated (CLP07 present); frequency 7 is not accepted \u2014 vehicle is a clerical-error reopening with corrected units.",
+    "resolution": {
+      "root_cause": {
+        "family": "mue_exceeded",
+        "explanation": "97140 billed 7 units (LX*2); chart note documents 30 min = 2 units. CO-151 + N362 on line 1 confirms MUE exceeded. Units overstated by keying error."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "File a clerical-error reopening with MAC (Novitas) correcting 97140 from 7 units to 2 units. Medicare Part B \u2014 do NOT send frequency 7; reopening is the required vehicle. ICN 2609585102539."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "SVC HC:97140:GP billed 338.94, paid $0; CAS CO-151 $338.94 + RARC N362 \u2014 MUE exceeded",
+          "locator": "LX*1 SVC/CAS block, second SVC segment"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "97140 performed for 30 minutes; at 15 min/unit = 2 billable units, not 7",
+          "locator": "PT treatment note 2026-02-24"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "LX*2 billed SV1*HC:97140:GP*338.94*UN*7 \u2014 7 units submitted",
+          "locator": "LX*2 SV1 segment"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP07 = 2609585102539 \u2014 claim adjudicated; filing indicator MB (Medicare Part B)",
+          "locator": "CLP segment"
+        }
+      ],
+      "denied_line_idxs": [
+        1
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "151",
+        "rarc": "N362",
+        "level": "line"
+      },
+      "citations": [
+        {
+          "source": "07-ncci-and-mue.md",
+          "rule": "CO-151 + N362 = MUE exceeded; keying error \u2192 correct_and_resubmit"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Medicare Part B: frequency 7 not accepted on adjudicated claims \u2014 use clerical-error reopening"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"97140 was billed at 7 units; the chart note documents 30 minutes = 2 units. CO-151 + N362 fired on the MUE. This is a keying error, not a volume-of-care dispute. Medicare Part B was adjudicated (CLP07 present); frequency 7 is not accepted \u2014 vehicle is a clerical-error reopening with corrected units.\",\"resolution\":{\"root_cause\":{\"family\":\"mue_exceeded\",\"explanation\":\"97140 billed 7 units (LX*2); chart note documents 30 min = 2 units. CO-151 + N362 on line 1 confirms MUE exceeded. Units overstated by keying error.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"File a clerical-error reopening with MAC (Novitas) correcting 97140 from 7 units to 2 units. Medicare Part B \u2014 do NOT send frequency 7; reopening is the required vehicle. ICN 2609585102539.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"SVC HC:97140:GP billed 338.94, paid $0; CAS CO-151 $338.94 + RARC N362 \u2014 MUE exceeded\",\"locator\":\"LX*1 SVC/CAS block, second SVC segment\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"97140 performed for 30 minutes; at 15 min/unit = 2 billable units, not 7\",\"locator\":\"PT treatment note 2026-02-24\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"LX*2 billed SV1*HC:97140:GP*338.94*UN*7 \u2014 7 units submitted\",\"locator\":\"LX*2 SV1 segment\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP07 = 2609585102539 \u2014 claim adjudicated; filing indicator MB (Medicare Part B)\",\"locator\":\"CLP segment\"}],\"denied_line_idxs\":[1],\"denial\":{\"group\":\"CO\",\"carc\":\"151\",\"rarc\":\"N362\",\"level\":\"line\"},\"citations\":[{\"source\":\"07-ncci-and-mue.md\",\"rule\":\"CO-151 + N362 = MUE exceeded; keying error \u2192 correct_and_resubmit\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Medicare Part B: frequency 7 not accepted on adjudicated claims \u2014 use clerical-error reopening\"}]}}"
+}

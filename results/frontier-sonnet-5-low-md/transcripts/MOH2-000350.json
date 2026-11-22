@@ -1,0 +1,92 @@
+{
+  "case_id": "MOH2-000350",
+  "run_id": "frontier-sonnet-5-low-md",
+  "model": "claude-sonnet-5",
+  "effort": "low",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 6656,
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 8111,
+    "cache_read_input_tokens": 104288,
+    "output_tokens": 2005,
+    "output_tokens_details": {
+      "thinking_tokens": 297
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 8111,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 857,
+        "cache_read_input_tokens": 55575,
+        "cache_creation_input_tokens": 1249,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1249
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.06119310000000001,
+  "cache_hit_rate": 0.927804,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All three lines carry OA-18 (exact duplicate) with MOA N111, the corpus signature for a true exact duplicate. The 835 shows CLP07 payer claim control 2606743684675 and the 277CA shows A2 accepted for adjudication, confirming this claim adjudicated normally \u2014 it was not returned unprocessable, so MA130/new-original logic doesn't apply. Nothing indicates a legitimate repeat/bilateral service billed without a distinguishing modifier; this is a single treatment date with standard GP-modified codes matching a prior adjudicated claim. OA group code means liability is unstated and not billable to the patient. The duplicate edit is hard-coded and unappealable, and the prior claim's disposition governs \u2014 do not resubmit.",
+    "resolution": {
+      "root_cause": {
+        "family": "exact_duplicate",
+        "explanation": "All three lines denied OA-18 (exact duplicate claim/service) with MOA N111. Claim adjudicated (CLP07 control 2606743684675 present; 277CA A2 accepted for adjudication) \u2014 a matching prior claim already exists on file."
+      },
+      "next_action": {
+        "path": "do_not_resubmit",
+        "detail": "Do not resubmit. Verify status of the original/prior adjudicated claim via portal or IVR; if paid, post payment and close. Duplicate edit is hard-coded and unappealable per N111."
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2
+      ],
+      "denial": {
+        "level": "line",
+        "group": "OA",
+        "carc": "18",
+        "rarc": "N111"
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All three service lines carry adjustment OA-18 (exact duplicate claim/service) totaling full billed amount, with claim-level MOA remark N111.",
+          "locator": "service lines / MOA"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Payer claim control number 2606743684675 present (CLP07), showing the claim was adjudicated, not returned unprocessable.",
+          "locator": "claim header"
+        },
+        {
+          "artifact": "ack_277ca.edi",
+          "fact": "Status A2 'accepted for adjudication', claim status 20 'accepted for processing' \u2014 claim entered adjudication normally.",
+          "locator": "277CA status"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All three lines carry OA-18 (exact duplicate) with MOA N111, the corpus signature for a true exact duplicate. The 835 shows CLP07 payer claim control 2606743684675 and the 277CA shows A2 accepted for adjudication, confirming this claim adjudicated normally \u2014 it was not returned unprocessable, so MA130/new-original logic doesn't apply. Nothing indicates a legitimate repeat/bilateral service billed without a distinguishing modifier; this is a single treatment date with standard GP-modified codes matching a prior adjudicated claim. OA group code means liability is unstated and not billable to the patient. The duplicate edit is hard-coded and unappealable, and the prior claim's disposition governs \u2014 do not resubmit.\",\"resolution\":{\"root_cause\":{\"family\":\"exact_duplicate\",\"explanation\":\"All three lines denied OA-18 (exact duplicate claim/service) with MOA N111. Claim adjudicated (CLP07 control 2606743684675 present; 277CA A2 accepted for adjudication) \u2014 a matching prior claim already exists on file.\"},\"next_action\":{\"path\":\"do_not_resubmit\",\"detail\":\"Do not resubmit. Verify status of the original/prior adjudicated claim via portal or IVR; if paid, post payment and close. Duplicate edit is hard-coded and unappealable per N111.\"},\"denied_line_idxs\":[0,1,2],\"denial\":{\"level\":\"line\",\"group\":\"OA\",\"carc\":\"18\",\"rarc\":\"N111\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All three service lines carry adjustment OA-18 (exact duplicate claim/service) totaling full billed amount, with claim-level MOA remark N111.\",\"locator\":\"service lines / MOA\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"Payer claim control number 2606743684675 present (CLP07), showing the claim was adjudicated, not returned unprocessable.\",\"locator\":\"claim header\"},{\"artifact\":\"ack_277ca.edi\",\"fact\":\"Status A2 'accepted for adjudication', claim status 20 'accepted for processing' \u2014 claim entered adjudication normally.\",\"locator\":\"277CA status\"}]}}"
+}

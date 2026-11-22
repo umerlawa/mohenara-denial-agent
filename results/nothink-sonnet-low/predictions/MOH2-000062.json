@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000062",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "271 shows coverage ended 2025-05-31 (EB*6, DTP*357=2025-05-31); DOS is 2025-06-17 \u2014 after termination. Payer issued PR-27 on all four lines (commercial CI). Group code PR = patient liability. No QMB, Medicaid, NSA, or ACA grace-period override applies. Bill patient.",
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1926,
+    "cache_read_input_tokens": 104814,
+    "cache_creation_input_tokens": 6478,
+    "cost_usd": 0.09310257000000001,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "eligibility_terminated",
+      "explanation": "271 shows KEYSTONE EPO coverage ended 2025-05-31 (EB*6, DTP*357=2025-05-31); DOS 2025-06-17 is 17 days post-termination. All four lines denied PR-27."
+    },
+    "next_action": {
+      "path": "bill_patient",
+      "detail": "Bill Jessica Harris $204.23. PR-27 commercial confirms patient liability post-termination. Verify no QMB/Medicaid/NSA override, then issue patient statement."
+    },
+    "evidence": [
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*6 (inactive), eligibility end DTP*357=2025-05-31 \u2014 coverage ended before DOS 2025-06-17",
+        "locator": "271 response benefit segment"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All four lines adjusted PR-27 totaling $204.23; patient responsibility $204.23; MOA N30",
+        "locator": "835 CAS segments, CLP"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Filing indicator CI (commercial), payer responsibility P (primary)",
+        "locator": "837P CLM/SBR segments"
+      }
+    ],
+    "denial": {
+      "group": "PR",
+      "carc": "27",
+      "rarc": "N30",
+      "level": "line"
+    },
+    "citations": [
+      {
+        "source": "05-eligibility-terminated.md",
+        "rule": "CI + EB*6 + DTP*357 before DOS + PR-27 \u2192 bill_patient after overrides cleared"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "PR = patient liability; billable once overrides cleared"
+      }
+    ]
+  }
+}

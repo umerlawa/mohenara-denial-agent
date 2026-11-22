@@ -1,0 +1,24 @@
+{
+  "run_id": "nothink-sonnet-low",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "thinking": "disabled",
+  "input_format": "md",
+  "slice": "eval/slices/dev15.txt",
+  "n_cases": 15,
+  "counts": {
+    "resolved": 12,
+    "awaiting_human": 2,
+    "failed": 1
+  },
+  "cost_usd": 0.876781,
+  "cost_per_case_usd": 0.058452,
+  "wall_seconds": 318.3,
+  "spend_total_after": 9.033528,
+  "failures": [
+    {
+      "case_id": "MOH2-000105",
+      "error": "MOH2-000105: resolution failed schema validation and was not persisted:\n  'root_cause' is a required property\n  'next_action' is a required property\n  'evidence' is a required property"
+    }
+  ]
+}

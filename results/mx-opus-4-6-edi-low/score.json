@@ -1,0 +1,105 @@
+{
+  "n_labeled": 5,
+  "n_predictions": 5,
+  "n_unlabeled_predictions": 0,
+  "unlabeled_prediction_ids": [],
+  "accuracy": 1.0,
+  "root_cause_accuracy": 1.0,
+  "next_action_accuracy": 1.0,
+  "correct": 5,
+  "line_level": {
+    "scored": 5,
+    "correct": 1,
+    "accuracy": 0.2
+  },
+  "failure_reasons": {},
+  "by_family": {
+    "eligibility_terminated": {
+      "total": 1,
+      "correct": 1,
+      "accuracy": 1.0
+    },
+    "exact_duplicate": {
+      "total": 1,
+      "correct": 1,
+      "accuracy": 1.0
+    },
+    "missing_therapy_modifier": {
+      "total": 1,
+      "correct": 1,
+      "accuracy": 1.0
+    },
+    "mue_exceeded": {
+      "total": 1,
+      "correct": 1,
+      "accuracy": 1.0
+    },
+    "timely_filing": {
+      "total": 1,
+      "correct": 1,
+      "accuracy": 1.0
+    }
+  },
+  "per_case": [
+    {
+      "case_id": "MOH2-000061",
+      "correct": true,
+      "family_correct": true,
+      "path_correct": true,
+      "reason": null,
+      "expected_family": "exact_duplicate",
+      "expected_path": "do_not_resubmit",
+      "got_family": "exact_duplicate",
+      "got_path": "do_not_resubmit",
+      "trap": false
+    },
+    {
+      "case_id": "MOH2-000062",
+      "correct": true,
+      "family_correct": true,
+      "path_correct": true,
+      "reason": null,
+      "expected_family": "eligibility_terminated",
+      "expected_path": "bill_patient",
+      "got_family": "eligibility_terminated",
+      "got_path": "bill_patient",
+      "trap": false
+    },
+    {
+      "case_id": "MOH2-000117",
+      "correct": true,
+      "family_correct": true,
+      "path_correct": true,
+      "reason": null,
+      "expected_family": "timely_filing",
+      "expected_path": "appeal",
+      "got_family": "timely_filing",
+      "got_path": "appeal",
+      "trap": false
+    },
+    {
+      "case_id": "MOH2-000147",
+      "correct": true,
+      "family_correct": true,
+      "path_correct": true,
+      "reason": null,
+      "expected_family": "missing_therapy_modifier",
+      "expected_path": "correct_and_resubmit",
+      "got_family": "missing_therapy_modifier",
+      "got_path": "correct_and_resubmit",
+      "trap": false
+    },
+    {
+      "case_id": "MOH2-000199",
+      "correct": true,
+      "family_correct": true,
+      "path_correct": true,
+      "reason": null,
+      "expected_family": "mue_exceeded",
+      "expected_path": "correct_and_resubmit",
+      "got_family": "mue_exceeded",
+      "got_path": "correct_and_resubmit",
+      "trap": false
+    }
+  ]
+}

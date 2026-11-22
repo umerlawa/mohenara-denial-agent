@@ -1,0 +1,101 @@
+{
+  "case_id": "MOH2-000345",
+  "run_id": "final-sonnet-4-6-low-edi",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4882,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5089,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1399,
+    "output_tokens_details": {
+      "thinking_tokens": 591
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5089
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.054558735000000004,
+  "cache_hit_rate": 0.8618,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "835 returned OA-18 on all four lines with MOA N111 and a payer ICN (CLP07 = 2621930422390), confirming adjudication occurred. OA-18 is a true exact-duplicate edit \u2014 payer matched provider/member/DOS/procedure against a prior adjudicated claim. The duplicate edit is hard-coded and unappealable. The original claim's disposition governs; check portal/IVR before any further action.",
+    "resolution": {
+      "root_cause": {
+        "family": "exact_duplicate",
+        "explanation": "All four lines denied OA-18 against an adjudicated claim (ICN 2621930422390). Payer matched provider/member/DOS/procedure to a prior adjudication."
+      },
+      "next_action": {
+        "path": "do_not_resubmit",
+        "detail": "Do not resubmit. Check the original claim's status via portal or IVR using ICN 2621930422390. If original paid, post and close. If pending, hold. If original also denied, resolve that denial first \u2014 do not send another original."
+      },
+      "denial": {
+        "group": "OA",
+        "carc": "18",
+        "rarc": "N111",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP07 = 2621930422390 \u2014 payer ICN present, confirming claim adjudicated",
+          "locator": "CLP*PA22266110*4*264.6*0**MB*2621930422390"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CAS*OA*18 on all four SVC lines \u2014 exact duplicate, $0 paid on each",
+          "locator": "SVC lines 1\u20134, each followed by CAS*OA*18"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "MOA N111 \u2014 no appeal right on exact duplicate",
+          "locator": "MOA***N111"
+        },
+        {
+          "artifact": "reference",
+          "fact": "OA-18 true duplicate \u2192 do_not_resubmit; edit hard-coded, unappealable; original claim disposition governs",
+          "locator": "04-exact-duplicate.md \u2014 Disposition: do_not_resubmit"
+        }
+      ],
+      "citations": [
+        {
+          "source": "04-exact-duplicate.md",
+          "rule": "True duplicate OA-18 \u2192 do_not_resubmit; check original claim status before any action"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "OA = liability unstated, never bill patient"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"835 returned OA-18 on all four lines with MOA N111 and a payer ICN (CLP07 = 2621930422390), confirming adjudication occurred. OA-18 is a true exact-duplicate edit \u2014 payer matched provider/member/DOS/procedure against a prior adjudicated claim. The duplicate edit is hard-coded and unappealable. The original claim's disposition governs; check portal/IVR before any further action.\",\"resolution\":{\"root_cause\":{\"family\":\"exact_duplicate\",\"explanation\":\"All four lines denied OA-18 against an adjudicated claim (ICN 2621930422390). Payer matched provider/member/DOS/procedure to a prior adjudication.\"},\"next_action\":{\"path\":\"do_not_resubmit\",\"detail\":\"Do not resubmit. Check the original claim's status via portal or IVR using ICN 2621930422390. If original paid, post and close. If pending, hold. If original also denied, resolve that denial first \u2014 do not send another original.\"},\"denial\":{\"group\":\"OA\",\"carc\":\"18\",\"rarc\":\"N111\",\"level\":\"line\"},\"denied_line_idxs\":[0,1,2,3],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP07 = 2621930422390 \u2014 payer ICN present, confirming claim adjudicated\",\"locator\":\"CLP*PA22266110*4*264.6*0**MB*2621930422390\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CAS*OA*18 on all four SVC lines \u2014 exact duplicate, $0 paid on each\",\"locator\":\"SVC lines 1\u20134, each followed by CAS*OA*18\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"MOA N111 \u2014 no appeal right on exact duplicate\",\"locator\":\"MOA***N111\"},{\"artifact\":\"reference\",\"fact\":\"OA-18 true duplicate \u2192 do_not_resubmit; edit hard-coded, unappealable; original claim disposition governs\",\"locator\":\"04-exact-duplicate.md \u2014 Disposition: do_not_resubmit\"}],\"citations\":[{\"source\":\"04-exact-duplicate.md\",\"rule\":\"True duplicate OA-18 \u2192 do_not_resubmit; check original claim status before any action\"},{\"source\":\"00-group-codes.md\",\"rule\":\"OA = liability unstated, never bill patient\"}]}}"
+}

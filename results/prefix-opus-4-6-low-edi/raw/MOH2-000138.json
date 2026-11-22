@@ -1,0 +1,69 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4815,
+    "cache_read_input_tokens": 31983,
+    "output_tokens": 820,
+    "output_tokens_details": {
+      "thinking_tokens": 292
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4815
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "835 shows CO-27 on both lines with MOA N30. 271 confirms EB*6 (inactive) with DTP*357 = 2026-05-31, DOS 2026-06-18 is after termination. Payer is commercial (CI). Hold-harmless clause does not protect a non-member on the DOS. No successor payer, no Medicare secondary, no overrides. Patient is billable.",
+    "resolution": {
+      "root_cause": {
+        "family": "eligibility_terminated",
+        "explanation": "Coverage with Delaware Valley Mutual ended 2026-05-31 per 271 EB*6/DTP*357. DOS 2026-06-18 is after termination. Commercial payer, group CO-27."
+      },
+      "next_action": {
+        "path": "bill_patient",
+        "detail": "Bill patient for $89.67. Coverage confirmed terminated before DOS; no hold-harmless protection applies to a non-member. Verify no other active coverage before sending statement."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Both lines denied CO-27 ($41.99 + $47.68), $0 paid, MOA N30"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*6 (inactive) for DOS 2026-06-18; DTP*357 = 20260531 (plan end before DOS)"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "SBR*P*18*******CI \u2014 commercial filing indicator, patient is subscriber"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "27",
+        "rarc": null,
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        1,
+        2
+      ],
+      "citations": [
+        {
+          "source": "05-eligibility-terminated.md",
+          "rule": "CI, EB*6 + 357 before DOS, no successor: CO-27 \u2192 bill_patient once overrides clear \u2014 hold-harmless reaches members only"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"835 shows CO-27 on both lines with MOA N30. 271 confirms EB*6 (inactive) with DTP*357 = 2026-05-31, DOS 2026-06-18 is after termination. Payer is commercial (CI). Hold-harmless clause does not protect a non-member on the DOS. No successor payer, no Medicare secondary, no overrides. Patient is billable.\",\"resolution\":{\"root_cause\":{\"family\":\"eligibility_terminated\",\"explanation\":\"Coverage with Delaware Valley Mutual ended 2026-05-31 per 271 EB*6/DTP*357. DOS 2026-06-18 is after termination. Commercial payer, group CO-27.\"},\"next_action\":{\"path\":\"bill_patient\",\"detail\":\"Bill patient for $89.67. Coverage confirmed terminated before DOS; no hold-harmless protection applies to a non-member. Verify no other active coverage before sending statement.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"Both lines denied CO-27 ($41.99 + $47.68), $0 paid, MOA N30\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*6 (inactive) for DOS 2026-06-18; DTP*357 = 20260531 (plan end before DOS)\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"SBR*P*18*******CI \u2014 commercial filing indicator, patient is subscriber\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"27\",\"rarc\":null,\"level\":\"line\"},\"denied_line_idxs\":[1,2],\"citations\":[{\"source\":\"05-eligibility-terminated.md\",\"rule\":\"CI, EB*6 + 357 before DOS, no successor: CO-27 \u2192 bill_patient once overrides clear \u2014 hold-harmless reaches members only\"}]}}",
+  "model": "us.anthropic.claude-opus-4-6-v1"
+}

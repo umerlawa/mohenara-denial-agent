@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000520",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All three lines paid. CO-45 is the Medicare fee schedule contractual write-off; PR-2 is standard Part B coinsurance. No denial codes present. Claim adjudicated correctly; routine AR collection of $23.91 coinsurance from patient is not a denial remedy.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1000,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 5066,
+    "cost_usd": 0.047880360000000004,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "none",
+      "explanation": "Claim paid in full at the Medicare fee schedule. CO-45 is the contractual adjustment; PR-2 ($23.91 total) is patient coinsurance. No denial."
+    },
+    "next_action": {
+      "path": "none",
+      "detail": "Post payment of $95.66. Bill patient $23.91 coinsurance per normal AR workflow \u2014 this is routine, not a denial remedy."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP status 1 (paid), $95.66 paid, CLP07=2608678328126; all three lines carry only CO-45 and PR-2 adjustments \u2014 no denial CARC.",
+        "locator": "CLP*PA26940631*1"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "PR-2 coinsurance totals $23.91 across lines (5.81+11.09+7.01).",
+        "locator": "CAS*PR*2 segments"
+      },
+      {
+        "artifact": "ack_277ca.edi",
+        "fact": "STC A2:20 = accepted/forwarded for adjudication; no front-end rejection.",
+        "locator": "STC*A2:20"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "All three therapy lines carry GP modifier; filing indicator MB (Medicare Part B).",
+        "locator": "SBR*P*18*******MB; SV1 lines"
+      }
+    ],
+    "denial": null,
+    "denied_line_idxs": [],
+    "citations": [
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO = contractual obligation write-off; PR = patient responsibility billable in normal course"
+      },
+      {
+        "source": "01-carc-rarc-index.md",
+        "rule": "CARC 45 = exceeds fee schedule, contractual write-off; CARC 2 = coinsurance"
+      }
+    ]
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4817,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 2911,
+    "output_tokens_details": {
+      "thinking_tokens": 2085
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4817
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "CO-29 on both lines asserts timely filing expired. However, the 277CA shows clearinghouse acceptance (A2) on 2025-01-27 \u2014 8 days after the 2025-01-19 DOS \u2014 proving the claim was received well within any commercial filing window. Per reference 03, proof of accepted submission inside the window triggers appeal to dispute the receipt date. N211 is a Medicare-context remark and does not extinguish commercial appeal rights.",
+    "resolution": {
+      "root_cause": {
+        "family": "timely_filing",
+        "explanation": "Payer denied both lines CO-29 (filing limit expired). The 277CA proves clearinghouse acceptance on 2025-01-27, 8 days post-DOS \u2014 within any commercial limit \u2014 making this a disputed receipt-date denial, not a genuine late filing."
+      },
+      "next_action": {
+        "path": "appeal",
+        "detail": "File redetermination/appeal attaching the 277CA (A2 acceptance 2025-01-27, ref ACK75364521) as proof of timely receipt. Dispute the payer's receipt date; N211 is a Medicare-context remark and does not bar commercial appeal rights."
+      },
+      "denial": {
+        "group": "CO",
+        "carc": "29",
+        "rarc": "N211",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Both lines denied CO-29; MOA N211; $0 paid; CI (commercial) filing indicator.",
+          "locator": "CAS CO-29 lines 1\u20132"
+        },
+        {
+          "artifact": "ack_277ca.edi",
+          "fact": "Status A2 (accepted for adjudication), received date 2025-01-27 \u2014 8 days after DOS 2025-01-19.",
+          "locator": "received date (050) 2025-01-27; ref ACK75364521"
+        },
+        {
+          "artifact": "reference",
+          "fact": "Timely filing reference: proof of accepted clearinghouse report inside window \u2192 appeal to dispute receipt date.",
+          "locator": "03-timely-filing.md \u00a78 'Proof accepted'"
+        },
+        {
+          "artifact": "reference",
+          "fact": "N211 'you may not appeal' is a Medicare FFS pairing; 42 CFR 405.926 bar does not apply to commercial CI claims.",
+          "locator": "03-timely-filing.md \u00a79.1"
+        }
+      ],
+      "citations": [
+        {
+          "source": "03-timely-filing.md",
+          "rule": "Proof of accepted submission inside window \u2192 appeal with clearinghouse acceptance report"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "CO = provider liable, not billable to patient; appeal when determination is wrong"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"CO-29 on both lines asserts timely filing expired. However, the 277CA shows clearinghouse acceptance (A2) on 2025-01-27 \u2014 8 days after the 2025-01-19 DOS \u2014 proving the claim was received well within any commercial filing window. Per reference 03, proof of accepted submission inside the window triggers appeal to dispute the receipt date. N211 is a Medicare-context remark and does not extinguish commercial appeal rights.\",\"resolution\":{\"root_cause\":{\"family\":\"timely_filing\",\"explanation\":\"Payer denied both lines CO-29 (filing limit expired). The 277CA proves clearinghouse acceptance on 2025-01-27, 8 days post-DOS \u2014 within any commercial limit \u2014 making this a disputed receipt-date denial, not a genuine late filing.\"},\"next_action\":{\"path\":\"appeal\",\"detail\":\"File redetermination/appeal attaching the 277CA (A2 acceptance 2025-01-27, ref ACK75364521) as proof of timely receipt. Dispute the payer's receipt date; N211 is a Medicare-context remark and does not bar commercial appeal rights.\"},\"denial\":{\"group\":\"CO\",\"carc\":\"29\",\"rarc\":\"N211\",\"level\":\"line\"},\"denied_line_idxs\":[0,1],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"Both lines denied CO-29; MOA N211; $0 paid; CI (commercial) filing indicator.\",\"locator\":\"CAS CO-29 lines 1\u20132\"},{\"artifact\":\"ack_277ca.edi\",\"fact\":\"Status A2 (accepted for adjudication), received date 2025-01-27 \u2014 8 days after DOS 2025-01-19.\",\"locator\":\"received date (050) 2025-01-27; ref ACK75364521\"},{\"artifact\":\"reference\",\"fact\":\"Timely filing reference: proof of accepted clearinghouse report inside window \u2192 appeal to dispute receipt date.\",\"locator\":\"03-timely-filing.md \u00a78 'Proof accepted'\"},{\"artifact\":\"reference\",\"fact\":\"N211 'you may not appeal' is a Medicare FFS pairing; 42 CFR 405.926 bar does not apply to commercial CI claims.\",\"locator\":\"03-timely-filing.md \u00a79.1\"}],\"citations\":[{\"source\":\"03-timely-filing.md\",\"rule\":\"Proof of accepted submission inside window \u2192 appeal with clearinghouse acceptance report\"},{\"source\":\"00-group-codes.md\",\"rule\":\"CO = provider liable, not billable to patient; appeal when determination is wrong\"}]}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

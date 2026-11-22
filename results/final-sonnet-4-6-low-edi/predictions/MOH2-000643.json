@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000643",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All three lines carry OA-22 ($183.72 total, $0 paid). The 271 for DOS 2026-02-01 returns EB*R identifying Novitas Solutions Medicare Part B FFS as an additional payer with MSG \"PLAN IS PRIMARY PAYER FOR THIS MEMBER,\" while the 837P was submitted SBR*P (primary) to Keystone. COB order is inverted. MA04 at claim level corroborates missing primary adjudication data. Bill Medicare first, then rebill Keystone secondary.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1198,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 5020,
+    "cost_usd": 0.05095761,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "cob_other_primary",
+      "explanation": "Claim billed to Keystone as primary (SBR*P/CI). 271 EB*R names Novitas Solutions Medicare Part B FFS as primary payer for this member on DOS 2026-02-01. OA-22 on all three lines confirms wrong COB order."
+    },
+    "next_action": {
+      "path": "resubmit_other_payer",
+      "detail": "Submit a new 837P (CLM05-3=1) to Novitas Solutions Medicare Part B (NPI/payer ID 1846349352) as primary. After Medicare adjudicates, rebill Keystone as secondary with Medicare's SBR/AMT/CAS adjudication data populated to avoid MA04."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CAS*OA*22 on all three SVC lines; $0 paid; claim status 4 (denied); MOA remark MA04",
+        "locator": "CLP*PA22543814 + three CAS segments"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*R + NM1*PR Novitas Solutions Medicare Part B FFS + MSG 'PLAN IS PRIMARY PAYER FOR THIS MEMBER' for DOS 20260201",
+        "locator": "EB*R loop"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "SBR*P*18*******CI \u2014 claim submitted with Keystone as primary payer",
+        "locator": "Loop 2000B SBR"
+      }
+    ],
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "denial": {
+      "group": "OA",
+      "carc": "22",
+      "rarc": "MA04",
+      "level": "line"
+    },
+    "citations": [
+      {
+        "source": "06-cob-other-primary.md",
+        "rule": "CARC 22 alone \u2192 resubmit_other_payer; coverage active and misordered, never bill patient"
+      },
+      {
+        "source": "06-cob-other-primary.md",
+        "rule": "MA04 \u2192 correct_and_resubmit to same payer once primary adjudication data is supplied"
+      },
+      {
+        "source": "eligibility_271.edi",
+        "rule": "EB*R with MSG confirms Medicare Part B is primary for this member on DOS"
+      }
+    ]
+  }
+}

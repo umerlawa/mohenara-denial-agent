@@ -1,0 +1,98 @@
+{
+  "case_id": "MOH2-000147",
+  "run_id": "mx-sonnet-4-6-md-high",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "high",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 7321,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5254,
+    "cache_read_input_tokens": 31309,
+    "output_tokens": 2896,
+    "output_tokens_details": {
+      "thinking_tokens": 1960
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5254
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.07979532,
+  "cache_hit_rate": 0.856256,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All 5 lines denied CO-4/N822. 97530, 97140, and 97116 are always-therapy CPTs requiring a discipline modifier (GP for PT, GO for OT, GN for SLP). Every line was submitted KX-only; GP is absent from all lines. Chart note confirms physical therapy plan of care, so GP is the required modifier. CO-4/N822 = returned unprocessable, no appeal rights; remedy is a new original claim with GP appended alongside KX. Timely-filing window runs to ~2027-06-05; no urgency issue.",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_therapy_modifier",
+        "explanation": "All 5 lines (97530\u00d72, 97140\u00d72, 97116\u00d71) denied CO-4/N822. Each was submitted with KX only. GP modifier \u2014 required for services delivered under a PT plan of care \u2014 is absent from every line."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "resubmission_frequency_code": "7",
+        "detail": "Submit a NEW original claim (CLM05-3=1, no REF*F8) appending GP to every line alongside KX. Do not send frequency 7 and do not appeal \u2014 CO-4/N822 is unprocessable with no appeal rights. File before 2027-06-05."
+      },
+      "denial": {
+        "group": "CO",
+        "carc": "4",
+        "rarc": "N822",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All 5 lines: CO-4 + RARC N822, $0 paid; only modifier on remit lines is KX.",
+          "locator": "Lines 1\u20135, CAS segments"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "97530, 97140, 97116 billed with KX only; no GP/GO/GN modifier on any line.",
+          "locator": "SV1 segments, lines 1\u20135"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "'PT treatment note 2026-06-05' confirms physical therapy plan of care \u2014 GP is the required discipline modifier.",
+          "locator": "Header line"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CO-4/N822 on always-therapy CPTs = missing_therapy_modifier; remedy is new original claim (CLM05-3=1) with GP appended; no appeal rights.",
+          "locator": "08-therapy-modifiers.md \u00a70, \u00a78.1"
+        }
+      ],
+      "citations": [
+        {
+          "source": "08-therapy-modifiers.md",
+          "rule": "CO-4 + N822 on always-therapy CPTs with no GP/GO/GN = missing_therapy_modifier; resubmit as new original CLM05-3=1 with modifier appended; CO is not billable to patient."
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "CO = contractual obligation, provider liable, never bill patient."
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All 5 lines denied CO-4/N822. 97530, 97140, and 97116 are always-therapy CPTs requiring a discipline modifier (GP for PT, GO for OT, GN for SLP). Every line was submitted KX-only; GP is absent from all lines. Chart note confirms physical therapy plan of care, so GP is the required modifier. CO-4/N822 = returned unprocessable, no appeal rights; remedy is a new original claim with GP appended alongside KX. Timely-filing window runs to ~2027-06-05; no urgency issue.\",\"resolution\":{\"root_cause\":{\"family\":\"missing_therapy_modifier\",\"explanation\":\"All 5 lines (97530\u00d72, 97140\u00d72, 97116\u00d71) denied CO-4/N822. Each was submitted with KX only. GP modifier \u2014 required for services delivered under a PT plan of care \u2014 is absent from every line.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"resubmission_frequency_code\":\"7\",\"detail\":\"Submit a NEW original claim (CLM05-3=1, no REF*F8) appending GP to every line alongside KX. Do not send frequency 7 and do not appeal \u2014 CO-4/N822 is unprocessable with no appeal rights. File before 2027-06-05.\"},\"denial\":{\"group\":\"CO\",\"carc\":\"4\",\"rarc\":\"N822\",\"level\":\"line\"},\"denied_line_idxs\":[0,1,2,3,4],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All 5 lines: CO-4 + RARC N822, $0 paid; only modifier on remit lines is KX.\",\"locator\":\"Lines 1\u20135, CAS segments\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"97530, 97140, 97116 billed with KX only; no GP/GO/GN modifier on any line.\",\"locator\":\"SV1 segments, lines 1\u20135\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"'PT treatment note 2026-06-05' confirms physical therapy plan of care \u2014 GP is the required discipline modifier.\",\"locator\":\"Header line\"},{\"artifact\":\"reference\",\"fact\":\"CO-4/N822 on always-therapy CPTs = missing_therapy_modifier; remedy is new original claim (CLM05-3=1) with GP appended; no appeal rights.\",\"locator\":\"08-therapy-modifiers.md \u00a70, \u00a78.1\"}],\"citations\":[{\"source\":\"08-therapy-modifiers.md\",\"rule\":\"CO-4 + N822 on always-therapy CPTs with no GP/GO/GN = missing_therapy_modifier; resubmit as new original CLM05-3=1 with modifier appended; CO is not billable to patient.\"},{\"source\":\"00-group-codes.md\",\"rule\":\"CO = contractual obligation, provider liable, never bill patient.\"}]}}"
+}

@@ -1,0 +1,94 @@
+{
+  "case_id": "MOH2-000441",
+  "run_id": "cal-sonnet-4-6-md-high",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "high",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 6562,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4924,
+    "cache_read_input_tokens": 31309,
+    "output_tokens": 4121,
+    "output_tokens_details": {
+      "thinking_tokens": 3285
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4924
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.09864657,
+  "cache_hit_rate": 0.864054,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All three therapy lines (97110, 97140, 97530) carry CO-4/N822 \u2014 required GP discipline modifier missing on every line. Chart note confirms PT services. CO-4/N822 on always-therapy CPTs is an unprocessable return, not an adjudicated denial; vehicle is a new original (CLM05-3=1), not frequency 7. Medicare filing deadline is 2027-02-19 \u2014 time remains.",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_therapy_modifier",
+        "explanation": "97110, 97140, and 97530 submitted with no GP/GO/GN modifier. CO-4/N822 on all three lines is the unprocessable-return signature for missing required therapy discipline modifier."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Submit new original claim (CLM05-3=1, no REF*F8) adding GP to all three lines. Chart note confirms PT plan of care. Do not use frequency 7. File before 2027-02-19."
+      },
+      "denial": {
+        "group": "CO",
+        "carc": "4",
+        "rarc": "N822",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Lines 1\u20133: CO-4 + N822 on 97110, 97140, 97530 \u2014 $0 paid, full write-down on each line.",
+          "locator": "CAS segments PA24980623L1\u2013L3"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "No modifier present on any SV1 segment for lines 1\u20133.",
+          "locator": "Loop 2400, lines 1\u20133"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "Header reads 'PT treatment note 2026-02-19', confirming services under a physical therapy plan of care \u2014 GP required.",
+          "locator": "Line 1"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CO-4/N822 on always-therapy CPTs = missing_therapy_modifier; remedy is new original CLM05-3=1, not corrected 7 or appeal.",
+          "locator": "08-therapy-modifiers.md \u00a7(a)"
+        }
+      ],
+      "citations": [
+        {
+          "source": "08-therapy-modifiers.md",
+          "rule": "CO-4 + N822 on 97110/97140/97530 = unprocessable return for missing GP/GO/GN; vehicle is new original CLM05-3=1"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "CO = provider liable, never bill patient"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All three therapy lines (97110, 97140, 97530) carry CO-4/N822 \u2014 required GP discipline modifier missing on every line. Chart note confirms PT services. CO-4/N822 on always-therapy CPTs is an unprocessable return, not an adjudicated denial; vehicle is a new original (CLM05-3=1), not frequency 7. Medicare filing deadline is 2027-02-19 \u2014 time remains.\",\"resolution\":{\"root_cause\":{\"family\":\"missing_therapy_modifier\",\"explanation\":\"97110, 97140, and 97530 submitted with no GP/GO/GN modifier. CO-4/N822 on all three lines is the unprocessable-return signature for missing required therapy discipline modifier.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Submit new original claim (CLM05-3=1, no REF*F8) adding GP to all three lines. Chart note confirms PT plan of care. Do not use frequency 7. File before 2027-02-19.\"},\"denial\":{\"group\":\"CO\",\"carc\":\"4\",\"rarc\":\"N822\",\"level\":\"line\"},\"denied_line_idxs\":[0,1,2],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"Lines 1\u20133: CO-4 + N822 on 97110, 97140, 97530 \u2014 $0 paid, full write-down on each line.\",\"locator\":\"CAS segments PA24980623L1\u2013L3\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"No modifier present on any SV1 segment for lines 1\u20133.\",\"locator\":\"Loop 2400, lines 1\u20133\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"Header reads 'PT treatment note 2026-02-19', confirming services under a physical therapy plan of care \u2014 GP required.\",\"locator\":\"Line 1\"},{\"artifact\":\"reference\",\"fact\":\"CO-4/N822 on always-therapy CPTs = missing_therapy_modifier; remedy is new original CLM05-3=1, not corrected 7 or appeal.\",\"locator\":\"08-therapy-modifiers.md \u00a7(a)\"}],\"citations\":[{\"source\":\"08-therapy-modifiers.md\",\"rule\":\"CO-4 + N822 on 97110/97140/97530 = unprocessable return for missing GP/GO/GN; vehicle is new original CLM05-3=1\"},{\"source\":\"00-group-codes.md\",\"rule\":\"CO = provider liable, never bill patient\"}]}}"
+}

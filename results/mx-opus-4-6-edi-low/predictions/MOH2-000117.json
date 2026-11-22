@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000117",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "Both lines denied CO-29 (timely filing) with N211. But the 277CA shows the claim was accepted on 2025-01-27\u2014only 8 days after the 2025-01-19 DOS. The payer's receipt date is provably within any commercial filing window. Appeal with the clearinghouse acceptance report to dispute the receipt date.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 944,
+    "cache_read_input_tokens": 31983,
+    "cache_creation_input_tokens": 4824,
+    "cost_usd": 0.07672665,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "timely_filing",
+      "explanation": "CO-29 applied to both lines but 277CA proves payer accepted the claim 2025-01-27, 8 days post-DOS. Filing was timely; the denial is erroneous."
+    },
+    "next_action": {
+      "path": "appeal",
+      "detail": "Appeal with the 277CA acceptance report (STC*A2:20, DTP*050*D8*20250127) proving submission within the filing window. Dispute the payer's receipt date."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CAS*CO*29 on both lines; MOA N211; $0 paid; CLP status 4 (denied)"
+      },
+      {
+        "artifact": "ack_277ca.edi",
+        "fact": "STC*A2:20*20250127 \u2014 claim accepted by payer 2025-01-27, 8 days after DOS"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "DOS 2025-01-19; filing indicator CI (commercial); BHT trace TRC75364521 matches 277CA"
+      },
+      {
+        "artifact": "reference",
+        "fact": "Proof of accepted submission inside the window \u2192 appeal, dispute receipt date (03-timely-filing.md)"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "29",
+      "rarc": "N211",
+      "level": "claim"
+    },
+    "denied_line_idxs": [
+      1,
+      2
+    ],
+    "citations": [
+      {
+        "source": "03-timely-filing.md",
+        "rule": "Proof of an accepted submission inside the window \u2192 appeal with the clearinghouse acceptance report"
+      }
+    ]
+  }
+}

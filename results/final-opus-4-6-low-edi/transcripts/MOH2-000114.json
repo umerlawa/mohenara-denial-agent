@@ -1,0 +1,99 @@
+{
+  "case_id": "MOH2-000114",
+  "run_id": "final-opus-4-6-low-edi",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4509,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4883,
+    "cache_read_input_tokens": 32421,
+    "output_tokens": 738,
+    "output_tokens_details": {
+      "thinking_tokens": 84
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4883
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.071708175,
+  "cache_hit_rate": 0.869056,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "Both lines denied OA-18 (exact duplicate). The 835 carries CLP07 2624712696686, confirming an earlier adjudicated claim exists. No billing or modifier defect visible\u2014codes, modifiers (GP, KX), units, DOS all match what would have been on the original. This is a true duplicate submission. OA group means no patient liability. Original claim's disposition governs payment.",
+    "resolution": {
+      "root_cause": {
+        "family": "exact_duplicate",
+        "explanation": "Claim PA21184933 denied OA-18 on both lines. A prior claim with the same provider/member/DOS/procedures was already adjudicated (CLP07 2624712696686). This is a true duplicate submission."
+      },
+      "next_action": {
+        "path": "do_not_resubmit",
+        "detail": "Do not resubmit. Verify the original claim's payment status via portal/IVR using ICN 2624712696686. If paid, post payment and close. If denied, address that denial on its own terms."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CAS*OA*18*44.46 and CAS*OA*18*85.54 on both service lines\u2014exact duplicate denial",
+          "locator": "CAS segments under both SVC lines"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP07=2624712696686 confirms a prior adjudicated claim exists",
+          "locator": "CLP*PA21184933*4*130*0**MB*2624712696686"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "MOA***N111 \u2014 no appeal rights except duplicate claim/service issue",
+          "locator": "MOA segment"
+        },
+        {
+          "artifact": "ack_277ca.edi",
+          "fact": "STC*A2:20 \u2014 claim was accepted into adjudication (not front-end rejected)",
+          "locator": "STC segment"
+        }
+      ],
+      "denial": {
+        "group": "OA",
+        "carc": "18",
+        "rarc": null,
+        "level": "claim"
+      },
+      "denied_line_idxs": [
+        0,
+        1
+      ],
+      "citations": [
+        {
+          "source": "04-exact-duplicate.md",
+          "rule": "True duplicate \u2014 one service, billed once, sent twice. Disposition do_not_resubmit, family exact_duplicate. Hard-coded edit, MACs cannot override or bypass."
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "OA = liability not stated, not billable. Pursue wrong payer / duplicate / COB."
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"Both lines denied OA-18 (exact duplicate). The 835 carries CLP07 2624712696686, confirming an earlier adjudicated claim exists. No billing or modifier defect visible\u2014codes, modifiers (GP, KX), units, DOS all match what would have been on the original. This is a true duplicate submission. OA group means no patient liability. Original claim's disposition governs payment.\",\"resolution\":{\"root_cause\":{\"family\":\"exact_duplicate\",\"explanation\":\"Claim PA21184933 denied OA-18 on both lines. A prior claim with the same provider/member/DOS/procedures was already adjudicated (CLP07 2624712696686). This is a true duplicate submission.\"},\"next_action\":{\"path\":\"do_not_resubmit\",\"detail\":\"Do not resubmit. Verify the original claim's payment status via portal/IVR using ICN 2624712696686. If paid, post payment and close. If denied, address that denial on its own terms.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CAS*OA*18*44.46 and CAS*OA*18*85.54 on both service lines\u2014exact duplicate denial\",\"locator\":\"CAS segments under both SVC lines\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP07=2624712696686 confirms a prior adjudicated claim exists\",\"locator\":\"CLP*PA21184933*4*130*0**MB*2624712696686\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"MOA***N111 \u2014 no appeal rights except duplicate claim/service issue\",\"locator\":\"MOA segment\"},{\"artifact\":\"ack_277ca.edi\",\"fact\":\"STC*A2:20 \u2014 claim was accepted into adjudication (not front-end rejected)\",\"locator\":\"STC segment\"}],\"denial\":{\"group\":\"OA\",\"carc\":\"18\",\"rarc\":null,\"level\":\"claim\"},\"denied_line_idxs\":[0,1],\"citations\":[{\"source\":\"04-exact-duplicate.md\",\"rule\":\"True duplicate \u2014 one service, billed once, sent twice. Disposition do_not_resubmit, family exact_duplicate. Hard-coded edit, MACs cannot override or bypass.\"},{\"source\":\"00-group-codes.md\",\"rule\":\"OA = liability not stated, not billable. Pursue wrong payer / duplicate / COB.\"}]}}"
+}

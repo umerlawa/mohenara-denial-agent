@@ -1,0 +1,84 @@
+{
+  "case_id": "MOH2-000062",
+  "run_id": "probe-opus-4-6-max",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "max",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 6898,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5061,
+    "cache_read_input_tokens": 31983,
+    "output_tokens": 2185,
+    "output_tokens_details": {
+      "thinking_tokens": 1540
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5061
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.112483525,
+  "cache_hit_rate": 0.863332,
+  "model_output": {
+    "rationale": "835 shows all lines denied PR-27 with MOA N30. 271 confirms EB*6 (inactive) with eligibility end (DTP*357) 2025-05-31, DOS 2025-06-17 falls after termination. Filing indicator CI (commercial). No EB*R (no other payer). PR group = patient responsibility. No overrides apply (no QMB, no Medicaid, no successor payer, no ACA grace period). Per reference: CI, EB*6 + 357 before DOS, no successor, PR-27 \u2192 bill_patient.",
+    "status": "resolved",
+    "resolution": {
+      "root_cause": {
+        "family": "eligibility_terminated",
+        "explanation": "Patient's KEYSTONE COMMERCIAL HEALTH EPO coverage terminated 2025-05-31 per 271 (EB*6, DTP*357). DOS 2025-06-17 is 17 days after termination. No successor payer on file."
+      },
+      "next_action": {
+        "path": "bill_patient",
+        "detail": "Bill patient $204.23. PR-27 assigns liability; 271 confirms no active coverage on DOS and no other payer. Send patient statement with EOB copy."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All 4 lines denied PR-27 (expenses after coverage terminated); MOA N30 (patient ineligible); $204.23 patient responsibility.",
+          "locator": "CAS PR*27; MOA N30"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*6 (inactive), eligibility end DTP*357 = 2025-05-31, queried for DOS 2025-06-17. No EB*R (no other payer).",
+          "locator": "EB*6; DTP*357*20250531"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Filing indicator CI (commercial insurance); subscriber relationship 18 (self); payer responsibility P (primary).",
+          "locator": "SBR*P*18*CI"
+        }
+      ],
+      "denial": {
+        "group": "PR",
+        "carc": "27",
+        "rarc": "N30",
+        "level": "line"
+      },
+      "citations": [
+        {
+          "source": "05-eligibility-terminated.md",
+          "rule": "CI, EB*6 + 357 before DOS, no successor: PR-27 \u2192 bill_patient"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "PR = Patient Responsibility; billable after overrides cleared"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"rationale\":\"835 shows all lines denied PR-27 with MOA N30. 271 confirms EB*6 (inactive) with eligibility end (DTP*357) 2025-05-31, DOS 2025-06-17 falls after termination. Filing indicator CI (commercial). No EB*R (no other payer). PR group = patient responsibility. No overrides apply (no QMB, no Medicaid, no successor payer, no ACA grace period). Per reference: CI, EB*6 + 357 before DOS, no successor, PR-27 \u2192 bill_patient.\",\"status\":\"resolved\",\"resolution\":{\"root_cause\":{\"family\":\"eligibility_terminated\",\"explanation\":\"Patient's KEYSTONE COMMERCIAL HEALTH EPO coverage terminated 2025-05-31 per 271 (EB*6, DTP*357). DOS 2025-06-17 is 17 days after termination. No successor payer on file.\"},\"next_action\":{\"path\":\"bill_patient\",\"detail\":\"Bill patient $204.23. PR-27 assigns liability; 271 confirms no active coverage on DOS and no other payer. Send patient statement with EOB copy.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All 4 lines denied PR-27 (expenses after coverage terminated); MOA N30 (patient ineligible); $204.23 patient responsibility.\",\"locator\":\"CAS PR*27; MOA N30\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*6 (inactive), eligibility end DTP*357 = 2025-05-31, queried for DOS 2025-06-17. No EB*R (no other payer).\",\"locator\":\"EB*6; DTP*357*20250531\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Filing indicator CI (commercial insurance); subscriber relationship 18 (self); payer responsibility P (primary).\",\"locator\":\"SBR*P*18*CI\"}],\"denial\":{\"group\":\"PR\",\"carc\":\"27\",\"rarc\":\"N30\",\"level\":\"line\"},\"citations\":[{\"source\":\"05-eligibility-terminated.md\",\"rule\":\"CI, EB*6 + 357 before DOS, no successor: PR-27 \u2192 bill_patient\"},{\"source\":\"00-group-codes.md\",\"rule\":\"PR = Patient Responsibility; billable after overrides cleared\"}]}}"
+}

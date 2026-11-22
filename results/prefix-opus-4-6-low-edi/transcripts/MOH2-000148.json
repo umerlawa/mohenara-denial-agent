@@ -1,0 +1,55 @@
+{
+  "case_id": "MOH2-000148",
+  "run_id": "final-opus-4-6-low-edi",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 4290,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4709,
+    "cache_read_input_tokens": 31983,
+    "output_tokens": 1049,
+    "output_tokens_details": {
+      "thinking_tokens": 736
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4709
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.07882352499999999,
+  "cache_hit_rate": 0.871614,
+  "model_output": {
+    "status": "awaiting_human",
+    "rationale": "CO-29 (timely filing) on all lines, commercial payer (CI). DOS 2025-04-19; 837 created 2025-08-03 (~106 days). Many commercial plans enforce 90-day limits. N211 confirms no appeal on the merits. The only remedy is disputing the receipt date with proof of earlier submission. No clearinghouse report or prior submission evidence exists in these artifacts.",
+    "awaiting_human": {
+      "question": "Does the practice have a clearinghouse acceptance report (or payer portal confirmation) showing this claim was originally transmitted within the payer's filing deadline? If so, what date was it accepted?",
+      "why_needed": "CO-29 is unappealable on the merits. The only path to payment is proving an earlier timely submission existed \u2014 without that proof, the claim must be written off. With it, an appeal disputing the receipt date can succeed.",
+      "blocks": [
+        "root_cause.family",
+        "next_action.path"
+      ],
+      "asked_of": "internal"
+    }
+  },
+  "raw_text": "{\"status\":\"awaiting_human\",\"rationale\":\"CO-29 (timely filing) on all lines, commercial payer (CI). DOS 2025-04-19; 837 created 2025-08-03 (~106 days). Many commercial plans enforce 90-day limits. N211 confirms no appeal on the merits. The only remedy is disputing the receipt date with proof of earlier submission. No clearinghouse report or prior submission evidence exists in these artifacts.\",\"awaiting_human\":{\"question\":\"Does the practice have a clearinghouse acceptance report (or payer portal confirmation) showing this claim was originally transmitted within the payer's filing deadline? If so, what date was it accepted?\",\"why_needed\":\"CO-29 is unappealable on the merits. The only path to payment is proving an earlier timely submission existed \u2014 without that proof, the claim must be written off. With it, an appeal disputing the receipt date can succeed.\",\"blocks\":[\"root_cause.family\",\"next_action.path\"],\"asked_of\":\"internal\"}}"
+}

@@ -1,0 +1,410 @@
+<meta charset="utf-8"><title>Mohenara — internal data</title>
+<style>
+:root{--bg:#faf9f7;--panel:#fff;--ink:#1c1a17;--muted:#6b655c;--line:#e5e1da;
+--go:#8a4b2a;--bad:#a4342a;--ok:#2f6b46;--warn:#8a6a1f}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+font:15px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{display:flex;align-items:center;gap:18px;padding:14px 22px;
+border-bottom:1px solid var(--line);background:var(--panel);position:sticky;top:0;z-index:5}
+h1{font-size:16px;margin:0;letter-spacing:-.01em}
+nav{display:flex;gap:4px}
+nav button{background:none;border:0;padding:7px 13px;border-radius:7px;cursor:pointer;
+font:inherit;color:var(--muted)}
+nav button.on{background:var(--ink);color:#fff}
+#spend{margin-left:auto;font-size:13px;color:var(--muted)}
+main{max-width:1200px;margin:22px auto;padding:0 22px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:11px;
+padding:18px;margin-bottom:16px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-weight:600;font-size:11px;text-transform:uppercase;
+letter-spacing:.06em;color:var(--muted);padding:7px 9px;border-bottom:1px solid var(--line)}
+td{padding:8px 9px;border-bottom:1px solid var(--line);vertical-align:top}
+tr.click{cursor:pointer}
+tr.click:hover td{background:#f6f4f1}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.field{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.muted{color:var(--muted)}
+.bad{color:var(--bad);font-weight:600}
+.ok{color:var(--ok);font-weight:600}
+.warn{color:var(--warn);font-weight:600}
+code{background:#f2efea;padding:1px 5px;border-radius:4px;font-size:12.5px}
+pre{background:#f2efea;padding:12px;border-radius:8px;overflow-x:auto;font-size:12.5px}
+.bar{height:6px;background:#eee9e2;border-radius:3px;overflow:hidden;min-width:70px}
+.bar>i{display:block;height:100%;background:var(--ok)}
+input,select{padding:8px;border:1px solid var(--line);border-radius:7px;font:inherit;background:#fff}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+</style>
+
+<header>
+  <h1>Mohenara — internal data</h1>
+  <nav>
+    <button data-tab="runs" class="on">Runs</button>
+    <button data-tab="taxonomy">Failure kinds</button>
+    <button data-tab="confusion">Confusion</button>
+    <button data-tab="families">Families</button>
+    <button data-tab="parked">Refusals</button>
+    <button data-tab="economics">Economics</button>
+    <button data-tab="reference">Reference use</button>
+    <button data-tab="regress">Regressions</button>
+    <button data-tab="failures">Failures</button>
+    <button data-tab="case">Case lookup</button>
+    <button data-tab="notes">Notes</button>
+  </nav>
+  <div id="spend"></div>
+</header>
+
+<main>
+  <section id="tab-runs"></section>
+  <section id="tab-families" hidden></section>
+  <section id="tab-failures" hidden></section>
+  <section id="tab-case" hidden>
+    <div class="panel">
+      <div class="row">
+        <div><label class="field">Case ID</label><br>
+          <input id="caseId" placeholder="MOH2-000009" size="18"></div>
+        <button class="go" id="lookup" style="padding:9px 16px;border:0;border-radius:8px;
+          background:var(--go);color:#fff;cursor:pointer;font:inherit">Look up</button>
+      </div>
+      <p class="muted" style="margin:10px 0 0">Every run that touched the case: what it
+      answered, the evidence it cited, and the scorer's verdict where one exists.</p>
+    </div>
+    <div id="caseOut"></div>
+  </section>
+  <section id="tab-taxonomy" hidden></section>
+  <section id="tab-confusion" hidden></section>
+  <section id="tab-parked" hidden></section>
+  <section id="tab-economics" hidden></section>
+  <section id="tab-reference" hidden></section>
+  <section id="tab-regress" hidden></section>
+  <section id="tab-notes" hidden></section>
+</main>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const pct = v => v === null || v === undefined ? '—' : (v * 100).toFixed(1) + '%';
+const usd = v => '$' + Number(v || 0).toFixed(4);
+const int = v => Number(v || 0).toLocaleString();
+const TABS = ['runs','taxonomy','confusion','families','parked','economics',
+  'reference','regress','failures','case','notes'];
+
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('nav button').forEach(x => x.classList.toggle('on', x === b));
+  TABS.forEach(t => $('#tab-' + t).hidden = (t !== b.dataset.tab));
+  ({runs: loadRuns, families: loadFamilies, failures: loadFailures, notes: loadNotes,
+    taxonomy: loadTaxonomy, confusion: loadConfusion, parked: loadParked,
+    economics: loadEconomics, reference: loadReference, regress: loadRegress}
+    [b.dataset.tab] || (() => {}))();
+});
+
+// Both budgets, because they are independent and a combined figure would
+// misreport each of them.
+async function loadSpend(){
+  const s = await (await fetch('/api/spend')).json();
+  $('#spend').innerHTML = s.providers.map(p => {
+    const frac = p.usd / p.refuse_at;
+    const cls = frac > 0.9 ? 'bad' : frac > 0.75 ? 'warn' : '';
+    return `<span class="${cls}">${p.name} ${usd(p.usd)} / $${p.refuse_at.toFixed(0)}</span>
+            <span class="muted">· ${int(p.calls)} calls</span>`;
+  }).join(' &nbsp;|&nbsp; ');
+}
+
+async function loadRuns(){
+  const runs = await (await fetch('/api/runs')).json();
+  runs.sort((a, b) => (b.run_id > a.run_id ? 1 : -1));
+  $('#tab-runs').innerHTML = `<div class="panel">
+    <table><thead><tr>
+      <th>run</th><th>model</th><th>fmt</th><th>effort</th><th class="num">cases</th>
+      <th class="num">cost</th><th class="num">$/case</th><th>counts</th>
+    </tr></thead><tbody>${runs.map(r => `
+      <tr class="click" data-run="${esc(r.run_id)}">
+        <td><code>${esc(r.run_id)}</code></td>
+        <td>${esc((r.model || '').replace('us.anthropic.claude-','').replace('claude-',''))}</td>
+        <td>${esc(r.input_format || '')}</td>
+        <td>${esc(r.effort || '')}</td>
+        <td class="num">${int(r.n_cases)}</td>
+        <td class="num">${usd(r.cost_usd)}</td>
+        <td class="num">${usd(r.cost_per_case_usd)}</td>
+        <td class="muted">${r.counts ? Object.entries(r.counts)
+            .filter(([,v]) => v).map(([k,v]) => `${k} ${v}`).join(', ') : ''}</td>
+      </tr>`).join('')}</tbody></table>
+    <p class="muted" style="margin:12px 0 0">Costs are summed from each prediction's own
+    usage block, which the replay suite checks against the raw API response. Click a run
+    for its cases.</p></div>
+    <div id="runDetail"></div>`;
+  $('#tab-runs').querySelectorAll('tr.click').forEach(tr =>
+    tr.onclick = () => showRun(tr.dataset.run));
+}
+
+async function showRun(runId){
+  const d = await (await fetch(`/api/runs/${runId}`)).json();
+  const preds = d.predictions || [];
+  $('#runDetail').innerHTML = `<div class="panel">
+    <div class="field">${esc(runId)}</div>
+    <table><thead><tr><th>case</th><th>status</th><th>family</th><th>path</th>
+      <th class="num">cost</th><th class="num">out tok</th><th class="num">cache read</th>
+    </tr></thead><tbody>${preds.map(p => `
+      <tr class="click" data-case="${esc(p.case_id)}">
+        <td><code>${esc(p.case_id)}</code></td>
+        <td>${p.status === 'awaiting_human'
+              ? '<span class="warn">awaiting human</span>' : esc(p.status)}</td>
+        <td>${esc(p.family ?? '')}</td><td>${esc(p.path ?? '')}</td>
+        <td class="num">${usd(p.usage?.cost_usd)}</td>
+        <td class="num">${int(p.usage?.output_tokens)}</td>
+        <td class="num">${int(p.usage?.cache_read_input_tokens)}</td>
+      </tr>`).join('')}</tbody></table></div>`;
+  $('#runDetail').querySelectorAll('tr.click').forEach(tr => tr.onclick = () => {
+    $('#caseId').value = tr.dataset.case;
+    document.querySelector('nav button[data-tab=case]').click();
+    lookupCase();
+  });
+}
+
+async function loadFamilies(){
+  const fams = await (await fetch('/api/families')).json();
+  $('#tab-families').innerHTML = `<div class="panel">
+    <table><thead><tr><th>family</th><th class="num">correct</th><th class="num">total</th>
+      <th class="num">accuracy</th><th style="width:180px"></th><th>per run</th>
+    </tr></thead><tbody>${fams.map(f => {
+      const a = f.accuracy ?? 0;
+      const cls = a >= 0.85 ? 'ok' : a >= 0.6 ? 'warn' : 'bad';
+      return `<tr><td><code>${esc(f.family)}</code></td>
+        <td class="num">${f.correct}</td><td class="num">${f.total}</td>
+        <td class="num ${cls}">${pct(f.accuracy)}</td>
+        <td><div class="bar"><i style="width:${(a*100).toFixed(0)}%"></i></div></td>
+        <td class="muted" style="font-size:12.5px">${f.runs.map(r =>
+          `${esc(r.run_id.replace(/^(final|frontier|mx)-/,''))} ${pct(r.accuracy)}`).join(' · ')}</td>
+      </tr>`; }).join('')}</tbody></table>
+    <p class="muted" style="margin:12px 0 0">Pooled across every scored run, so a family
+    appearing in several runs is counted in each. A headline accuracy hides a weak family;
+    this is where one is legible.</p></div>`;
+}
+
+async function loadFailures(){
+  const fs = await (await fetch('/api/failures')).json();
+  $('#tab-failures').innerHTML = `<div class="panel">
+    <p class="muted" style="margin:0 0 12px">Grouped by case, not by run. A case wrong in
+    <em>every</em> run is a reference or reasoning gap; one wrong in a single format is a
+    rendering or parsing gap. Those need different fixes.</p>
+    <table><thead><tr><th>case</th><th class="num">runs failed</th><th>expected</th>
+      <th>reasons</th></tr></thead><tbody>${fs.map(f => `
+      <tr class="click" data-case="${esc(f.case_id)}">
+        <td><code>${esc(f.case_id)}</code></td>
+        <td class="num ${f.n_runs_failed > 2 ? 'bad' : ''}">${f.n_runs_failed}</td>
+        <td><code>${esc(f.expected_family)}</code> / <code>${esc(f.expected_path)}</code></td>
+        <td class="muted">${Object.entries(f.reason_counts)
+            .map(([k,v]) => `${esc(k)} ×${v}`).join(', ')}</td>
+      </tr>`).join('')}</tbody></table></div>`;
+  $('#tab-failures').querySelectorAll('tr.click').forEach(tr => tr.onclick = () => {
+    $('#caseId').value = tr.dataset.case;
+    document.querySelector('nav button[data-tab=case]').click();
+    lookupCase();
+  });
+}
+
+async function lookupCase(){
+  const id = $('#caseId').value.trim();
+  if (!id) return;
+  const res = await fetch(`/api/case/${id}`);
+  const d = await res.json();
+  if (!res.ok){ $('#caseOut').innerHTML = `<div class="panel bad">${esc(d.detail)}</div>`; return; }
+  $('#caseOut').innerHTML = d.runs.map(r => `<div class="panel">
+    <div class="row" style="justify-content:space-between">
+      <div class="field">${esc(r.run_id)}</div>
+      <div>${r.verdict ? (r.verdict.correct
+          ? '<span class="ok">scored correct</span>'
+          : `<span class="bad">scored wrong — ${esc(r.verdict.reason)}</span>`)
+        : '<span class="muted">not scored</span>'}</div>
+    </div>
+    ${r.status === 'awaiting_human'
+      ? `<p><span class="warn">Awaiting human.</span> ${esc(r.question)}</p>`
+      : `<p><b>${esc(r.family)}</b> / <b>${esc(r.path)}</b><br>
+         ${esc(r.explanation)}<br><span class="muted">${esc(r.detail)}</span></p>`}
+    ${r.verdict ? `<p class="muted">expected <code>${esc(r.verdict.expected_family)}</code>
+      / <code>${esc(r.verdict.expected_path)}</code></p>` : ''}
+    ${r.evidence?.length ? `<div class="field">Evidence it cited</div><ul>${r.evidence.map(e =>
+      `<li><code>${esc(e.artifact)}</code> ${esc(e.fact)}</li>`).join('')}</ul>` : ''}
+    ${r.citations?.length ? `<div class="field">Reference cited</div><ul>${r.citations.map(c =>
+      `<li><code>${esc(c.source)}</code> ${esc(c.rule)}</li>`).join('')}</ul>` : ''}
+    <div class="muted" style="font-size:12.5px;margin-top:8px">
+      ${usd(r.usage?.cost_usd)} · out ${int(r.usage?.output_tokens)} tok ·
+      cache read ${int(r.usage?.cache_read_input_tokens)}
+      ${r.has_transcript ? ` · transcript: <code>results/${esc(r.run_id)}/transcripts/${esc(d.case_id)}.json</code>` : ''}
+    </div></div>`).join('');
+}
+$('#lookup').onclick = lookupCase;
+$('#caseId').addEventListener('keydown', e => { if (e.key === 'Enter') lookupCase(); });
+
+async function loadNotes(){
+  const notes = await (await fetch('/api/notes')).json();
+  $('#tab-notes').innerHTML = `<div class="panel">
+    <p class="muted" style="margin:0 0 12px">Conclusions drawn from this data, written
+    alongside it in <code>results/</code>.</p>
+    <table><thead><tr><th>title</th><th>path</th><th class="num">bytes</th>
+    </tr></thead><tbody>${notes.map(n => `
+      <tr class="click" data-path="${esc(n.path)}"><td>${esc(n.title)}</td>
+        <td><code>${esc(n.path)}</code></td><td class="num">${int(n.bytes)}</td></tr>`)
+      .join('')}</tbody></table></div><div id="noteOut"></div>`;
+  $('#tab-notes').querySelectorAll('tr.click').forEach(tr => tr.onclick = async () => {
+    const d = await (await fetch(`/api/note/${tr.dataset.path}`)).json();
+    $('#noteOut').innerHTML = `<div class="panel"><div class="field">${esc(d.path)}</div>
+      <pre>${esc(d.markdown)}</pre></div>`;
+  });
+}
+
+
+// ---- failure taxonomy -----------------------------------------------------
+// The headline accuracy treats every failure as the same thing. It is not: a
+// routing error wants a rule, a refusal may want nothing at all, and a missing
+// prediction is infrastructure wearing a wrong answer's clothes.
+async function loadTaxonomy(){
+  const d = await (await fetch('/api/failure-taxonomy')).json();
+  $('#tab-taxonomy').innerHTML = `<div class="panel">
+    <p class="muted" style="margin:0 0 14px">${d.total} failures across every scored run,
+    sorted by what kind of problem each actually is.</p>
+    ${d.buckets.map(b => `<div style="margin-bottom:16px">
+      <div class="row" style="justify-content:space-between">
+        <b>${esc(b.kind)}</b><span class="num">${b.n} · ${pct(b.share)}</span></div>
+      <div class="bar" style="margin:5px 0"><i style="width:${(b.share*100).toFixed(1)}%;
+        background:${b.kind.includes('routed wrong') ? 'var(--bad)'
+          : b.kind.includes('refused') ? 'var(--warn)' : '#b9b2a6'}"></i></div>
+      <div class="muted" style="font-size:12.5px">${b.cases.slice(0,6).map(c =>
+        `<code>${esc(c.case_id)}</code>`).join(' ')}${b.cases.length > 6
+          ? ` +${b.cases.length - 6} more` : ''}</div></div>`).join('')}
+    <p class="muted" style="margin:16px 0 0">Read the routing bucket first. Those are cases
+    where the system understood the denial and chose the wrong remedy — the only bucket a
+    reference-card change can move.</p></div>`;
+}
+
+// ---- confusion ------------------------------------------------------------
+async function loadConfusion(){
+  const field = window.__confField || 'path';
+  const d = await (await fetch(`/api/confusion?field=${field}`)).json();
+  const off = d.cells.filter(c => c.expected !== c.got);
+  $('#tab-confusion').innerHTML = `<div class="panel">
+    <div class="row" style="justify-content:space-between;margin-bottom:12px">
+      <div><b>${d.diagonal} of ${d.total} correct</b>
+        <span class="muted">on ${esc(d.field === 'path' ? 'next_action' : 'root cause family')}</span></div>
+      <div><button class="go" id="flipField" style="padding:7px 14px;border:0;border-radius:7px;
+        background:var(--ink);color:#fff;cursor:pointer;font:inherit">
+        show ${d.field === 'path' ? 'family' : 'next_action'}</button></div>
+    </div>
+    <table><thead><tr><th>expected</th><th>predicted</th><th class="num">n</th>
+      <th>why it matters</th></tr></thead><tbody>${off.map(c => `
+      <tr><td><code>${esc(c.expected)}</code></td>
+        <td><code>${esc(c.got)}</code></td>
+        <td class="num ${c.costly ? 'bad' : ''}">${c.n}</td>
+        <td class="${c.costly ? 'bad' : 'muted'}" style="font-size:12.5px">
+          ${esc(c.costly || '')}</td></tr>`).join('')}</tbody></table>
+    <p class="muted" style="margin:12px 0 0">Only off-diagonal cells are listed. Rows flagged
+    in red are asymmetric errors: resubmitting when you should not draws a second denial and
+    burns a filing window, while the reverse merely leaves money on the table.</p></div>`;
+  $('#flipField').onclick = () => {
+    window.__confField = d.field === 'path' ? 'family' : 'path'; loadConfusion(); };
+}
+
+// ---- refusals -------------------------------------------------------------
+async function loadParked(){
+  const d = await (await fetch('/api/parked')).json();
+  $('#tab-parked').innerHTML = `<div class="panel">
+    <p class="muted" style="margin:0 0 14px">${d.total} refusals. This is the product's
+    distinguishing behaviour, so it gets its own view: whether the refusals cluster on one
+    family, and who the system wants asked.</p>
+    <div class="row" style="gap:34px;align-items:flex-start">
+      <div><div class="field">By expected family</div>
+        <table><tbody>${d.by_expected_family.map(([f,n]) =>
+          `<tr><td><code>${esc(f)}</code></td><td class="num">${n}</td></tr>`).join('')}</tbody></table></div>
+      <div><div class="field">Who to ask</div>
+        <table><tbody>${d.by_asked_of.map(([a,n]) =>
+          `<tr><td>${esc(a)}</td><td class="num">${n}</td></tr>`).join('')}</tbody></table></div>
+    </div></div>
+    <div class="panel"><div class="field">The questions themselves</div>
+    <table><thead><tr><th>case</th><th>ask</th><th>question</th></tr></thead><tbody>
+    ${d.questions.slice(0,40).map(q => `<tr class="click" data-case="${esc(q.case_id)}">
+      <td><code>${esc(q.case_id)}</code></td><td>${esc(q.asked_of||'')}</td>
+      <td style="font-size:13px">${esc((q.question||'').slice(0,170))}</td></tr>`).join('')}
+    </tbody></table></div>`;
+  $('#tab-parked').querySelectorAll('tr.click').forEach(tr => tr.onclick = () => {
+    $('#caseId').value = tr.dataset.case;
+    document.querySelector('nav button[data-tab=case]').click(); lookupCase(); });
+}
+
+// ---- economics ------------------------------------------------------------
+async function loadEconomics(){
+  const rows = await (await fetch('/api/economics')).json();
+  $('#tab-economics').innerHTML = `<div class="panel">
+    <table><thead><tr><th>model</th><th>effort</th><th>format</th><th class="num">cases</th>
+      <th class="num">$/case</th><th class="num">total</th><th class="num">out tok/case</th>
+      <th class="num">cache hit</th></tr></thead><tbody>${rows.map(r => `
+      <tr><td><code>${esc(r.model.replace('us.anthropic.claude-','').replace('claude-',''))}</code></td>
+        <td>${esc(r.effort)}</td><td>${esc(r.format)}</td>
+        <td class="num">${int(r.cases)}</td>
+        <td class="num">${usd(r.cost_per_case)}</td>
+        <td class="num">${usd(r.cost)}</td>
+        <td class="num">${int(r.out_per_case)}</td>
+        <td class="num ${r.cache_hit_rate < 0.6 ? 'bad' : r.cache_hit_rate < 0.8 ? 'warn' : 'ok'}">
+          ${pct(r.cache_hit_rate)}</td></tr>`).join('')}</tbody></table>
+    <p class="muted" style="margin:12px 0 0">Cache hit rate is the number to watch. The prompt
+    prefix is engineered to be cacheable; a drop means that design has quietly stopped working,
+    and it shows up as cost long before it shows up as anything else.</p></div>`;
+}
+
+// ---- reference usage ------------------------------------------------------
+async function loadReference(){
+  const d = await (await fetch('/api/reference-usage')).json();
+  $('#tab-reference').innerHTML = `<div class="panel">
+    ${d.never_cited.length
+      ? `<p class="bad">Never cited: ${d.never_cited.map(c => `<code>${esc(c)}</code>`).join(' ')}
+         — dead weight in a prefix paid for on every call, or a rule the system never reaches for.</p>`
+      : '<p class="ok" style="margin:0 0 12px">Every runtime card is cited at least once.</p>'}
+    <table><thead><tr><th>card</th><th class="num">citations</th><th>in prefix</th>
+      <th>families it decides</th></tr></thead><tbody>${d.cards.map(c => `
+      <tr><td><code>${esc(c.source)}</code></td><td class="num">${int(c.citations)}</td>
+        <td>${c.in_runtime_prefix ? 'yes' : '<span class="muted">upstream research</span>'}</td>
+        <td class="muted" style="font-size:12.5px">${c.top_families.map(([f,n]) =>
+          `${esc(f)} ×${n}`).join(', ')}</td></tr>`).join('')}</tbody></table></div>`;
+}
+
+// ---- regressions ----------------------------------------------------------
+async function loadRegress(){
+  const runs = (await (await fetch('/api/runs')).json()).map(r => r.run_id).sort();
+  const opts = runs.map(r => `<option>${esc(r)}</option>`).join('');
+  $('#tab-regress').innerHTML = `<div class="panel">
+    <div class="row"><div><label class="field">Baseline</label><br>
+      <select id="rBase">${opts}</select></div>
+      <div><label class="field">Candidate</label><br><select id="rCand">${opts}</select></div>
+      <button class="go" id="rGo" style="padding:9px 16px;border:0;border-radius:8px;
+        background:var(--go);color:#fff;cursor:pointer;font:inherit">Compare</button></div>
+    <p class="muted" style="margin:10px 0 0">Two runs can share a headline accuracy while half
+    the cases flipped. This says whether a change helped, and where.</p></div>
+    <div id="rOut"></div>`;
+  $('#rGo').onclick = async () => {
+    const b = $('#rBase').value, c = $('#rCand').value;
+    const res = await fetch(`/api/regressions?baseline=${b}&candidate=${c}`);
+    const d = await res.json();
+    if (!res.ok){ $('#rOut').innerHTML = `<div class="panel bad">${esc(d.detail)}</div>`; return; }
+    $('#rOut').innerHTML = `<div class="panel">
+      <p><b>${d.shared_cases}</b> shared cases ·
+        baseline <b>${d.baseline_correct}</b> · candidate <b>${d.candidate_correct}</b> ·
+        net <b class="${d.net > 0 ? 'ok' : d.net < 0 ? 'bad' : ''}">${d.net > 0 ? '+' : ''}${d.net}</b></p>
+      ${d.not_attempted_by_one_side ? `<p class="muted" style="margin:-6px 0 12px">
+        <b>${d.not_attempted_by_one_side}</b> further cases are excluded: one of the two runs
+        never reached them, so a difference there is a throttle or a budget stop rather than
+        an effect of the change. Counting them once turned this net of ${d.net} into &minus;25.
+        <span title="${esc(d.not_attempted_ids.join(', '))}">hover for the ids</span></p>` : ''}
+      <div class="row" style="align-items:flex-start;gap:34px">
+        <div style="flex:1"><div class="field ok">Fixed (${d.fixed.length})</div>
+          <table><tbody>${d.fixed.map(f => `<tr><td><code>${esc(f.case_id)}</code></td>
+            <td class="muted">was ${esc(f.was)}</td></tr>`).join('') || '<tr><td class="muted">none</td></tr>'}</tbody></table></div>
+        <div style="flex:1"><div class="field bad">Broke (${d.broke.length})</div>
+          <table><tbody>${d.broke.map(f => `<tr><td><code>${esc(f.case_id)}</code></td>
+            <td class="muted">now ${esc(f.now)}, expected ${esc(f.expected)}</td></tr>`).join('')
+            || '<tr><td class="muted">none</td></tr>'}</tbody></table></div>
+      </div></div>`;
+  };
+}
+
+loadSpend(); loadRuns();
+</script>

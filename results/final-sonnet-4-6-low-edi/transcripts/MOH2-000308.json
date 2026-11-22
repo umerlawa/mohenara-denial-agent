@@ -1,0 +1,102 @@
+{
+  "case_id": "MOH2-000308",
+  "run_id": "final-sonnet-4-6-low-edi",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 5139,
+  "usage": {
+    "input_tokens": 3,
+    "cache_creation_input_tokens": 6822,
+    "cache_read_input_tokens": 68742,
+    "output_tokens": 2388,
+    "output_tokens_details": {
+      "thinking_tokens": 685
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 6822
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.09023750999999999,
+  "cache_hit_rate": 0.909683,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All five lines denied CO-4/N822. CPTs 97110, 97112, 97140, 97530, 97535 are always-therapy codes; none carry a GP/GO/GN discipline modifier in the 837P SV1 segments. Submit a new original claim (CLM05-3=1) with GP appended to every line. DOS 2026-01-19 \u2014 Medicare 1-year filing window open until 2027-01-19; act promptly.",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_therapy_modifier",
+        "explanation": "All five SV1 lines (97110, 97112, 97140, 97530, 97535) were submitted without a therapy discipline modifier (GP/GO/GN). CARC 4 + N822 on always-therapy CPTs = returned unprocessable."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Submit a new original claim (CLM05-3=1, no REF*F8) with modifier GP appended to all five lines. Do not use frequency 7 or appeal \u2014 CO-4/N822 is unprocessable, no appeal rights."
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All five SVC lines carry CAS*CO*4 and LQ*HE*N822 \u2014 missing required modifier.",
+          "locator": "CAS*CO*4*49.94 through CAS*CO*4*50.53, LQ*HE*N822 on each"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "SV1 segments for all five lines (97110, 97112, 97140, 97530, 97535) contain no GP/GO/GN modifier.",
+          "locator": "LX*1\u2013LX*5, SV1 elements"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CO-4 + N822 on always-therapy CPTs = returned unprocessable; remedy is new original CLM05-3=1 with modifier appended.",
+          "locator": "08-therapy-modifiers.md \u00a7(a)"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "Services documented under PT plan of care \u2014 GP modifier applies to all lines.",
+          "locator": "PT treatment note 2026-01-19"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "4",
+        "rarc": "N822",
+        "level": "line"
+      },
+      "citations": [
+        {
+          "source": "08-therapy-modifiers.md",
+          "rule": "CO-4 + N822 on always-therapy CPTs = unprocessable; new original claim with GP/GO/GN; no appeal rights"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Unprocessable/front-end rejected \u2192 CLM05-3=1, no REF*F8"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All five lines denied CO-4/N822. CPTs 97110, 97112, 97140, 97530, 97535 are always-therapy codes; none carry a GP/GO/GN discipline modifier in the 837P SV1 segments. Submit a new original claim (CLM05-3=1) with GP appended to every line. DOS 2026-01-19 \u2014 Medicare 1-year filing window open until 2027-01-19; act promptly.\",\"resolution\":{\"root_cause\":{\"family\":\"missing_therapy_modifier\",\"explanation\":\"All five SV1 lines (97110, 97112, 97140, 97530, 97535) were submitted without a therapy discipline modifier (GP/GO/GN). CARC 4 + N822 on always-therapy CPTs = returned unprocessable.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Submit a new original claim (CLM05-3=1, no REF*F8) with modifier GP appended to all five lines. Do not use frequency 7 or appeal \u2014 CO-4/N822 is unprocessable, no appeal rights.\"},\"denied_line_idxs\":[0,1,2,3,4],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All five SVC lines carry CAS*CO*4 and LQ*HE*N822 \u2014 missing required modifier.\",\"locator\":\"CAS*CO*4*49.94 through CAS*CO*4*50.53, LQ*HE*N822 on each\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"SV1 segments for all five lines (97110, 97112, 97140, 97530, 97535) contain no GP/GO/GN modifier.\",\"locator\":\"LX*1\u2013LX*5, SV1 elements\"},{\"artifact\":\"reference\",\"fact\":\"CO-4 + N822 on always-therapy CPTs = returned unprocessable; remedy is new original CLM05-3=1 with modifier appended.\",\"locator\":\"08-therapy-modifiers.md \u00a7(a)\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"Services documented under PT plan of care \u2014 GP modifier applies to all lines.\",\"locator\":\"PT treatment note 2026-01-19\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"4\",\"rarc\":\"N822\",\"level\":\"line\"},\"citations\":[{\"source\":\"08-therapy-modifiers.md\",\"rule\":\"CO-4 + N822 on always-therapy CPTs = unprocessable; new original claim with GP/GO/GN; no appeal rights\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Unprocessable/front-end rejected \u2192 CLM05-3=1, no REF*F8\"}]}}"
+}

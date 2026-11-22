@@ -1,0 +1,85 @@
+{
+  "case_id": "MOH2-000584",
+  "run_id": "final-sonnet-4-6-low-edi",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4846,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5075,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1054,
+    "output_tokens_details": {
+      "thinking_tokens": 354
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5075
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.048808485,
+  "cache_hit_rate": 0.862128,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All three lines adjudicated and paid at fee schedule rates. CO-45 is the contractual write-off; PR-2 is standard Part B coinsurance. 271 confirms active MB coverage (EB*1, effective 2024-01-01) for DOS 2026-01-16. No denial code present. Routine AR: collect $17.90 coinsurance from patient.",
+    "resolution": {
+      "root_cause": {
+        "family": "none",
+        "explanation": "Claim paid in full at fee schedule. CO-45 = contractual adjustment; PR-2 = Part B coinsurance. No denial."
+      },
+      "next_action": {
+        "path": "none",
+        "detail": "Post payment of $71.61. Bill patient $17.90 PR-2 coinsurance in normal AR cycle \u2014 not a denial remedy."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP status 1 (processed as primary); paid $71.61 of $132.14 billed; all three SVC lines carry CAS CO-45 (contractual) and CAS PR-2 (coinsurance) only \u2014 no denial CARC",
+          "locator": "CLP*PA26217736*1*132.14*71.61"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*1 (active coverage) for NOVITAS SOLUTIONS MEDICARE PART B FFS, effective 2024-01-01, queried for DOS 2026-01-16",
+          "locator": "EB*1*IND*30"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "All three therapy lines carry GP modifier; filing indicator MB (Medicare Part B)",
+          "locator": "SBR*P*18*******MB; SV1*HC:97110:GP, 97112:GP, 97140:GP"
+        }
+      ],
+      "denied_line_idxs": [],
+      "citations": [
+        {
+          "source": "00-group-codes.md",
+          "rule": "CO = contractual obligation, provider write-off; PR = patient responsibility, billable in normal course \u2014 neither is a denial requiring rework"
+        },
+        {
+          "source": "01-carc-rarc-index.md",
+          "rule": "CARC 45 = exceeds fee schedule, contractual write-off; no appeal basis"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All three lines adjudicated and paid at fee schedule rates. CO-45 is the contractual write-off; PR-2 is standard Part B coinsurance. 271 confirms active MB coverage (EB*1, effective 2024-01-01) for DOS 2026-01-16. No denial code present. Routine AR: collect $17.90 coinsurance from patient.\",\"resolution\":{\"root_cause\":{\"family\":\"none\",\"explanation\":\"Claim paid in full at fee schedule. CO-45 = contractual adjustment; PR-2 = Part B coinsurance. No denial.\"},\"next_action\":{\"path\":\"none\",\"detail\":\"Post payment of $71.61. Bill patient $17.90 PR-2 coinsurance in normal AR cycle \u2014 not a denial remedy.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP status 1 (processed as primary); paid $71.61 of $132.14 billed; all three SVC lines carry CAS CO-45 (contractual) and CAS PR-2 (coinsurance) only \u2014 no denial CARC\",\"locator\":\"CLP*PA26217736*1*132.14*71.61\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*1 (active coverage) for NOVITAS SOLUTIONS MEDICARE PART B FFS, effective 2024-01-01, queried for DOS 2026-01-16\",\"locator\":\"EB*1*IND*30\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"All three therapy lines carry GP modifier; filing indicator MB (Medicare Part B)\",\"locator\":\"SBR*P*18*******MB; SV1*HC:97110:GP, 97112:GP, 97140:GP\"}],\"denied_line_idxs\":[],\"citations\":[{\"source\":\"00-group-codes.md\",\"rule\":\"CO = contractual obligation, provider write-off; PR = patient responsibility, billable in normal course \u2014 neither is a denial requiring rework\"},{\"source\":\"01-carc-rarc-index.md\",\"rule\":\"CARC 45 = exceeds fee schedule, contractual write-off; no appeal basis\"}]}}"
+}

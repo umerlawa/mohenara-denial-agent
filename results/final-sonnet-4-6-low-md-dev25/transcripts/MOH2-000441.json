@@ -1,0 +1,95 @@
+{
+  "case_id": "MOH2-000441",
+  "run_id": "final-sonnet-4-6-low-md-dev25",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 6562,
+  "usage": {
+    "input_tokens": 3,
+    "cache_creation_input_tokens": 5847,
+    "cache_read_input_tokens": 68418,
+    "output_tokens": 1639,
+    "output_tokens_details": {
+      "thinking_tokens": 98
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5847
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.073750215,
+  "cache_hit_rate": 0.921231,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All three lines denied CO-4/N822: required therapy discipline modifier (GP/GO/GN) absent on 97110, 97140, and 97530. Chart note confirms PT services under a PT plan of care. Remedy is a new original claim (CLM05-3=1) with GP appended to each line \u2014 not a corrected 7, which Medicare Part B does not accept.",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_therapy_modifier",
+        "explanation": "97110, 97140, and 97530 billed without GP modifier. CO-4/N822 on all three lines. Chart note confirms PT services; GP (physical therapy plan of care) required on each line."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Submit new original claim CLM05-3=1 (no REF*F8) with modifier GP appended to all three lines. Do not use frequency 7 \u2014 Medicare Part B rejects it. File promptly; the 1-year clock runs from DOS 2026-02-19."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Lines 1\u20133 carry CO-4 + N822 ($189.68 total denied); no payment.",
+          "locator": "SVC/CAS segments, lines PA24980623L1\u2013L3"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "97110, 97140, 97530 billed with no therapy discipline modifier on any line.",
+          "locator": "Loop 2400 SV101, all three service lines"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "Note documents PT therapeutic exercise, manual therapy, and therapeutic activities \u2014 all physical therapy services requiring GP.",
+          "locator": "2026-02-19 treatment note"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CO-4/N822 on always-therapy CPTs = unprocessable; remedy is new original CLM05-3=1 with modifier; frequency 7 rejected on Medicare Part B.",
+          "locator": "08-therapy-modifiers.md \u00a7(a); 02-resubmission-frequency.md \u00a76"
+        }
+      ],
+      "denied_line_idxs": [
+        0,
+        1,
+        2
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "4",
+        "rarc": "N822",
+        "level": "line"
+      },
+      "citations": [
+        {
+          "source": "08-therapy-modifiers.md",
+          "rule": "CO-4/N822 on therapy CPTs = missing GP/GO/GN; resubmit as new original CLM05-3=1"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Medicare Part B does not accept frequency 7; new original only"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All three lines denied CO-4/N822: required therapy discipline modifier (GP/GO/GN) absent on 97110, 97140, and 97530. Chart note confirms PT services under a PT plan of care. Remedy is a new original claim (CLM05-3=1) with GP appended to each line \u2014 not a corrected 7, which Medicare Part B does not accept.\",\"resolution\":{\"root_cause\":{\"family\":\"missing_therapy_modifier\",\"explanation\":\"97110, 97140, and 97530 billed without GP modifier. CO-4/N822 on all three lines. Chart note confirms PT services; GP (physical therapy plan of care) required on each line.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Submit new original claim CLM05-3=1 (no REF*F8) with modifier GP appended to all three lines. Do not use frequency 7 \u2014 Medicare Part B rejects it. File promptly; the 1-year clock runs from DOS 2026-02-19.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"Lines 1\u20133 carry CO-4 + N822 ($189.68 total denied); no payment.\",\"locator\":\"SVC/CAS segments, lines PA24980623L1\u2013L3\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"97110, 97140, 97530 billed with no therapy discipline modifier on any line.\",\"locator\":\"Loop 2400 SV101, all three service lines\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"Note documents PT therapeutic exercise, manual therapy, and therapeutic activities \u2014 all physical therapy services requiring GP.\",\"locator\":\"2026-02-19 treatment note\"},{\"artifact\":\"reference\",\"fact\":\"CO-4/N822 on always-therapy CPTs = unprocessable; remedy is new original CLM05-3=1 with modifier; frequency 7 rejected on Medicare Part B.\",\"locator\":\"08-therapy-modifiers.md \u00a7(a); 02-resubmission-frequency.md \u00a76\"}],\"denied_line_idxs\":[0,1,2],\"denial\":{\"group\":\"CO\",\"carc\":\"4\",\"rarc\":\"N822\",\"level\":\"line\"},\"citations\":[{\"source\":\"08-therapy-modifiers.md\",\"rule\":\"CO-4/N822 on therapy CPTs = missing GP/GO/GN; resubmit as new original CLM05-3=1\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Medicare Part B does not accept frequency 7; new original only\"}]}}"
+}

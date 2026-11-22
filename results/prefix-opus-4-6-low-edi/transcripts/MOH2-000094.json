@@ -1,0 +1,103 @@
+{
+  "case_id": "MOH2-000094",
+  "run_id": "final-opus-4-6-low-edi",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 4665,
+  "usage": {
+    "input_tokens": 5,
+    "cache_creation_input_tokens": 8572,
+    "cache_read_input_tokens": 147597,
+    "output_tokens": 4279,
+    "output_tokens_details": {
+      "thinking_tokens": 1196
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 8572
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.25781085,
+  "cache_hit_rate": 0.94508,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "Line 1 (97110:GP:KX) denied CO-236 + N20: NCCI PTP edit fired against 97150 (Column One, paid $14.43). Chart documents separate body regions and separate start/stop times, supporting a bypass modifier. Medicare Part B FFS: clerical-error reopening to add modifier to Column Two line; new original would trigger duplicate edit.",
+    "resolution": {
+      "root_cause": {
+        "family": "ncci_ptp_no59",
+        "explanation": "97110 denied CO-236 as Column Two code bundled into 97150. No distinguishing modifier (59/XE/XS/XP/XU) was submitted despite documented separate service with different body region and times."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Request clerical-error reopening with Novitas (Part B, no frequency 7). Append modifier 59 or XE to 97110 line. Do not resubmit as new claim \u2014 duplicate edit will fire.",
+        "resubmission_frequency_code": "7"
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Line 1 97110:GP:KX denied $40.18 with CAS*CO*236*40.18 and RARC N20",
+          "locator": "SVC/CAS/LQ segments for line 1"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Line 2 97150:GP:KX paid $14.43 \u2014 Column One code confirming PTP pair",
+          "locator": "SVC*HC:97150:GP:KX*26.57*14.43"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "97110 rendered independently from 97150 \u2014 separate start/stop times, different body region",
+          "locator": "chart note body"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Payer is Medicare Part B FFS (SBR*P*18*******MB), Novitas Solutions",
+          "locator": "SBR segment"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "236",
+        "rarc": "N20",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0
+      ],
+      "citations": [
+        {
+          "source": "07-ncci-and-mue.md",
+          "rule": "CO-236 is MAC-assigned CARC for PTP edit failures; Column Two line denied, Column One pays"
+        },
+        {
+          "source": "07-ncci-and-mue.md",
+          "rule": "Medicare Part B FFS: clerical-error reopening for modifier addition, never new original"
+        },
+        {
+          "source": "07-ncci-and-mue.md",
+          "rule": "CCMI=1 permits bypass with most specific modifier \u2014 anatomic first, then XE/XS/XP/XU, 59 last resort"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"Line 1 (97110:GP:KX) denied CO-236 + N20: NCCI PTP edit fired against 97150 (Column One, paid $14.43). Chart documents separate body regions and separate start/stop times, supporting a bypass modifier. Medicare Part B FFS: clerical-error reopening to add modifier to Column Two line; new original would trigger duplicate edit.\",\"resolution\":{\"root_cause\":{\"family\":\"ncci_ptp_no59\",\"explanation\":\"97110 denied CO-236 as Column Two code bundled into 97150. No distinguishing modifier (59/XE/XS/XP/XU) was submitted despite documented separate service with different body region and times.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Request clerical-error reopening with Novitas (Part B, no frequency 7). Append modifier 59 or XE to 97110 line. Do not resubmit as new claim \u2014 duplicate edit will fire.\",\"resubmission_frequency_code\":\"7\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"Line 1 97110:GP:KX denied $40.18 with CAS*CO*236*40.18 and RARC N20\",\"locator\":\"SVC/CAS/LQ segments for line 1\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"Line 2 97150:GP:KX paid $14.43 \u2014 Column One code confirming PTP pair\",\"locator\":\"SVC*HC:97150:GP:KX*26.57*14.43\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"97110 rendered independently from 97150 \u2014 separate start/stop times, different body region\",\"locator\":\"chart note body\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Payer is Medicare Part B FFS (SBR*P*18*******MB), Novitas Solutions\",\"locator\":\"SBR segment\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"236\",\"rarc\":\"N20\",\"level\":\"line\"},\"denied_line_idxs\":[0],\"citations\":[{\"source\":\"07-ncci-and-mue.md\",\"rule\":\"CO-236 is MAC-assigned CARC for PTP edit failures; Column Two line denied, Column One pays\"},{\"source\":\"07-ncci-and-mue.md\",\"rule\":\"Medicare Part B FFS: clerical-error reopening for modifier addition, never new original\"},{\"source\":\"07-ncci-and-mue.md\",\"rule\":\"CCMI=1 permits bypass with most specific modifier \u2014 anatomic first, then XE/XS/XP/XU, 59 last resort\"}]}}"
+}

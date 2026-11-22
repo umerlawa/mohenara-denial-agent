@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000087",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "271 for DOS 2026-01-05 returns EB*R for Novitas Medicare Part B FFS with MSG \"PLAN IS PRIMARY PAYER FOR THIS MEMBER.\" Claim was filed SBR*P (primary) to Keystone CI. OA-22 confirms wrong COB order; MA04 on MOA is a downstream symptom \u2014 no primary adjudication data exists because Medicare was never billed. Bill Medicare first, then Keystone as secondary.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1526,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 5015,
+    "cost_usd": 0.056348985,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "cob_other_primary",
+      "explanation": "271 shows EB*R Novitas Medicare Part B FFS as primary for DOS 20260105. Claim billed SBR*P to Keystone (CI). OA-22 on all three lines confirms wrong payer order; MA04 is a symptom \u2014 no primary adjudication data on record."
+    },
+    "next_action": {
+      "path": "resubmit_other_payer",
+      "detail": "Submit new original claim (CLM05-3=1) to Novitas Medicare Part B (NPI/ID 1846349352). After Medicare adjudicates, rebill Keystone as secondary with Medicare's payment/adjustment data in SBR/CAS/AMT loops. Do not appeal Keystone."
+    },
+    "evidence": [
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*R loop names NOVITAS SOLUTIONS MEDICARE PART B FFS with DTP*356*D8*20240101 and MSG 'PLAN IS PRIMARY PAYER FOR THIS MEMBER' for DOS 20260105",
+        "locator": "EB*R segment, NM1*PR loop, MSG segment"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "SBR*P*18*******CI \u2014 claim filed as primary responsibility to Keystone Commercial Health",
+        "locator": "Loop 2000B SBR01=P"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All three lines carry CAS*OA*22; MOA MA04 at claim level; $0 paid on CLP status 4",
+        "locator": "CLP*PA25096142*4; MOA***MA04; SVC lines CAS*OA*22"
+      }
+    ],
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "denial": {
+      "group": "OA",
+      "carc": "22",
+      "rarc": "MA04",
+      "level": "line"
+    },
+    "citations": [
+      {
+        "source": "06-cob-other-primary.md",
+        "rule": "CARC 22 alone \u2192 resubmit_other_payer; EB*R proves another payer is on record; never appeal a disclaiming payer"
+      },
+      {
+        "source": "06-cob-other-primary.md",
+        "rule": "MA04 is a completeness defect (primary adjudication data missing); here it is downstream of wrong routing, not an independent defect on a correctly-ordered claim"
+      }
+    ]
+  }
+}

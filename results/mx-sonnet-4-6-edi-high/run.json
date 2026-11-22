@@ -1,0 +1,19 @@
+{
+  "run_id": "mx-sonnet-4-6-edi-high",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "high",
+  "thinking": "adaptive",
+  "input_format": "edi",
+  "slice": "eval/slices/dev5.txt",
+  "n_cases": 5,
+  "counts": {
+    "resolved": 5,
+    "awaiting_human": 0,
+    "failed": 0
+  },
+  "cost_usd": 0.826014,
+  "cost_per_case_usd": 0.165203,
+  "wall_seconds": 508.0,
+  "spend_total_after": 17.675777,
+  "failures": []
+}

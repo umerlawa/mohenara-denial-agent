@@ -1,0 +1,48 @@
+.DS_Store
+__pycache__/
+*.pyc
+
+# local secrets
+.env.local
+.env
+.venv/
+results/_test/
+.pytest_cache/
+node_modules/
+results/playwright-report/
+results/playwright-artifacts/
+package-lock.json
+results/spend.json.lock
+
+# The operator worklist. Live state, not a scored record: it is rewritten on
+# every submit, holds the full case text of whatever was dropped in, and would
+# conflict on every pull in a deployment that also runs denials. results/
+# is committed for predictions, run.json, matrix.md, spend.json and
+# spend_plan.md -- the queue is none of those.
+results/queue/
+
+# The parked-case worklist, live state for the same reason as the queue:
+# answering a parked case rewrites inbox/ and inbox_resolved/ at runtime, so a
+# deployment that resumes one case dirties a tracked file and its next pull
+# has to pick a winner -- the exact failure mode the ledger split fixed. The
+# scored record of every park is in each run's committed predictions/.
+results/inbox/
+results/inbox_resolved/
+
+# The live spend ledger. Every running server appends to it, so tracking it
+# made two deployments edit one file and a pull silently drop real spend. The
+# committed record is results/spend_record.json, refreshed deliberately with
+# `make record-spend`; this file is seeded from it on first use.
+results/spend.json
+
+# Private HOME for the resolver's CLI subprocess (tools/cli_guard.py).
+# Holds the CLI's own state files; must never hold a login.
+.cli-home/
+
+# Generated from CMS's quarterly PTP edit file by tools/fetch_ncci_ptp.py.
+# Deployment-local DATA, not source, for two reasons: the values must come
+# from the CMS file each deployment actually downloaded (never from a commit
+# someone could edit), and the file is CPT-derived content under the AMA
+# licence CMS gates downloads behind -- committing it to a hosted repo would
+# be redistribution. Each deployment generates its own.
+reference/runtime/10-ncci-ptp-therapy.md

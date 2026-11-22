@@ -1,0 +1,79 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4709,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1731,
+    "output_tokens_details": {
+      "thinking_tokens": 912
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4709
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "All four lines denied CO-29. DOS 2025-04-19, 837P submitted 2025-08-03 = 106 days. Subscriber address is Staten Island, NY. NY Ins. Law \u00a73224-a sets a 120-day state floor that overrides any shorter contract limit. 106 days &lt; 120 days \u2014 claim was timely under NY law. Denial is improper; appeal with the clearinghouse acceptance report showing the Aug 3 submission date.",
+    "resolution": {
+      "root_cause": {
+        "family": "timely_filing",
+        "explanation": "CO-29 on all lines, but 837P reached payer 106 days after DOS. NY Ins. Law \u00a73224-a floor is 120 days and overrides any shorter contract limit; denial issued in error."
+      },
+      "next_action": {
+        "path": "appeal",
+        "detail": "File redetermination citing NY Ins. Law \u00a73224-a (120-day floor). Attach clearinghouse acceptance report showing 2025-08-03 receipt, 106 days post-DOS. Demand payment; payer may reduce up to 25% for untimeliness but may not deny outright."
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "29",
+        "rarc": "N211",
+        "level": "line"
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All four SVC lines carry CAS*CO*29; $0 paid; MOA N211 'you may not appeal this decision' (inapplicable once NY floor is invoked).",
+          "locator": "CAS*CO*29 \u00d74"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "BHT submission date 20250803; DOS 20250419 \u2014 106 days elapsed.",
+          "locator": "BHT*0019*00*TRC77065836*20250803; DTP*472*D8*20250419"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Subscriber (DAVIS CHARLES) address Staten Island, NY \u2014 NY law governs.",
+          "locator": "N4*STATEN ISLAND*NY*10332"
+        },
+        {
+          "artifact": "reference",
+          "fact": "NY Ins. Law \u00a73224-a sets 120-day state floor overriding shorter contract limits; 106 days is within that floor.",
+          "locator": "03-timely-filing.md \u2014 State floors override contracts"
+        }
+      ],
+      "citations": [
+        {
+          "source": "03-timely-filing.md",
+          "rule": "NY 120d state floor overrides contract; NY Ins. Law \u00a73224-a"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"All four lines denied CO-29. DOS 2025-04-19, 837P submitted 2025-08-03 = 106 days. Subscriber address is Staten Island, NY. NY Ins. Law \u00a73224-a sets a 120-day state floor that overrides any shorter contract limit. 106 days &lt; 120 days \u2014 claim was timely under NY law. Denial is improper; appeal with the clearinghouse acceptance report showing the Aug 3 submission date.\",\"resolution\":{\"root_cause\":{\"family\":\"timely_filing\",\"explanation\":\"CO-29 on all lines, but 837P reached payer 106 days after DOS. NY Ins. Law \u00a73224-a floor is 120 days and overrides any shorter contract limit; denial issued in error.\"},\"next_action\":{\"path\":\"appeal\",\"detail\":\"File redetermination citing NY Ins. Law \u00a73224-a (120-day floor). Attach clearinghouse acceptance report showing 2025-08-03 receipt, 106 days post-DOS. Demand payment; payer may reduce up to 25% for untimeliness but may not deny outright.\"},\"denied_line_idxs\":[0,1,2,3],\"denial\":{\"group\":\"CO\",\"carc\":\"29\",\"rarc\":\"N211\",\"level\":\"line\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All four SVC lines carry CAS*CO*29; $0 paid; MOA N211 'you may not appeal this decision' (inapplicable once NY floor is invoked).\",\"locator\":\"CAS*CO*29 \u00d74\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"BHT submission date 20250803; DOS 20250419 \u2014 106 days elapsed.\",\"locator\":\"BHT*0019*00*TRC77065836*20250803; DTP*472*D8*20250419\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Subscriber (DAVIS CHARLES) address Staten Island, NY \u2014 NY law governs.\",\"locator\":\"N4*STATEN ISLAND*NY*10332\"},{\"artifact\":\"reference\",\"fact\":\"NY Ins. Law \u00a73224-a sets 120-day state floor overriding shorter contract limits; 106 days is within that floor.\",\"locator\":\"03-timely-filing.md \u2014 State floors override contracts\"}],\"citations\":[{\"source\":\"03-timely-filing.md\",\"rule\":\"NY 120d state floor overrides contract; NY Ins. Law \u00a73224-a\"}]}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

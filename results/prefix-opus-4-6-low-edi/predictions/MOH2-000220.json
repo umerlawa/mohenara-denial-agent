@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000220",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "DOS 2024-07-19; Medicare 1-year filing limit = 2025-07-19. 277CA shows claim accepted (STC*A2:20) on 2024-07-23, well within the window. CO-29 denial is wrong \u2014 payer has incorrect receipt date. Appeal with clearinghouse acceptance report proving timely filing.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1125,
+    "cache_read_input_tokens": 31983,
+    "cache_creation_input_tokens": 4842,
+    "cost_usd": 0.0818279,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "timely_filing",
+      "explanation": "Payer denied CO-29 but 277CA proves acceptance on 2024-07-23, 4 days after DOS 2024-07-19 \u2014 well within the 1-year Medicare limit. Receipt date is wrong on payer's end."
+    },
+    "next_action": {
+      "path": "appeal",
+      "detail": "File redetermination within 120 days of remit (2025-11-01). Attach 277CA acceptance report dated 2024-07-23 showing STC*A2:20. Dispute receipt date; do not plead forgiveness."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Both lines denied CO-29 ($38.48 + $42.89), $0 paid, MOA N211",
+        "locator": "CAS*CO*29 on lines 97110:GO and 97535:GO"
+      },
+      {
+        "artifact": "ack_277ca.edi",
+        "fact": "Claim accepted STC*A2:20 on 2024-07-23, within 1 year of DOS 2024-07-19",
+        "locator": "STC*A2:20*20240723"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "Patient active Medicare Part B coverage on DOS, EB*1 effective 2024-01-01",
+        "locator": "EB*1*IND*30; DTP*356*D8*20240101"
+      },
+      {
+        "artifact": "reference",
+        "fact": "Proof of accepted submission inside the window \u2192 appeal with clearinghouse acceptance report",
+        "locator": "03-timely-filing.md, remedy table"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "29",
+      "rarc": "N211",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      1,
+      2
+    ],
+    "citations": [
+      {
+        "source": "03-timely-filing.md",
+        "rule": "Proof of an accepted submission inside the window \u2192 appeal with the clearinghouse acceptance report: dispute the receipt date"
+      },
+      {
+        "source": "03-timely-filing.md",
+        "rule": "Medicare FFS: 1 calendar year from DOS"
+      }
+    ]
+  }
+}

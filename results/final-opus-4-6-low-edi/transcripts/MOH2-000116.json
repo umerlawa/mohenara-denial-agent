@@ -1,0 +1,99 @@
+{
+  "case_id": "MOH2-000116",
+  "run_id": "final-opus-4-6-low-edi",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4476,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4875,
+    "cache_read_input_tokens": 32421,
+    "output_tokens": 803,
+    "output_tokens_details": {
+      "thinking_tokens": 117
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4875
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.073440675,
+  "cache_hit_rate": 0.869242,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "Both lines denied OA-18 (exact duplicate). Claim adjudicated (CLP07=2627695771104). Filed as CLM05-3=1 (original). The payer matched provider/member/DOS/procedure against an already-adjudicated claim. OA-18 is hard-coded, unappealable. Check the original claim's payment status; do not resubmit.",
+    "resolution": {
+      "root_cause": {
+        "family": "exact_duplicate",
+        "explanation": "Claim PA24460688 denied OA-18 on both lines. Payer already adjudicated this provider/member/DOS/procedure combination under ICN 2627695771104. Resubmission as frequency 1 triggered the duplicate edit."
+      },
+      "next_action": {
+        "path": "do_not_resubmit",
+        "detail": "Do not resubmit. Verify original ICN 2627695771104 status via portal/IVR. If it paid, post payment and close. If denied, address that denial. If disposition is wrong, request a telephone reopening."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Both lines carry CAS*OA*18 \u2014 exact duplicate denial, $0 paid",
+          "locator": "CAS segments under each SVC"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP07=2627695771104 confirms a prior adjudicated claim exists",
+          "locator": "CLP*PA24460688*4*126.09*0**MB*2627695771104"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "CLM05-3=1 (original frequency) \u2014 no REF*F8, treated as new claim hitting duplicate edit",
+          "locator": "CLM*PA24460688*126.09***11:B:1"
+        },
+        {
+          "artifact": "ack_277ca.edi",
+          "fact": "277CA STC*A2 confirms claim was accepted into adjudication (not front-end rejected)",
+          "locator": "STC*A2:20*20260914"
+        }
+      ],
+      "denial": {
+        "group": "OA",
+        "carc": "18",
+        "rarc": null,
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1
+      ],
+      "citations": [
+        {
+          "source": "04-exact-duplicate.md",
+          "rule": "True duplicate \u2192 do_not_resubmit; hard-coded edit, unappealable; original claim's disposition governs"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Every 837 with CLM05-3=1 is treated as brand-new; duplicate logic matches provider/member/DOS/procedure and fires the edit"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"Both lines denied OA-18 (exact duplicate). Claim adjudicated (CLP07=2627695771104). Filed as CLM05-3=1 (original). The payer matched provider/member/DOS/procedure against an already-adjudicated claim. OA-18 is hard-coded, unappealable. Check the original claim's payment status; do not resubmit.\",\"resolution\":{\"root_cause\":{\"family\":\"exact_duplicate\",\"explanation\":\"Claim PA24460688 denied OA-18 on both lines. Payer already adjudicated this provider/member/DOS/procedure combination under ICN 2627695771104. Resubmission as frequency 1 triggered the duplicate edit.\"},\"next_action\":{\"path\":\"do_not_resubmit\",\"detail\":\"Do not resubmit. Verify original ICN 2627695771104 status via portal/IVR. If it paid, post payment and close. If denied, address that denial. If disposition is wrong, request a telephone reopening.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"Both lines carry CAS*OA*18 \u2014 exact duplicate denial, $0 paid\",\"locator\":\"CAS segments under each SVC\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP07=2627695771104 confirms a prior adjudicated claim exists\",\"locator\":\"CLP*PA24460688*4*126.09*0**MB*2627695771104\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"CLM05-3=1 (original frequency) \u2014 no REF*F8, treated as new claim hitting duplicate edit\",\"locator\":\"CLM*PA24460688*126.09***11:B:1\"},{\"artifact\":\"ack_277ca.edi\",\"fact\":\"277CA STC*A2 confirms claim was accepted into adjudication (not front-end rejected)\",\"locator\":\"STC*A2:20*20260914\"}],\"denial\":{\"group\":\"OA\",\"carc\":\"18\",\"rarc\":null,\"level\":\"line\"},\"denied_line_idxs\":[0,1],\"citations\":[{\"source\":\"04-exact-duplicate.md\",\"rule\":\"True duplicate \u2192 do_not_resubmit; hard-coded edit, unappealable; original claim's disposition governs\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Every 837 with CLM05-3=1 is treated as brand-new; duplicate logic matches provider/member/DOS/procedure and fires the edit\"}]}}"
+}

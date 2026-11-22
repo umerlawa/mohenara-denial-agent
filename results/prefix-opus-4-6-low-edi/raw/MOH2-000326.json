@@ -1,0 +1,37 @@
+{
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 6591,
+    "cache_read_input_tokens": 107046,
+    "output_tokens": 1916,
+    "output_tokens_details": {
+      "thinking_tokens": 808
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 6591
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "awaiting_human",
+    "rationale": "Line 2 (97110:GP) denied CO-236 + N20 = NCCI PTP edit. 97150 is Column One (paid), 97110 is Column Two (denied). Chart documents separate services. The 835 carries neither the partner code nor the CCMI indicator. If CCMI=1, correct and resubmit with bypass modifier via reopening. If CCMI=0, write off. Cannot determine from artifacts.",
+    "awaiting_human": {
+      "question": "What is the CCMI for the 97150\u201397110 pair in the CMS NCCI PTP edit file for Q2 2026 (DOS 2026-05-15)? Is it 1 (modifier bypass allowed) or 0 (not allowed)?",
+      "why_needed": "CCMI=1 means correct_and_resubmit with a bypass modifier via clerical-error reopening to Novitas. CCMI=0 means do_not_resubmit \u2014 absolute bundle, write off the $38.45. The chart supports distinctness but that only matters if CCMI permits a bypass.",
+      "blocks": [
+        "root_cause.family",
+        "next_action.path"
+      ]
+    }
+  },
+  "result": "{\"status\":\"awaiting_human\",\"rationale\":\"Line 2 (97110:GP) denied CO-236 + N20 = NCCI PTP edit. 97150 is Column One (paid), 97110 is Column Two (denied). Chart documents separate services. The 835 carries neither the partner code nor the CCMI indicator. If CCMI=1, correct and resubmit with bypass modifier via reopening. If CCMI=0, write off. Cannot determine from artifacts.\",\"awaiting_human\":{\"question\":\"What is the CCMI for the 97150\u201397110 pair in the CMS NCCI PTP edit file for Q2 2026 (DOS 2026-05-15)? Is it 1 (modifier bypass allowed) or 0 (not allowed)?\",\"why_needed\":\"CCMI=1 means correct_and_resubmit with a bypass modifier via clerical-error reopening to Novitas. CCMI=0 means do_not_resubmit \u2014 absolute bundle, write off the $38.45. The chart supports distinctness but that only matters if CCMI permits a bypass.\",\"blocks\":[\"root_cause.family\",\"next_action.path\"]}}",
+  "model": "us.anthropic.claude-opus-4-6-v1"
+}

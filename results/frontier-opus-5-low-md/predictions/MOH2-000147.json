@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000147",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "All five 835 lines deny CO-4 + N822 (missing procedure modifier) on always-therapy CPTs 97530/97140/97116 billed with KX only and no GP. CO-4/N822 is returned-unprocessable \u2014 no appeal rights; remedy is a new original claim with GP appended alongside KX.",
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1833,
+    "cache_read_input_tokens": 93292,
+    "cache_creation_input_tokens": 8066,
+    "cost_usd": 0.1429035,
+    "model": "claude-opus-5",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "missing_therapy_modifier",
+      "explanation": "837P lines 1-5 (97530, 97140, 97116) carry KX only, no GP discipline modifier, though the note documents an outpatient PT plan of care. Remit denies every line CO-4 with RARC N822, missing procedure modifier."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Append GP to all five lines (keep KX) and send a NEW original claim, CLM05-3 = 1, to Novitas Part B. Do not appeal; do not use frequency 7. Filing clock never stopped \u2014 1 year from DOS 2026-06-05."
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All 5 lines denied CO-4 with RARC N822 (missing procedure modifier), $0 paid",
+        "locator": "SVC/CAS lines 1-5"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "97530, 97140, 97116 billed with KX only; no GP/GO/GN modifier",
+        "locator": "SV1 lines 1-5"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "Therapeutic activities, manual therapy, gait training \u2014 outpatient physical therapy plan of care (GP)",
+        "locator": "PT treatment note 2026-06-05"
+      },
+      {
+        "artifact": "reference",
+        "fact": "CO-4 + N822 on always-therapy CPTs = unprocessable, no appeal rights; correct_and_resubmit as new original CLM05-3=1",
+        "locator": "08-therapy-modifiers.md (a)"
+      }
+    ],
+    "citations": [
+      {
+        "source": "08-therapy-modifiers.md",
+        "rule": "CO-4 + N822 on always-therapy CPTs lacking GP/GO/GN \u2192 missing_therapy_modifier; new original claim, never appeal, never bill patient"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO on Medicare FFS = provider liability, never billable to the patient"
+      }
+    ]
+  }
+}

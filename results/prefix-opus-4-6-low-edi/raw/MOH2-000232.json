@@ -1,0 +1,80 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5126,
+    "cache_read_input_tokens": 31983,
+    "output_tokens": 678,
+    "output_tokens_details": {
+      "thinking_tokens": 45
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5126
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "All four lines denied CO-4 + N822. CPTs 97140 and 97530 are always-therapy codes billed without GP/GO/GN. Chart note confirms PT plan of care \u2192 GP required. Medicare Part B, claim was adjudicated (835 with CLP07), but CO-4/N822 is returned unprocessable per reference \u2014 resubmit as new original with modifier.",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_therapy_modifier",
+        "explanation": "Lines 1\u20134 (97140, 97530) billed without GP modifier. Payer returned CO-4 + N822 on all lines. Chart documents PT plan of care; GP is required."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Append modifier GP to all four lines. Submit as a new original claim (CLM05-3 = 1). Do not appeal. Filing clock is running from DOS 2026-06-23.",
+        "resubmission_frequency_code": "7"
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All four service lines denied CAS*CO*4 with LQ*HE*N822 (missing procedure modifier), $0 paid."
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "CPTs 97140 and 97530 billed with no GP/GO/GN modifier; SBR*P*18*******MB (Medicare Part B)."
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "PT treatment note documents physical therapy plan of care for cervicalgia."
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*1*IND*30 \u2014 patient active Medicare Part B coverage on DOS 2026-06-23."
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "4",
+        "rarc": "N822",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "citations": [
+        {
+          "source": "therapy-modifiers-and-threshold.md \u00a78.1",
+          "rule": "CO-4/N822 is unprocessable; submit new original claim with modifier, not appeal or corrected 7."
+        },
+        {
+          "source": "therapy-modifiers-and-threshold.md \u00a74",
+          "rule": "Always-therapy CPTs 97110/97112/97140/97530 require GP/GO/GN per plan of care."
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"All four lines denied CO-4 + N822. CPTs 97140 and 97530 are always-therapy codes billed without GP/GO/GN. Chart note confirms PT plan of care \u2192 GP required. Medicare Part B, claim was adjudicated (835 with CLP07), but CO-4/N822 is returned unprocessable per reference \u2014 resubmit as new original with modifier.\",\"resolution\":{\"root_cause\":{\"family\":\"missing_therapy_modifier\",\"explanation\":\"Lines 1\u20134 (97140, 97530) billed without GP modifier. Payer returned CO-4 + N822 on all lines. Chart documents PT plan of care; GP is required.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Append modifier GP to all four lines. Submit as a new original claim (CLM05-3 = 1). Do not appeal. Filing clock is running from DOS 2026-06-23.\",\"resubmission_frequency_code\":\"7\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All four service lines denied CAS*CO*4 with LQ*HE*N822 (missing procedure modifier), $0 paid.\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"CPTs 97140 and 97530 billed with no GP/GO/GN modifier; SBR*P*18*******MB (Medicare Part B).\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"PT treatment note documents physical therapy plan of care for cervicalgia.\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*1*IND*30 \u2014 patient active Medicare Part B coverage on DOS 2026-06-23.\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"4\",\"rarc\":\"N822\",\"level\":\"line\"},\"denied_line_idxs\":[1,2,3,4],\"citations\":[{\"source\":\"therapy-modifiers-and-threshold.md \u00a78.1\",\"rule\":\"CO-4/N822 is unprocessable; submit new original claim with modifier, not appeal or corrected 7.\"},{\"source\":\"therapy-modifiers-and-threshold.md \u00a74\",\"rule\":\"Always-therapy CPTs 97110/97112/97140/97530 require GP/GO/GN per plan of care.\"}]}}",
+  "model": "us.anthropic.claude-opus-4-6-v1"
+}

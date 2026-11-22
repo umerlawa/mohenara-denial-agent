@@ -1,0 +1,68 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5072,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 821,
+    "output_tokens_details": {
+      "thinking_tokens": 214
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5072
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "All three lines adjudicated and paid. CO-45 = contractual write-off per Medicare fee schedule; PR-2 = patient coinsurance ($17.90 total). No denial codes present. Claim processed correctly. Routine coinsurance collection is not a denial remedy.",
+    "resolution": {
+      "root_cause": {
+        "family": "none",
+        "explanation": "Claim paid on all three lines. CO-45 is the contractual fee-schedule write-off; PR-2 is standard Medicare Part B coinsurance. No adjustment code signals a denial."
+      },
+      "next_action": {
+        "path": "none",
+        "detail": "Post payment of $71.61. Write off CO-45 amounts per participation agreement. Bill patient $17.90 PR-2 coinsurance in normal AR cycle."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP status 1 (paid); $71.61 paid; all three SVC lines show CO-45 (contractual) and PR-2 (coinsurance) only \u2014 no denial CARC",
+          "locator": "CLP*PA26740844*1*131.54*71.61"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "PR-2 total $17.90 ($5.81+$6.55+$5.54) \u2014 patient coinsurance, billable in normal AR",
+          "locator": "CAS*PR*2 on each SVC"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "SBR*P*18*MB \u2014 filed correctly as Medicare Part B primary",
+          "locator": "SBR segment"
+        }
+      ],
+      "denied_line_idxs": [],
+      "denial": null,
+      "citations": [
+        {
+          "source": "00-group-codes.md",
+          "rule": "CO = contractual write-off per participation agreement; PR = patient responsibility, billable in normal course"
+        },
+        {
+          "source": "01-carc-rarc-index.md",
+          "rule": "CARC 45 = exceeds fee schedule, contractual write-off"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"All three lines adjudicated and paid. CO-45 = contractual write-off per Medicare fee schedule; PR-2 = patient coinsurance ($17.90 total). No denial codes present. Claim processed correctly. Routine coinsurance collection is not a denial remedy.\",\"resolution\":{\"root_cause\":{\"family\":\"none\",\"explanation\":\"Claim paid on all three lines. CO-45 is the contractual fee-schedule write-off; PR-2 is standard Medicare Part B coinsurance. No adjustment code signals a denial.\"},\"next_action\":{\"path\":\"none\",\"detail\":\"Post payment of $71.61. Write off CO-45 amounts per participation agreement. Bill patient $17.90 PR-2 coinsurance in normal AR cycle.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP status 1 (paid); $71.61 paid; all three SVC lines show CO-45 (contractual) and PR-2 (coinsurance) only \u2014 no denial CARC\",\"locator\":\"CLP*PA26740844*1*131.54*71.61\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"PR-2 total $17.90 ($5.81+$6.55+$5.54) \u2014 patient coinsurance, billable in normal AR\",\"locator\":\"CAS*PR*2 on each SVC\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"SBR*P*18*MB \u2014 filed correctly as Medicare Part B primary\",\"locator\":\"SBR segment\"}],\"denied_line_idxs\":[],\"denial\":null,\"citations\":[{\"source\":\"00-group-codes.md\",\"rule\":\"CO = contractual write-off per participation agreement; PR = patient responsibility, billable in normal course\"},{\"source\":\"01-carc-rarc-index.md\",\"rule\":\"CARC 45 = exceeds fee schedule, contractual write-off\"}]}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

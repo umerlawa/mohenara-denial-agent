@@ -1,0 +1,97 @@
+{
+  "case_id": "MOH2-000147",
+  "run_id": "nothink-sonnet-low",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "thinking": "disabled",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 7321,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5254,
+    "cache_read_input_tokens": 31309,
+    "output_tokens": 861,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5254
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.04621782,
+  "cache_hit_rate": 0.856256,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All 5 lines denied CO-4 + N822. CPTs 97530, 97140, 97116 are always-therapy codes requiring a discipline modifier (GP/GO/GN). The claim billed only KX on every line \u2014 no GP/GO/GN. CO-4/N822 = returned unprocessable (no appeal rights). Chart note confirms PT services under a PT plan of care; GP is the correct modifier. File a new original claim (CLM05-3=1) with GP appended to every line. Filing clock has been running since DOS 2026-06-05; 1-year Medicare limit is 2027-06-05.",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_therapy_modifier",
+        "explanation": "All 5 lines billed with KX only. CPTs 97530, 97140, 97116 require a discipline modifier (GP for physical therapy). Absence of GP triggered CO-4/N822 on every line \u2014 returned unprocessable."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Submit a NEW original claim (CLM05-3=1, no REF*F8) adding modifier GP to every line alongside KX. Chart note documents PT plan of care \u2014 GP is correct. Do not appeal; do not send frequency 7. Act before 2027-06-05."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All 5 lines: CO-4 + RARC N822 \u2014 procedure code inconsistent with modifier / missing procedure modifier",
+          "locator": "Lines 1\u20135 adjustments"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Every line billed with modifier KX only; no GP/GO/GN present",
+          "locator": "837P service lines 1\u20135"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "PT treatment note confirms physical therapy services (97530, 97140, 97116) under a PT plan of care \u2014 GP required",
+          "locator": "PT treatment note 2026-06-05"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CO-4/N822 on always-therapy CPTs = unprocessable, no appeal rights; remedy is new original claim with discipline modifier appended",
+          "locator": "08-therapy-modifiers.md \u00a7a"
+        }
+      ],
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "4",
+        "rarc": "N822",
+        "level": "line"
+      },
+      "citations": [
+        {
+          "source": "08-therapy-modifiers.md",
+          "rule": "CO-4+N822 on always-therapy CPTs = returned unprocessable; submit new original claim CLM05-3=1 with GP/GO/GN appended"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Medicare Part B: CLM05-3=1 only; frequency 7 not accepted; unprocessable claim \u2192 new original, no REF*F8"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All 5 lines denied CO-4 + N822. CPTs 97530, 97140, 97116 are always-therapy codes requiring a discipline modifier (GP/GO/GN). The claim billed only KX on every line \u2014 no GP/GO/GN. CO-4/N822 = returned unprocessable (no appeal rights). Chart note confirms PT services under a PT plan of care; GP is the correct modifier. File a new original claim (CLM05-3=1) with GP appended to every line. Filing clock has been running since DOS 2026-06-05; 1-year Medicare limit is 2027-06-05.\",\"resolution\":{\"root_cause\":{\"family\":\"missing_therapy_modifier\",\"explanation\":\"All 5 lines billed with KX only. CPTs 97530, 97140, 97116 require a discipline modifier (GP for physical therapy). Absence of GP triggered CO-4/N822 on every line \u2014 returned unprocessable.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Submit a NEW original claim (CLM05-3=1, no REF*F8) adding modifier GP to every line alongside KX. Chart note documents PT plan of care \u2014 GP is correct. Do not appeal; do not send frequency 7. Act before 2027-06-05.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All 5 lines: CO-4 + RARC N822 \u2014 procedure code inconsistent with modifier / missing procedure modifier\",\"locator\":\"Lines 1\u20135 adjustments\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Every line billed with modifier KX only; no GP/GO/GN present\",\"locator\":\"837P service lines 1\u20135\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"PT treatment note confirms physical therapy services (97530, 97140, 97116) under a PT plan of care \u2014 GP required\",\"locator\":\"PT treatment note 2026-06-05\"},{\"artifact\":\"reference\",\"fact\":\"CO-4/N822 on always-therapy CPTs = unprocessable, no appeal rights; remedy is new original claim with discipline modifier appended\",\"locator\":\"08-therapy-modifiers.md \u00a7a\"}],\"denied_line_idxs\":[0,1,2,3,4],\"denial\":{\"group\":\"CO\",\"carc\":\"4\",\"rarc\":\"N822\",\"level\":\"line\"},\"citations\":[{\"source\":\"08-therapy-modifiers.md\",\"rule\":\"CO-4+N822 on always-therapy CPTs = returned unprocessable; submit new original claim CLM05-3=1 with GP/GO/GN appended\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Medicare Part B: CLM05-3=1 only; frequency 7 not accepted; unprocessable claim \u2192 new original, no REF*F8\"}]}}"
+}

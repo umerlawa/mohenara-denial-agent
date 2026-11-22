@@ -1,0 +1,18 @@
+{
+  "run_id": "probe-opus-4-6-max",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "max",
+  "input_format": "md",
+  "slice": "/tmp/probe3.txt",
+  "n_cases": 3,
+  "counts": {
+    "resolved": 3,
+    "awaiting_human": 0,
+    "failed": 0
+  },
+  "cost_usd": 0.583166,
+  "cost_per_case_usd": 0.194389,
+  "wall_seconds": 175.0,
+  "spend_total_after": 8.12216,
+  "failures": []
+}

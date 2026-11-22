@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000026",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All four lines carry CO-22; MOA MA04 confirms primary payer adjudication data is absent. The 271 for the DOS shows EB*R with Novitas Solutions Medicare Part B FFS as the primary payer (\"PLAN IS PRIMARY PAYER FOR THIS MEMBER\"). Claim was submitted to Delaware Valley Mutual with SBR*P (primary) \u2014 wrong order. Bill Medicare first, then rebill DVM secondary with Medicare's EOB data.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1362,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 5144,
+    "cost_usd": 0.05417511,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "cob_other_primary",
+      "explanation": "271 for DOS 2026-02-13 shows EB*R: Novitas Medicare Part B is primary. Claim was sent to Delaware Valley Mutual as primary (SBR*P/CI). CO-22 on all four lines; MOA MA04 flags missing primary adjudication data."
+    },
+    "next_action": {
+      "path": "resubmit_other_payer",
+      "detail": "Submit a new original claim (CLM05-3=1) to Novitas Solutions Medicare Part B (NPI 1846349352). After Medicare adjudicates, rebill Delaware Valley Mutual as secondary with Medicare's EOB/CAS data populated in the 2320/2430 loops."
+    },
+    "evidence": [
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*R with Novitas Solutions Medicare Part B FFS; MSG: PLAN IS PRIMARY PAYER FOR THIS MEMBER; DTP*356 effective 2024-01-01 \u2014 Medicare primary on DOS 2026-02-13",
+        "locator": "EB*R loop"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "SBR*P*18 with filing indicator CI \u2014 claim submitted to Delaware Valley Mutual as primary payer",
+        "locator": "SBR segment, HL*2"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CAS*CO*22 on all four service lines; MOA MA04 at claim level \u2014 COB order wrong, primary adjudication data absent",
+        "locator": "CLP PA26408061, SVC lines 1-4"
+      },
+      {
+        "artifact": "reference",
+        "fact": "CARC 22 \u2192 resubmit_other_payer; bill the true primary then rebill this payer as secondary (06-cob-other-primary.md)",
+        "locator": "06-cob-other-primary.md disposition table"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "22",
+      "rarc": "MA04",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "citations": [
+      {
+        "source": "06-cob-other-primary.md",
+        "rule": "CARC 22 alone \u2192 resubmit_other_payer; cover exists, only order is wrong"
+      },
+      {
+        "source": "01-carc-rarc-index.md",
+        "rule": "MA04 = primary payer data missing; correct_and_resubmit to same payer after primary adjudicates"
+      }
+    ]
+  }
+}

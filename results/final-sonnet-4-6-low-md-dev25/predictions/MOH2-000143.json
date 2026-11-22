@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000143",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "CO-29 on all three lines with N211. Payer is commercial CI, not Medicare \u2014 N211 carries no regulatory bar to appeal here. The 277CA (ACK59398832, 2024-07-18) shows TRC59398832 accepted A2 five days after the DOS, well inside any commercial filing window. The 837P resubmission on 2025-03-30 is what triggered CO-29; the original filing was timely. Proof of prior acceptance \u2192 appeal to dispute payer's receipt date.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 3195,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 4942,
+    "cost_usd": 0.08358636,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "timely_filing",
+      "explanation": "All three lines denied CO-29. The 837P was transmitted 2025-03-30 (~8.5 months post-DOS), but 277CA ACK59398832 proves TRC59398832 was accepted A2 on 2024-07-18 \u2014 five days after DOS \u2014 establishing a prior timely submission."
+    },
+    "next_action": {
+      "path": "appeal",
+      "detail": "File a commercial appeal attaching 277CA ACK59398832 (dated 2024-07-18, status A2, TRC59398832) as proof of timely original submission. Dispute the payer's receipt date; do not plead forgiveness. N211 does not bar appeal on a CI claim."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All three service lines carry CO-29 with MOA N211; payer production date 2025-04-16; filing indicator CI (commercial).",
+        "locator": "CAS CO-29 lines 1-3; CLM filing indicator CI"
+      },
+      {
+        "artifact": "ack_277ca.edi",
+        "fact": "TRC59398832 received 2024-07-18, status A2 (accepted for adjudication) \u2014 five days after DOS 2024-07-13.",
+        "locator": "277CA received date (050) 2024-07-18; acknowledgment ACK59398832"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Same TRC59398832 used as submission reference on 837P dated 2025-03-30, the submission that drew CO-29.",
+        "locator": "Loop 2300 REF submission reference TRC59398832, interchange date 250330"
+      },
+      {
+        "artifact": "reference",
+        "fact": "Prior accepted submission inside the window \u2192 appeal with clearinghouse acceptance report; dispute receipt date.",
+        "locator": "03-timely-filing.md \u00a78, remedy row 'Proof accepted'"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "29",
+      "rarc": "N211",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "citations": [
+      {
+        "source": "03-timely-filing.md",
+        "rule": "Proof of accepted submission inside the window \u2192 appeal with clearinghouse acceptance report; dispute receipt date."
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO-29 with no appeal basis \u2192 do_not_resubmit; but proof of prior timely filing IS the appeal basis \u2192 appeal instead."
+      }
+    ]
+  }
+}

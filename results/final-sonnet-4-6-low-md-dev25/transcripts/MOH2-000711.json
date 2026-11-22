@@ -1,0 +1,95 @@
+{
+  "case_id": "MOH2-000711",
+  "run_id": "final-sonnet-4-6-low-md-dev25",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 6725,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4993,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1556,
+    "output_tokens_details": {
+      "thinking_tokens": 746
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4993
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.056753235,
+  "cache_hit_rate": 0.864052,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All three PT lines (97140-GP, 97530-GP, 97110-GP) denied CO-119/N435. KX modifier is absent from every submitted line. Chart note dated 2026-07-08 documents skilled services as medically necessary, satisfying the clinical justification requirement. Medicare Part B does not accept frequency 7; remedy is a clerical-error reopening to append KX. Do not bill the patient \u2014 CO-119 is provider liability.",
+    "resolution": {
+      "root_cause": {
+        "family": "threshold_no_kx",
+        "explanation": "KX modifier absent on all three lines; accumulator exceeded the CY2026 $2,480 PT+SLP threshold. Chart note confirms medical necessity on DOS, so KX omission is a clerical error."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "File a clerical-error reopening with Novitas (Part B does not accept frequency 7). Append KX to 97140-GP, 97530-GP, and 97110-GP. Attach the 2026-07-08 treatment note as supporting documentation."
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All three lines carry CO-119 ($48.39, $56.18, $42.59); MOA N435 at claim level.",
+          "locator": "CAS CO 119; MOA N435"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Modifiers on claim lines are GP only \u2014 KX is absent from every line.",
+          "locator": "837P service lines 1-3"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "Treatment note dated 2026-07-08 states 'skilled services remain medically necessary', providing threshold-exception justification.",
+          "locator": "PT treatment note 2026-07-08"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CO-119+N435 with no KX present and record justifying services \u2192 correct_and_resubmit via clerical-error reopening; Part B has no frequency 7 pathway.",
+          "locator": "08-therapy-modifiers.md \u00a7b row 1; resubmission-and-frequency-codes.md \u00a76"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "119",
+        "rarc": "N435",
+        "level": "line"
+      },
+      "citations": [
+        {
+          "source": "08-therapy-modifiers.md",
+          "rule": "CO-119+N435, no KX, record justifies \u2192 correct_and_resubmit (clerical-error reopening); never bill patient"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Medicare Part B does not accept CLM05-3=7; use reopening vehicle"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All three PT lines (97140-GP, 97530-GP, 97110-GP) denied CO-119/N435. KX modifier is absent from every submitted line. Chart note dated 2026-07-08 documents skilled services as medically necessary, satisfying the clinical justification requirement. Medicare Part B does not accept frequency 7; remedy is a clerical-error reopening to append KX. Do not bill the patient \u2014 CO-119 is provider liability.\",\"resolution\":{\"root_cause\":{\"family\":\"threshold_no_kx\",\"explanation\":\"KX modifier absent on all three lines; accumulator exceeded the CY2026 $2,480 PT+SLP threshold. Chart note confirms medical necessity on DOS, so KX omission is a clerical error.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"File a clerical-error reopening with Novitas (Part B does not accept frequency 7). Append KX to 97140-GP, 97530-GP, and 97110-GP. Attach the 2026-07-08 treatment note as supporting documentation.\"},\"denied_line_idxs\":[0,1,2],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All three lines carry CO-119 ($48.39, $56.18, $42.59); MOA N435 at claim level.\",\"locator\":\"CAS CO 119; MOA N435\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Modifiers on claim lines are GP only \u2014 KX is absent from every line.\",\"locator\":\"837P service lines 1-3\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"Treatment note dated 2026-07-08 states 'skilled services remain medically necessary', providing threshold-exception justification.\",\"locator\":\"PT treatment note 2026-07-08\"},{\"artifact\":\"reference\",\"fact\":\"CO-119+N435 with no KX present and record justifying services \u2192 correct_and_resubmit via clerical-error reopening; Part B has no frequency 7 pathway.\",\"locator\":\"08-therapy-modifiers.md \u00a7b row 1; resubmission-and-frequency-codes.md \u00a76\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"119\",\"rarc\":\"N435\",\"level\":\"line\"},\"citations\":[{\"source\":\"08-therapy-modifiers.md\",\"rule\":\"CO-119+N435, no KX, record justifies \u2192 correct_and_resubmit (clerical-error reopening); never bill patient\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Medicare Part B does not accept CLM05-3=7; use reopening vehicle\"}]}}"
+}

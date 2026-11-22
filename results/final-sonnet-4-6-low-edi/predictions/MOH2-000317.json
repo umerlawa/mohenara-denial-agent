@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000317",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All three lines denied CO-16/N286: missing/invalid referring provider NPI. The 837P has a rendering provider (NM1*82, CLARK JOHN, NPI 1878226791) but no ordering/referring provider loop. Claim adjudicated (835 CLP07 present). Medicare Part B FFS \u2014 new original CLM05-3=1 only; frequency 7 not accepted.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1052,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 4956,
+    "cost_usd": 0.04828461,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "missing_referring_provider",
+      "explanation": "837P omits the ordering/referring provider loop. Remit MOA N286 on all three lines confirms missing/invalid referring provider primary identifier. Rendering provider (NM1*82) is present but the referring NPI loop is absent."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Add the ordering/referring provider name and NPI to the claim (verify against NPI Registry and PECOS). Resubmit as new original CLM05-3=1 \u2014 Medicare Part B FFS does not accept frequency 7. DOS 2026-02-25; filing deadline 2027-02-25, within window."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "MOA N286 at claim level; all three lines carry CAS*CO*16 denying full billed amount",
+        "locator": "CLP*PA23703083 / MOA***N286"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "NM1*82 rendering provider present (CLARK JOHN, 1878226791) but no NM1*DN or equivalent referring provider loop",
+        "locator": "Loop 2310 / NM1*82"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP07=2608175219691 confirms claim adjudicated; 835 exists",
+        "locator": "CLP*PA23703083*4*126.38*0**MB*2608175219691"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "SBR*P filing indicator MB \u2014 Medicare Part B FFS; frequency 7 not accepted on Part B",
+        "locator": "SBR*P*18*******MB"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "16",
+      "rarc": "N286",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "citations": [
+      {
+        "source": "09-missing-referring-provider.md",
+        "rule": "CO-16+N286 = missing/invalid referring provider NPI; correct_and_resubmit as new original; Medicare Part B accepts only CLM05-3=1"
+      },
+      {
+        "source": "02-resubmission-frequency.md",
+        "rule": "Part B FFS: frequency 7 not accepted; new original claim only"
+      }
+    ]
+  }
+}

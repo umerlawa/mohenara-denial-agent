@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000008",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "The 835 shows CLP status \"1\" (processed as primary). All three lines paid: CO-45 contractual write-downs and PR-2 coinsurance. No lines denied. This is a clean adjudication with routine contractual and coinsurance adjustments\u2014not a denial.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 523,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 37458,
+    "cost_usd": 0.27191725,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "none",
+      "explanation": "Claim paid correctly. CO-45 is fee-schedule contractual write-off; PR-2 is patient coinsurance. No denial occurred."
+    },
+    "next_action": {
+      "path": "none",
+      "detail": "Collect PR-2 coinsurance ($16.89 total) from the patient through normal AR. No rework needed."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP*PA27416586*1*125.09*67.61*16.89*CI \u2014 status 1 (processed), $67.61 paid, $16.89 patient responsibility",
+        "locator": "CLP segment"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All three lines carry CAS*CO*45 (contractual) and CAS*PR*2 (coinsurance) \u2014 standard fee-schedule adjudication",
+        "locator": "CAS segments on all SVC lines"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*1*IND*30 \u2014 active coverage confirmed for DOS 2026-05-24",
+        "locator": "EB segment"
+      }
+    ]
+  }
+}

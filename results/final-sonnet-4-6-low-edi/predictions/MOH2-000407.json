@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000407",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All three lines carry CO-29. The 277CA (2025-05-16) confirms the original claim was accepted 17 days post-DOS. The 837P in the artifacts is dated 2025-08-26 \u2014 a resubmission sent as CLM05-3=1 (new original), which landed outside the commercial filing window and triggered the untimely denial. The original was timely; appeal with the 277CA acceptance report to dispute the payer's receipt date.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 2407,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 4938,
+    "cost_usd": 0.07056786,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "timely_filing",
+      "explanation": "CO-29 was triggered by the August 2025 resubmission (CLM05-3=1), not the original claim. The original was accepted by the clearinghouse on 2025-05-16 \u2014 17 days post-DOS \u2014 well within any commercial filing window."
+    },
+    "next_action": {
+      "path": "appeal",
+      "detail": "File a redetermination/appeal attaching the 277CA (2025-05-16, STC A2:20, TRN TRC10649433) as proof of timely original submission. Dispute the payer's receipt date; do not plead forgiveness. Do not send another new original."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CAS*CO*29 on all three service lines; MOA N211; $0 paid; payer filing indicator CI",
+        "locator": "CLP*PA25294320 / SVC lines 1-3"
+      },
+      {
+        "artifact": "ack_277ca.edi",
+        "fact": "STC*A2:20 (accepted) dated 2025-05-16 for TRN TRC10649433 \u2014 original claim accepted 17 days after DOS 2025-04-29",
+        "locator": "STC*A2:20*20250516"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "ISA date 2025-08-26, CLM05-3=1 (new original frequency) \u2014 resubmission sent as original, landing ~4 months post-DOS",
+        "locator": "ISA date 20250826; CLM*PA25294320*183.21***11:B:1"
+      },
+      {
+        "artifact": "reference",
+        "fact": "Timely filing \u00a7: proof of accepted submission inside the window \u2192 appeal with clearinghouse acceptance report, dispute receipt date",
+        "locator": "03-timely-filing.md, remedy table row 'Proof accepted'"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "29",
+      "rarc": "N211",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "citations": [
+      {
+        "source": "03-timely-filing.md",
+        "rule": "Proof of accepted submission inside the window \u2192 appeal with clearinghouse acceptance report"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO-29 with no exception \u2192 do_not_resubmit only when genuinely late; proof of timely filing \u2192 appeal"
+      }
+    ]
+  }
+}

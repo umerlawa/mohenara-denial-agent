@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000110",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "Claim paid as primary (CLP status 1, $71.61 paid). All adjustments are CO-45 (contractual fee-schedule reduction) and PR-2 (20% coinsurance). This is standard Medicare Part B adjudication, not a denial. Patient owes $17.90 coinsurance via normal AR.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 564,
+    "cache_read_input_tokens": 32421,
+    "cache_creation_input_tokens": 5072,
+    "cost_usd": 0.06822255,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "none",
+      "explanation": "Claim processed correctly. CO-45 is the contractual write-off to fee schedule; PR-2 is standard 20% coinsurance. No denial occurred."
+    },
+    "next_action": {
+      "path": "none",
+      "detail": "No rework needed. Collect $17.90 PR-2 coinsurance from the patient through normal billing."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP status code 1 (processed as primary), paid $71.61",
+        "locator": "CLP*PA26740844*1*131.54*71.61"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All CO-45 adjustments are contractual fee-schedule reductions, not denials",
+        "locator": "CAS*CO*45 on all three lines"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "PR-2 coinsurance totaling $17.90 is routine patient responsibility",
+        "locator": "CAS*PR*2 on all three lines"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "Patient active Medicare Part B coverage on DOS 2026-01-17",
+        "locator": "EB*1*IND*30"
+      }
+    ]
+  }
+}

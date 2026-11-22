@@ -1,0 +1,102 @@
+{
+  "case_id": "MOH2-000147",
+  "run_id": "mx-opus-4-6-edi-high",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "high",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 5220,
+  "usage": {
+    "input_tokens": 3,
+    "cache_creation_input_tokens": 7707,
+    "cache_read_input_tokens": 69247,
+    "output_tokens": 3080,
+    "output_tokens_details": {
+      "thinking_tokens": 1620
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 7707
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.175787975,
+  "cache_hit_rate": 0.899814,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All 5 lines denied CO-4 + N822: therapy codes 97530/97140/97116 billed with KX only, missing the required therapy discipline modifier. Chart note confirms PT plan of care \u2192 GP needed. Medicare Part B: CO-4 is unprocessable, no appeal rights; submit new original claim (CLM05-3=1) with GP appended. Filing clock runs from DOS 2026-06-05.",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_therapy_modifier",
+        "explanation": "All lines carry KX but no GP/GO/GN. Chart note says \"PT treatment note\" \u2014 physical therapy plan of care requires GP. MAC returned unprocessable per CO-4 + N822."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Submit a new original claim (CLM05-3=1) adding modifier GP to every line (97530, 97140, 97116). Do not use frequency 7 or appeal. Filing deadline is 2027-06-05 \u2014 act promptly."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All 5 service lines carry CAS*CO*4 and LQ*HE*N822 (missing procedure modifier), $0 paid.",
+          "locator": "CAS/LQ segments on each SVC line"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Lines billed as HC:97530:KX, HC:97140:KX, HC:97116:KX \u2014 only KX present, no GP/GO/GN modifier.",
+          "locator": "SV1 segments lines 1-5"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "Header states 'PT treatment note' confirming physical therapy plan of care; GP is the correct modifier.",
+          "locator": "First line"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CO-4 + N822 on always-therapy CPTs missing GP/GO/GN \u2192 correct_and_resubmit as new original (CLM05-3=1); not a reopening, not an appeal.",
+          "locator": "therapy-modifiers-and-threshold.md \u00a78.1"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "4",
+        "rarc": "N822",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "citations": [
+        {
+          "source": "therapy-modifiers-and-threshold.md",
+          "rule": "CO-4 + N822 on always-therapy CPTs without GP/GO/GN \u2192 new original claim with modifier appended"
+        },
+        {
+          "source": "resubmission-and-frequency-codes.md",
+          "rule": "Medicare Part B does not accept CLM05-3=7; submit new original (frequency 1)"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All 5 lines denied CO-4 + N822: therapy codes 97530/97140/97116 billed with KX only, missing the required therapy discipline modifier. Chart note confirms PT plan of care \u2192 GP needed. Medicare Part B: CO-4 is unprocessable, no appeal rights; submit new original claim (CLM05-3=1) with GP appended. Filing clock runs from DOS 2026-06-05.\",\"resolution\":{\"root_cause\":{\"family\":\"missing_therapy_modifier\",\"explanation\":\"All lines carry KX but no GP/GO/GN. Chart note says \\\"PT treatment note\\\" \u2014 physical therapy plan of care requires GP. MAC returned unprocessable per CO-4 + N822.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Submit a new original claim (CLM05-3=1) adding modifier GP to every line (97530, 97140, 97116). Do not use frequency 7 or appeal. Filing deadline is 2027-06-05 \u2014 act promptly.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All 5 service lines carry CAS*CO*4 and LQ*HE*N822 (missing procedure modifier), $0 paid.\",\"locator\":\"CAS/LQ segments on each SVC line\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Lines billed as HC:97530:KX, HC:97140:KX, HC:97116:KX \u2014 only KX present, no GP/GO/GN modifier.\",\"locator\":\"SV1 segments lines 1-5\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"Header states 'PT treatment note' confirming physical therapy plan of care; GP is the correct modifier.\",\"locator\":\"First line\"},{\"artifact\":\"reference\",\"fact\":\"CO-4 + N822 on always-therapy CPTs missing GP/GO/GN \u2192 correct_and_resubmit as new original (CLM05-3=1); not a reopening, not an appeal.\",\"locator\":\"therapy-modifiers-and-threshold.md \u00a78.1\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"4\",\"rarc\":\"N822\",\"level\":\"line\"},\"denied_line_idxs\":[0,1,2,3,4],\"citations\":[{\"source\":\"therapy-modifiers-and-threshold.md\",\"rule\":\"CO-4 + N822 on always-therapy CPTs without GP/GO/GN \u2192 new original claim with modifier appended\"},{\"source\":\"resubmission-and-frequency-codes.md\",\"rule\":\"Medicare Part B does not accept CLM05-3=7; submit new original (frequency 1)\"}]}}"
+}

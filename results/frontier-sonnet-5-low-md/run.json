@@ -1,0 +1,23 @@
+{
+  "run_id": "frontier-sonnet-5-low-md",
+  "model": "claude-sonnet-5",
+  "effort": "low",
+  "thinking": "adaptive",
+  "input_format": "md",
+  "slice": "eval/slices/dev15.txt",
+  "n_cases": 15,
+  "counts": {
+    "resolved": 14,
+    "awaiting_human": 1,
+    "failed": 0
+  },
+  "cost_usd": 1.161243,
+  "cost_usd_successful_cases": 1.161243,
+  "cost_usd_failed_cases": 0.0,
+  "cost_per_case_usd": 0.077416,
+  "wall_seconds": 134.6,
+  "provider": "anthropic",
+  "provider_spend_after": 7.031573,
+  "spend_total_after": 50.253466,
+  "failures": []
+}

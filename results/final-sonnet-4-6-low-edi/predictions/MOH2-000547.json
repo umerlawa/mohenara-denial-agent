@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000547",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All three lines paid. CO-45 is the contractual write-off to the Medicare fee schedule \u2014 provider liability, not billable. PR-2 is standard Part B coinsurance, routine patient AR. No denial exists; claim adjudicated correctly.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 861,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 5034,
+    "cost_usd": 0.04545486,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "none",
+      "explanation": "Claim paid on all three lines. CO-45 = fee-schedule reduction (contractual write-off). PR-2 = Part B coinsurance. No denial."
+    },
+    "next_action": {
+      "path": "none",
+      "detail": "Post the $101.54 payment. Write off CO-45 amounts ($90.23 total). Bill patient $25.38 coinsurance (PR-2) in normal AR cycle."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP status=1 (paid), $101.54 paid of $217.15 billed; CLP07=2609277491783 confirms adjudication",
+        "locator": "CLP segment"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All three SVC lines carry CAS*CO*45 (fee-schedule contractual adjustment) and CAS*PR*2 (coinsurance) \u2014 no denial CARC",
+        "locator": "SVC/CAS segments lines 1-3"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*1 (active coverage) for DOS 2026-02-05; Medicare Part B FFS confirmed",
+        "locator": "EB*1 + DTP*356*D8*20240101"
+      }
+    ],
+    "denial": null,
+    "denied_line_idxs": [],
+    "citations": [
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO = contractual write-off, never bill patient; PR-2 coinsurance is routine AR, not a denial remedy"
+      },
+      {
+        "source": "01-carc-rarc-index.md",
+        "rule": "CARC 45 = exceeds fee schedule, CO group = contractual write-off"
+      }
+    ]
+  }
+}

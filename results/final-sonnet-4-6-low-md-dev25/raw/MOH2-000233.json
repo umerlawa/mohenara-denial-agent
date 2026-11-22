@@ -1,0 +1,38 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 36944,
+    "cache_read_input_tokens": 0,
+    "output_tokens": 995,
+    "output_tokens_details": {
+      "thinking_tokens": 622
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 36944
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "awaiting_human",
+    "rationale": "Lines 1\u20133 (97110-GP) denied CO-236/N20: NCCI PTP bundling with 97150-GP (paid, Column One). Chart note documents a distinct, demarcated session on a different body region for an unrelated goal \u2014 potential bypass. But the 835 carries neither the partner code nor the CCMI, and reference 07 requires the PTP edit file lookup before routing. CCMI=1 \u2192 correct-and-resubmit with modifier; CCMI=0 \u2192 write off. Cannot determine action without it.",
+    "awaiting_human": {
+      "question": "What is the Column Modifier Indicator (CCMI) for the 97110/97150 PTP edit pair in the Q2 2026 (April 1, 2026) CMS NCCI table?",
+      "why_needed": "CCMI=1 means a bypass modifier is allowed and the three 97110-GP lines can be corrected and resubmitted with the appropriate modifier (chart note supports separate encounter/body region). CCMI=0 means the edit is absolute and all three lines must be written off.",
+      "blocks": [
+        "root_cause.family",
+        "next_action.path"
+      ],
+      "asked_of": "internal"
+    }
+  },
+  "result": "{\"status\":\"awaiting_human\",\"rationale\":\"Lines 1\u20133 (97110-GP) denied CO-236/N20: NCCI PTP bundling with 97150-GP (paid, Column One). Chart note documents a distinct, demarcated session on a different body region for an unrelated goal \u2014 potential bypass. But the 835 carries neither the partner code nor the CCMI, and reference 07 requires the PTP edit file lookup before routing. CCMI=1 \u2192 correct-and-resubmit with modifier; CCMI=0 \u2192 write off. Cannot determine action without it.\",\"awaiting_human\":{\"question\":\"What is the Column Modifier Indicator (CCMI) for the 97110/97150 PTP edit pair in the Q2 2026 (April 1, 2026) CMS NCCI table?\",\"why_needed\":\"CCMI=1 means a bypass modifier is allowed and the three 97110-GP lines can be corrected and resubmitted with the appropriate modifier (chart note supports separate encounter/body region). CCMI=0 means the edit is absolute and all three lines must be written off.\",\"blocks\":[\"root_cause.family\",\"next_action.path\"],\"asked_of\":\"internal\"}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

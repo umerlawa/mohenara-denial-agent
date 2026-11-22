@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000117",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "CO-29 timely filing denial on a commercial claim (CI). DOS 2025-01-19. The 277CA proves the payer received and accepted the claim on 2025-01-27 (8 days post-DOS) \u2014 timely under any commercial filing deadline. The 837P interchange date of 2025-10-15 suggests a resubmission, but the original acceptance report is dispositive proof. Appeal with the 277CA; do not write off.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 3994,
+    "cache_read_input_tokens": 31983,
+    "cache_creation_input_tokens": 4817,
+    "cost_usd": 0.160553525,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "high",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "timely_filing",
+      "explanation": "Payer denied CO-29 claiming filing limit expired. The 277CA shows claim accepted for processing (A2, status 20) on 2025-01-27 \u2014 8 days after DOS. Original filing was timely; the denial is incorrect."
+    },
+    "next_action": {
+      "path": "appeal",
+      "detail": "Appeal CO-29 to Liberty Bell. Attach the 277CA showing receipt date 2025-01-27 (TRC75364521, status A2/20). Dispute the payer's receipt date \u2014 do not plead forgiveness. ERISA appeal deadline applies."
+    },
+    "evidence": [
+      {
+        "artifact": "ack_277ca.edi",
+        "fact": "Claim TRC75364521 received 2025-01-27, status A2 (accepted for adjudication), claim status 20 (accepted for processing)",
+        "locator": "received date (050): 2025-01-27"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Both lines denied CO-29 (timely filing expired), MOA N211; claim-level denial, $0 paid",
+        "locator": "CAS CO-29 on lines 1-2; MOA N211"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Original claim frequency 1, DOS 2025-01-19, interchange date 2025-10-15 \u2014 resubmission after original was accepted in January",
+        "locator": "CLM05-3=1; interchange date 251015"
+      },
+      {
+        "artifact": "reference",
+        "fact": "Proof of accepted submission inside the window \u2192 appeal with the clearinghouse acceptance report; dispute the receipt date",
+        "locator": "03-timely-filing.md, remedy table"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "29",
+      "rarc": "N211",
+      "level": "line"
+    }
+  }
+}

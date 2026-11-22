@@ -1,0 +1,82 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4949,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 2637,
+    "output_tokens_details": {
+      "thinking_tokens": 1701
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4949
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "All three lines carry CO-29 (timely filing expired) with MOA N211. But the 277CA shows the original claim (TRC95085471) was accepted 2025-02-06 \u2014 12 days after the DOS of 2025-01-25. The 837 in hand is dated 2025-08-19 with CLM05-3=1 (new original), which the payer treated as a fresh filing ~7 months post-DOS. The original was filed timely; the denial is disputable with the 277CA acceptance report.",
+    "resolution": {
+      "root_cause": {
+        "family": "timely_filing",
+        "explanation": "Claim resubmitted 2025-08-19 as CLM05-3=1 (new original), ~7 months after DOS. Payer denied CO-29. Original claim TRC95085471 was accepted 2025-02-06 per 277CA \u2014 12 days post-DOS, clearly within any commercial window."
+      },
+      "next_action": {
+        "path": "appeal",
+        "detail": "File a timely-filing appeal attaching the 2025-02-06 277CA (STC A2:20) as proof the original claim was accepted within 12 days of DOS. Dispute the receipt date underlying the CO-29 denial; do not resubmit another new claim."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All three service lines denied CO-29; claim-level MOA N211; $0 paid; filing indicator CI",
+          "locator": "CLP*PA24217192*4 / CAS*CO*29 on SVC lines 1-3"
+        },
+        {
+          "artifact": "ack_277ca.edi",
+          "fact": "Original claim TRC95085471 accepted by payer 2025-02-06 (STC A2:20), 12 days after DOS 2025-01-25",
+          "locator": "STC*A2:20*20250206 / TRN*2*TRC95085471"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Resubmission dated 2025-08-19 sent with CLM05-3=1 (new original), causing payer to evaluate filing date as August 2025",
+          "locator": "ISA date 250819; CLM*PA24217192*220.65***11:B:1"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CO-29 with proof of accepted submission inside the window \u2192 appeal with clearinghouse acceptance report; dispute receipt date",
+          "locator": "03-timely-filing.md \u2014 Disposition, remedy table row 'Proof accepted'"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "29",
+        "rarc": "N211",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2
+      ],
+      "citations": [
+        {
+          "source": "03-timely-filing.md",
+          "rule": "Proof of accepted submission inside window \u2192 appeal with clearinghouse acceptance report"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "CO-29 with no exception \u2192 do_not_resubmit; exception applies when acceptance proof exists"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"All three lines carry CO-29 (timely filing expired) with MOA N211. But the 277CA shows the original claim (TRC95085471) was accepted 2025-02-06 \u2014 12 days after the DOS of 2025-01-25. The 837 in hand is dated 2025-08-19 with CLM05-3=1 (new original), which the payer treated as a fresh filing ~7 months post-DOS. The original was filed timely; the denial is disputable with the 277CA acceptance report.\",\"resolution\":{\"root_cause\":{\"family\":\"timely_filing\",\"explanation\":\"Claim resubmitted 2025-08-19 as CLM05-3=1 (new original), ~7 months after DOS. Payer denied CO-29. Original claim TRC95085471 was accepted 2025-02-06 per 277CA \u2014 12 days post-DOS, clearly within any commercial window.\"},\"next_action\":{\"path\":\"appeal\",\"detail\":\"File a timely-filing appeal attaching the 2025-02-06 277CA (STC A2:20) as proof the original claim was accepted within 12 days of DOS. Dispute the receipt date underlying the CO-29 denial; do not resubmit another new claim.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All three service lines denied CO-29; claim-level MOA N211; $0 paid; filing indicator CI\",\"locator\":\"CLP*PA24217192*4 / CAS*CO*29 on SVC lines 1-3\"},{\"artifact\":\"ack_277ca.edi\",\"fact\":\"Original claim TRC95085471 accepted by payer 2025-02-06 (STC A2:20), 12 days after DOS 2025-01-25\",\"locator\":\"STC*A2:20*20250206 / TRN*2*TRC95085471\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Resubmission dated 2025-08-19 sent with CLM05-3=1 (new original), causing payer to evaluate filing date as August 2025\",\"locator\":\"ISA date 250819; CLM*PA24217192*220.65***11:B:1\"},{\"artifact\":\"reference\",\"fact\":\"CO-29 with proof of accepted submission inside the window \u2192 appeal with clearinghouse acceptance report; dispute receipt date\",\"locator\":\"03-timely-filing.md \u2014 Disposition, remedy table row 'Proof accepted'\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"29\",\"rarc\":\"N211\",\"level\":\"line\"},\"denied_line_idxs\":[0,1,2],\"citations\":[{\"source\":\"03-timely-filing.md\",\"rule\":\"Proof of accepted submission inside window \u2192 appeal with clearinghouse acceptance report\"},{\"source\":\"00-group-codes.md\",\"rule\":\"CO-29 with no exception \u2192 do_not_resubmit; exception applies when acceptance proof exists\"}]}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

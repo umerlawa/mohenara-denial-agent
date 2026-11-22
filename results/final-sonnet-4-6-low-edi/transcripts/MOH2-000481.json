@@ -1,0 +1,100 @@
+{
+  "case_id": "MOH2-000481",
+  "run_id": "final-sonnet-4-6-low-edi",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4679,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4968,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1037,
+    "output_tokens_details": {
+      "thinking_tokens": 310
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4968
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.04808661,
+  "cache_hit_rate": 0.86464,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "271 confirms CI coverage terminated 2025-04-30 (DTP*357); DOS 2025-05-19 is after termination. All three lines carry PR-27, making the balance patient responsibility. No QMB, Medicaid, NSA, or ACA grace-period override is present. No successor payer (no EB*R). Bill patient.",
+    "resolution": {
+      "root_cause": {
+        "family": "eligibility_terminated",
+        "explanation": "271 shows EB*6 with DTP*357 2025-04-30; DOS 2025-05-19 falls after termination. Payer issued PR-27 on all three lines. Filing indicator CI, no override applies."
+      },
+      "next_action": {
+        "path": "bill_patient",
+        "detail": "Bill Elizabeth Martinez $149.12 for all three lines. Confirm no QMB/Medicaid/NSA override, then issue a patient statement citing the coverage termination date of 2025-04-30."
+      },
+      "evidence": [
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*6 IND 30 GARDEN STATE BENEFIT TRUST HMO; DTP*357 D8 20250430 \u2014 coverage terminated April 30, 2025",
+          "locator": "EB/DTP segments"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All three SVC lines carry CAS*PR*27 \u2014 patient responsibility, coverage terminated",
+          "locator": "CAS segments lines 1-3"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "SBR*P*18*******CI \u2014 commercial filing indicator; DOS 20250519 on all lines",
+          "locator": "SBR and DTP*472 segments"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "No EB*R segment \u2014 no other/additional payer on record for DOS",
+          "locator": "EB loop"
+        }
+      ],
+      "denial": {
+        "group": "PR",
+        "carc": "27",
+        "rarc": "N30",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2
+      ],
+      "citations": [
+        {
+          "source": "05-eligibility-terminated.md",
+          "rule": "CI + EB*6 + DTP*357 before DOS, no successor: PR-27 \u2192 bill_patient once overrides cleared"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "PR = patient liability, billable after overrides checked"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"271 confirms CI coverage terminated 2025-04-30 (DTP*357); DOS 2025-05-19 is after termination. All three lines carry PR-27, making the balance patient responsibility. No QMB, Medicaid, NSA, or ACA grace-period override is present. No successor payer (no EB*R). Bill patient.\",\"resolution\":{\"root_cause\":{\"family\":\"eligibility_terminated\",\"explanation\":\"271 shows EB*6 with DTP*357 2025-04-30; DOS 2025-05-19 falls after termination. Payer issued PR-27 on all three lines. Filing indicator CI, no override applies.\"},\"next_action\":{\"path\":\"bill_patient\",\"detail\":\"Bill Elizabeth Martinez $149.12 for all three lines. Confirm no QMB/Medicaid/NSA override, then issue a patient statement citing the coverage termination date of 2025-04-30.\"},\"evidence\":[{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*6 IND 30 GARDEN STATE BENEFIT TRUST HMO; DTP*357 D8 20250430 \u2014 coverage terminated April 30, 2025\",\"locator\":\"EB/DTP segments\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"All three SVC lines carry CAS*PR*27 \u2014 patient responsibility, coverage terminated\",\"locator\":\"CAS segments lines 1-3\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"SBR*P*18*******CI \u2014 commercial filing indicator; DOS 20250519 on all lines\",\"locator\":\"SBR and DTP*472 segments\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"No EB*R segment \u2014 no other/additional payer on record for DOS\",\"locator\":\"EB loop\"}],\"denial\":{\"group\":\"PR\",\"carc\":\"27\",\"rarc\":\"N30\",\"level\":\"line\"},\"denied_line_idxs\":[0,1,2],\"citations\":[{\"source\":\"05-eligibility-terminated.md\",\"rule\":\"CI + EB*6 + DTP*357 before DOS, no successor: PR-27 \u2192 bill_patient once overrides cleared\"},{\"source\":\"00-group-codes.md\",\"rule\":\"PR = patient liability, billable after overrides checked\"}]}}"
+}

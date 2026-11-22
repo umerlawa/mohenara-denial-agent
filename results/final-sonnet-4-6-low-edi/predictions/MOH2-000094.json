@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000094",
+  "input_format": "edi",
+  "status": "awaiting_human",
+  "rationale": "Line 0 (97110) carries CO-236+N20 \u2014 a PTP bundling denial. The chart note documents a distinct service (separate start/stop, different body region), and the claim already carries GP+KX but no bypass modifier. Disposition hinges entirely on the CCMI for the 97110/97150 pair in the Q2 2026 NCCI edit file, which the 835 does not carry. The reference prohibits guessing this value.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1219,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 4941,
+    "cost_usd": 0.050978235000000004,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "awaiting_human": {
+    "question": "What is the Column Modifier Indicator (CCMI) for the 97110 (Column Two) / 97150 (Column One) pair in the NCCI PTP edit file effective for DOS 2026-05-31 (Q2 2026)?",
+    "why_needed": "CCMI=1 allows correct_and_resubmit via clerical-error reopening with an appropriate bypass modifier (anatomic or XE/XS/XP/XU/59) on the 97110 line, supported by the chart note's separate-site/separate-time documentation. CCMI=0 means the edit is absolute and the line must be written off (do_not_resubmit).",
+    "asked_of": "internal",
+    "blocks": [
+      "root_cause.family",
+      "next_action.path"
+    ]
+  }
+}

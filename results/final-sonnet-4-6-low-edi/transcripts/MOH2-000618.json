@@ -1,0 +1,98 @@
+{
+  "case_id": "MOH2-000618",
+  "run_id": "final-sonnet-4-6-low-edi",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4771,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5057,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1626,
+    "output_tokens_details": {
+      "thinking_tokens": 803
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5057
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.058172235,
+  "cache_hit_rate": 0.86255,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "Line 2 (97112) denied CO-151/N362: MUE exceeded. Chart note documents 30 minutes of 97112; at 15 min/unit that supports 2 units. Claim billed 6 units \u2014 a keying error. Lines 1 and 3 adjudicated normally. Medicare Part B payer (MB); corrected claim via clerical-error reopening, not frequency 7.",
+    "resolution": {
+      "root_cause": {
+        "family": "mue_exceeded",
+        "explanation": "97112 billed 6 units; chart note shows 30 minutes = 2 billable units. CO-151/N362 confirms MUE exceeded. Units overcoded by a factor of 3."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Submit clerical-error reopening to Novitas (Medicare Part B; frequency 7 not accepted). Correct 97112 to 2 units. Reference ICN 2610250393220. Do not file a new original or appeal."
+      },
+      "denied_line_idxs": [
+        1
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "SVC HC:97112:GP paid $0; CAS*CO*151*292.23 with LQ*HE*N362 \u2014 MUE exceeded, full line denied",
+          "locator": "SVC*HC:97112:GP*292.23*0**6 / CAS*CO*151 / LQ*HE*N362"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "97112 documented as 30 minutes, supporting 2 units (30\u00f715); 6 units billed is a keying error",
+          "locator": "97112 (30 min)"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "LX*2 billed 97112 at 6 units (UN*6)",
+          "locator": "SV1*HC:97112:GP*292.23*UN*6"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Claim adjudicated; CLP07=2610250393220 (ICN present); payer MB = Medicare Part B FFS \u2014 frequency 7 not accepted, use reopening",
+          "locator": "CLP*PA27512935*1*...*MB*2610250393220"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "151",
+        "rarc": "N362",
+        "level": "line"
+      },
+      "citations": [
+        {
+          "source": "07-ncci-and-mue.md",
+          "rule": "CO-151+N362 = MUE exceeded; MAI 2 keying error \u2192 correct_and_resubmit"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Medicare Part B FFS: frequency 7 not accepted; use clerical-error reopening"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"Line 2 (97112) denied CO-151/N362: MUE exceeded. Chart note documents 30 minutes of 97112; at 15 min/unit that supports 2 units. Claim billed 6 units \u2014 a keying error. Lines 1 and 3 adjudicated normally. Medicare Part B payer (MB); corrected claim via clerical-error reopening, not frequency 7.\",\"resolution\":{\"root_cause\":{\"family\":\"mue_exceeded\",\"explanation\":\"97112 billed 6 units; chart note shows 30 minutes = 2 billable units. CO-151/N362 confirms MUE exceeded. Units overcoded by a factor of 3.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Submit clerical-error reopening to Novitas (Medicare Part B; frequency 7 not accepted). Correct 97112 to 2 units. Reference ICN 2610250393220. Do not file a new original or appeal.\"},\"denied_line_idxs\":[1],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"SVC HC:97112:GP paid $0; CAS*CO*151*292.23 with LQ*HE*N362 \u2014 MUE exceeded, full line denied\",\"locator\":\"SVC*HC:97112:GP*292.23*0**6 / CAS*CO*151 / LQ*HE*N362\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"97112 documented as 30 minutes, supporting 2 units (30\u00f715); 6 units billed is a keying error\",\"locator\":\"97112 (30 min)\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"LX*2 billed 97112 at 6 units (UN*6)\",\"locator\":\"SV1*HC:97112:GP*292.23*UN*6\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"Claim adjudicated; CLP07=2610250393220 (ICN present); payer MB = Medicare Part B FFS \u2014 frequency 7 not accepted, use reopening\",\"locator\":\"CLP*PA27512935*1*...*MB*2610250393220\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"151\",\"rarc\":\"N362\",\"level\":\"line\"},\"citations\":[{\"source\":\"07-ncci-and-mue.md\",\"rule\":\"CO-151+N362 = MUE exceeded; MAI 2 keying error \u2192 correct_and_resubmit\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Medicare Part B FFS: frequency 7 not accepted; use clerical-error reopening\"}]}}"
+}

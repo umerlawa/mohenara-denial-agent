@@ -1,0 +1,91 @@
+{
+  "case_id": "MOH2-000663",
+  "run_id": "final-sonnet-4-6-low-edi",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4826,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5066,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 862,
+    "output_tokens_details": {
+      "thinking_tokens": 231
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5066
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.04560336,
+  "cache_hit_rate": 0.862339,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All three lines adjudicated and paid. CO-45 is the standard Medicare fee-schedule contractual write-off; PR-2 is coinsurance owed by the patient. No denial codes present. $101.54 paid; $25.38 coinsurance is routine patient AR, not a denial remedy.",
+    "resolution": {
+      "root_cause": {
+        "family": "none",
+        "explanation": "Claim paid in full per fee schedule. CO-45 = contractual write-off; PR-2 = coinsurance. No denial or adjustment requiring remediation."
+      },
+      "next_action": {
+        "path": "none",
+        "detail": "Post the $101.54 EFT. Write off CO-45 amounts per participation agreement. Bill patient $25.38 PR-2 coinsurance in the normal course."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP*PA29715650*1*210*101.54 \u2014 claim status 1 (processed as primary), $101.54 paid",
+          "locator": "CLP segment"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CAS*CO*45 on all three lines \u2014 contractual fee-schedule write-off, not a denial",
+          "locator": "SVC lines 1-3"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CAS*PR*2 on all three lines \u2014 coinsurance, routine patient responsibility",
+          "locator": "SVC lines 1-3"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*1 = active coverage, DTP*356 effective 2024-01-01, no termination date",
+          "locator": "EB segment"
+        }
+      ],
+      "denial": null,
+      "denied_line_idxs": [],
+      "citations": [
+        {
+          "source": "00-group-codes.md",
+          "rule": "CO = contractual obligation, provider write-off; PR = patient responsibility, billable in normal course"
+        },
+        {
+          "source": "01-carc-rarc-index.md",
+          "rule": "CARC 45 = exceeds fee schedule; PR-2 = coinsurance"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All three lines adjudicated and paid. CO-45 is the standard Medicare fee-schedule contractual write-off; PR-2 is coinsurance owed by the patient. No denial codes present. $101.54 paid; $25.38 coinsurance is routine patient AR, not a denial remedy.\",\"resolution\":{\"root_cause\":{\"family\":\"none\",\"explanation\":\"Claim paid in full per fee schedule. CO-45 = contractual write-off; PR-2 = coinsurance. No denial or adjustment requiring remediation.\"},\"next_action\":{\"path\":\"none\",\"detail\":\"Post the $101.54 EFT. Write off CO-45 amounts per participation agreement. Bill patient $25.38 PR-2 coinsurance in the normal course.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP*PA29715650*1*210*101.54 \u2014 claim status 1 (processed as primary), $101.54 paid\",\"locator\":\"CLP segment\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CAS*CO*45 on all three lines \u2014 contractual fee-schedule write-off, not a denial\",\"locator\":\"SVC lines 1-3\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CAS*PR*2 on all three lines \u2014 coinsurance, routine patient responsibility\",\"locator\":\"SVC lines 1-3\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*1 = active coverage, DTP*356 effective 2024-01-01, no termination date\",\"locator\":\"EB segment\"}],\"denial\":null,\"denied_line_idxs\":[],\"citations\":[{\"source\":\"00-group-codes.md\",\"rule\":\"CO = contractual obligation, provider write-off; PR = patient responsibility, billable in normal course\"},{\"source\":\"01-carc-rarc-index.md\",\"rule\":\"CARC 45 = exceeds fee schedule; PR-2 = coinsurance\"}]}}"
+}

@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000648",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All three lines paid at Medicare fee schedule. CO-45 is the contractual write-off; PR-2 is standard Part B coinsurance. No denial codes present. Claim adjudicated correctly; routine coinsurance collection is not a denial remedy.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1035,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 5060,
+    "cost_usd": 0.04843311,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "none",
+      "explanation": "Claim paid. CO-45 = fee schedule write-off (contractual); PR-2 = Part B coinsurance. No denial on any line."
+    },
+    "next_action": {
+      "path": "none",
+      "detail": "Write off CO-45 amounts per participation agreement. Bill patient PR-2 coinsurance: $5.81 (97110), $5.54 (97140), $7.01 (97530) = $18.36 total \u2014 routine AR, not a denial remedy."
+    },
+    "denial": null,
+    "denied_line_idxs": [],
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP paid status '1'; payer paid $73.49; CAS CO-45 write-offs and CAS PR-2 coinsurance on all three lines \u2014 no denial CARC.",
+        "locator": "CLP*PA27800295*1 and SVC/CAS segments"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*1 (active coverage) for DOS 2026-01-25; DTP*356*D8*20240101 \u2014 coverage effective, no termination date.",
+        "locator": "EB*1 / DTP*356"
+      },
+      {
+        "artifact": "ack_277ca.edi",
+        "fact": "STC*A2:20 \u2014 claim accepted and forwarded to payer.",
+        "locator": "STC*A2:20"
+      }
+    ],
+    "citations": [
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO = contractual write-off, not billable to patient; PR = patient responsibility, billable after overrides."
+      },
+      {
+        "source": "01-carc-rarc-index.md",
+        "rule": "CARC 45: charge exceeds fee schedule \u2014 contractual write-off; PR-2 coinsurance is routine patient liability."
+      }
+    ]
+  }
+}

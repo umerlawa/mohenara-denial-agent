@@ -1,0 +1,95 @@
+{
+  "case_id": "MOH2-000707",
+  "run_id": "final-sonnet-4-6-low-edi",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4658,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4982,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1427,
+    "output_tokens_details": {
+      "thinking_tokens": 638
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4982
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.05457936,
+  "cache_hit_rate": 0.864311,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All three lines carry OA-18 + MOA N111. The 835 has a payer claim control number (CLP07 = 2611655914124), confirming this claim adjudicated. OA-18 means a prior claim for the same provider/member/DOS/procedures already adjudicated. This is a true duplicate \u2014 same claim sent twice. OA is not patient-billable; hard-coded edit, no appeal rights.",
+    "resolution": {
+      "root_cause": {
+        "family": "exact_duplicate",
+        "explanation": "All three lines denied OA-18 (exact duplicate) with N111. CLP07 confirms adjudication. A prior claim for the same patient/provider/DOS/CPTs already adjudicated; this submission collided with it."
+      },
+      "next_action": {
+        "path": "do_not_resubmit",
+        "detail": "Do not resubmit. Check portal/IVR for original claim's disposition and ICN. If original paid, post and close. If still pending, hold. OA group \u2014 not billable to patient. Repeated submissions risk program-integrity referral."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CAS*OA*18 on all three service lines; MOA N111; $0 paid",
+          "locator": "SVC lines for 97110, 97140, 97530"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP07 = 2611655914124 \u2014 payer claim control number present, confirming claim adjudicated (not front-end rejected)",
+          "locator": "CLP*PA24604407*4*195.22*0**MB*2611655914124"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "CLM05-3 = 1 (original), no REF*F8 \u2014 sent as a new original claim against an already-adjudicated prior submission",
+          "locator": "CLM*PA24604407*195.22***11:B:1"
+        }
+      ],
+      "denial": {
+        "group": "OA",
+        "carc": "18",
+        "rarc": "N111",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2
+      ],
+      "citations": [
+        {
+          "source": "04-exact-duplicate.md",
+          "rule": "OA-18 true duplicate \u2192 do_not_resubmit; hard-coded edit, no appeal rights; OA never patient liability"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "OA = liability unstated, not billable to patient"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All three lines carry OA-18 + MOA N111. The 835 has a payer claim control number (CLP07 = 2611655914124), confirming this claim adjudicated. OA-18 means a prior claim for the same provider/member/DOS/procedures already adjudicated. This is a true duplicate \u2014 same claim sent twice. OA is not patient-billable; hard-coded edit, no appeal rights.\",\"resolution\":{\"root_cause\":{\"family\":\"exact_duplicate\",\"explanation\":\"All three lines denied OA-18 (exact duplicate) with N111. CLP07 confirms adjudication. A prior claim for the same patient/provider/DOS/CPTs already adjudicated; this submission collided with it.\"},\"next_action\":{\"path\":\"do_not_resubmit\",\"detail\":\"Do not resubmit. Check portal/IVR for original claim's disposition and ICN. If original paid, post and close. If still pending, hold. OA group \u2014 not billable to patient. Repeated submissions risk program-integrity referral.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CAS*OA*18 on all three service lines; MOA N111; $0 paid\",\"locator\":\"SVC lines for 97110, 97140, 97530\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP07 = 2611655914124 \u2014 payer claim control number present, confirming claim adjudicated (not front-end rejected)\",\"locator\":\"CLP*PA24604407*4*195.22*0**MB*2611655914124\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"CLM05-3 = 1 (original), no REF*F8 \u2014 sent as a new original claim against an already-adjudicated prior submission\",\"locator\":\"CLM*PA24604407*195.22***11:B:1\"}],\"denial\":{\"group\":\"OA\",\"carc\":\"18\",\"rarc\":\"N111\",\"level\":\"line\"},\"denied_line_idxs\":[0,1,2],\"citations\":[{\"source\":\"04-exact-duplicate.md\",\"rule\":\"OA-18 true duplicate \u2192 do_not_resubmit; hard-coded edit, no appeal rights; OA never patient liability\"},{\"source\":\"00-group-codes.md\",\"rule\":\"OA = liability unstated, not billable to patient\"}]}}"
+}

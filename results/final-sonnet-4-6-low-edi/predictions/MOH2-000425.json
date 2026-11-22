@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000425",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All 4 lines denied CO-119/N435. No KX modifier on any line in the 837P. Chart note (DOS 2026-06-01) documents skilled services medically necessary. Record justifies therapy past threshold; KX was simply omitted. Medicare Part B \u2014 remedy is clerical-error reopening, not frequency 7.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1299,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 5087,
+    "cost_usd": 0.052900485000000004,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "threshold_no_kx",
+      "explanation": "All 4 lines carry CO-119 + MOA N435. 837P shows GP modifier on each line but no KX. Chart note dated 2026-06-01 documents medical necessity and skilled therapy justification."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "File a clerical-error reopening with the MAC (Part B; frequency 7 not accepted). Append KX to all 4 lines (97112:GP:KX, 97140:GP:KX). Attach chart note as supporting documentation. Reopening window: 1 year from DOS."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CAS*CO*119 on all 4 SVC lines; MOA N435 at claim level; $0 paid; payer MB (Medicare Part B FFS)",
+        "locator": "CLP and SVC segments"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Lines billed as 97112:GP and 97140:GP \u2014 no KX modifier on any line",
+        "locator": "LX*1\u2013LX*4 SV1 segments"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "Skilled services documented as medically necessary on DOS 2026-06-01; justification predates DOS",
+        "locator": "chart_note.txt final sentence"
+      },
+      {
+        "artifact": "reference",
+        "fact": "CO-119 + N435 with no KX and record supporting necessity \u2192 correct_and_resubmit via clerical-error reopening; Part B does not accept frequency 7",
+        "locator": "08-therapy-modifiers.md threshold_no_kx table row 1"
+      }
+    ],
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "119",
+      "rarc": "N435",
+      "level": "line"
+    },
+    "citations": [
+      {
+        "source": "08-therapy-modifiers.md",
+        "rule": "threshold_no_kx: no KX, record justified \u2192 correct_and_resubmit via clerical-error reopening"
+      },
+      {
+        "source": "02-resubmission-frequency.md",
+        "rule": "Part B / DME FFS: frequency 7 not accepted; use reopening"
+      }
+    ]
+  }
+}

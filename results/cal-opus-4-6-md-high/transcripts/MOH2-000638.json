@@ -1,0 +1,99 @@
+{
+  "case_id": "MOH2-000638",
+  "run_id": "cal-opus-4-6-md-high",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "high",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 7021,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5046,
+    "cache_read_input_tokens": 31983,
+    "output_tokens": 7265,
+    "output_tokens_details": {
+      "thinking_tokens": 6428
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5046
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.2520804,
+  "cache_hit_rate": 0.863682,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "835 denies all lines CO-22 with claim-level MOA MA04. 271 for DOS shows EB*R identifying Novitas Medicare Part B FFS with message \"PLAN IS PRIMARY PAYER FOR THIS MEMBER\" \u2014 Medicare is primary. Claim was billed to Delaware Valley Mutual as primary (SBR P). MA04 = primary adjudication data missing; per reference, correct_and_resubmit to same payer after obtaining primary's EOB. Never resubmit_other_payer on MA04.",
+    "resolution": {
+      "root_cause": {
+        "family": "cob_other_primary",
+        "explanation": "Claim filed to Delaware Valley Mutual as primary, but 271 EB*R confirms Medicare Part B (Novitas) is primary payer. Patient age 85. MA04: primary payer adjudication data not supplied on the secondary claim."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Bill Medicare Part B (Novitas, payer ID 1846349352) as primary first. Then resubmit to Delaware Valley Mutual as secondary (SBR01=S) with Medicare's SBR/AMT/CAS and line SVD/CAS. CLM05-3=7, REF*F8=2621080619623.",
+        "resubmission_frequency_code": "7"
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All lines denied CO-22; claim-level MOA MA04 (secondary payment cannot be considered without primary payer identity).",
+          "locator": "CAS CO*22; MOA MA04"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*R identifies Novitas Solutions Medicare Part B FFS; payer message PLAN IS PRIMARY PAYER FOR THIS MEMBER.",
+          "locator": "EB*R loop; payer ID 1846349352"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Claim filed with payer responsibility P (primary) to Delaware Valley Mutual \u2014 COB order as billed was wrong.",
+          "locator": "SBR01=P; CLM05-3=1"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Payer claim control number 2621080619623 for REF*F8 on corrected resubmission.",
+          "locator": "CLP07"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "22",
+        "rarc": null,
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2
+      ],
+      "citations": [
+        {
+          "source": "06-cob-other-primary.md",
+          "rule": "MA04 \u2192 correct_and_resubmit to the same payer. Completeness defect, not a routing problem; never resubmit_other_payer."
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "CARC 22, 109 (not MA04) \u2192 resubmit_other_payer; MA04 overrides to correct_and_resubmit."
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Adjudicated + billed content wrong/incomplete \u2192 corrected claim CLM05-3=7 with REF*F8 = CLP07 payer control number."
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"835 denies all lines CO-22 with claim-level MOA MA04. 271 for DOS shows EB*R identifying Novitas Medicare Part B FFS with message \\\"PLAN IS PRIMARY PAYER FOR THIS MEMBER\\\" \u2014 Medicare is primary. Claim was billed to Delaware Valley Mutual as primary (SBR P). MA04 = primary adjudication data missing; per reference, correct_and_resubmit to same payer after obtaining primary's EOB. Never resubmit_other_payer on MA04.\",\"resolution\":{\"root_cause\":{\"family\":\"cob_other_primary\",\"explanation\":\"Claim filed to Delaware Valley Mutual as primary, but 271 EB*R confirms Medicare Part B (Novitas) is primary payer. Patient age 85. MA04: primary payer adjudication data not supplied on the secondary claim.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Bill Medicare Part B (Novitas, payer ID 1846349352) as primary first. Then resubmit to Delaware Valley Mutual as secondary (SBR01=S) with Medicare's SBR/AMT/CAS and line SVD/CAS. CLM05-3=7, REF*F8=2621080619623.\",\"resubmission_frequency_code\":\"7\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All lines denied CO-22; claim-level MOA MA04 (secondary payment cannot be considered without primary payer identity).\",\"locator\":\"CAS CO*22; MOA MA04\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*R identifies Novitas Solutions Medicare Part B FFS; payer message PLAN IS PRIMARY PAYER FOR THIS MEMBER.\",\"locator\":\"EB*R loop; payer ID 1846349352\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Claim filed with payer responsibility P (primary) to Delaware Valley Mutual \u2014 COB order as billed was wrong.\",\"locator\":\"SBR01=P; CLM05-3=1\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"Payer claim control number 2621080619623 for REF*F8 on corrected resubmission.\",\"locator\":\"CLP07\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"22\",\"rarc\":null,\"level\":\"line\"},\"denied_line_idxs\":[0,1,2],\"citations\":[{\"source\":\"06-cob-other-primary.md\",\"rule\":\"MA04 \u2192 correct_and_resubmit to the same payer. Completeness defect, not a routing problem; never resubmit_other_payer.\"},{\"source\":\"00-group-codes.md\",\"rule\":\"CARC 22, 109 (not MA04) \u2192 resubmit_other_payer; MA04 overrides to correct_and_resubmit.\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Adjudicated + billed content wrong/incomplete \u2192 corrected claim CLM05-3=7 with REF*F8 = CLP07 payer control number.\"}]}}"
+}

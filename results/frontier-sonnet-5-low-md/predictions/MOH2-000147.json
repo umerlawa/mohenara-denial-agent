@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000147",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "All five lines are always-therapy CPTs (97530, 97140, 97116) billed with only KX, no GP/GO/GN discipline modifier. CARC 4 clause two (required modifier missing) + N822 confirms a missing-modifier unprocessable rejection, not an adjudicated denial. Chart note documents PT treatment (therapeutic activities, manual therapy, gait training) under a PT plan of care, so GP is the correct modifier. Fix and resubmit as a new original claim; timely filing is not implicated.",
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 3377,
+    "cache_read_input_tokens": 161819,
+    "cache_creation_input_tokens": 9593,
+    "cost_usd": 0.09012830000000001,
+    "model": "claude-sonnet-5",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "missing_therapy_modifier",
+      "explanation": "Lines 1-5 (97530-KX, 97140-KX, 97530-KX, 97140-KX, 97116-KX) denied CO-4/N822: required discipline modifier missing. Chart note shows PT services (therapeutic activities, manual therapy, gait training) with no GP appended on the 837P."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "resubmission_frequency_code": "7",
+      "detail": "Append GP (outpatient PT plan of care) to all five lines and submit as a NEW ORIGINAL claim (CLM05-3=1, no REF*F8) to Novitas Part B \u2014 CO-4/N822 was never adjudicated, so no reopening/appeal rights apply."
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All 5 lines carry CO-4 'procedure code is inconsistent with the modifier used' with remark N822 'missing procedure modifier(s)', $0 paid",
+        "locator": "service lines 1-5"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Lines billed 97530-KX, 97140-KX, 97530-KX x2, 97140-KX x2, 97116-KX \u2014 only KX present, no GP/GO/GN",
+        "locator": "service lines 1-5, modifiers"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "PT treatment note: therapeutic activities (97530), manual therapy (97140), gait training (97116), all physical therapy services",
+        "locator": "chart note body"
+      }
+    ],
+    "citations": [
+      {
+        "source": "08-therapy-modifiers.md",
+        "rule": "CO-4 + N822 on always-therapy CPTs 97110/97112/97140/97530 with no GP/GO/GN \u2192 missing_therapy_modifier; correct_and_resubmit as new original claim (CLM05-3=1), never appeal, never bill_patient"
+      },
+      {
+        "source": "01-carc-rarc-index.md",
+        "rule": "CARC 16/MA130 family unprocessable rejections require new original claim; CO-4 clause two operative here per therapy card"
+      }
+    ]
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "run_id": "cal-opus-4-6-md-high",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "high",
+  "input_format": "md",
+  "slice": "eval/slices/dev15.txt",
+  "n_cases": 15,
+  "counts": {
+    "resolved": 14,
+    "awaiting_human": 1,
+    "failed": 0
+  },
+  "cost_usd": 2.589906,
+  "cost_per_case_usd": 0.17266,
+  "wall_seconds": 1107.8,
+  "spend_total_after": 5.774276,
+  "failures": []
+}

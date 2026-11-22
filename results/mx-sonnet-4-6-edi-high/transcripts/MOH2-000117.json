@@ -1,0 +1,103 @@
+{
+  "case_id": "MOH2-000117",
+  "run_id": "mx-sonnet-4-6-edi-high",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "high",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 4391,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4824,
+    "cache_read_input_tokens": 31309,
+    "output_tokens": 9017,
+    "output_tokens_details": {
+      "thinking_tokens": 7975
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4824
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.17901807,
+  "cache_hit_rate": 0.866445,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "Both lines carry CO-29 (timely filing expired). The 837P is dated October 15, 2025 \u2014 nine months after the January 19, 2025 DOS \u2014 plainly outside any commercial filing window. However, the 277CA dated January 27, 2025 shows STC*A2 acceptance of TRC75364521, the same transaction reference in the 837P BHT, proving the original claim was submitted and accepted 8 days post-DOS. Commercial CI payer; N211 does not bar a commercial appeal.",
+    "resolution": {
+      "root_cause": {
+        "family": "timely_filing",
+        "explanation": "CO-29 on both lines. The 837P visible is dated October 15, 2025 (9 months post-DOS). The same TRC (TRC75364521) was accepted per 277CA on January 27, 2025 \u2014 8 days post-DOS \u2014 proving timely original filing."
+      },
+      "next_action": {
+        "path": "appeal",
+        "detail": "Appeal CO-29 denial attaching the January 27, 2025 277CA (STC*A2, TRN TRC75364521) as clearinghouse acceptance proof of timely original filing. CI commercial payer; N211 does not bar a commercial appeal. Dispute payer's receipt date against the 277CA date."
+      },
+      "denial": {
+        "group": "CO",
+        "carc": "29",
+        "rarc": "N211",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Both service lines CAS*CO*29 \u2014 $91.91 and $46.71 fully denied timely filing expired; $0 paid; CLP07=2530598850660 confirms adjudicated claim.",
+          "locator": "CLP*PA24642236*4*138.62*0**CI*2530598850660; SVC 97110:GP CAS; SVC 97140:GP CAS"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "837P ISA date October 15, 2025; DOS January 19, 2025 \u2014 approximately 9 months elapsed.",
+          "locator": "ISA09=251015; DTP*472*D8*20250119"
+        },
+        {
+          "artifact": "ack_277ca.edi",
+          "fact": "STC*A2:20 dated January 27, 2025, referencing TRC75364521 \u2014 clearinghouse acceptance of original submission 8 days after DOS, inside any plausible commercial filing window.",
+          "locator": "ISA date 250127; STC*A2:20; TRN*2*TRC75364521"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Filing indicator CI (commercial); MOA N211 is a Medicare-paired remark and does not prohibit appeal on a commercial claim.",
+          "locator": "CLP*...CI*; MOA***N211"
+        }
+      ],
+      "citations": [
+        {
+          "source": "03-timely-filing.md",
+          "rule": "Proof of accepted submission inside the window \u2192 appeal with the clearinghouse acceptance report (strongest proof)"
+        },
+        {
+          "source": "01-carc-rarc-index.md",
+          "rule": "CARC 29: proof accepted inside window \u2192 appeal; CO = provider liability, not billable to patient"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "CO = contractual obligation; never bill patient; N211 paired with CO-29 only on Medicare FFS"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"Both lines carry CO-29 (timely filing expired). The 837P is dated October 15, 2025 \u2014 nine months after the January 19, 2025 DOS \u2014 plainly outside any commercial filing window. However, the 277CA dated January 27, 2025 shows STC*A2 acceptance of TRC75364521, the same transaction reference in the 837P BHT, proving the original claim was submitted and accepted 8 days post-DOS. Commercial CI payer; N211 does not bar a commercial appeal.\",\"resolution\":{\"root_cause\":{\"family\":\"timely_filing\",\"explanation\":\"CO-29 on both lines. The 837P visible is dated October 15, 2025 (9 months post-DOS). The same TRC (TRC75364521) was accepted per 277CA on January 27, 2025 \u2014 8 days post-DOS \u2014 proving timely original filing.\"},\"next_action\":{\"path\":\"appeal\",\"detail\":\"Appeal CO-29 denial attaching the January 27, 2025 277CA (STC*A2, TRN TRC75364521) as clearinghouse acceptance proof of timely original filing. CI commercial payer; N211 does not bar a commercial appeal. Dispute payer's receipt date against the 277CA date.\"},\"denial\":{\"group\":\"CO\",\"carc\":\"29\",\"rarc\":\"N211\",\"level\":\"line\"},\"denied_line_idxs\":[0,1],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"Both service lines CAS*CO*29 \u2014 $91.91 and $46.71 fully denied timely filing expired; $0 paid; CLP07=2530598850660 confirms adjudicated claim.\",\"locator\":\"CLP*PA24642236*4*138.62*0**CI*2530598850660; SVC 97110:GP CAS; SVC 97140:GP CAS\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"837P ISA date October 15, 2025; DOS January 19, 2025 \u2014 approximately 9 months elapsed.\",\"locator\":\"ISA09=251015; DTP*472*D8*20250119\"},{\"artifact\":\"ack_277ca.edi\",\"fact\":\"STC*A2:20 dated January 27, 2025, referencing TRC75364521 \u2014 clearinghouse acceptance of original submission 8 days after DOS, inside any plausible commercial filing window.\",\"locator\":\"ISA date 250127; STC*A2:20; TRN*2*TRC75364521\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"Filing indicator CI (commercial); MOA N211 is a Medicare-paired remark and does not prohibit appeal on a commercial claim.\",\"locator\":\"CLP*...CI*; MOA***N211\"}],\"citations\":[{\"source\":\"03-timely-filing.md\",\"rule\":\"Proof of accepted submission inside the window \u2192 appeal with the clearinghouse acceptance report (strongest proof)\"},{\"source\":\"01-carc-rarc-index.md\",\"rule\":\"CARC 29: proof accepted inside window \u2192 appeal; CO = provider liability, not billable to patient\"},{\"source\":\"00-group-codes.md\",\"rule\":\"CO = contractual obligation; never bill patient; N211 paired with CO-29 only on Medicare FFS\"}]}}"
+}

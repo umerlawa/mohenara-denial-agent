@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000062",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "271 confirms coverage ended 2025-05-31; DOS is 2025-06-17 \u2014 17 days post-termination. Payer correctly applied PR-27 (group PR, commercial CI). No override bars billing: no QMB, Medicaid, NSA (RARC N830 absent), and the payer denied outright rather than pending \u2014 ruling out an active ACA grace-period month-1 hold. Patient owes the full $204.23.",
+  "usage": {
+    "input_tokens": 3,
+    "output_tokens": 5601,
+    "cache_read_input_tokens": 67679,
+    "cache_creation_input_tokens": 9827,
+    "cost_usd": 0.155296845,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "high",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "eligibility_terminated",
+      "explanation": "271 shows EB*6 (inactive), DTP*357 = 2025-05-31, DOS 2025-06-17 \u2014 coverage lapsed 17 days before service. All 4 lines carry PR-27 from commercial payer (CI). No successor payer in the 271."
+    },
+    "denial": {
+      "group": "PR",
+      "carc": "27",
+      "rarc": null,
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "next_action": {
+      "path": "bill_patient",
+      "detail": "Send patient statement for $204.23. PR-27 on a commercial claim with confirmed pre-DOS termination is patient liability. No QMB, Medicaid, NSA, or ACA grace-pend override applies. Verify patient address before issuing."
+    },
+    "evidence": [
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*6 (inactive coverage), eligibility end DTP*357 = 2025-05-31, plan date DTP*291 = 2025-06-17 \u2014 coverage confirmed inactive on the DOS",
+        "locator": "ELG78719585"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "PR-27 on all 4 service lines; patient responsibility $204.23; filing indicator CI; payer claim control 2520926703047 confirms adjudication",
+        "locator": "CLP PA27132865 / CAS PR-27"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "MOA N30 (patient ineligible) at claim level; payer denied outright \u2014 not pended, ruling out active ACA grace-period month-1 obligation",
+        "locator": "MOA segment"
+      },
+      {
+        "artifact": "reference",
+        "fact": "05-eligibility-terminated.md: CI + PR-27 + EB*6 + DTP*357 before DOS, no successor \u2192 bill_patient; 00-group-codes.md: PR = patient liability billable after overrides cleared",
+        "locator": "05-eligibility-terminated.md row 3; 00-group-codes.md PR row"
+      }
+    ],
+    "citations": [
+      {
+        "source": "05-eligibility-terminated.md",
+        "rule": "CI + PR-27 + EB*6 + DTP*357 before DOS, no successor payer \u2192 bill_patient"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "PR = patient liability; billable after overrides cleared"
+      }
+    ]
+  }
+}

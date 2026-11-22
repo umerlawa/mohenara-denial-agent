@@ -1,0 +1,108 @@
+{
+  "case_id": "MOH2-000061",
+  "run_id": "frontier-opus-5-low-md",
+  "model": "claude-opus-5",
+  "effort": "low",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 6892,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 9163,
+    "cache_read_input_tokens": 144395,
+    "output_tokens": 3001,
+    "output_tokens_details": {
+      "thinking_tokens": 367
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 9163,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 960,
+        "cache_read_input_tokens": 51307,
+        "cache_creation_input_tokens": 968,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 968
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.20452125,
+  "cache_hit_rate": 0.940292,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All four lines denied OA-18 with MOA N111 \u2014 the whole claim collided with an already-adjudicated claim, not just the repeat lines. Group OA is never patient liability. Duplicate edits are hard-coded and unappealable; the original claim's disposition governs the money.",
+    "resolution": {
+      "root_cause": {
+        "family": "exact_duplicate",
+        "explanation": "835 denies every line OA-18 'exact duplicate claim/service' with MOA N111, $0 paid, payer claim control 2623576767957 (adjudicated). Claim went as frequency 1 original and matched an earlier adjudicated claim for the same provider/member/DOS/procedures."
+      },
+      "next_action": {
+        "path": "do_not_resubmit",
+        "detail": "Do not resend. Check the original claim's status via Novitas portal/IVR; if it paid, post payment and close. If the duplicate finding looks wrong, use Telephone Reopenings \u2014 not a new claim, not a redetermination. Never bill the patient."
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All four lines adjusted OA-18 exact duplicate, $0 paid of $240.86",
+          "locator": "SVC/CAS lines 1-4"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "MOA N111 and payer claim control 2623576767957 \u2014 claim adjudicated",
+          "locator": "CLP07 / MOA"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Sent as CLM05-3=1 original, so matched against the prior adjudicated claim",
+          "locator": "CLM05-3"
+        },
+        {
+          "artifact": "reference",
+          "fact": "OA-18 true duplicate \u2192 do_not_resubmit; edit hard-coded, OA never billable to patient",
+          "locator": "04-exact-duplicate.md"
+        }
+      ],
+      "citations": [
+        {
+          "source": "04-exact-duplicate.md",
+          "rule": "CARC 18 OA true duplicate \u2192 do_not_resubmit; prior claim's disposition governs"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "OA = liability not stated, not billable to patient"
+        }
+      ],
+      "denial": {
+        "group": "OA",
+        "carc": "18",
+        "rarc": "N111",
+        "level": "line"
+      }
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All four lines denied OA-18 with MOA N111 \u2014 the whole claim collided with an already-adjudicated claim, not just the repeat lines. Group OA is never patient liability. Duplicate edits are hard-coded and unappealable; the original claim's disposition governs the money.\",\"resolution\":{\"root_cause\":{\"family\":\"exact_duplicate\",\"explanation\":\"835 denies every line OA-18 'exact duplicate claim/service' with MOA N111, $0 paid, payer claim control 2623576767957 (adjudicated). Claim went as frequency 1 original and matched an earlier adjudicated claim for the same provider/member/DOS/procedures.\"},\"next_action\":{\"path\":\"do_not_resubmit\",\"detail\":\"Do not resend. Check the original claim's status via Novitas portal/IVR; if it paid, post payment and close. If the duplicate finding looks wrong, use Telephone Reopenings \u2014 not a new claim, not a redetermination. Never bill the patient.\"},\"denied_line_idxs\":[0,1,2,3],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All four lines adjusted OA-18 exact duplicate, $0 paid of $240.86\",\"locator\":\"SVC/CAS lines 1-4\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"MOA N111 and payer claim control 2623576767957 \u2014 claim adjudicated\",\"locator\":\"CLP07 / MOA\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Sent as CLM05-3=1 original, so matched against the prior adjudicated claim\",\"locator\":\"CLM05-3\"},{\"artifact\":\"reference\",\"fact\":\"OA-18 true duplicate \u2192 do_not_resubmit; edit hard-coded, OA never billable to patient\",\"locator\":\"04-exact-duplicate.md\"}],\"citations\":[{\"source\":\"04-exact-duplicate.md\",\"rule\":\"CARC 18 OA true duplicate \u2192 do_not_resubmit; prior claim's disposition governs\"},{\"source\":\"00-group-codes.md\",\"rule\":\"OA = liability not stated, not billable to patient\"}],\"denial\":{\"group\":\"OA\",\"carc\":\"18\",\"rarc\":\"N111\",\"level\":\"line\"}}}"
+}

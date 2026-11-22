@@ -1,0 +1,87 @@
+{
+  "case_id": "MOH2-000327",
+  "run_id": "final-sonnet-4-6-low-md-dev25",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 7214,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5204,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 2051,
+    "output_tokens_details": {
+      "thinking_tokens": 1226
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5204
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.06579111,
+  "cache_hit_rate": 0.859118,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "Line 4 (97112-GP, 7 units) denied CO-151+N362 for MUE exceeded. Chart note documents only 15 min of 97112 = 1 unit. Billing 7 units is a keying error. Lines 1\u20133 (97110-GP) paid with routine CO-45 write-offs and PR-2 coinsurance \u2014 no action needed. Payer is Medicare Part B (MB); frequency 7 not accepted; vehicle is clerical-error reopening.",
+    "resolution": {
+      "root_cause": {
+        "family": "mue_exceeded",
+        "explanation": "97112-GP billed 7 units; chart note documents 15 min of 97112 = 1 billable unit. Seven units exceeds the MUE. This is a keying error, not a furnished-units dispute."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Submit a clerical-error reopening to Novitas for line 4 only: correct 97112-GP from 7 units to 1 unit. Medicare Part B does not accept frequency 7; reopening is the required vehicle. Attach the 2026-06-09 chart note showing 15 min."
+      },
+      "denied_line_idxs": [
+        3
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Line 4: 97112-GP 7 units, CO-151 + N362, $0 paid \u2014 MUE exceeded.",
+          "locator": "SVC line 4, CAS CO-151, RARC N362"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "97112 documented as 15 min = 1 unit; total timed minutes 76.",
+          "locator": "PT treatment note 2026-06-09"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "97112-GP submitted as 7 UN \u2014 inconsistent with chart.",
+          "locator": "Line 4, SV1"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CO-151+N362 = MUE exceeded; keying error \u2192 correct_and_resubmit. MB payer \u2192 clerical-error reopening, frequency 7 not accepted.",
+          "locator": "07-ncci-and-mue.md MAI table; 02-resubmission-frequency.md \u00a7Part B"
+        }
+      ],
+      "citations": [
+        {
+          "source": "07-ncci-and-mue.md",
+          "rule": "CO-151+N362 = MUE exceeded; keying/conversion error \u2192 correct_and_resubmit"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Medicare Part B: frequency 7 not accepted; use clerical-error reopening"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"Line 4 (97112-GP, 7 units) denied CO-151+N362 for MUE exceeded. Chart note documents only 15 min of 97112 = 1 unit. Billing 7 units is a keying error. Lines 1\u20133 (97110-GP) paid with routine CO-45 write-offs and PR-2 coinsurance \u2014 no action needed. Payer is Medicare Part B (MB); frequency 7 not accepted; vehicle is clerical-error reopening.\",\"resolution\":{\"root_cause\":{\"family\":\"mue_exceeded\",\"explanation\":\"97112-GP billed 7 units; chart note documents 15 min of 97112 = 1 billable unit. Seven units exceeds the MUE. This is a keying error, not a furnished-units dispute.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Submit a clerical-error reopening to Novitas for line 4 only: correct 97112-GP from 7 units to 1 unit. Medicare Part B does not accept frequency 7; reopening is the required vehicle. Attach the 2026-06-09 chart note showing 15 min.\"},\"denied_line_idxs\":[3],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"Line 4: 97112-GP 7 units, CO-151 + N362, $0 paid \u2014 MUE exceeded.\",\"locator\":\"SVC line 4, CAS CO-151, RARC N362\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"97112 documented as 15 min = 1 unit; total timed minutes 76.\",\"locator\":\"PT treatment note 2026-06-09\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"97112-GP submitted as 7 UN \u2014 inconsistent with chart.\",\"locator\":\"Line 4, SV1\"},{\"artifact\":\"reference\",\"fact\":\"CO-151+N362 = MUE exceeded; keying error \u2192 correct_and_resubmit. MB payer \u2192 clerical-error reopening, frequency 7 not accepted.\",\"locator\":\"07-ncci-and-mue.md MAI table; 02-resubmission-frequency.md \u00a7Part B\"}],\"citations\":[{\"source\":\"07-ncci-and-mue.md\",\"rule\":\"CO-151+N362 = MUE exceeded; keying/conversion error \u2192 correct_and_resubmit\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Medicare Part B: frequency 7 not accepted; use clerical-error reopening\"}]}}"
+}

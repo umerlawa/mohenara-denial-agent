@@ -1,0 +1,81 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4883,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1521,
+    "output_tokens_details": {
+      "thinking_tokens": 702
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4883
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "Both lines denied OA-18 (exact duplicate) with MOA N111. The 835 carries CLP07 = 2624712696686, confirming adjudication. The claim was submitted as CLM05-3=1 (original), colliding with a prior adjudicated claim for the same provider/member/DOS/procedures. True duplicate \u2014 do not resubmit. OA group is never patient-billable. Retrieve the original claim's disposition via portal/IVR using ICN 2624712696686.",
+    "resolution": {
+      "root_cause": {
+        "family": "exact_duplicate",
+        "explanation": "Both lines carry OA-18 with MOA N111. CLM05-3=1 on the resubmitted claim collided with the already-adjudicated original (ICN 2624712696686) for the same provider/member/DOS/procedures."
+      },
+      "next_action": {
+        "path": "do_not_resubmit",
+        "detail": "Do not resubmit. Pull the original claim ICN 2624712696686 from the Novitas portal to confirm its disposition. If it paid, post it and close. If denied, use Telephone Reopenings \u2014 not a new claim or redetermination. OA group: never bill the patient."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CAS*OA*18*44.46 and CAS*OA*18*85.54 on both service lines \u2014 group OA, CARC 18 exact duplicate",
+          "locator": "SVC loops, lines 1 and 2"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP07 = 2624712696686 confirms claim was adjudicated by Novitas",
+          "locator": "CLP segment"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "CLM05-3 = 1 (original frequency) \u2014 sent as a brand-new claim, triggering duplicate edit against the prior adjudication",
+          "locator": "CLM*PA21184933*130***11:B:1"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "MOA N111 accompanies OA-18; filing indicator MB = Medicare Part B FFS",
+          "locator": "MOA segment; CLP06"
+        }
+      ],
+      "denied_line_idxs": [
+        0,
+        1
+      ],
+      "denial": {
+        "group": "OA",
+        "carc": "18",
+        "rarc": "N111",
+        "level": "line"
+      },
+      "citations": [
+        {
+          "source": "04-exact-duplicate.md",
+          "rule": "OA-18 on adjudicated claim = do_not_resubmit; duplicate edit hard-coded, unappealable; original claim disposition governs"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "OA = liability unstated, not billable to patient"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"Both lines denied OA-18 (exact duplicate) with MOA N111. The 835 carries CLP07 = 2624712696686, confirming adjudication. The claim was submitted as CLM05-3=1 (original), colliding with a prior adjudicated claim for the same provider/member/DOS/procedures. True duplicate \u2014 do not resubmit. OA group is never patient-billable. Retrieve the original claim's disposition via portal/IVR using ICN 2624712696686.\",\"resolution\":{\"root_cause\":{\"family\":\"exact_duplicate\",\"explanation\":\"Both lines carry OA-18 with MOA N111. CLM05-3=1 on the resubmitted claim collided with the already-adjudicated original (ICN 2624712696686) for the same provider/member/DOS/procedures.\"},\"next_action\":{\"path\":\"do_not_resubmit\",\"detail\":\"Do not resubmit. Pull the original claim ICN 2624712696686 from the Novitas portal to confirm its disposition. If it paid, post it and close. If denied, use Telephone Reopenings \u2014 not a new claim or redetermination. OA group: never bill the patient.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CAS*OA*18*44.46 and CAS*OA*18*85.54 on both service lines \u2014 group OA, CARC 18 exact duplicate\",\"locator\":\"SVC loops, lines 1 and 2\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP07 = 2624712696686 confirms claim was adjudicated by Novitas\",\"locator\":\"CLP segment\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"CLM05-3 = 1 (original frequency) \u2014 sent as a brand-new claim, triggering duplicate edit against the prior adjudication\",\"locator\":\"CLM*PA21184933*130***11:B:1\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"MOA N111 accompanies OA-18; filing indicator MB = Medicare Part B FFS\",\"locator\":\"MOA segment; CLP06\"}],\"denied_line_idxs\":[0,1],\"denial\":{\"group\":\"OA\",\"carc\":\"18\",\"rarc\":\"N111\",\"level\":\"line\"},\"citations\":[{\"source\":\"04-exact-duplicate.md\",\"rule\":\"OA-18 on adjudicated claim = do_not_resubmit; duplicate edit hard-coded, unappealable; original claim disposition governs\"},{\"source\":\"00-group-codes.md\",\"rule\":\"OA = liability unstated, not billable to patient\"}]}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

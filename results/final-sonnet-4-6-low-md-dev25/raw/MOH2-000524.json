@@ -1,0 +1,84 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5164,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1800,
+    "output_tokens_details": {
+      "thinking_tokens": 1018
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5164
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "271 confirms DELAWARE VALLEY MUTUAL EPO terminated 2025-09-30; DOS 2025-10-15 is after termination. All five lines carry CO-27 under CI (commercial). Hold-harmless reaches members only \u2014 coverage lapsed before DOS, so patient is not a member on the service date. No successor payer, no QMB/Medicaid/NSA/ACA grace-period override present. Balance is patient's.",
+    "resolution": {
+      "root_cause": {
+        "family": "eligibility_terminated",
+        "explanation": "271 shows EB*6 (inactive), eligibility end 2025-09-30; DOS 2025-10-15 is 15 days post-termination. All five lines denied CO-27 on CI commercial claim."
+      },
+      "next_action": {
+        "path": "bill_patient",
+        "detail": "Coverage lapsed before DOS; patient is not a plan member on 2025-10-15, so hold-harmless does not apply. Confirm no QMB/Medicaid/NSA override, then issue patient statement for $385.98."
+      },
+      "evidence": [
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*6 (inactive), eligibility end (357) 2025-09-30, plan DELAWARE VALLEY MUTUAL EPO, inquiry date 2025-10-15",
+          "locator": "271 response benefit segment"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All five service lines denied CO-27 ($385.98 total), filing indicator CI",
+          "locator": "CAS segments lines 1-5"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Payer responsibility P (primary); no secondary payer loop present",
+          "locator": "Loop 2000B SBR"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CI + EB*6 + DTP*357 before DOS, no successor: CO-27 \u2192 bill_patient once overrides cleared (ref 05-eligibility-terminated.md)",
+          "locator": "05-eligibility-terminated.md disposition table row 3"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "27",
+        "rarc": "N30",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "citations": [
+        {
+          "source": "05-eligibility-terminated.md",
+          "rule": "CI, EB*6 + DTP*357 before DOS, no successor: CO-27 \u2192 bill_patient once overrides clear"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "CO commercial: hold-harmless runs to covered members for covered services; no membership on DOS removes the clause"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"271 confirms DELAWARE VALLEY MUTUAL EPO terminated 2025-09-30; DOS 2025-10-15 is after termination. All five lines carry CO-27 under CI (commercial). Hold-harmless reaches members only \u2014 coverage lapsed before DOS, so patient is not a member on the service date. No successor payer, no QMB/Medicaid/NSA/ACA grace-period override present. Balance is patient's.\",\"resolution\":{\"root_cause\":{\"family\":\"eligibility_terminated\",\"explanation\":\"271 shows EB*6 (inactive), eligibility end 2025-09-30; DOS 2025-10-15 is 15 days post-termination. All five lines denied CO-27 on CI commercial claim.\"},\"next_action\":{\"path\":\"bill_patient\",\"detail\":\"Coverage lapsed before DOS; patient is not a plan member on 2025-10-15, so hold-harmless does not apply. Confirm no QMB/Medicaid/NSA override, then issue patient statement for $385.98.\"},\"evidence\":[{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*6 (inactive), eligibility end (357) 2025-09-30, plan DELAWARE VALLEY MUTUAL EPO, inquiry date 2025-10-15\",\"locator\":\"271 response benefit segment\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"All five service lines denied CO-27 ($385.98 total), filing indicator CI\",\"locator\":\"CAS segments lines 1-5\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Payer responsibility P (primary); no secondary payer loop present\",\"locator\":\"Loop 2000B SBR\"},{\"artifact\":\"reference\",\"fact\":\"CI + EB*6 + DTP*357 before DOS, no successor: CO-27 \u2192 bill_patient once overrides cleared (ref 05-eligibility-terminated.md)\",\"locator\":\"05-eligibility-terminated.md disposition table row 3\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"27\",\"rarc\":\"N30\",\"level\":\"line\"},\"denied_line_idxs\":[0,1,2,3,4],\"citations\":[{\"source\":\"05-eligibility-terminated.md\",\"rule\":\"CI, EB*6 + DTP*357 before DOS, no successor: CO-27 \u2192 bill_patient once overrides clear\"},{\"source\":\"00-group-codes.md\",\"rule\":\"CO commercial: hold-harmless runs to covered members for covered services; no membership on DOS removes the clause\"}]}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

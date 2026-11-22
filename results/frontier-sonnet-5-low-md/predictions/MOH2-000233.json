@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000233",
+  "input_format": "md",
+  "status": "awaiting_human",
+  "rationale": "Lines 1-3 (97110-GP) denied CO-236 bundled into paid line 4 (97150-GP), per 07-ncci-and-mue.md this is an NCCI PTP edit. The 835 carries neither the partner code nor the CCMI, and disposition (correct_and_resubmit with bypass modifier vs do_not_resubmit) turns entirely on the CCMI value in the DOS-quarter PTP edit file, which is not in any artifact or reference file. Chart note documents a separate demarcated portion, different body region, and unrelated goal for 97110 vs 97150 \u2014 this satisfies the documentation half of the bypass test, but only if CCMI=1; if CCMI=0 no modifier can ever override it. The card is explicit: look up CCMI or ask, never guess.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1245,
+    "cache_read_input_tokens": 48713,
+    "cache_creation_input_tokens": 7099,
+    "cost_usd": 0.039944099999999996,
+    "model": "claude-sonnet-5",
+    "effort": "low",
+    "calls": 1
+  },
+  "awaiting_human": {
+    "question": "What is the CCMI (correct coding modifier indicator) for the 97110/97150 NCCI PTP edit pair in effect for DOS 2026-06-25 (Q3 2026 file)?",
+    "why_needed": "CCMI=1 permits correct_and_resubmit with a bypass modifier (documentation already supports distinct site/session); CCMI=0 forces do_not_resubmit regardless of documentation. Neither the 835 nor any reference file states the CCMI, and the two dispositions are mutually exclusive.",
+    "blocks": [
+      "root_cause.family",
+      "next_action.path"
+    ]
+  }
+}

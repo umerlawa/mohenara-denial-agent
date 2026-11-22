@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000079",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "835 shows CO-22 on both lines with MOA MA04. 271 for DOS 2026-07-02 confirms EB*R naming \"NOVITAS SOLUTIONS MEDICARE PART B FFS\" with MSG \"PLAN IS PRIMARY PAYER FOR THIS MEMBER.\" Claim was filed to Liberty Bell as primary (SBR*P, CI) but Medicare Part B is primary. Bill Medicare first, then rebill Liberty Bell as secondary with the primary's adjudication data.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1351,
+    "cache_read_input_tokens": 32421,
+    "cache_creation_input_tokens": 4893,
+    "cost_usd": 0.088634425,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "cob_other_primary",
+      "explanation": "271 shows Medicare Part B (Novitas) is primary payer for this member. Claim was sent to Liberty Bell Health Plans as primary. CO-22 denies both lines for wrong COB order."
+    },
+    "next_action": {
+      "path": "resubmit_other_payer",
+      "detail": "Bill Novitas Solutions Medicare Part B FFS (payer ID 1846349352) as primary for DOS 2026-07-02. Once Medicare adjudicates, rebill Liberty Bell as secondary with SBR01=S and Medicare's payment/adjustment data to satisfy MA04."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Both lines denied CO-22 $42.18 and $45.49; MOA MA04; $0 paid; CLP status 4 (denied)",
+        "locator": "CAS*CO*22; MOA***MA04"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*R*IND*30**NOVITAS SOLUTIONS MEDICARE PART B FFS with MSG*PLAN IS PRIMARY PAYER FOR THIS MEMBER",
+        "locator": "EB*R segment and MSG segment"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Claim filed SBR*P (primary) to Liberty Bell with filing indicator CI",
+        "locator": "SBR*P*18*******CI"
+      },
+      {
+        "artifact": "reference",
+        "fact": "CARC 22 = another payer primary; bill true primary then rebill as secondary",
+        "locator": "06-cob-other-primary.md"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "22",
+      "rarc": "MA04",
+      "level": "claim"
+    },
+    "denied_line_idxs": [
+      0,
+      1
+    ],
+    "citations": [
+      {
+        "source": "06-cob-other-primary.md",
+        "rule": "CARC 22 \u2192 resubmit_other_payer; bill true primary, then rebill this payer as secondary with primary adjudication data"
+      },
+      {
+        "source": "01-carc-rarc-index.md",
+        "rule": "CARC 22: another payer primary per COB; bill primary then secondary with payment data"
+      }
+    ]
+  }
+}

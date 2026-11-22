@@ -1,0 +1,56 @@
+{
+  "case_id": "MOH2-000094",
+  "run_id": "final-opus-4-6-low-edi",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4665,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 37362,
+    "cache_read_input_tokens": 0,
+    "output_tokens": 912,
+    "output_tokens_details": {
+      "thinking_tokens": 476
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 37362
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.28195475,
+  "cache_hit_rate": 0.0,
+  "model_output": {
+    "rationale": "Line 1 (97110:GP:KX) denied CO-236 + N20 = NCCI PTP edit. Column One (97150, paid) bundled Column Two (97110, denied). Chart note documents separate encounters/body regions supporting a modifier bypass, but the 835 carries neither the CCMI nor confirms the edit pair in the DOS-quarter PTP file. Reference 07 explicitly requires looking up the CCMI before routing \u2014 CCMI 1 allows correct_and_resubmit, CCMI 0 means do_not_resubmit. Cannot guess.",
+    "status": "awaiting_human",
+    "awaiting_human": {
+      "question": "What is the Column One/Column Two Correct Coding Modifier Indicator (CCMI) for the 97150\u201397110 pair in the CMS NCCI PTP edit file for Q2 2026 (April\u2013June)? Is it 0, 1, or 9?",
+      "why_needed": "CO-236 denied line 1 (97110) as bundled into 97150. If CCMI=1, the practice can resubmit with modifier 59/X{E,S,P,U} given the documented separate encounter. If CCMI=0, the edit cannot be bypassed and the line is a write-off. If CCMI=9 or no edit exists, the denial should be appealed. The 835 does not carry this value.",
+      "blocks": [
+        "root_cause.family",
+        "next_action.path"
+      ],
+      "asked_of": "internal"
+    }
+  },
+  "raw_text": "{\"rationale\":\"Line 1 (97110:GP:KX) denied CO-236 + N20 = NCCI PTP edit. Column One (97150, paid) bundled Column Two (97110, denied). Chart note documents separate encounters/body regions supporting a modifier bypass, but the 835 carries neither the CCMI nor confirms the edit pair in the DOS-quarter PTP file. Reference 07 explicitly requires looking up the CCMI before routing \u2014 CCMI 1 allows correct_and_resubmit, CCMI 0 means do_not_resubmit. Cannot guess.\",\"status\":\"awaiting_human\",\"awaiting_human\":{\"question\":\"What is the Column One/Column Two Correct Coding Modifier Indicator (CCMI) for the 97150\u201397110 pair in the CMS NCCI PTP edit file for Q2 2026 (April\u2013June)? Is it 0, 1, or 9?\",\"why_needed\":\"CO-236 denied line 1 (97110) as bundled into 97150. If CCMI=1, the practice can resubmit with modifier 59/X{E,S,P,U} given the documented separate encounter. If CCMI=0, the edit cannot be bypassed and the line is a write-off. If CCMI=9 or no edit exists, the denial should be appealed. The 835 does not carry this value.\",\"blocks\":[\"root_cause.family\",\"next_action.path\"],\"asked_of\":\"internal\"}}"
+}

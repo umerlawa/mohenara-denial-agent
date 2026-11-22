@@ -1,0 +1,56 @@
+{
+  "case_id": "MOH2-000075",
+  "run_id": "final-opus-4-6-low-edi",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 4676,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4948,
+    "cache_read_input_tokens": 31983,
+    "output_tokens": 837,
+    "output_tokens_details": {
+      "thinking_tokens": 475
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4948
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.07463665,
+  "cache_hit_rate": 0.865974,
+  "model_output": {
+    "rationale": "Line 1 (97140) denied CO-236 + N20 = NCCI PTP edit. 97150 paid = Column One; 97140 = Column Two. Chart documents separate session/distinct body region supporting a bypass modifier. However, the 835 does not carry the CCMI, and without confirming CCMI=1 from the PTP edit file for Q3 2026, I cannot determine whether a modifier bypass is permitted or the line must be written off.",
+    "status": "awaiting_human",
+    "awaiting_human": {
+      "question": "What is the Column One/Column Two Indicator (CCMI) for the 97150\u201397140 pair in the CMS NCCI PTP edit file for Q3 2026 (effective 2026-07-01)?",
+      "why_needed": "CCMI=1 means a modifier (59/XE/XS/XP/XU) can bypass the edit and the line should be resubmitted via reopening with the appropriate modifier. CCMI=0 means no bypass is permitted and the line must be written off. The 835 does not carry this value.",
+      "blocks": [
+        "root_cause.family",
+        "next_action.path"
+      ],
+      "asked_of": "internal"
+    }
+  },
+  "raw_text": "{\"rationale\":\"Line 1 (97140) denied CO-236 + N20 = NCCI PTP edit. 97150 paid = Column One; 97140 = Column Two. Chart documents separate session/distinct body region supporting a bypass modifier. However, the 835 does not carry the CCMI, and without confirming CCMI=1 from the PTP edit file for Q3 2026, I cannot determine whether a modifier bypass is permitted or the line must be written off.\",\"status\":\"awaiting_human\",\"awaiting_human\":{\"question\":\"What is the Column One/Column Two Indicator (CCMI) for the 97150\u201397140 pair in the CMS NCCI PTP edit file for Q3 2026 (effective 2026-07-01)?\",\"why_needed\":\"CCMI=1 means a modifier (59/XE/XS/XP/XU) can bypass the edit and the line should be resubmitted via reopening with the appropriate modifier. CCMI=0 means no bypass is permitted and the line must be written off. The 835 does not carry this value.\",\"blocks\":[\"root_cause.family\",\"next_action.path\"],\"asked_of\":\"internal\"}}"
+}

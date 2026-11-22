@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000670",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All three lines were adjudicated and paid. CO-45 on each line is the standard Medicare fee-schedule contractual write-off. PR-2 on each line is Part B coinsurance \u2014 routine patient responsibility, not a denial. No denial CARC present; CLP status=1 (paid). Claim needs no rework.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1004,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 5076,
+    "cost_usd": 0.04798761,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "none",
+      "explanation": "Claim paid. CO-45 is the fee-schedule write-off; PR-2 is Part B coinsurance. No denial on any line."
+    },
+    "next_action": {
+      "path": "none",
+      "detail": "Post payment $95.66. Write off CO-45 amounts ($82.72 total). Bill patient $23.91 coinsurance per normal AR."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP status=1 (paid), $95.66 paid; all three SVC lines show payment with only CO-45 and PR-2 adjustments \u2014 no denial CARC",
+        "locator": "CLP*PA28566977*1"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP07=2609674515633 confirms adjudication by Novitas Medicare Part B",
+        "locator": "CLP segment"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*1 (active coverage) for DOS 2026-02-20, Medicare Part B FFS",
+        "locator": "EB*1*IND*30"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "All three therapy lines carry GP modifier; 97110, 97140, 97530 correctly billed",
+        "locator": "SV1 lines LX*1\u20133"
+      }
+    ],
+    "denied_line_idxs": [],
+    "citations": [
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO = contractual write-off, not billable to patient; PR-2 coinsurance is routine patient responsibility, not a denial"
+      },
+      {
+        "source": "01-carc-rarc-index.md",
+        "rule": "CARC 45 = exceeds fee schedule, contractual write-off"
+      }
+    ]
+  }
+}

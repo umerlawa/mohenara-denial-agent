@@ -1,0 +1,95 @@
+{
+  "case_id": "MOH2-000309",
+  "run_id": "final-opus-4-6-low-edi",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 4782,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5053,
+    "cache_read_input_tokens": 31983,
+    "output_tokens": 829,
+    "output_tokens_details": {
+      "thinking_tokens": 226
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5053
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.075138525,
+  "cache_hit_rate": 0.863519,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "Line 3 (97530) denied CO-151 + N362: MUE exceeded. Chart documents 31 timed minutes for 97530, which under the 8-minute rule yields 2 units, not 7 as billed. This is a keying/conversion error. Medicare Part B doesn't accept frequency 7; adjudicated claim requires clerical-error reopening.",
+    "resolution": {
+      "root_cause": {
+        "family": "mue_exceeded",
+        "explanation": "97530 billed at 7 units but chart documents 31 minutes (2 units per 8-minute rule). Units overstated, triggering MUE denial CO-151/N362."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Request clerical-error reopening with MAC Novitas. Correct 97530 units from 7 to 2. Reference ICN 2604624984837. Part B does not accept frequency 7.",
+        "resubmission_frequency_code": "7"
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Line 3 HC:97530:GP denied $385.77 with CAS*CO*151 and LQ*HE*N362"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "97530 therapeutic activities documented at 31 minutes, supporting 2 units not 7"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "SV1*HC:97530:GP*385.77*UN*7 \u2014 7 units billed"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP07=2604624984837 confirms claim was adjudicated, requiring reopening not new original"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "151",
+        "rarc": "N362",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        2
+      ],
+      "citations": [
+        {
+          "source": "07-ncci-and-mue.md",
+          "rule": "CO-151 + N362 = MUE exceeded; keying/conversion error \u2192 correct_and_resubmit"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Part B/DME FFS: frequency 7 not accepted; use clerical-error reopening"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"Line 3 (97530) denied CO-151 + N362: MUE exceeded. Chart documents 31 timed minutes for 97530, which under the 8-minute rule yields 2 units, not 7 as billed. This is a keying/conversion error. Medicare Part B doesn't accept frequency 7; adjudicated claim requires clerical-error reopening.\",\"resolution\":{\"root_cause\":{\"family\":\"mue_exceeded\",\"explanation\":\"97530 billed at 7 units but chart documents 31 minutes (2 units per 8-minute rule). Units overstated, triggering MUE denial CO-151/N362.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Request clerical-error reopening with MAC Novitas. Correct 97530 units from 7 to 2. Reference ICN 2604624984837. Part B does not accept frequency 7.\",\"resubmission_frequency_code\":\"7\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"Line 3 HC:97530:GP denied $385.77 with CAS*CO*151 and LQ*HE*N362\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"97530 therapeutic activities documented at 31 minutes, supporting 2 units not 7\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"SV1*HC:97530:GP*385.77*UN*7 \u2014 7 units billed\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP07=2604624984837 confirms claim was adjudicated, requiring reopening not new original\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"151\",\"rarc\":\"N362\",\"level\":\"line\"},\"denied_line_idxs\":[2],\"citations\":[{\"source\":\"07-ncci-and-mue.md\",\"rule\":\"CO-151 + N362 = MUE exceeded; keying/conversion error \u2192 correct_and_resubmit\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Part B/DME FFS: frequency 7 not accepted; use clerical-error reopening\"}]}}"
+}

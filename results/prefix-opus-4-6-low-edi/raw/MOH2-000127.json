@@ -1,0 +1,74 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4948,
+    "cache_read_input_tokens": 31983,
+    "output_tokens": 603,
+    "output_tokens_details": {
+      "thinking_tokens": 57
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4948
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "835 shows PR-27 on all three lines with MOA N30. 271 confirms EB*6 (inactive) for service type 30, with DTP*357 = 2025-06-30 (termination date before DOS 2025-07-12). Payer is commercial (CI). PR group = patient responsibility. No successor payer, no EB*R, no override applies. Bill the patient.",
+    "resolution": {
+      "root_cause": {
+        "family": "eligibility_terminated",
+        "explanation": "Patient's Keystone Commercial Health coverage terminated 2025-06-30 per 271 EB*6/DTP*357. DOS 2025-07-12 is after termination. PR-27 assigns patient liability."
+      },
+      "next_action": {
+        "path": "bill_patient",
+        "detail": "Bill patient $138.54 for all three lines. Coverage ended before DOS; no other payer on file. Verify no successor coverage before sending statement."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All lines denied PR-27 ($46.17 + $46.66 + $45.71 = $138.54), MOA N30"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*6 (inactive) for service type 30, DTP*357 = 20250630 (termination before DOS)"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "SBR*P*18*******CI \u2014 commercial filing indicator, patient is subscriber"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "No EB*R segment \u2014 no other payer on record for this DOS"
+        }
+      ],
+      "denial": {
+        "group": "PR",
+        "carc": "27",
+        "rarc": null,
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        1,
+        2,
+        3
+      ],
+      "citations": [
+        {
+          "source": "05-eligibility-terminated.md",
+          "rule": "CI, EB*6 + 357 before DOS, no successor: PR-27 \u2192 bill_patient"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"835 shows PR-27 on all three lines with MOA N30. 271 confirms EB*6 (inactive) for service type 30, with DTP*357 = 2025-06-30 (termination date before DOS 2025-07-12). Payer is commercial (CI). PR group = patient responsibility. No successor payer, no EB*R, no override applies. Bill the patient.\",\"resolution\":{\"root_cause\":{\"family\":\"eligibility_terminated\",\"explanation\":\"Patient's Keystone Commercial Health coverage terminated 2025-06-30 per 271 EB*6/DTP*357. DOS 2025-07-12 is after termination. PR-27 assigns patient liability.\"},\"next_action\":{\"path\":\"bill_patient\",\"detail\":\"Bill patient $138.54 for all three lines. Coverage ended before DOS; no other payer on file. Verify no successor coverage before sending statement.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All lines denied PR-27 ($46.17 + $46.66 + $45.71 = $138.54), MOA N30\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*6 (inactive) for service type 30, DTP*357 = 20250630 (termination before DOS)\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"SBR*P*18*******CI \u2014 commercial filing indicator, patient is subscriber\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"No EB*R segment \u2014 no other payer on record for this DOS\"}],\"denial\":{\"group\":\"PR\",\"carc\":\"27\",\"rarc\":null,\"level\":\"line\"},\"denied_line_idxs\":[1,2,3],\"citations\":[{\"source\":\"05-eligibility-terminated.md\",\"rule\":\"CI, EB*6 + 357 before DOS, no successor: PR-27 \u2192 bill_patient\"}]}}",
+  "model": "us.anthropic.claude-opus-4-6-v1"
+}

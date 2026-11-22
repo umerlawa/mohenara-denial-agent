@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000061",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "All four lines carry OA-18 (exact duplicate). CLP07 confirms adjudication. Chart note documents two 97140 segments (15 + 14 min = 2 units) and two 97110 segments (31 + 16 min = 3 units) billed as four separate lines. Lines 3 and 4 share the same CPT/modifier/DOS as lines 1\u20132, triggering duplicate edits. This is a false duplicate: correct billing consolidates to 97140 \u00d7 2 units and 97110 \u00d7 3 units on one line each. Medicare Part B does not accept CLM05-3=7; remedy is a new original claim.",
+  "usage": {
+    "input_tokens": 3,
+    "output_tokens": 3057,
+    "cache_read_input_tokens": 36421,
+    "cache_creation_input_tokens": 38532,
+    "cost_usd": 0.22141382999999998,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "exact_duplicate",
+      "explanation": "Split billing of same-CPT timed units across two lines each (97140 \u00d71+1; 97110 \u00d72+1) caused lines 3\u20134 to collide with lines 1\u20132 on the duplicate edit. Services are legitimate; billing is incorrect."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Submit a new original claim (CLM05-3=1, no REF*F8) consolidating to: 97140-GP-KX 2 units; 97110-GP-KX 3 units. Medicare Part B rejects frequency 7. Act promptly \u2014 DOS 2026-07-05, 1-year filing limit is 2027-07-05."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All four lines denied OA-18; CLP07=2623576767957 confirms adjudication; MOA N111.",
+        "locator": "Lines 1\u20134 CAS segments"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "Two 97140 timed blocks (15 min + 14 min = 2 units) and two 97110 blocks (31 min + 16 min = 3 units) documented in one visit.",
+        "locator": "PT treatment note 2026-07-05"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Lines 1 and 3 both bill 97140-GP-KX \u00d71 on 2026-07-05; lines 2 and 4 both bill 97110-GP-KX on 2026-07-05 \u2014 identical key fields trigger duplicate edit.",
+        "locator": "SV1 loops, lines 1\u20134"
+      },
+      {
+        "artifact": "reference",
+        "fact": "False duplicate (legitimate repeat service split across lines without distinguishing modifier/units) \u2192 correct_and_resubmit; Medicare Part B accepts only CLM05-3=1.",
+        "locator": "04-exact-duplicate.md \u00a7discriminator; 02-resubmission-frequency.md \u00a7Part B"
+      }
+    ],
+    "denied_line_idxs": [
+      2,
+      3
+    ],
+    "denial": {
+      "group": "OA",
+      "carc": "18",
+      "rarc": "N111",
+      "level": "line"
+    },
+    "citations": [
+      {
+        "source": "04-exact-duplicate.md",
+        "rule": "False duplicate (split lines, no distinguishing modifier) \u2192 correct_and_resubmit corrected lines only"
+      },
+      {
+        "source": "02-resubmission-frequency.md",
+        "rule": "Medicare Part B FFS: CLM05-3=7 not accepted; submit new original CLM05-3=1"
+      }
+    ]
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 9082,
+    "cache_read_input_tokens": 161101,
+    "output_tokens": 3047,
+    "output_tokens_details": {
+      "thinking_tokens": 234
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 9082,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 919,
+        "cache_read_input_tokens": 56807,
+        "cache_creation_input_tokens": 988,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 988
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "CO-119/N435 on all three GP-modified therapy lines is the therapy-threshold denial (08-therapy-modifiers.md \u00a7b). Claim as billed carries GP but no KX modifier. Chart note documents medically necessary skilled treatment on the DOS, so the record already justifies exceeding the threshold. Per the card, correct and resubmit via clerical-error reopening (Part B FFS does not accept frequency 7).",
+    "resolution": {
+      "root_cause": {
+        "family": "threshold_no_kx",
+        "explanation": "All three lines denied CO-119/N435 (therapy cap exceeded) with GP but no KX modifier appended; chart note documents medical necessity for continued skilled PT on the DOS."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Append KX modifier to lines 1-3 (97140-GP, 97530-GP, 97110-GP) attesting continued medical necessity, and submit via Medicare Part B clerical-error reopening (frequency 7 not accepted on Part B). Do not bill patient; do not appeal."
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2
+      ],
+      "denial": {
+        "level": "line",
+        "group": "CO",
+        "carc": "119",
+        "rarc": "N435"
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Lines 1-3 all denied CO-119 'benefit maximum for this time period has been reached', MOA N435, $0 paid",
+          "locator": "service lines / MOA"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Lines billed with GP modifier only, no KX modifier present",
+          "locator": "modifiers on claim"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "Skilled PT services (97140, 97530, 97110) documented as medically necessary; patient tolerated treatment well",
+          "locator": "verbatim note"
+        },
+        {
+          "artifact": "reference",
+          "fact": "No KX with record already justifying therapy past threshold on/before DOS -> correct_and_resubmit via clerical-error reopening",
+          "locator": "08-therapy-modifiers.md table row 1"
+        }
+      ],
+      "citations": [
+        {
+          "source": "08-therapy-modifiers.md",
+          "rule": "\u00a7b threshold_no_kx: CO-119+N435, KX threshold routing table"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Part B/DME FFS: frequency 7 not accepted; use reopening"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"CO-119/N435 on all three GP-modified therapy lines is the therapy-threshold denial (08-therapy-modifiers.md \u00a7b). Claim as billed carries GP but no KX modifier. Chart note documents medically necessary skilled treatment on the DOS, so the record already justifies exceeding the threshold. Per the card, correct and resubmit via clerical-error reopening (Part B FFS does not accept frequency 7).\",\"resolution\":{\"root_cause\":{\"family\":\"threshold_no_kx\",\"explanation\":\"All three lines denied CO-119/N435 (therapy cap exceeded) with GP but no KX modifier appended; chart note documents medical necessity for continued skilled PT on the DOS.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Append KX modifier to lines 1-3 (97140-GP, 97530-GP, 97110-GP) attesting continued medical necessity, and submit via Medicare Part B clerical-error reopening (frequency 7 not accepted on Part B). Do not bill patient; do not appeal.\"},\"denied_line_idxs\":[0,1,2],\"denial\":{\"level\":\"line\",\"group\":\"CO\",\"carc\":\"119\",\"rarc\":\"N435\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"Lines 1-3 all denied CO-119 'benefit maximum for this time period has been reached', MOA N435, $0 paid\",\"locator\":\"service lines / MOA\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Lines billed with GP modifier only, no KX modifier present\",\"locator\":\"modifiers on claim\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"Skilled PT services (97140, 97530, 97110) documented as medically necessary; patient tolerated treatment well\",\"locator\":\"verbatim note\"},{\"artifact\":\"reference\",\"fact\":\"No KX with record already justifying therapy past threshold on/before DOS -> correct_and_resubmit via clerical-error reopening\",\"locator\":\"08-therapy-modifiers.md table row 1\"}],\"citations\":[{\"source\":\"08-therapy-modifiers.md\",\"rule\":\"\u00a7b threshold_no_kx: CO-119+N435, KX threshold routing table\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Part B/DME FFS: frequency 7 not accepted; use reopening\"}]}}",
+  "model": "claude-sonnet-5"
+}

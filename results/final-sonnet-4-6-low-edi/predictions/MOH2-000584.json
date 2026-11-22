@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000584",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All three lines adjudicated and paid at fee schedule rates. CO-45 is the contractual write-off; PR-2 is standard Part B coinsurance. 271 confirms active MB coverage (EB*1, effective 2024-01-01) for DOS 2026-01-16. No denial code present. Routine AR: collect $17.90 coinsurance from patient.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1054,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 5075,
+    "cost_usd": 0.048808485,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "none",
+      "explanation": "Claim paid in full at fee schedule. CO-45 = contractual adjustment; PR-2 = Part B coinsurance. No denial."
+    },
+    "next_action": {
+      "path": "none",
+      "detail": "Post payment of $71.61. Bill patient $17.90 PR-2 coinsurance in normal AR cycle \u2014 not a denial remedy."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP status 1 (processed as primary); paid $71.61 of $132.14 billed; all three SVC lines carry CAS CO-45 (contractual) and CAS PR-2 (coinsurance) only \u2014 no denial CARC",
+        "locator": "CLP*PA26217736*1*132.14*71.61"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*1 (active coverage) for NOVITAS SOLUTIONS MEDICARE PART B FFS, effective 2024-01-01, queried for DOS 2026-01-16",
+        "locator": "EB*1*IND*30"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "All three therapy lines carry GP modifier; filing indicator MB (Medicare Part B)",
+        "locator": "SBR*P*18*******MB; SV1*HC:97110:GP, 97112:GP, 97140:GP"
+      }
+    ],
+    "denied_line_idxs": [],
+    "citations": [
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO = contractual obligation, provider write-off; PR = patient responsibility, billable in normal course \u2014 neither is a denial requiring rework"
+      },
+      {
+        "source": "01-carc-rarc-index.md",
+        "rule": "CARC 45 = exceeds fee schedule, contractual write-off; no appeal basis"
+      }
+    ]
+  }
+}

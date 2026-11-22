@@ -1,0 +1,23 @@
+{
+  "run_id": "final-sonnet-4-6-low-edi-dev25",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "thinking": "adaptive",
+  "input_format": "edi",
+  "slice": "eval/slices/dev25.txt",
+  "n_cases": 25,
+  "counts": {
+    "resolved": 23,
+    "awaiting_human": 2,
+    "failed": 0
+  },
+  "cost_usd": 1.664157,
+  "cost_usd_successful_cases": 1.664157,
+  "cost_usd_failed_cases": 0.0,
+  "cost_per_case_usd": 0.066566,
+  "wall_seconds": 799.6,
+  "provider": "bedrock",
+  "provider_spend_after": 34.47302,
+  "spend_total_after": 34.47302,
+  "failures": []
+}

@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000117",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "CO-29 on both lines: filing limit expired. DOS 2025-01-19; 837P submitted 2025-10-15 (interchange date 251015); 277CA received 2025-01-27 \u2014 but that is a different submission. The 837P transmission date is 2025-10-15, nearly 9 months after DOS. Liberty Bell is commercial (CI). No payer-specific limit in artifacts, but 9 months exceeds even the most generous commercial floors (UHC 90d, Cigna 90d par). No statutory exception applies. MOA N211 confirms no appeal. CO = provider liability, not billable to patient.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 916,
+    "cache_read_input_tokens": 31309,
+    "cache_creation_input_tokens": 4817,
+    "cost_usd": 0.045322695,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "timely_filing",
+      "explanation": "837P submitted 2025-10-15 for DOS 2025-01-19 \u2014 ~9 months post-service. CO-29 on both lines. No clearinghouse acceptance inside the filing window; 277CA date 2025-01-27 references a prior submission not in evidence."
+    },
+    "next_action": {
+      "path": "do_not_resubmit",
+      "detail": "Write off $138.62. CO-29 is provider liability; do not bill patient. MOA N211 bars appeal. No Medicare exception applies (commercial payer, CI). Confirm no prior accepted submission exists inside the payer's filing window before closing."
+    },
+    "evidence": [
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Interchange date 251015 (2025-10-15); DOS 2025-01-19 \u2014 gap of ~9 months",
+        "locator": "ISA envelope claim_837p"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CO-29 on lines 1 and 2, total $138.62 denied; MOA N211 (no appeal rights)",
+        "locator": "CAS lines PA24642236L1, PA24642236L2; MOA segment"
+      },
+      {
+        "artifact": "ack_277ca.edi",
+        "fact": "277CA acceptance dated 2025-01-27 \u2014 references TRC75364521, same as the October 837P submission date marker; received date 050 = 2025-01-27 conflicts with 837P interchange date of 2025-10-15, suggesting this ACK is for a prior unrelated submission",
+        "locator": "received date 050; trace TRC75364521"
+      },
+      {
+        "artifact": "reference",
+        "fact": "CO group code = provider liability, never billable to patient; CO-29 with no accepted prior submission inside the window \u2192 do_not_resubmit",
+        "locator": "03-timely-filing.md; 00-group-codes.md"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "29",
+      "rarc": "N211",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1
+    ],
+    "citations": [
+      {
+        "source": "03-timely-filing.md",
+        "rule": "Genuinely late, no exception \u2192 do_not_resubmit / write off; CO-29 not billable to patient"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO = provider contractual liability, never bill patient; CO-29 exhausted \u2192 do_not_resubmit"
+      }
+    ]
+  }
+}

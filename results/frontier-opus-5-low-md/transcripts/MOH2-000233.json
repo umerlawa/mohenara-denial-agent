@@ -1,0 +1,62 @@
+{
+  "case_id": "MOH2-000233",
+  "run_id": "frontier-opus-5-low-md",
+  "model": "claude-opus-5",
+  "effort": "low",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 7351,
+  "usage": {
+    "input_tokens": 4,
+    "cache_creation_input_tokens": 7628,
+    "cache_read_input_tokens": 93198,
+    "output_tokens": 1112,
+    "output_tokens_details": {
+      "thinking_tokens": 100
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 7628,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 511,
+        "cache_read_input_tokens": 50086,
+        "cache_creation_input_tokens": 654,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 654
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.122094,
+  "cache_hit_rate": 0.924308,
+  "model_output": {
+    "status": "awaiting_human",
+    "rationale": "Lines 1-3 (97110-GP) denied CO-236 + N20 \u2014 the PTP signature; 97150 paid, so 97110 is the Column Two code. Chart note documents a separate, demarcated portion of the visit, different body region, unrelated goal \u2014 which would support a bypass modifier. But the 835 carries neither the partner code nor the CCMI, and the card is explicit: look it up in the PTP edit file for the DOS quarter or ask, never guess. CCMI 1 \u2192 correct_and_resubmit (reopening with 59/XS); CCMI 0 \u2192 do_not_resubmit; CCMI 9 \u2192 appeal.",
+    "awaiting_human": {
+      "question": "In the Medicare NCCI PTP edit file for Q2 2026 (DOS 2026-06-25), what is the Correct Coding Modifier Indicator (CCMI) for the 97150 / 97110 pair?",
+      "why_needed": "The 835 carries neither the partner code nor the CCMI. CCMI 1 permits a bypass modifier on the 97110 lines given the documented separate session/site; CCMI 0 means write off; CCMI 9 means the edit does not apply and we appeal.",
+      "asked_of": "internal",
+      "blocks": [
+        "next_action.path"
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"awaiting_human\",\"rationale\":\"Lines 1-3 (97110-GP) denied CO-236 + N20 \u2014 the PTP signature; 97150 paid, so 97110 is the Column Two code. Chart note documents a separate, demarcated portion of the visit, different body region, unrelated goal \u2014 which would support a bypass modifier. But the 835 carries neither the partner code nor the CCMI, and the card is explicit: look it up in the PTP edit file for the DOS quarter or ask, never guess. CCMI 1 \u2192 correct_and_resubmit (reopening with 59/XS); CCMI 0 \u2192 do_not_resubmit; CCMI 9 \u2192 appeal.\",\"awaiting_human\":{\"question\":\"In the Medicare NCCI PTP edit file for Q2 2026 (DOS 2026-06-25), what is the Correct Coding Modifier Indicator (CCMI) for the 97150 / 97110 pair?\",\"why_needed\":\"The 835 carries neither the partner code nor the CCMI. CCMI 1 permits a bypass modifier on the 97110 lines given the documented separate session/site; CCMI 0 means write off; CCMI 9 means the edit does not apply and we appeal.\",\"asked_of\":\"internal\",\"blocks\":[\"next_action.path\"]}}"
+}

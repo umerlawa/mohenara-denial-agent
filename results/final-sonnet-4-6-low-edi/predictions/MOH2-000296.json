@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000296",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All three lines denied OA-18 (exact duplicate), group OA, MOA N111. The 835 carries CLP07=2607870789977, confirming adjudication occurred. The 837P was sent CLM05-3=1 (original) for a claim that had already been adjudicated. True duplicate \u2014 single therapy session, no bilateral/repeat pattern. Hard-coded edit, no appeal rights; do not resubmit. Check portal/IVR for the original claim's disposition.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1300,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 4962,
+    "cost_usd": 0.05240136,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "exact_duplicate",
+      "explanation": "All three lines carry OA-18. CLP07=2607870789977 confirms this claim adjudicated. The 837P was submitted as CLM05-3=1 against an already-adjudicated claim, triggering the duplicate edit."
+    },
+    "next_action": {
+      "path": "do_not_resubmit",
+      "detail": "Do not resubmit. Pull portal/IVR status for the original claim (same provider/member/DOS/procedures). If the original paid, post it and close. If pending, hold. If the original also denied, resolve that claim's denial \u2014 do not re-send this one."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CAS*OA*18 on all three SVC lines; group OA, CARC 18 exact duplicate.",
+        "locator": "SVC lines 1\u20133, CAS segments"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP07=2607870789977 \u2014 payer claim control number present, confirming claim adjudicated.",
+        "locator": "CLP*PA21220900*4*168.31*0**MB*2607870789977"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "MOA remark N111 \u2014 no appeal right on duplicate.",
+        "locator": "MOA***N111"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "CLM05-3=1 (original), meaning this was submitted as a brand-new claim despite prior adjudication.",
+        "locator": "CLM*PA21220900*168.31***11:B:1"
+      }
+    ],
+    "denial": {
+      "group": "OA",
+      "carc": "18",
+      "rarc": "N111",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2
+    ],
+    "citations": [
+      {
+        "source": "04-exact-duplicate.md",
+        "rule": "OA-18 true duplicate \u2192 do_not_resubmit; hard-coded edit, no appeal rights; original's disposition governs."
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "OA = liability unstated, not billable to patient."
+      }
+    ]
+  }
+}

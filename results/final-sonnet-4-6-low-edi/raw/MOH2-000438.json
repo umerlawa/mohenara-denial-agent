@@ -1,0 +1,73 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5348,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1226,
+    "output_tokens_details": {
+      "thinking_tokens": 453
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5348
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "All five lines adjudicated and paid. CO-45 = contractual fee-schedule write-off; PR-2 = patient coinsurance. No denial code present. Coverage active on DOS per 271 EB*1 with DTP*356 effective 2024-01-01. GP modifier present on all therapy lines. Routine AR: collect $50.76 coinsurance from patient in normal course.",
+    "resolution": {
+      "root_cause": {
+        "family": "none",
+        "explanation": "Claim paid in full per fee schedule. CO-45 write-offs and PR-2 coinsurance are routine contractual adjustments, not a denial."
+      },
+      "next_action": {
+        "path": "none",
+        "detail": "Post $203.08 payment. Write off CO-45 amounts per contract. Bill patient $50.76 PR-2 coinsurance in normal AR cycle \u2014 this is routine, not a denial remedy."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP status 1 (paid), $203.08 paid of $373.87 billed; all five SVC lines show CO-45 (fee schedule) and PR-2 (coinsurance) only \u2014 no denial CARC present",
+          "locator": "CLP*PA27806524*1*373.87*203.08"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "PR-2 coinsurance totals $50.76 across all lines ($11.62+$13.09+$5.54+$14.03+$6.48)",
+          "locator": "CAS*PR*2 segments, all SVC lines"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*1 active coverage for DOS 20260125, Medicare Part B FFS, effective 20240101",
+          "locator": "EB*1*IND*30 / DTP*356*D8*20240101"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "GP modifier on all five therapy lines (97110\u201397535); SBR*P*18*MB confirms Medicare primary",
+          "locator": "SV1 segments LX*1\u2013LX*5; SBR*P*18*******MB"
+        }
+      ],
+      "denied_line_idxs": [],
+      "denial": null,
+      "citations": [
+        {
+          "source": "00-group-codes.md",
+          "rule": "CO = contractual write-off, never bill patient; PR = patient responsibility, billable in normal course"
+        },
+        {
+          "source": "01-carc-rarc-index.md",
+          "rule": "CARC 45 = exceeds fee schedule, contractual write-off; CARC 2 = coinsurance, patient owes"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"All five lines adjudicated and paid. CO-45 = contractual fee-schedule write-off; PR-2 = patient coinsurance. No denial code present. Coverage active on DOS per 271 EB*1 with DTP*356 effective 2024-01-01. GP modifier present on all therapy lines. Routine AR: collect $50.76 coinsurance from patient in normal course.\",\"resolution\":{\"root_cause\":{\"family\":\"none\",\"explanation\":\"Claim paid in full per fee schedule. CO-45 write-offs and PR-2 coinsurance are routine contractual adjustments, not a denial.\"},\"next_action\":{\"path\":\"none\",\"detail\":\"Post $203.08 payment. Write off CO-45 amounts per contract. Bill patient $50.76 PR-2 coinsurance in normal AR cycle \u2014 this is routine, not a denial remedy.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP status 1 (paid), $203.08 paid of $373.87 billed; all five SVC lines show CO-45 (fee schedule) and PR-2 (coinsurance) only \u2014 no denial CARC present\",\"locator\":\"CLP*PA27806524*1*373.87*203.08\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"PR-2 coinsurance totals $50.76 across all lines ($11.62+$13.09+$5.54+$14.03+$6.48)\",\"locator\":\"CAS*PR*2 segments, all SVC lines\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*1 active coverage for DOS 20260125, Medicare Part B FFS, effective 20240101\",\"locator\":\"EB*1*IND*30 / DTP*356*D8*20240101\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"GP modifier on all five therapy lines (97110\u201397535); SBR*P*18*MB confirms Medicare primary\",\"locator\":\"SV1 segments LX*1\u2013LX*5; SBR*P*18*******MB\"}],\"denied_line_idxs\":[],\"denial\":null,\"citations\":[{\"source\":\"00-group-codes.md\",\"rule\":\"CO = contractual write-off, never bill patient; PR = patient responsibility, billable in normal course\"},{\"source\":\"01-carc-rarc-index.md\",\"rule\":\"CARC 45 = exceeds fee schedule, contractual write-off; CARC 2 = coinsurance, patient owes\"}]}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

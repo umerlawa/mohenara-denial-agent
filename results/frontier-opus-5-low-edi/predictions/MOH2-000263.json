@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000263",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "835 shows all three lines paid ($97.80) with only CO-45 fee-schedule write-offs and PR-2 coinsurance. No denial CARC; GP modifiers present on every therapy line; 277CA accepted; eligibility active for DOS. Nothing to rework \u2014 the PR-2 coinsurance is routine AR, not a denial remedy.",
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 1439,
+    "cache_read_input_tokens": 92670,
+    "cache_creation_input_tokens": 7239,
+    "cost_usd": 0.12757375,
+    "model": "claude-opus-5",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "none",
+      "explanation": "Claim adjudicated and paid. Only adjustments are CO-45 (exceeds fee schedule, contractual) and PR-2 (coinsurance) on each line. No denial code present."
+    },
+    "next_action": {
+      "path": "none",
+      "detail": "Post the $97.80 payment and bill the $24.44 coinsurance in normal AR. No corrected claim, appeal, or resubmission."
+    },
+    "denied_line_idxs": [],
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP*PA23903812*1*206.46*97.8*24.44*MB \u2014 status 1, processed as primary and paid",
+        "locator": "CLP"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Every line carries only CAS*CO*45 and CAS*PR*2; no denial CARC",
+        "locator": "SVC/CAS"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "97110/97112/97140 all billed with GP modifier",
+        "locator": "SV1"
+      },
+      {
+        "artifact": "ack_277ca.edi",
+        "fact": "STC*A2:20 \u2014 accepted and forwarded",
+        "locator": "STC"
+      }
+    ],
+    "citations": [
+      {
+        "source": "01-carc-rarc-index.md",
+        "rule": "CARC 45 = exceeds fee schedule; contractual write-off"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "PR = patient responsibility; no denial family \u2192 next_action none"
+      }
+    ]
+  }
+}

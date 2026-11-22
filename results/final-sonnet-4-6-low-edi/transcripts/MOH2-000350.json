@@ -1,0 +1,100 @@
+{
+  "case_id": "MOH2-000350",
+  "run_id": "final-sonnet-4-6-low-edi-dev25",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4742,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4992,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1160,
+    "output_tokens_details": {
+      "thinking_tokens": 424
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4992
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.05021511,
+  "cache_hit_rate": 0.864076,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All three lines denied OA-18 (exact duplicate). The 835 carries payer claim control number 2606743684675 (CLP07), confirming prior adjudication. The resubmission was sent CLM05-3=1, which duplicate-matched the already-adjudicated claim. Single DOS, single encounter, no repeat/bilateral indicator \u2014 true duplicate.",
+    "resolution": {
+      "root_cause": {
+        "family": "exact_duplicate",
+        "explanation": "All three lines carry OA-18. CLP07=2606743684675 confirms the original claim adjudicated. This claim was resubmitted as CLM05-3=1, triggering the duplicate edit against the prior adjudication."
+      },
+      "next_action": {
+        "path": "do_not_resubmit",
+        "detail": "Do not resubmit. Pull the original claim (ICN 2606743684675) via MAC portal/IVR to confirm its disposition. If it paid, post and close. If denied, address that denial directly \u2014 do not send another original."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CAS*OA*18 on all three service lines; $0 paid on $187.35 billed",
+          "locator": "SVC lines 1\u20133"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP07=2606743684675 \u2014 payer claim control number present, confirming prior adjudication",
+          "locator": "CLP segment"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "CLM05-3=1 (original claim frequency), which duplicate-matched the adjudicated record",
+          "locator": "CLM*PA23982247*187.35***11:B:1"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "MOA***N111 \u2014 no appeal right per corpus signature for exact duplicate",
+          "locator": "MOA segment"
+        }
+      ],
+      "denied_line_idxs": [
+        0,
+        1,
+        2
+      ],
+      "denial": {
+        "group": "OA",
+        "carc": "18",
+        "rarc": null,
+        "level": "line"
+      },
+      "citations": [
+        {
+          "source": "04-exact-duplicate.md",
+          "rule": "OA-18 true duplicate \u2192 do_not_resubmit; edit hard-coded, unappealable; original disposition governs"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "CLM05-3=1 on an adjudicated claim triggers duplicate logic; MAC cannot override"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All three lines denied OA-18 (exact duplicate). The 835 carries payer claim control number 2606743684675 (CLP07), confirming prior adjudication. The resubmission was sent CLM05-3=1, which duplicate-matched the already-adjudicated claim. Single DOS, single encounter, no repeat/bilateral indicator \u2014 true duplicate.\",\"resolution\":{\"root_cause\":{\"family\":\"exact_duplicate\",\"explanation\":\"All three lines carry OA-18. CLP07=2606743684675 confirms the original claim adjudicated. This claim was resubmitted as CLM05-3=1, triggering the duplicate edit against the prior adjudication.\"},\"next_action\":{\"path\":\"do_not_resubmit\",\"detail\":\"Do not resubmit. Pull the original claim (ICN 2606743684675) via MAC portal/IVR to confirm its disposition. If it paid, post and close. If denied, address that denial directly \u2014 do not send another original.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CAS*OA*18 on all three service lines; $0 paid on $187.35 billed\",\"locator\":\"SVC lines 1\u20133\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP07=2606743684675 \u2014 payer claim control number present, confirming prior adjudication\",\"locator\":\"CLP segment\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"CLM05-3=1 (original claim frequency), which duplicate-matched the adjudicated record\",\"locator\":\"CLM*PA23982247*187.35***11:B:1\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"MOA***N111 \u2014 no appeal right per corpus signature for exact duplicate\",\"locator\":\"MOA segment\"}],\"denied_line_idxs\":[0,1,2],\"denial\":{\"group\":\"OA\",\"carc\":\"18\",\"rarc\":null,\"level\":\"line\"},\"citations\":[{\"source\":\"04-exact-duplicate.md\",\"rule\":\"OA-18 true duplicate \u2192 do_not_resubmit; edit hard-coded, unappealable; original disposition governs\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"CLM05-3=1 on an adjudicated claim triggers duplicate logic; MAC cannot override\"}]}}"
+}

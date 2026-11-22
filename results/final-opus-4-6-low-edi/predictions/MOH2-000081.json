@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000081",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "Line 1 (97750:GP) denied CO-97 + N20 \u2014 payer bundled it into 97140. Chart note documents 97750 performed in a separate timed interval with distinct target region and documented goal. Claim was billed correctly; the bundling determination is wrong. Commercial payer (CI), so appeal with clinical documentation of the separate session.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1805,
+    "cache_read_input_tokens": 32421,
+    "cache_creation_input_tokens": 5199,
+    "cost_usd": 0.103223175,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "ncci_ptp_no59",
+      "explanation": "97750 denied CO-97 (bundled into another service) with N20. Payer applied bundling edit against 97140. Chart documents separate session with distinct region and goal."
+    },
+    "next_action": {
+      "path": "appeal",
+      "detail": "Appeal line 1 CO-97 denial with chart note documenting 97750 performed in a separate timed interval, distinct target region, and separate documented goal from 97140."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Line 1 (97750:GP) paid $0, CAS*CO*97*46.30, remark N20 \u2014 bundled into another service",
+        "locator": "SVC*HC:97750:GP / CAS*CO*97"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "Separate-session log: 97750 performed apart from 97140 with its own timed interval, distinct target region, and its own documented goal",
+        "locator": "Separate-session log"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Claim billed to commercial payer (SBR*P*18*******CI) \u2014 Liberty Bell Health Plans",
+        "locator": "SBR segment"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Lines 2-4 (97140:GP) paid with CO-45 contractual and PR-2 coinsurance \u2014 not denied",
+        "locator": "SVC*HC:97140:GP lines"
+      }
+    ],
+    "denied_line_idxs": [
+      0
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "97",
+      "rarc": "N20",
+      "level": "line"
+    },
+    "citations": [
+      {
+        "source": "01-carc-rarc-index.md",
+        "rule": "CARC 97 = bundled into another service; NCCI PTP, global, OPPS, or MPFS status B"
+      },
+      {
+        "source": "07-ncci-and-mue.md",
+        "rule": "Claim data right and determination wrong \u2192 appeal with documentation"
+      }
+    ]
+  }
+}

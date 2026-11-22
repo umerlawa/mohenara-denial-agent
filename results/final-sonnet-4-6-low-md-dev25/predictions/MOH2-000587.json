@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000587",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "271 confirms coverage ended 2025-05-31; DOS is 2025-06-12 \u2014 after termination. Payer issued PR-27 (not CO-27) on all four lines, filing indicator CI. Per reference 05, commercial PR-27 with confirmed EB*6 + DTP*357 before DOS \u2192 bill patient. No QMB, Medicaid, NSA, or ACA grace-period override is present.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1052,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 5051,
+    "cost_usd": 0.048676485,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "eligibility_terminated",
+      "explanation": "Coverage ended 2025-05-31 (271 EB*6, DTP*357 2025-05-31). DOS 2025-06-12 falls after termination. Payer correctly applied PR-27 on all four lines."
+    },
+    "next_action": {
+      "path": "bill_patient",
+      "detail": "No overrides present (no QMB, Medicaid, NSA, ACA grace period). Bill ROBERT WILSON $181.22 \u2014 the full PR balance \u2014 through normal patient-billing workflow."
+    },
+    "evidence": [
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*6 (inactive), eligibility end DTP*357 = 2025-05-31, plan date 2025-06-12",
+        "locator": "271 response benefit loop"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All four lines adjusted PR-27, $181.22 total patient responsibility, filing indicator CI",
+        "locator": "CAS segments lines 1-4"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "DOS 2025-06-12 on all service lines, payer responsibility P (primary), CI",
+        "locator": "837P DTP*472 loops"
+      }
+    ],
+    "denial": {
+      "group": "PR",
+      "carc": "27",
+      "rarc": "N30",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "citations": [
+      {
+        "source": "05-eligibility-terminated.md",
+        "rule": "CI + EB*6 + DTP*357 before DOS, no successor: PR-27 \u2192 bill_patient"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "PR = patient liable, after overrides cleared"
+      }
+    ]
+  }
+}

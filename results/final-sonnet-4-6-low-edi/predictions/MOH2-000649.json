@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000649",
+  "input_format": "edi",
+  "status": "awaiting_human",
+  "rationale": "Line 3 (97110:GP, $41.35) was denied CO-236 + N20 \u2014 NCCI PTP edit. The chart note documents distinct services, but the 835 carries neither the partner code nor the CCMI. Per ref 07-ncci-and-mue.md, the CCMI must be looked up in the DOS-quarter PTP edit file before routing: CCMI=1 allows a modifier bypass (correct_and_resubmit with 59); CCMI=0 requires write-off.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1226,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 5094,
+    "cost_usd": 0.05172486,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "awaiting_human": {
+    "question": "What is the CCMI (modifier indicator) for the CPT pair 97150 (Column One) / 97110 (Column Two) in the Q2 2026 CMS NCCI PTP edit table?",
+    "why_needed": "CCMI=1 \u2192 correct_and_resubmit adding modifier 59 to line 3 (chart note supports distinct service). CCMI=0 \u2192 do_not_resubmit, write off $41.35. Cannot route without it.",
+    "blocks": [
+      "next_action.path"
+    ],
+    "asked_of": "internal"
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "case_id": "MOH2-000281",
+  "run_id": "final-opus-4-6-low-edi",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 4989,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5178,
+    "cache_read_input_tokens": 31983,
+    "output_tokens": 765,
+    "output_tokens_details": {
+      "thinking_tokens": 359
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5178
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.0742379,
+  "cache_hit_rate": 0.860614,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "Claim paid $201.48. All adjustments are CO-45 (contractual fee-schedule reduction, write off) and PR-2 (coinsurance, patient owes). No denial. Collect $50.36 coinsurance from the patient.",
+    "resolution": {
+      "root_cause": {
+        "family": "none",
+        "explanation": "Claim adjudicated correctly. CO-45 is the contractual write-off to fee schedule; PR-2 is patient coinsurance. No denial, no defect."
+      },
+      "next_action": {
+        "path": "bill_patient",
+        "detail": "Collect $50.36 coinsurance (PR-2) from the patient. Write off CO-45 contractual adjustments totaling $130.92."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP*PA24158429*1*382.76*201.48*50.36*CI \u2014 claim processed as primary, paid $201.48, patient responsibility $50.36"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All four lines carry CAS*CO*45 (contractual) and CAS*PR*2 (coinsurance) \u2014 standard fee-schedule adjudication"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*1*IND*30 \u2014 active coverage confirmed for DOS 2026-08-09, no termination or other-payer issue"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"Claim paid $201.48. All adjustments are CO-45 (contractual fee-schedule reduction, write off) and PR-2 (coinsurance, patient owes). No denial. Collect $50.36 coinsurance from the patient.\",\"resolution\":{\"root_cause\":{\"family\":\"none\",\"explanation\":\"Claim adjudicated correctly. CO-45 is the contractual write-off to fee schedule; PR-2 is patient coinsurance. No denial, no defect.\"},\"next_action\":{\"path\":\"bill_patient\",\"detail\":\"Collect $50.36 coinsurance (PR-2) from the patient. Write off CO-45 contractual adjustments totaling $130.92.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP*PA24158429*1*382.76*201.48*50.36*CI \u2014 claim processed as primary, paid $201.48, patient responsibility $50.36\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"All four lines carry CAS*CO*45 (contractual) and CAS*PR*2 (coinsurance) \u2014 standard fee-schedule adjudication\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*1*IND*30 \u2014 active coverage confirmed for DOS 2026-08-09, no termination or other-payer issue\"}]}}"
+}

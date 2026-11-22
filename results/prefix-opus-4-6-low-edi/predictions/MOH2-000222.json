@@ -1,0 +1,63 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000222",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "All three lines (97140, 97110, 97112) denied CO-16 + N822 \"Missing procedure modifier(s).\" These are always-therapy CPTs billed without GP/GO/GN. Chart note confirms PT plan of care \u2192 GP required. Commercial payer (CI), claim adjudicated (CLP07 present). Correct and resubmit as frequency 7 replacement.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 619,
+    "cache_read_input_tokens": 31983,
+    "cache_creation_input_tokens": 4985,
+    "cost_usd": 0.068896025,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "missing_therapy_modifier",
+      "explanation": "CPTs 97140, 97110, 97112 billed without GP/GO/GN discipline modifier. Payer denied all lines CO-16 + N822. Chart note documents PT plan of care; GP is required on each line."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "Append modifier GP to all three lines. Resubmit as corrected claim CLM05-3=7 with REF*F8=2631309282439 (CLP07 from 835).",
+      "resubmission_frequency_code": "7"
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All three service lines carry CAS*CO*16 with LQ*HE*N822 (missing procedure modifier), $0 paid"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "CPTs 97140, 97110, 97112 billed with no GP/GO/GN modifier; SBR indicates CI (commercial)"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "Treatment note documents PT plan of care (manual therapy, therapeutic exercise, neuromuscular re-ed)"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*1 active coverage on DOS 2026-09-26; no eligibility issue"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "16",
+      "rarc": "N822",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      1,
+      2,
+      3
+    ],
+    "citations": [
+      {
+        "source": "08-therapy-modifiers.md",
+        "rule": "CO-4/N822 on always-therapy CPTs without GP/GO/GN \u2192 correct_and_resubmit; commercial payer \u2192 frequency 7 + REF*F8"
+      }
+    ]
+  }
+}

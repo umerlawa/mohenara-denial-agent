@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000117",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "835 denies both lines CO-29 (timely filing) with N211. But the 277CA proves the claim was received and accepted for adjudication on 2025-01-27 \u2014 only 8 days after DOS 2025-01-19. This is well within any commercial filing limit. Payer is CI (commercial), not Medicare, so N211 carries no statutory appeal bar. The clearinghouse acceptance report is proof of timely filing; appeal disputing the payer's receipt-date determination.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 4568,
+    "cache_read_input_tokens": 31983,
+    "cache_creation_input_tokens": 4817,
+    "cost_usd": 0.176338525,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "max",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "timely_filing",
+      "explanation": "Payer denied CO-29 but 277CA shows claim accepted for adjudication 2025-01-27, 8 days after DOS 2025-01-19. Filing was timely; payer's receipt-date determination is incorrect."
+    },
+    "next_action": {
+      "path": "appeal",
+      "detail": "Appeal to Liberty Bell with 277CA acceptance report (received 2025-01-27, status A2, code 20) as proof of timely filing. Dispute the receipt date \u2014 do not plead forgiveness."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Both lines denied CO-29 (timely filing expired), $0 paid, MOA N211",
+        "locator": "CAS segments lines 1-2; MOA"
+      },
+      {
+        "artifact": "ack_277ca.edi",
+        "fact": "Claim received 2025-01-27, status A2 accepted for adjudication, code 20 accepted for processing",
+        "locator": "received date 050; status code 20"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "DOS 2025-01-19; filing indicator CI (commercial insurance)",
+        "locator": "DTP 472; CLM filing indicator"
+      },
+      {
+        "artifact": "reference",
+        "fact": "Proof of accepted submission inside the window \u2192 appeal with clearinghouse acceptance report, dispute receipt date",
+        "locator": "03-timely-filing.md remedy table"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "29",
+      "rarc": "N211",
+      "level": "line"
+    },
+    "citations": [
+      {
+        "source": "03-timely-filing.md",
+        "rule": "Proof of an accepted submission inside the window \u2192 appeal with the clearinghouse acceptance report: dispute the receipt date, don't plead forgiveness"
+      }
+    ]
+  }
+}

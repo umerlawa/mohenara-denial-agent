@@ -1,0 +1,38 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4909,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1144,
+    "output_tokens_details": {
+      "thinking_tokens": 759
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4909
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "awaiting_human",
+    "rationale": "Line 0 (97110) denied CO-236 + N20 \u2014 confirmed NCCI PTP edit. Reference 07 requires looking up the CCMI for the 97110/97150 pair in the Q2 2026 PTP edit file before routing. CCMI=1 allows a clerical-error reopening with a bypass modifier; CCMI=0 mandates write-off. The chart note supports distinctness but that only matters if CCMI=1. Cannot determine disposition without the CCMI.",
+    "awaiting_human": {
+      "question": "What is the CCMI (modifier indicator) for the 97110 (Column 2) / 97150 (Column 1) pair in the CMS NCCI PTP edit table effective Q2 2026 (April 1 \u2013 June 30, 2026)?",
+      "why_needed": "CCMI=1 means a bypass modifier may be appended and the line resubmitted via clerical-error reopening. CCMI=0 means the edit is absolute and the line must be written off. The 835 does not carry the CCMI; it must be pulled from the PTP edit file.",
+      "blocks": [
+        "root_cause.family",
+        "next_action.path"
+      ],
+      "asked_of": "internal"
+    }
+  },
+  "result": "{\"status\":\"awaiting_human\",\"rationale\":\"Line 0 (97110) denied CO-236 + N20 \u2014 confirmed NCCI PTP edit. Reference 07 requires looking up the CCMI for the 97110/97150 pair in the Q2 2026 PTP edit file before routing. CCMI=1 allows a clerical-error reopening with a bypass modifier; CCMI=0 mandates write-off. The chart note supports distinctness but that only matters if CCMI=1. Cannot determine disposition without the CCMI.\",\"awaiting_human\":{\"question\":\"What is the CCMI (modifier indicator) for the 97110 (Column 2) / 97150 (Column 1) pair in the CMS NCCI PTP edit table effective Q2 2026 (April 1 \u2013 June 30, 2026)?\",\"why_needed\":\"CCMI=1 means a bypass modifier may be appended and the line resubmitted via clerical-error reopening. CCMI=0 means the edit is absolute and the line must be written off. The 835 does not carry the CCMI; it must be pulled from the PTP edit file.\",\"blocks\":[\"root_cause.family\",\"next_action.path\"],\"asked_of\":\"internal\"}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

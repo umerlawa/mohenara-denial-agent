@@ -1,0 +1,110 @@
+{
+  "case_id": "MOH2-000199",
+  "run_id": "frontier-sonnet-5-low-edi",
+  "model": "claude-sonnet-5",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4780,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 6574,
+    "cache_read_input_tokens": 48713,
+    "output_tokens": 1932,
+    "output_tokens_details": {
+      "thinking_tokens": 998
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 6574,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 1932,
+        "cache_read_input_tokens": 48713,
+        "cache_creation_input_tokens": 6574,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 6574
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.045501599999999996,
+  "cache_hit_rate": 0.881061,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "CO-151 with RARC N362 on the 97112 line is an MUE units-exceeded denial. The chart note documents only 31 minutes of 97112, which under the CMS 8-minute rule supports 2 units, not the 5 billed \u2014 a units/keying error, not a genuine threshold dispute. Correcting the units and resubmitting resolves it; no MAI value is needed since the documentation itself shows the billed units were wrong.",
+    "resolution": {
+      "root_cause": {
+        "family": "mue_exceeded",
+        "explanation": "Line 3 (97112) denied CO-151/N362, units-exceeds-maximum. Chart note documents only 31 minutes of 97112 (2 units under the 8-minute rule), but 5 units were billed \u2014 a units/keying error."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Correct line 3 to 2 units of 97112 per documented 31 minutes (8-minute rule) and resubmit to Novitas via Part B clerical-error reopening (frequency 7 not accepted on Part B FFS); leave 97110 lines unchanged.",
+        "resubmission_frequency_code": "7"
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "SVC*HC:97112:GP line: CAS*CO*151*214.95 with LQ*HE*N362 \u2014 entire line denied for units exceeding maximum",
+          "locator": "LX*1 SVC 97112 segment"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "SV1*HC:97112:GP*214.95*UN*5 \u2014 billed 5 units of 97112",
+          "locator": "LX*3"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "97112 documented as 31 minutes; total timed minutes 60 across all codes",
+          "locator": "chart note body"
+        }
+      ],
+      "denied_line_idxs": [
+        2
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "151",
+        "rarc": "N362",
+        "level": "line"
+      },
+      "citations": [
+        {
+          "source": "07-ncci-and-mue.md",
+          "rule": "MAI 1 claim-line edit: correct_and_resubmit if units were a keying/conversion error, splitting/correcting per documentation"
+        },
+        {
+          "source": "01-carc-rarc-index.md",
+          "rule": "CARC 151: MUE exceeded \u2014 miscoded units are correct-and-resubmit, not an appeal to NCCI"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Medicare Part B / DME FFS: frequency 7 not accepted; use clerical-error reopening"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"CO-151 with RARC N362 on the 97112 line is an MUE units-exceeded denial. The chart note documents only 31 minutes of 97112, which under the CMS 8-minute rule supports 2 units, not the 5 billed \u2014 a units/keying error, not a genuine threshold dispute. Correcting the units and resubmitting resolves it; no MAI value is needed since the documentation itself shows the billed units were wrong.\",\"resolution\":{\"root_cause\":{\"family\":\"mue_exceeded\",\"explanation\":\"Line 3 (97112) denied CO-151/N362, units-exceeds-maximum. Chart note documents only 31 minutes of 97112 (2 units under the 8-minute rule), but 5 units were billed \u2014 a units/keying error.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Correct line 3 to 2 units of 97112 per documented 31 minutes (8-minute rule) and resubmit to Novitas via Part B clerical-error reopening (frequency 7 not accepted on Part B FFS); leave 97110 lines unchanged.\",\"resubmission_frequency_code\":\"7\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"SVC*HC:97112:GP line: CAS*CO*151*214.95 with LQ*HE*N362 \u2014 entire line denied for units exceeding maximum\",\"locator\":\"LX*1 SVC 97112 segment\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"SV1*HC:97112:GP*214.95*UN*5 \u2014 billed 5 units of 97112\",\"locator\":\"LX*3\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"97112 documented as 31 minutes; total timed minutes 60 across all codes\",\"locator\":\"chart note body\"}],\"denied_line_idxs\":[2],\"denial\":{\"group\":\"CO\",\"carc\":\"151\",\"rarc\":\"N362\",\"level\":\"line\"},\"citations\":[{\"source\":\"07-ncci-and-mue.md\",\"rule\":\"MAI 1 claim-line edit: correct_and_resubmit if units were a keying/conversion error, splitting/correcting per documentation\"},{\"source\":\"01-carc-rarc-index.md\",\"rule\":\"CARC 151: MUE exceeded \u2014 miscoded units are correct-and-resubmit, not an appeal to NCCI\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Medicare Part B / DME FFS: frequency 7 not accepted; use clerical-error reopening\"}]}}"
+}

@@ -1,0 +1,95 @@
+{
+  "case_id": "MOH2-000116",
+  "run_id": "final-opus-4-6-low-edi",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 4476,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4875,
+    "cache_read_input_tokens": 31983,
+    "output_tokens": 664,
+    "output_tokens_details": {
+      "thinking_tokens": 60
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4875
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.06937727499999999,
+  "cache_hit_rate": 0.867689,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "Both lines denied OA-18 (exact duplicate). The 835 carries CLP07 2627695771104, confirming prior adjudication. The 277CA shows A2:20 (accepted into adjudication). The claim was billed CLM05-3=1 (original) but a prior claim with matching provider/member/DOS/procedure already adjudicated. True duplicate \u2014 do not resubmit; check the original claim's payment status.",
+    "resolution": {
+      "root_cause": {
+        "family": "exact_duplicate",
+        "explanation": "Both lines denied OA-18. Prior claim already adjudicated (CLP07 2627695771104). Same provider/member/DOS/CPT billed as original (CLM05-3=1) collided with the existing adjudication."
+      },
+      "next_action": {
+        "path": "do_not_resubmit",
+        "detail": "Do not resubmit. Verify original claim 2627695771104 payment status via portal/IVR. If paid, post payment and close. If denied, address that denial on the original."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CAS*OA*18 on both lines (97140 and 97110), $0 paid, CLP status 4 (denied)"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP07=2627695771104 confirms prior adjudication exists"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "CLM05-3=1 (original submission) \u2014 triggered duplicate match against existing claim"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*1 active coverage on DOS 2026-07-27, ruling out eligibility issue"
+        }
+      ],
+      "denial": {
+        "group": "OA",
+        "carc": "18",
+        "rarc": null,
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        1,
+        2
+      ],
+      "citations": [
+        {
+          "source": "04-exact-duplicate.md",
+          "rule": "True duplicate \u2192 do_not_resubmit; hard-coded edit, unappealable; original's disposition governs"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Every 837 with CLM05-3=1 matched against already-adjudicated claim fires duplicate edit"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"Both lines denied OA-18 (exact duplicate). The 835 carries CLP07 2627695771104, confirming prior adjudication. The 277CA shows A2:20 (accepted into adjudication). The claim was billed CLM05-3=1 (original) but a prior claim with matching provider/member/DOS/procedure already adjudicated. True duplicate \u2014 do not resubmit; check the original claim's payment status.\",\"resolution\":{\"root_cause\":{\"family\":\"exact_duplicate\",\"explanation\":\"Both lines denied OA-18. Prior claim already adjudicated (CLP07 2627695771104). Same provider/member/DOS/CPT billed as original (CLM05-3=1) collided with the existing adjudication.\"},\"next_action\":{\"path\":\"do_not_resubmit\",\"detail\":\"Do not resubmit. Verify original claim 2627695771104 payment status via portal/IVR. If paid, post payment and close. If denied, address that denial on the original.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CAS*OA*18 on both lines (97140 and 97110), $0 paid, CLP status 4 (denied)\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP07=2627695771104 confirms prior adjudication exists\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"CLM05-3=1 (original submission) \u2014 triggered duplicate match against existing claim\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*1 active coverage on DOS 2026-07-27, ruling out eligibility issue\"}],\"denial\":{\"group\":\"OA\",\"carc\":\"18\",\"rarc\":null,\"level\":\"line\"},\"denied_line_idxs\":[1,2],\"citations\":[{\"source\":\"04-exact-duplicate.md\",\"rule\":\"True duplicate \u2192 do_not_resubmit; hard-coded edit, unappealable; original's disposition governs\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Every 837 with CLM05-3=1 matched against already-adjudicated claim fires duplicate edit\"}]}}"
+}

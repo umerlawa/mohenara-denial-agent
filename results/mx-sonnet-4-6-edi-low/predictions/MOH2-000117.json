@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000117",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "Both lines denied CO-29 (timely filing). However, the 277CA shows STC*A2:20 on 2025-01-27 \u2014 payer accepted the claim 8 days after the 2025-01-19 DOS. This is clearinghouse-acceptance proof of timely submission. CO-29 is incorrect; appeal disputing the receipt date with the 277CA. N211 on the MOA does not bar appeal on a commercial (CI) claim.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1646,
+    "cache_read_input_tokens": 31309,
+    "cache_creation_input_tokens": 4824,
+    "cost_usd": 0.05739657,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "timely_filing",
+      "explanation": "Both lines carry CO-29. The 277CA (STC*A2:20*20250127) proves the claim was accepted by the payer 8 days after the 2025-01-19 DOS \u2014 well within any commercial filing window."
+    },
+    "next_action": {
+      "path": "appeal",
+      "detail": "File redetermination/first-level appeal with Liberty Bell Health Plans, attaching the 277CA acceptance report (STC*A2:20, 2025-01-27) as proof of timely receipt. Dispute the receipt date; do not plead forgiveness. N211 is a Medicare notice and does not bar commercial appeal."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CAS*CO*29*91.91 and CAS*CO*29*46.71 \u2014 both lines denied timely filing, group CO",
+        "locator": "SVC lines 1 and 2"
+      },
+      {
+        "artifact": "ack_277ca.edi",
+        "fact": "STC*A2:20*20250127 \u2014 claim accepted for processing on 2025-01-27, 8 days after DOS",
+        "locator": "STC segment, HL*4"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "DOS 2025-01-19; filing indicator CI (commercial)",
+        "locator": "DTP*472*D8*20250119; SBR*P*18*******CI"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "MOA N211 is a Medicare-only notice; payer is commercial (CI) \u2014 does not bar appeal",
+        "locator": "MOA***N211; CLP...CI"
+      }
+    ],
+    "denied_line_idxs": [
+      0,
+      1
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "29",
+      "rarc": "N211",
+      "level": "line"
+    },
+    "citations": [
+      {
+        "source": "03-timely-filing.md",
+        "rule": "Proof of accepted submission inside the window \u2192 appeal with clearinghouse acceptance report; dispute the receipt date"
+      },
+      {
+        "source": "03-timely-filing.md",
+        "rule": "N211 applied in error in non-Medicare contexts (R3118CP); CO-29 redetermination is barred only on Medicare FFS"
+      }
+    ]
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "case_id": "MOH2-000063",
+  "run_id": "final-opus-4-6-low-edi",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 4390,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4808,
+    "cache_read_input_tokens": 31983,
+    "output_tokens": 645,
+    "output_tokens_details": {
+      "thinking_tokens": 26
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4808
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.06839415,
+  "cache_hit_rate": 0.869269,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "835 shows CO-16 + N822 on both lines (97140, 97110). These are always-therapy CPTs billed without GP/GO/GN modifier. Commercial payer (CI), claim adjudicated (CLP07=2626505616209). Correct and resubmit as frequency 7 replacement with GP appended to each line.",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_therapy_modifier",
+        "explanation": "CPTs 97140 and 97110 billed without required therapy discipline modifier (GP/GO/GN). Payer denied CO-16 + N822 on both lines. Chart note confirms PT plan of care \u2014 GP is the correct modifier."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Append modifier GP to both lines 97140 and 97110. Resubmit as frequency 7 replacement (CLM05-3=7) with REF*F8=2626505616209 to Delaware Valley Mutual.",
+        "resubmission_frequency_code": "7"
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Both lines denied CAS*CO*16 with LQ*HE*N822 (missing procedure modifier), $0 paid"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "SV1 lines for 97140 and 97110 carry no GP/GO/GN modifier; SBR segment shows CI (commercial)"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "PT treatment note confirms physical therapy plan of care \u2014 GP is the appropriate modifier"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP07=2626505616209 confirms claim was adjudicated; commercial payer accepts frequency 7"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "16",
+        "rarc": "N822",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        1,
+        2
+      ],
+      "citations": [
+        {
+          "source": "08-therapy-modifiers.md",
+          "rule": "CO-4/N822 on always-therapy CPTs without GP/GO/GN = missing_therapy_modifier; correct_and_resubmit"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Commercial payer: replacement 7 + REF*F8 carrying CLP07"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"835 shows CO-16 + N822 on both lines (97140, 97110). These are always-therapy CPTs billed without GP/GO/GN modifier. Commercial payer (CI), claim adjudicated (CLP07=2626505616209). Correct and resubmit as frequency 7 replacement with GP appended to each line.\",\"resolution\":{\"root_cause\":{\"family\":\"missing_therapy_modifier\",\"explanation\":\"CPTs 97140 and 97110 billed without required therapy discipline modifier (GP/GO/GN). Payer denied CO-16 + N822 on both lines. Chart note confirms PT plan of care \u2014 GP is the correct modifier.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Append modifier GP to both lines 97140 and 97110. Resubmit as frequency 7 replacement (CLM05-3=7) with REF*F8=2626505616209 to Delaware Valley Mutual.\",\"resubmission_frequency_code\":\"7\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"Both lines denied CAS*CO*16 with LQ*HE*N822 (missing procedure modifier), $0 paid\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"SV1 lines for 97140 and 97110 carry no GP/GO/GN modifier; SBR segment shows CI (commercial)\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"PT treatment note confirms physical therapy plan of care \u2014 GP is the appropriate modifier\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP07=2626505616209 confirms claim was adjudicated; commercial payer accepts frequency 7\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"16\",\"rarc\":\"N822\",\"level\":\"line\"},\"denied_line_idxs\":[1,2],\"citations\":[{\"source\":\"08-therapy-modifiers.md\",\"rule\":\"CO-4/N822 on always-therapy CPTs without GP/GO/GN = missing_therapy_modifier; correct_and_resubmit\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Commercial payer: replacement 7 + REF*F8 carrying CLP07\"}]}}"
+}

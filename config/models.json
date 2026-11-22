@@ -1,0 +1,164 @@
+{
+  "_comment": "Provider and model registry. Swapping a model is a config change, not a code change. Rates are USD per million tokens.",
+  "providers": {
+    "bedrock": {
+      "budget_usd": 100.0,
+      "stop_eval_usd": 90.0,
+      "env": {
+        "CLAUDE_CODE_USE_BEDROCK": "1"
+      },
+      "credential_env": [
+        "AWS_ACCESS_KEY_ID",
+        "AWS_SECRET_ACCESS_KEY",
+        "AWS_REGION"
+      ],
+      "note": "us.* cross-region inference profiles, US East. Carries a ~10% premium over global.* for resilience across three US regions. Serves the apps (see serving_provider) since 2026-09-04, when the opus-5 entitlement arrived."
+    },
+    "anthropic": {
+      "budget_usd": 9.0,
+      "stop_eval_usd": 8.0,
+      "env": {},
+      "credential_env": [
+        "ANTHROPIC_API_KEY"
+      ],
+      "note": "The frontier comparison, and the fallback route to opus-5 should Bedrock lose the entitlement. Billing goes to ANTHROPIC_API_KEY in .env.local and nowhere else -- host-managed CLI credentials are stripped from the subprocess (host_managed_auth_env below), because they once silently served every call on this provider."
+    }
+  },
+  "host_managed_auth_env": [
+    "CLAUDE_CODE_PROVIDER_MANAGED_BY_HOST",
+    "CLAUDE_CODE_OAUTH_TOKEN",
+    "CLAUDE_CODE_OAUTH_TOKEN_FILE_DESCRIPTOR",
+    "CLAUDE_SESSION_INGRESS_TOKEN_FILE",
+    "CLAUDE_CODE_POST_FOR_SESSION_INGRESS_V2",
+    "ANTHROPIC_AUTH_TOKEN",
+    "ANTHROPIC_CUSTOM_HEADERS",
+    "ANTHROPIC_BASE_URL"
+  ],
+  "_host_managed_auth_env_comment": "Credential channels the Claude Code CLI can authenticate through BESIDES the provider's own credential_env. Stripped from every resolver subprocess. This list exists because it was not stripped: in a managed container the CLI carries host-managed session credentials (CLAUDE_CODE_PROVIDER_MANAGED_BY_HOST=1 plus an OAuth token), preferred them over ANTHROPIC_API_KEY, and $8.96 of 'anthropic' spend was actually billed to the session's own account -- the console for the project's key showed zero, and an EXPIRED key appeared to work. With these stripped, the provider named on a model in this file is exactly who gets billed. See results/notes/anthropic-billing-postmortem.md.",
+  "subprocess_env_allowlist": [
+    "PATH",
+    "TMPDIR",
+    "TEMP",
+    "TMP",
+    "LANG",
+    "LC_ALL",
+    "TERM",
+    "SHELL",
+    "HTTPS_PROXY",
+    "https_proxy",
+    "NO_PROXY",
+    "no_proxy",
+    "SSL_CERT_FILE",
+    "SSL_CERT_DIR",
+    "NODE_EXTRA_CA_CERTS",
+    "REQUESTS_CA_BUNDLE",
+    "CURL_CA_BUNDLE",
+    "AWS_CA_BUNDLE",
+    "CLAUDE_CODE_PROXY_RESOLVES_HOSTS",
+    "CLAUDE_CODE_ENTRYPOINT",
+    "CLAUDE_AGENT_SDK_VERSION"
+  ],
+  "_subprocess_env_allowlist_comment": "DEFAULT-DENY: the resolver's CLI subprocess is exec'd (tools/cli_guard.py) with ONLY these variables plus the selected provider's credential_env and env flags. A denylist was tried twice and failed twice -- first the SDK's env overlay resurrected popped keys, then the CLI authenticated from its on-disk login (~/.claude.json oauthAccount) with every env channel closed. The guard also gives the CLI a private empty HOME and closes inherited file descriptors. host_managed_auth_env above is kept as belt-and-braces blanking for the same variables. Behavioural proof: tools/anthropic_auth_probe.py step 1.",
+  "models": {
+    "opus-4-6": {
+      "provider": "bedrock",
+      "id": "us.anthropic.claude-opus-4-6-v1",
+      "efforts": [
+        "low",
+        "medium",
+        "high",
+        "max"
+      ],
+      "rates": {
+        "input": 5.5,
+        "output": 27.5,
+        "cache_write_5m": 6.875,
+        "cache_read": 0.55
+      }
+    },
+    "sonnet-4-6": {
+      "provider": "bedrock",
+      "id": "us.anthropic.claude-sonnet-4-6",
+      "efforts": [
+        "low",
+        "medium",
+        "high",
+        "max"
+      ],
+      "rates": {
+        "input": 3.3,
+        "output": 16.5,
+        "cache_write_5m": 4.125,
+        "cache_read": 0.33
+      }
+    },
+    "opus-5-bedrock": {
+      "provider": "bedrock",
+      "id": "us.anthropic.claude-opus-5",
+      "efforts": [
+        "low",
+        "medium",
+        "high",
+        "xhigh",
+        "max"
+      ],
+      "rates": {
+        "input": 5.5,
+        "output": 27.5,
+        "cache_write_5m": 6.875,
+        "cache_read": 0.55
+      },
+      "rates_note": "First-party opus-5 rates x1.1, the same us.* regional premium the other Bedrock entries carry.",
+      "tokenizer_note": "4.7-and-later tokenizer: ~30% more tokens for the same text than 4.6. Token counts are therefore NOT directly comparable to the 4.6 runs; cost is.",
+      "note": "Serves the apps (see serving_provider). The opus-5 Bedrock entitlement arrived 2026-09-04 -- tools/bedrock_preflight.py now reports SUCCESS for us.anthropic.claude-opus-5 -- so serving moved here from the first-party API: same model, billed to the AWS credits."
+    },
+    "opus-5": {
+      "provider": "anthropic",
+      "id": "claude-opus-5",
+      "efforts": [
+        "low",
+        "medium",
+        "high",
+        "xhigh",
+        "max"
+      ],
+      "rates": {
+        "input": 5.0,
+        "output": 25.0,
+        "cache_write_5m": 6.25,
+        "cache_read": 0.5
+      },
+      "rates_note": "Claude API first-party, global routing (no 1.1x us data-residency multiplier; the Bedrock entries above carry their own 1.1x regional premium). Read from platform.claude.com/docs/en/about-claude/pricing on 2026-08-13.",
+      "tokenizer_note": "4.7-and-later tokenizer: ~30% more tokens for the same text than 4.6. Token counts are therefore NOT directly comparable to the 4.6 runs; cost is. The comparison report must say which it is reporting.",
+      "note": "The frontier-comparison configuration, via the first-party Anthropic API. Scored 93.3% on both input formats. Serving moved to opus-5-bedrock on 2026-09-04 when the Bedrock entitlement arrived; this entry remains the comparison record and the fallback route to the same model."
+    },
+    "sonnet-5": {
+      "provider": "anthropic",
+      "id": "claude-sonnet-5",
+      "efforts": [
+        "low",
+        "medium",
+        "high",
+        "xhigh",
+        "max"
+      ],
+      "rates": {
+        "input": 2.0,
+        "output": 10.0,
+        "cache_write_5m": 2.5,
+        "cache_read": 0.2
+      },
+      "rates_note": "Same source and date. The $2/$10 introductory rate is now the standard price; the scheduled 2026-09-01 rise to $3/$15 was cancelled.",
+      "tokenizer_note": "4.7-and-later tokenizer: ~30% more tokens for the same text than 4.6. Token counts are therefore NOT directly comparable to the 4.6 runs; cost is. The comparison report must say which it is reporting.",
+      "note": "Anthropic API only. NOT entitled on this Bedrock account (tools/bedrock_preflight.py reports NOT-ENTITLED)."
+    }
+  },
+  "serving_provider": "bedrock",
+  "_serving_provider_comment": "The one provider the operator and internal apps may spend on. config.check_default() refuses to start an app whose default model is served by anything else -- a default the deployment cannot run must fail at startup, not four retries into the first denial an operator submits. Eval runs are unaffected: they name their model explicitly and gate on that model's own provider budget.",
+  "default": {
+    "model": "opus-5-bedrock",
+    "effort": "high",
+    "input_format": "edi",
+    "_comment": "What the apps serve denials with. opus-5 at high effort, on Umer's instruction -- the strongest model measured (93.3% on both formats) -- served through Bedrock since 2026-09-04, when the entitlement arrived and the AWS credits became the cheaper route to the same model. Changing it is a config change, not a code change -- and it is invisible to the operator app either way, which has no model control by design."
+  }
+}

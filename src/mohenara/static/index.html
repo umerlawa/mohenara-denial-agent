@@ -1,0 +1,446 @@
+<meta charset="utf-8"><title>Denial Resolution</title>
+<style>
+:root{--bg:#f7f6f4;--panel:#fff;--ink:#17150f;--muted:#6f6960;--line:#e3ded5;
+--go:#7c4023;--go2:#8f4d2c;--ok:#2c6446;--wait:#8a6512;--bad:#9c3327;--soft:#faf8f5}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+font:15px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{display:flex;align-items:center;gap:14px;padding:0 24px;height:56px;
+background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+.brand{font-weight:650;letter-spacing:-.015em;font-size:15.5px}
+.brand span{color:var(--muted);font-weight:400;margin-left:9px;font-size:13px}
+.kbd{margin-left:auto;font-size:12px;color:var(--muted)}
+.kbd b{background:var(--soft);border:1px solid var(--line);border-radius:4px;
+padding:1px 5px;font-weight:500;font-family:ui-monospace,monospace}
+.split{display:grid;grid-template-columns:400px 1fr;height:calc(100vh - 56px)}
+.left{border-right:1px solid var(--line);background:var(--panel);overflow-y:auto;padding:20px}
+.right{overflow-y:auto;padding:20px 24px}
+h2{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);
+margin:0 0 12px;font-weight:600}
+label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}
+.seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;width:fit-content}
+.seg button{border:0;background:var(--panel);padding:7px 16px;cursor:pointer;font:inherit;
+color:var(--muted)}
+.seg button.on{background:var(--ink);color:#fff}
+.drop{border:1.5px dashed var(--line);border-radius:11px;padding:26px 16px;text-align:center;
+background:var(--soft);cursor:pointer;transition:border-color .12s,background .12s}
+.drop:hover,.drop.over{border-color:var(--go);background:#fdf7f2}
+.drop b{display:block;font-size:14px;margin-bottom:3px}
+.drop span{font-size:12.5px;color:var(--muted)}
+textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;
+font:inherit;resize:vertical;background:var(--panel);color:var(--ink)}
+.go{background:var(--go);color:#fff;border:0;border-radius:8px;padding:11px 18px;
+cursor:pointer;font:inherit;font-weight:550;width:100%}
+.go:hover{background:var(--go2)}
+.go:disabled{opacity:.45;cursor:default}
+.ghost{background:none;border:1px solid var(--line);border-radius:7px;padding:6px 12px;
+cursor:pointer;font:inherit;font-size:13px;color:var(--muted)}
+.ghost:hover{border-color:var(--muted);color:var(--ink)}
+.stage{display:flex;gap:5px;align-items:center;margin:11px 0 0}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--line)}
+.dot.on{background:var(--go)}
+.dot.done{background:var(--ok)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:11px;
+padding:15px 17px;margin-bottom:11px;cursor:pointer;transition:border-color .12s}
+.card:hover{border-color:#c9c0b2}
+.card.sel{border-color:var(--go);box-shadow:0 0 0 1px var(--go)}
+.card.need{border-left:3px solid var(--wait)}
+.card.done{border-left:3px solid var(--ok)}
+.card.fail{border-left:3px solid var(--bad)}
+.top{display:flex;align-items:baseline;gap:10px;justify-content:space-between}
+.ttl{font-weight:600;font-size:14.5px}
+.meta{font-size:12.5px;color:var(--muted);margin-top:4px;display:flex;gap:12px;flex-wrap:wrap}
+.pill{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;
+background:var(--soft);border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.pill.need{background:#fdf5e2;border-color:#e8d6a8;color:#6d4f0a}
+.pill.done{background:#eaf4ee;border-color:#bcdcc9;color:var(--ok)}
+.pill.fail{background:#fbecea;border-color:#eec4bd;color:var(--bad)}
+.pill.run{background:#f3eee9;border-color:#dfd2c5;color:var(--go)}
+.money{font-variant-numeric:tabular-nums;font-weight:600}
+.due{font-weight:600}
+.due.soon{color:var(--bad)}
+.due.near{color:var(--wait)}
+.empty{border:1.5px dashed var(--line);border-radius:12px;padding:44px 24px;text-align:center;
+color:var(--muted)}
+.empty b{display:block;color:var(--ink);margin-bottom:6px;font-size:15px}
+.det{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;
+margin-bottom:14px}
+.field{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);
+margin-bottom:3px}
+.big{font-size:17px;font-weight:650;letter-spacing:-.01em}
+.ev{margin:6px 0 0;padding-left:18px}.ev li{margin:4px 0;font-size:13.5px}
+code{background:var(--soft);padding:1px 5px;border-radius:4px;font-size:12.5px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.err{color:var(--bad);white-space:pre-wrap;font-size:13.5px}
+.sub{font-size:12.5px;color:var(--muted)}
+.list-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.list-head select,.list-head input{padding:6px 9px;border:1px solid var(--line);
+border-radius:7px;font:inherit;font-size:13px;background:var(--panel)}
+.spin{display:inline-block;width:11px;height:11px;border:2px solid var(--line);
+border-top-color:var(--go);border-radius:50%;animation:s .7s linear infinite;vertical-align:-1px}
+@keyframes s{to{transform:rotate(360deg)}}
+@media print{header,.left,.bar,.list-head{display:none}.split{display:block}.right{padding:0}}
+</style>
+
+<header>
+  <div class="brand">Denial Resolution<span>Claims remediation</span></div>
+  <div class="kbd"><b>j</b>/<b>k</b> move · <b>Enter</b> open · <b>/</b> filter</div>
+</header>
+
+<div class="split">
+  <aside class="left">
+    <h2>New denial</h2>
+    <label>Document format</label>
+    <div class="seg" id="fmt" style="margin-bottom:14px">
+      <button data-fmt="edi" class="on">EDI artifacts</button>
+      <button data-fmt="md">Markdown</button>
+    </div>
+
+    <div class="drop" id="drop" data-testid="drop">
+      <b>Add claim documents</b>
+      <span id="dropHint">835, 837P, 277CA, 270/271, chart note — or a case.md</span>
+      <input type="file" id="files" multiple accept=".md,.edi,.txt" hidden>
+    </div>
+    <div id="picked" class="sub" style="margin-top:9px"></div>
+
+    <div style="margin-top:16px">
+      <label>Notes <span style="text-transform:none">— optional</span></label>
+      <textarea id="notes" rows="3" data-testid="notes"
+        placeholder="Anything the documents do not say. Verbal approvals, prior calls, context."></textarea>
+    </div>
+
+    <div style="margin-top:14px">
+      <button class="go" id="submit" data-testid="submit">Resolve</button>
+      <p class="sub" id="batchHint" style="margin:9px 0 0"></p>
+    </div>
+
+    <div style="margin-top:26px" id="corpusBox">
+      <h2>Or by claim ID</h2>
+      <div class="row">
+        <input id="caseId" placeholder="MOH2-000009" style="flex:1;padding:9px;
+          border:1px solid var(--line);border-radius:8px;font:inherit">
+        <button class="ghost" id="byId">Add</button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="right">
+    <div class="list-head">
+      <h2 style="margin:0">Worklist <span id="qn" class="sub"></span></h2>
+      <input id="filter" placeholder="Filter payer or claim…" style="margin-left:auto;width:190px">
+      <select id="sort">
+        <option value="recent">Newest first</option>
+        <option value="amount">Amount at risk</option>
+        <option value="deadline">Filing deadline</option>
+        <option value="state">Needs attention first</option>
+      </select>
+      <button class="ghost" id="clear">Clear finished</button>
+    </div>
+    <div id="queue"></div>
+    <div id="detail"></div>
+  </main>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const money = v => v == null ? null :
+  '$' + Number(v).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
+
+let FMT = 'edi', PICKED = [], JOBS = [], SEL = null, CURSOR = 0;
+
+// ---- intake ---------------------------------------------------------------
+$('#fmt').onclick = e => {
+  const b = e.target.closest('button'); if (!b) return;
+  FMT = b.dataset.fmt;
+  document.querySelectorAll('#fmt button').forEach(x => x.classList.toggle('on', x === b));
+  $('#dropHint').textContent = FMT === 'edi'
+    ? '835, 837P, 277CA, 270/271, chart note — or a case.md'
+    : 'A case.md for each denial';
+  renderPicked();
+};
+
+$('#drop').onclick = () => $('#files').click();
+['dragover','dragenter'].forEach(ev => $('#drop').addEventListener(ev, e => {
+  e.preventDefault(); $('#drop').classList.add('over'); }));
+['dragleave','drop'].forEach(ev => $('#drop').addEventListener(ev, e => {
+  e.preventDefault(); $('#drop').classList.remove('over'); }));
+$('#drop').addEventListener('drop', e => addFiles([...e.dataTransfer.files]));
+$('#files').onchange = () => addFiles([...$('#files').files]);
+
+async function addFiles(list){
+  for (const f of list) PICKED.push({name: f.name, text: await f.text()});
+  renderPicked();
+}
+
+// An EDI denial is an artifact SET, so several files are ONE denial. Markdown
+// is one document per denial, so several files are several denials. Grouping
+// them wrongly would silently merge two claims into one prompt.
+function grouped(){
+  if (!PICKED.length) return [];
+  if (FMT === 'md') return PICKED.map(f => ({label: f.name, files: {[f.name]: f.text}}));
+  const byDir = {};
+  for (const f of PICKED){
+    const dir = f.name.includes('/') ? f.name.split('/').slice(0, -1).join('/') : '';
+    (byDir[dir] ||= []).push(f);
+  }
+  return Object.entries(byDir).map(([dir, fs]) => ({
+    label: dir || (fs.length === 1 ? fs[0].name : `${fs.length} artifacts`),
+    files: Object.fromEntries(fs.map(f => [f.name, f.text])),
+  }));
+}
+
+function renderPicked(){
+  const g = grouped();
+  $('#picked').innerHTML = !PICKED.length ? '' :
+    PICKED.map((f, i) => `<div>${esc(f.name)}
+      <button class="ghost" style="padding:1px 7px;margin-left:6px" data-rm="${i}">×</button></div>`).join('');
+  $('#picked').querySelectorAll('[data-rm]').forEach(b => b.onclick = () => {
+    PICKED.splice(+b.dataset.rm, 1); renderPicked(); });
+  $('#batchHint').textContent = g.length > 1
+    ? `${g.length} denials will be queued.`
+    : g.length === 1 ? '1 denial.' : '';
+}
+
+$('#submit').onclick = async () => {
+  const g = grouped();
+  if (!g.length){ $('#batchHint').innerHTML = '<span class="err">Add at least one document.</span>'; return; }
+  const notes = $('#notes').value.trim() || null;
+  $('#submit').disabled = true; $('#submit').textContent = 'Queueing…';
+  try{
+    await post('/api/batch', {denials: g.map(d => ({...d, input_format: FMT, notes}))});
+    PICKED = []; $('#files').value = ''; $('#notes').value = ''; renderPicked();
+    await refresh();
+  } catch(e){ $('#batchHint').innerHTML = `<span class="err">${esc(e.message)}</span>`; }
+  $('#submit').disabled = false; $('#submit').textContent = 'Resolve';
+};
+
+$('#byId').onclick = async () => {
+  const id = $('#caseId').value.trim(); if (!id) return;
+  try{
+    await post('/api/batch', {denials: [{label: id, case_id: id, input_format: FMT}]});
+    $('#caseId').value = ''; await refresh();
+  } catch(e){ $('#batchHint').innerHTML = `<span class="err">${esc(e.message)}</span>`; }
+};
+
+async function post(url, body){
+  const res = await fetch(url, {method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(body)});
+  const d = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(d.detail || `request failed (${res.status})`);
+  return d;
+}
+
+// ---- worklist -------------------------------------------------------------
+const STAGES = ['queued','reading','resolving','needs_input','resolved'];
+const LABEL = {queued:'Queued', reading:'Reading documents', resolving:'Resolving',
+  needs_input:'Needs your input', resolved:'Resolved', failed:'Failed',
+  cancelling:'Stopping…', cancelled:'Stopped'};
+
+function stageDots(state){
+  if (['failed','cancelling','cancelled'].includes(state)) return '';
+  const i = STAGES.indexOf(state);
+  return `<div class="stage">${STAGES.map((s, n) => {
+    const cls = state === 'resolved' ? 'done' : n < i ? 'done' : n === i ? 'on' : '';
+    return `<i class="dot ${cls}" title="${LABEL[s]}"></i>`;
+  }).join('')}<span class="sub" style="margin-left:6px">${LABEL[state]}${
+    ['reading','resolving'].includes(state) ? ' <span class="spin"></span>' : ''}</span></div>`;
+}
+
+function dueClass(d){
+  if (!d) return '';
+  const days = Math.ceil((new Date(d) - Date.now()) / 864e5);
+  return days <= 14 ? 'soon' : days <= 45 ? 'near' : '';
+}
+function dueText(d){
+  if (!d) return null;
+  const days = Math.ceil((new Date(d) - Date.now()) / 864e5);
+  return days < 0 ? `Filing window closed ${-days}d ago`
+       : `${days}d to file · ${d}`;
+}
+
+function sorted(list){
+  const mode = $('#sort').value;
+  const q = $('#filter').value.trim().toLowerCase();
+  let out = list.filter(j => !q ||
+    (j.payer || '').toLowerCase().includes(q) ||
+    (j.label || '').toLowerCase().includes(q) ||
+    (j.case_id || '').toLowerCase().includes(q));
+  if (mode === 'amount') out.sort((a,b) => (b.billed_amount||0) - (a.billed_amount||0));
+  else if (mode === 'deadline') out.sort((a,b) =>
+    (a.filing_deadline || '9999').localeCompare(b.filing_deadline || '9999'));
+  else if (mode === 'state') out.sort((a,b) =>
+    (a.state === 'needs_input' ? 0 : 1) - (b.state === 'needs_input' ? 0 : 1));
+  return out;
+}
+
+function renderQueue(){
+  const list = sorted(JOBS);
+  const need = JOBS.filter(j => j.state === 'needs_input').length;
+  $('#qn').textContent = JOBS.length
+    ? `— ${JOBS.length} denial${JOBS.length>1?'s':''}${need ? `, ${need} awaiting you` : ''}` : '';
+
+  if (!JOBS.length){
+    $('#queue').innerHTML = `<div class="empty" data-testid="empty">
+      <b>No denials in the worklist</b>
+      Add claim documents on the left. Several at once is fine — each is tracked
+      separately and you can keep working while they resolve.</div>`;
+    $('#detail').innerHTML = ''; return;
+  }
+
+  $('#queue').innerHTML = list.map((j, i) => {
+    const kind = j.state === 'needs_input' ? 'need' : j.state === 'resolved' ? 'done'
+               : ['failed','cancelled'].includes(j.state) ? 'fail' : '';
+    // A denial still moving can be stopped -- the mistaken huge upload must
+    // not have to run to completion on someone's budget.
+    const stop = ['queued','reading','resolving'].includes(j.state)
+      ? `<button class="ghost" style="padding:2px 10px;margin-right:8px"
+           data-stop="${esc(j.id)}" data-testid="stop-job">Stop</button>` : '';
+    const pill = `${stop}<span class="pill ${kind || 'run'}">${LABEL[j.state] || j.state}</span>`;
+    const bits = [];
+    if (j.payer) bits.push(esc(j.payer));
+    if (j.billed_amount != null) bits.push(`<span class="money">${money(j.billed_amount)}</span>`);
+    if (j.date_of_service) bits.push(`DOS ${esc(j.date_of_service)}`);
+    if (j.filing_deadline) bits.push(
+      `<span class="due ${dueClass(j.filing_deadline)}">${esc(dueText(j.filing_deadline))}</span>`);
+    return `<div class="card ${kind} ${SEL === j.id ? 'sel' : ''} ${i === CURSOR ? 'cur' : ''}"
+              data-testid="job" data-id="${esc(j.id)}">
+      <div class="top"><div class="ttl">${esc(j.label)}</div>${pill}</div>
+      ${bits.length ? `<div class="meta">${bits.join('')}</div>` : ''}
+      ${j.state === 'needs_input' && j.question
+        ? `<div class="sub" style="margin-top:8px">${esc(j.question.slice(0,150))}${j.question.length>150?'…':''}</div>` : ''}
+      ${j.state === 'resolved' && j.family
+        ? `<div class="meta"><code>${esc(j.family)}</code> → <code>${esc(j.path)}</code></div>` : ''}
+      ${j.state === 'failed' ? `<div class="err" style="margin-top:6px">${esc(j.error||'')}</div>` : ''}
+      ${stageDots(j.state)}
+    </div>`;
+  }).join('');
+
+  $('#queue').querySelectorAll('[data-testid=job]').forEach(c =>
+    c.onclick = () => { SEL = c.dataset.id; renderQueue(); renderDetail(); });
+  $('#queue').querySelectorAll('[data-stop]').forEach(b =>
+    b.onclick = async (e) => {
+      e.stopPropagation();
+      await post(`/api/queue/${b.dataset.stop}/cancel`, {});
+      await refresh();
+    });
+  if (SEL) renderDetail();
+}
+
+// ---- detail ---------------------------------------------------------------
+function renderDetail(){
+  const j = JOBS.find(x => x.id === SEL);
+  if (!j){ $('#detail').innerHTML = ''; return; }
+  const r = (j.resolution || {}).resolution;
+
+  if (j.state === 'needs_input'){
+    const aw = (j.resolution || {}).awaiting_human || {};
+    $('#detail').innerHTML = `<div class="det" data-testid="detail">
+      <div class="field">Needs your input${aw.asked_of ? ` — ask the ${esc(aw.asked_of)}` : ''}</div>
+      <div class="big" style="margin-bottom:8px">${esc(j.label)}</div>
+      <p style="margin:0 0 4px">${esc(aw.question || '')}</p>
+      <p class="sub" style="margin:0 0 14px">${esc(aw.why_needed || '')}</p>
+      <label>What did you find out?</label>
+      <textarea id="ansText" rows="4" data-testid="answer-input"
+        placeholder="e.g. Called the payer on 2026-07-02. Authorisation AUTH-88213 approved 2026-04-28."></textarea>
+      <div class="row" style="margin-top:10px">
+        <div style="flex:1"><label>Supporting documents — optional</label>
+          <input type="file" id="ansFiles" multiple accept=".md,.edi,.txt" data-testid="answer-files"></div>
+        <button class="go" style="width:auto" id="ansGo" data-testid="submit-answer">Submit &amp; resume</button>
+      </div>
+      <p class="sub" id="ansHint" style="margin:9px 0 0"></p>
+    </div>`;
+    $('#ansGo').onclick = async () => {
+      const answer = $('#ansText').value.trim();
+      if (!answer){ $('#ansHint').innerHTML =
+        '<span class="err">Type what you found out — an empty answer cannot unblock a denial.</span>'; return; }
+      const files = {};
+      for (const f of $('#ansFiles').files) files[f.name] = await f.text();
+      $('#ansGo').disabled = true; $('#ansGo').textContent = 'Resuming…';
+      try{
+        await post(`/api/queue/${j.id}/answer`,
+          {answer, files: Object.keys(files).length ? files : null});
+        await refresh();
+      } catch(e){
+        $('#ansGo').disabled = false; $('#ansGo').textContent = 'Submit & resume';
+        $('#ansHint').innerHTML = `<span class="err">${esc(e.message)}</span>`;
+      }
+    };
+    return;
+  }
+
+  if (!r){ $('#detail').innerHTML = ''; return; }
+  const d = r.denial || {};
+  const hdr = [];
+  if (r.payer) hdr.push(`<div><div class="field">Payer</div>${esc(r.payer)}</div>`);
+  if (r.billed_amount != null) hdr.push(
+    `<div><div class="field">Billed</div><span class="money">${money(r.billed_amount)}</span></div>`);
+  if (r.date_of_service) hdr.push(`<div><div class="field">Date of service</div>${esc(r.date_of_service)}</div>`);
+  if (r.filing_deadline) hdr.push(`<div><div class="field">File by</div>
+    <span class="due ${dueClass(r.filing_deadline)}">${esc(r.filing_deadline)}</span></div>`);
+  if (d.group || d.carc) hdr.push(`<div><div class="field">Denial code</div>
+    <code>${esc(d.group || '')}${d.carc ? '-' + esc(d.carc) : ''}</code>
+    ${d.rarc ? `<code>${esc(d.rarc)}</code>` : ''}
+    ${d.level ? `<span class="sub">${esc(d.level)} level</span>` : ''}</div>`);
+
+  $('#detail').innerHTML = `<div class="det" data-testid="detail">
+    <div class="row" style="gap:26px;margin-bottom:16px">${hdr.join('')}</div>
+    <div class="field">Root cause</div>
+    <div class="big" data-testid="root-cause">${esc(r.root_cause.family)}</div>
+    <p style="margin:5px 0 14px">${esc(r.root_cause.explanation)}</p>
+    <div class="field">Next action</div>
+    <div class="big" data-testid="next-action">${esc(r.next_action.path)}</div>
+    <p style="margin:5px 0 0" id="actionDetail">${esc(r.next_action.detail)}
+      ${r.next_action.resubmission_frequency_code
+        ? `<code>frequency ${esc(r.next_action.resubmission_frequency_code)}</code>` : ''}</p>
+    ${r.denied_line_idxs?.length ? `<p class="sub" style="margin:8px 0 0">Denied service lines:
+      ${r.denied_line_idxs.map(i => `<code>line ${i + 1}</code>`).join(' ')}</p>` : ''}
+    ${r.evidence?.length ? `<div style="margin-top:16px"><div class="field">Evidence</div>
+      <ul class="ev">${r.evidence.map(e => `<li><code>${esc(e.artifact)}</code> ${esc(e.fact)}
+        ${e.locator ? `<span class="sub">— ${esc(e.locator)}</span>` : ''}</li>`).join('')}</ul></div>` : ''}
+    ${r.citations?.length ? `<details style="margin-top:12px"><summary class="sub">
+      Rules applied (${r.citations.length})</summary><ul class="ev">${r.citations.map(c =>
+      `<li><code>${esc(c.source)}</code> ${esc(c.rule)}</li>`).join('')}</ul></details>` : ''}
+    <div class="bar">
+      <button class="ghost" id="copyAction" data-testid="copy">Copy next action</button>
+      <button class="ghost" onclick="window.print()">Print / PDF</button>
+    </div></div>`;
+  $('#copyAction').onclick = async () => {
+    const text = `${r.root_cause.family} → ${r.next_action.path}\n\n${r.next_action.detail}` +
+      (r.next_action.resubmission_frequency_code
+        ? `\nFrequency code: ${r.next_action.resubmission_frequency_code}` : '');
+    await navigator.clipboard.writeText(text);
+    $('#copyAction').textContent = 'Copied';
+    setTimeout(() => $('#copyAction').textContent = 'Copy next action', 1400);
+  };
+}
+
+// ---- polling and keyboard -------------------------------------------------
+async function refresh(){
+  JOBS = await (await fetch('/api/queue')).json();
+  renderQueue();
+}
+$('#filter').oninput = renderQueue;
+$('#sort').onchange = renderQueue;
+$('#clear').onclick = async () => { await post('/api/queue/clear', {}); SEL = null; await refresh(); };
+
+document.addEventListener('keydown', e => {
+  if (e.target.matches('input,textarea')) {
+    if (e.key === 'Escape') e.target.blur();
+    return;
+  }
+  const list = sorted(JOBS);
+  if (e.key === 'j'){ CURSOR = Math.min(CURSOR + 1, list.length - 1); renderQueue(); }
+  if (e.key === 'k'){ CURSOR = Math.max(CURSOR - 1, 0); renderQueue(); }
+  if (e.key === 'Enter' && list[CURSOR]){ SEL = list[CURSOR].id; renderQueue(); renderDetail(); }
+  if (e.key === '/'){ e.preventDefault(); $('#filter').focus(); }
+});
+
+// Poll only while something is moving. A queue at rest should not generate load.
+setInterval(() => {
+  if (JOBS.some(j => ['queued','reading','resolving','cancelling'].includes(j.state))) refresh();
+}, 2500);
+refresh();
+</script>

@@ -1,0 +1,83 @@
+{
+  "usage": {
+    "input_tokens": 3,
+    "cache_creation_input_tokens": 5825,
+    "cache_read_input_tokens": 69076,
+    "output_tokens": 1273,
+    "output_tokens_details": {
+      "thinking_tokens": 33
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5825
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "All lines denied CO-16 with claim-level MOA N286. The 837P has no referring/ordering provider loop\u2014only billing and rendering. Medicare Part B requires an ordering/referring NPI for therapy CPTs. Resubmit as new original (Part B does not accept frequency 7).",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_referring_provider",
+        "explanation": "Claim has no referring/ordering provider. MOA N286 confirms the referring provider NPI is missing. Medicare requires it for therapy CPTs 97110/97112/97140."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Add the ordering/referring provider name and NPI (verify in PECOS). Resubmit as a new original claim (CLM05-3=1). Do not use frequency 7 on Medicare Part B."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All lines denied CO-16; claim-level MOA N286 (missing/invalid referring provider primary identifier)",
+          "locator": "MOA segment"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "No referring/ordering provider loop present\u2014only billing [85] and rendering [82]",
+          "locator": "Parties on claim"
+        },
+        {
+          "artifact": "ack_277ca.edi",
+          "fact": "Claim accepted for adjudication (A2/code 20) 2026-08-26\u2014was adjudicated, not rejected",
+          "locator": "status"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "Coverage active (EB*1) from 2024-01-01 for DOS\u2014eligibility not at issue",
+          "locator": "benefit segment"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "16",
+        "rarc": "N286",
+        "level": "claim"
+      },
+      "denied_line_idxs": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "citations": [
+        {
+          "source": "09-missing-referring-provider.md",
+          "rule": "CO-16 + N286: correct ordering/referring NPI and resubmit as new original on Medicare Part B (CLM05-3=1)"
+        },
+        {
+          "source": "01-carc-rarc-index.md",
+          "rule": "N286 = missing/incomplete/invalid referring provider primary identifier; fix and resubmit"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"All lines denied CO-16 with claim-level MOA N286. The 837P has no referring/ordering provider loop\u2014only billing and rendering. Medicare Part B requires an ordering/referring NPI for therapy CPTs. Resubmit as new original (Part B does not accept frequency 7).\",\"resolution\":{\"root_cause\":{\"family\":\"missing_referring_provider\",\"explanation\":\"Claim has no referring/ordering provider. MOA N286 confirms the referring provider NPI is missing. Medicare requires it for therapy CPTs 97110/97112/97140.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Add the ordering/referring provider name and NPI (verify in PECOS). Resubmit as a new original claim (CLM05-3=1). Do not use frequency 7 on Medicare Part B.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All lines denied CO-16; claim-level MOA N286 (missing/invalid referring provider primary identifier)\",\"locator\":\"MOA segment\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"No referring/ordering provider loop present\u2014only billing [85] and rendering [82]\",\"locator\":\"Parties on claim\"},{\"artifact\":\"ack_277ca.edi\",\"fact\":\"Claim accepted for adjudication (A2/code 20) 2026-08-26\u2014was adjudicated, not rejected\",\"locator\":\"status\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"Coverage active (EB*1) from 2024-01-01 for DOS\u2014eligibility not at issue\",\"locator\":\"benefit segment\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"16\",\"rarc\":\"N286\",\"level\":\"claim\"},\"denied_line_idxs\":[1,2,3,4],\"citations\":[{\"source\":\"09-missing-referring-provider.md\",\"rule\":\"CO-16 + N286: correct ordering/referring NPI and resubmit as new original on Medicare Part B (CLM05-3=1)\"},{\"source\":\"01-carc-rarc-index.md\",\"rule\":\"N286 = missing/incomplete/invalid referring provider primary identifier; fix and resubmit\"}]}}",
+  "model": "us.anthropic.claude-opus-4-6-v1"
+}

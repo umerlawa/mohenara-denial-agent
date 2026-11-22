@@ -1,0 +1,99 @@
+{
+  "case_id": "MOH2-000022",
+  "run_id": "final-sonnet-4-6-low-edi",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4825,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5050,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 2268,
+    "output_tokens_details": {
+      "thinking_tokens": 1440
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5050
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.06873636,
+  "cache_hit_rate": 0.862714,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "Line 2 (97140:GP, 7 units) denied CO-151/N362 \u2014 units exceed the MUE. Chart note documents only 15 min of manual therapy (1 unit) on 2026-01-16; 7 units were billed in error. Lines 1 and 3 paid normally. Part B FFS (MB); adjudicated claim (CLP07 present); frequency 7 rejected on Part B \u2014 remedy is a clerical-error reopening to reduce 97140 to 1 unit.",
+    "resolution": {
+      "root_cause": {
+        "family": "mue_exceeded",
+        "explanation": "97140:GP billed 7 units; chart note documents 15 min (1 unit) of manual therapy on 2026-01-16. CO-151/N362 denied the entire $321.51 line as exceeding the per-day MUE."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Submit a clerical-error reopening to the MAC reducing 97140 to 1 unit. Do NOT send frequency 7 \u2014 Part B FFS rejects it. Attach the chart note confirming 15 min billed.",
+        "resubmission_frequency_code": "7"
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "SVC HC:97140:GP billed 321.51, paid 0; CAS*CO*151*321.51; LQ*HE*N362 \u2014 full denial, units exceeded MUE",
+          "locator": "SVC line 2 / LX*2"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "97140 documented as 15 min (1 unit) on 2026-01-16; total timed minutes 45 across three codes",
+          "locator": "chart_note.txt"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "SV1*HC:97140:GP*321.51*UN*7 \u2014 7 units submitted",
+          "locator": "LX*2"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CLP07 = 2606593004856, filing indicator MB \u2014 claim adjudicated on Medicare Part B FFS; frequency 7 not accepted",
+          "locator": "CLP segment"
+        }
+      ],
+      "denied_line_idxs": [
+        1
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "151",
+        "rarc": "N362",
+        "level": "line"
+      },
+      "citations": [
+        {
+          "source": "07-ncci-and-mue.md",
+          "rule": "CO-151 + N362 = MUE exceeded; keying error \u2192 correct_and_resubmit"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Part B FFS rejects frequency 7; use clerical-error reopening"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"Line 2 (97140:GP, 7 units) denied CO-151/N362 \u2014 units exceed the MUE. Chart note documents only 15 min of manual therapy (1 unit) on 2026-01-16; 7 units were billed in error. Lines 1 and 3 paid normally. Part B FFS (MB); adjudicated claim (CLP07 present); frequency 7 rejected on Part B \u2014 remedy is a clerical-error reopening to reduce 97140 to 1 unit.\",\"resolution\":{\"root_cause\":{\"family\":\"mue_exceeded\",\"explanation\":\"97140:GP billed 7 units; chart note documents 15 min (1 unit) of manual therapy on 2026-01-16. CO-151/N362 denied the entire $321.51 line as exceeding the per-day MUE.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Submit a clerical-error reopening to the MAC reducing 97140 to 1 unit. Do NOT send frequency 7 \u2014 Part B FFS rejects it. Attach the chart note confirming 15 min billed.\",\"resubmission_frequency_code\":\"7\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"SVC HC:97140:GP billed 321.51, paid 0; CAS*CO*151*321.51; LQ*HE*N362 \u2014 full denial, units exceeded MUE\",\"locator\":\"SVC line 2 / LX*2\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"97140 documented as 15 min (1 unit) on 2026-01-16; total timed minutes 45 across three codes\",\"locator\":\"chart_note.txt\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"SV1*HC:97140:GP*321.51*UN*7 \u2014 7 units submitted\",\"locator\":\"LX*2\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"CLP07 = 2606593004856, filing indicator MB \u2014 claim adjudicated on Medicare Part B FFS; frequency 7 not accepted\",\"locator\":\"CLP segment\"}],\"denied_line_idxs\":[1],\"denial\":{\"group\":\"CO\",\"carc\":\"151\",\"rarc\":\"N362\",\"level\":\"line\"},\"citations\":[{\"source\":\"07-ncci-and-mue.md\",\"rule\":\"CO-151 + N362 = MUE exceeded; keying error \u2192 correct_and_resubmit\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Part B FFS rejects frequency 7; use clerical-error reopening\"}]}}"
+}

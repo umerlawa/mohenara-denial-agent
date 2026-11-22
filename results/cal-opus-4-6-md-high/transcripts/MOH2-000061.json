@@ -1,0 +1,95 @@
+{
+  "case_id": "MOH2-000061",
+  "run_id": "cal-opus-4-6-md-high",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "high",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 6892,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 37095,
+    "cache_read_input_tokens": 0,
+    "output_tokens": 2280,
+    "output_tokens_details": {
+      "thinking_tokens": 1554
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 37095
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.317739125,
+  "cache_hit_rate": 0.0,
+  "model_output": {
+    "rationale": "All four lines denied OA-18 (exact duplicate) with MOA N111. Claim filed as frequency 1 (original) to Medicare Part B (MB). 835 carries payer claim control 2623576767957, confirming adjudication. The entire claim duplicates a previously adjudicated claim on file for the same provider/member/DOS/procedures. No false-duplicate indicator \u2014 services are same-session timed therapy, not bilateral or repeat encounters. OA group: never patient liability. Duplicate edit is hard-coded and unappealable.",
+    "status": "resolved",
+    "resolution": {
+      "root_cause": {
+        "family": "exact_duplicate",
+        "explanation": "Entire claim denied OA-18 on all lines with N111. Payer matched provider/member/DOS/procedure against a previously adjudicated claim. Claim sent as frequency 1 (original), triggering the hard-coded duplicate edit."
+      },
+      "next_action": {
+        "path": "do_not_resubmit",
+        "detail": "Do not resubmit. Check the original claim's status via Novitas portal or IVR. If it paid, post that payment and close. If the original was denied, address that denial on its own terms. Never resend \u2014 repeat submissions risk program-integrity action."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All 4 lines carry OA-18 (exact duplicate claim/service), $0 paid, claim-level MOA N111",
+          "locator": "CAS segment all lines; MOA segment"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Payer claim control number 2623576767957 confirms claim was adjudicated (not front-end rejected)",
+          "locator": "CLP07"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "CLM05-3 = 1 (original claim), no REF*F8 \u2014 submitted as brand-new, matched against existing adjudicated claim",
+          "locator": "CLM05"
+        },
+        {
+          "artifact": "reference",
+          "fact": "True duplicate: do_not_resubmit; edit is hard-coded, MACs cannot override; OA never patient liability; original claim's disposition governs",
+          "locator": "04-exact-duplicate.md"
+        }
+      ],
+      "denial": {
+        "group": "OA",
+        "carc": "18",
+        "rarc": null,
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "citations": [
+        {
+          "source": "04-exact-duplicate.md",
+          "rule": "True duplicate \u2014 one service, billed once, sent twice \u2192 do_not_resubmit; hard-coded edit, unappealable, original's disposition governs"
+        },
+        {
+          "source": "01-carc-rarc-index.md",
+          "rule": "CARC 18 OA: true dup \u2192 do_not_resubmit; hard-coded, MACs cannot override"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"rationale\":\"All four lines denied OA-18 (exact duplicate) with MOA N111. Claim filed as frequency 1 (original) to Medicare Part B (MB). 835 carries payer claim control 2623576767957, confirming adjudication. The entire claim duplicates a previously adjudicated claim on file for the same provider/member/DOS/procedures. No false-duplicate indicator \u2014 services are same-session timed therapy, not bilateral or repeat encounters. OA group: never patient liability. Duplicate edit is hard-coded and unappealable.\",\"status\":\"resolved\",\"resolution\":{\"root_cause\":{\"family\":\"exact_duplicate\",\"explanation\":\"Entire claim denied OA-18 on all lines with N111. Payer matched provider/member/DOS/procedure against a previously adjudicated claim. Claim sent as frequency 1 (original), triggering the hard-coded duplicate edit.\"},\"next_action\":{\"path\":\"do_not_resubmit\",\"detail\":\"Do not resubmit. Check the original claim's status via Novitas portal or IVR. If it paid, post that payment and close. If the original was denied, address that denial on its own terms. Never resend \u2014 repeat submissions risk program-integrity action.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All 4 lines carry OA-18 (exact duplicate claim/service), $0 paid, claim-level MOA N111\",\"locator\":\"CAS segment all lines; MOA segment\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"Payer claim control number 2623576767957 confirms claim was adjudicated (not front-end rejected)\",\"locator\":\"CLP07\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"CLM05-3 = 1 (original claim), no REF*F8 \u2014 submitted as brand-new, matched against existing adjudicated claim\",\"locator\":\"CLM05\"},{\"artifact\":\"reference\",\"fact\":\"True duplicate: do_not_resubmit; edit is hard-coded, MACs cannot override; OA never patient liability; original claim's disposition governs\",\"locator\":\"04-exact-duplicate.md\"}],\"denial\":{\"group\":\"OA\",\"carc\":\"18\",\"rarc\":null,\"level\":\"line\"},\"denied_line_idxs\":[1,2,3,4],\"citations\":[{\"source\":\"04-exact-duplicate.md\",\"rule\":\"True duplicate \u2014 one service, billed once, sent twice \u2192 do_not_resubmit; hard-coded edit, unappealable, original's disposition governs\"},{\"source\":\"01-carc-rarc-index.md\",\"rule\":\"CARC 18 OA: true dup \u2192 do_not_resubmit; hard-coded, MACs cannot override\"}]}}"
+}

@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000062",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "271 shows EB*6 + DTP*357 2025-05-31 for DOS 2025-06-17 \u2014 coverage lapsed 17 days before the visit. All four lines carry CAS*PR*27 (patient responsibility, coverage terminated) on a CI commercial claim. No overrides: patient born 1997 (age 27, not QMB), no Medicaid indicators, payer issued a denial (not a grace-period pend), no ACA hold. PR group code directly assigns liability to the patient.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 8555,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 36400,
+    "cost_usd": 0.29131409999999996,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "max",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "eligibility_terminated",
+      "explanation": "Coverage terminated 2025-05-31 per 271 EB*6 + DTP*357; DOS 2025-06-17 is 17 days post-termination. All four lines denied CAS*PR*27."
+    },
+    "next_action": {
+      "path": "bill_patient",
+      "detail": "Bill patient Jessica Harris $204.23. CI claim, PR-27, coverage ended 2025-05-31. No QMB, Medicaid, or ACA grace-period override present. Apply your self-pay rate schedule before issuing the patient statement."
+    },
+    "denial": {
+      "group": "PR",
+      "carc": "27",
+      "rarc": "N30",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All 4 SVC lines carry CAS*PR*27; CLP status 4 (denied), $0 paid of $204.23 billed; CLP07=2520926703047 confirms adjudication; MOA***N30 at claim level."
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*6 (inactive) + DTP*357*D8*20250531 \u2014 Keystone EPO coverage terminated 2025-05-31, before DOS 2025-06-17."
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "SBR*P*18*******CI \u2014 commercial primary; patient DOB 19971211 (age 27 on DOS, not Medicare/QMB-eligible)."
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "No EB*R or successor-payer loop returned; no active replacement coverage identified for DOS."
+      }
+    ],
+    "citations": [
+      {
+        "source": "05-eligibility-terminated.md",
+        "rule": "CI, EB*6 + DTP*357 before DOS, no successor: PR-27 \u2192 bill_patient"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "PR = Patient Responsibility; billable after overrides cleared"
+      }
+    ]
+  }
+}

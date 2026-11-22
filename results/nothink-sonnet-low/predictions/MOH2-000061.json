@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000061",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "Chart note documents two distinct 97140 blocks (15 min + 14 min) and two distinct 97110 blocks (31 min + 16 min) on the same DOS \u2014 a legitimate repeat-service scenario, not a true duplicate. Lines 3 and 4 (the second 97140 and 97110) lack modifier 76 to distinguish them from lines 1 and 2. Medicare Part B FFS does not accept frequency 7; the vehicle is a clerical-error reopening to add modifier 76 to lines 3 and 4.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1242,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 36421,
+    "cost_usd": 0.17073622500000002,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "exact_duplicate",
+      "explanation": "Lines 3 and 4 are repeat services (second 97140 and second 97110, same DOS) missing modifier 76. Without it, payer matched them to lines 1 and 2 and fired the duplicate edit. Chart confirms distinct timed blocks."
+    },
+    "next_action": {
+      "path": "correct_and_resubmit",
+      "detail": "File a clerical-error reopening with Novitas (not a new claim, not a redetermination) to add modifier 76 to lines 3 and 4 only. Attach the chart note documenting separate timed blocks. Frequency 7 is rejected on Part B; do not send a corrected 837P."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All four lines denied OA-18; MOA N111; CLP07 = 2623576767957 confirms adjudication occurred.",
+        "locator": "CLP segment, CAS OA-18, MOA N111"
+      },
+      {
+        "artifact": "chart_note.txt",
+        "fact": "Two 97140 blocks (15 min, 14 min) and two 97110 blocks (31 min, 16 min) documented \u2014 four distinct timed segments, not a true duplicate.",
+        "locator": "PT treatment note 2026-07-05"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "Lines 3 and 4 carry no modifier 76; CLM05-3 = 1 on resubmission caused duplicate match against already-adjudicated lines 1 and 2.",
+        "locator": "Loop 2400 SV1, CLM05-3"
+      },
+      {
+        "artifact": "reference",
+        "fact": "Medicare Part B FFS rejects frequency 7; adding modifier 76 to an adjudicated line is a clerical-error reopening (modifier 76 is on the reopening-eligible list).",
+        "locator": "04-exact-duplicate.md; 02-resubmission-frequency.md \u00a76"
+      }
+    ],
+    "denial": {
+      "group": "OA",
+      "carc": "18",
+      "rarc": "N111",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      2,
+      3
+    ],
+    "citations": [
+      {
+        "source": "04-exact-duplicate.md",
+        "rule": "False duplicate (repeat/bilateral service missing distinguishing modifier) \u2192 correct_and_resubmit corrected lines only"
+      },
+      {
+        "source": "02-resubmission-frequency.md",
+        "rule": "Medicare Part B FFS: frequency 7 not accepted; use clerical-error reopening for modifier changes"
+      }
+    ]
+  }
+}

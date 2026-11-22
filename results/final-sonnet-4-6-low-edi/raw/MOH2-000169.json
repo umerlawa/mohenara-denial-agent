@@ -1,0 +1,77 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5021,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1289,
+    "output_tokens_details": {
+      "thinking_tokens": 510
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5021
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "All three lines denied OA-22 (another payer primary). The 271 confirms Medicare Part B (Novitas) is primary \u2014 `EB*R` with explicit MSG \"PLAN IS PRIMARY PAYER FOR THIS MEMBER.\" Claim was submitted SBR*P to Atlantic Shore (CI). OA group code = no patient liability. Bill Medicare first, then rebill Atlantic Shore as secondary with Medicare's EOB data.",
+    "resolution": {
+      "root_cause": {
+        "family": "cob_other_primary",
+        "explanation": "Claim filed primary to Atlantic Shore (CI); 271 returns EB*R identifying Novitas Solutions Medicare Part B as primary payer for this member on the DOS."
+      },
+      "next_action": {
+        "path": "resubmit_other_payer",
+        "detail": "Submit new original claim (CLM05-3=1) to Novitas Solutions Medicare Part B (NPI 1846349352). Once Medicare adjudicates, rebill Atlantic Shore as secondary carrying Medicare's payment and adjustment data (SBR01=S, 2320/2430 CAS/SVD loops)."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All three service lines carry CAS*OA*22; claim level MOA MA04; CLP07=2606572763222 confirms adjudication occurred",
+          "locator": "CLP and SVC segments"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*R for NOVITAS SOLUTIONS MEDICARE PART B FFS with MSG 'PLAN IS PRIMARY PAYER FOR THIS MEMBER'; EB*1 for Atlantic Shore PPO",
+          "locator": "EB*R and MSG segments"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Filed SBR*P*18*******CI \u2014 as primary to commercial, which is incorrect",
+          "locator": "SBR segment, HL*2 loop"
+        }
+      ],
+      "denial": {
+        "group": "OA",
+        "carc": "22",
+        "rarc": "MA04",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2
+      ],
+      "citations": [
+        {
+          "source": "06-cob-other-primary.md",
+          "rule": "CARC 22 alone \u2192 resubmit_other_payer; coverage exists, order is wrong; never bill patient under OA"
+        },
+        {
+          "source": "06-cob-other-primary.md",
+          "rule": "271 EB*R proves another payer is on record; MSG confirms Medicare is primary"
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"All three lines denied OA-22 (another payer primary). The 271 confirms Medicare Part B (Novitas) is primary \u2014 `EB*R` with explicit MSG \\\"PLAN IS PRIMARY PAYER FOR THIS MEMBER.\\\" Claim was submitted SBR*P to Atlantic Shore (CI). OA group code = no patient liability. Bill Medicare first, then rebill Atlantic Shore as secondary with Medicare's EOB data.\",\"resolution\":{\"root_cause\":{\"family\":\"cob_other_primary\",\"explanation\":\"Claim filed primary to Atlantic Shore (CI); 271 returns EB*R identifying Novitas Solutions Medicare Part B as primary payer for this member on the DOS.\"},\"next_action\":{\"path\":\"resubmit_other_payer\",\"detail\":\"Submit new original claim (CLM05-3=1) to Novitas Solutions Medicare Part B (NPI 1846349352). Once Medicare adjudicates, rebill Atlantic Shore as secondary carrying Medicare's payment and adjustment data (SBR01=S, 2320/2430 CAS/SVD loops).\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All three service lines carry CAS*OA*22; claim level MOA MA04; CLP07=2606572763222 confirms adjudication occurred\",\"locator\":\"CLP and SVC segments\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*R for NOVITAS SOLUTIONS MEDICARE PART B FFS with MSG 'PLAN IS PRIMARY PAYER FOR THIS MEMBER'; EB*1 for Atlantic Shore PPO\",\"locator\":\"EB*R and MSG segments\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Filed SBR*P*18*******CI \u2014 as primary to commercial, which is incorrect\",\"locator\":\"SBR segment, HL*2 loop\"}],\"denial\":{\"group\":\"OA\",\"carc\":\"22\",\"rarc\":\"MA04\",\"level\":\"line\"},\"denied_line_idxs\":[0,1,2],\"citations\":[{\"source\":\"06-cob-other-primary.md\",\"rule\":\"CARC 22 alone \u2192 resubmit_other_payer; coverage exists, order is wrong; never bill patient under OA\"},{\"source\":\"06-cob-other-primary.md\",\"rule\":\"271 EB*R proves another payer is on record; MSG confirms Medicare is primary\"}]}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

@@ -1,0 +1,84 @@
+{
+  "usage": {
+    "input_tokens": 3,
+    "cache_creation_input_tokens": 6995,
+    "cache_read_input_tokens": 68756,
+    "output_tokens": 2602,
+    "output_tokens_details": {
+      "thinking_tokens": 801
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 6995
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "All five lines carry CO-4 + N822. CARC 4 = required modifier missing; N822 = missing procedure modifier(s). CPTs 97110, 97140, 97530 are always-therapy codes requiring GP/GO/GN; none appear on any SV1 in the 837P. Chart note confirms PT services \u2192 GP is the correct modifier. Medicare MB claim: submit new original CLM05-3=1 with GP on every line.",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_therapy_modifier",
+        "explanation": "All five lines denied CO-4/N822. No GP/GO/GN modifier on any SV1 in the 837P. CPTs 97110, 97140, 97530 are always-therapy codes requiring a therapy discipline modifier; chart note confirms PT plan of care."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Add modifier GP to all five SV1 lines and resubmit as a new original claim (CLM05-3=1, no REF*F8). Do not use frequency 7 or appeal \u2014 CO-4/N822 is unprocessable with no appeal rights. Watch the 1-year filing clock from DOS 2026-06-01."
+      },
+      "denial": {
+        "group": "CO",
+        "carc": "4",
+        "rarc": "N822",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All five SVC lines carry CAS*CO*4 + LQ*HE*N822; $0 paid on each.",
+          "locator": "CAS*CO*4*43.13 \u2026 CAS*CO*4*83.04; LQ*HE*N822 on each"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "No GP/GO/GN modifier present on any SV1 segment for 97110, 97140, or 97530.",
+          "locator": "SV1*HC:97110, SV1*HC:97140, SV1*HC:97530 \u2014 modifier field empty"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "Services are physical therapy under a PT plan of care \u2192 GP modifier required.",
+          "locator": "PT treatment note 2026-06-01"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Filing indicator MB (Medicare Part B) \u2192 new original CLM05-3=1 required; frequency 7 not accepted on Part B.",
+          "locator": "SBR*P*18*******MB"
+        }
+      ],
+      "citations": [
+        {
+          "source": "08-therapy-modifiers.md",
+          "rule": "CO-4 + N822 on always-therapy CPTs = returned unprocessable; remedy is new original claim with GP/GO/GN appended, not appeal or frequency 7."
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Medicare Part B does not accept CLM05-3=7; use new original (1) for unprocessable/returned claims."
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"All five lines carry CO-4 + N822. CARC 4 = required modifier missing; N822 = missing procedure modifier(s). CPTs 97110, 97140, 97530 are always-therapy codes requiring GP/GO/GN; none appear on any SV1 in the 837P. Chart note confirms PT services \u2192 GP is the correct modifier. Medicare MB claim: submit new original CLM05-3=1 with GP on every line.\",\"resolution\":{\"root_cause\":{\"family\":\"missing_therapy_modifier\",\"explanation\":\"All five lines denied CO-4/N822. No GP/GO/GN modifier on any SV1 in the 837P. CPTs 97110, 97140, 97530 are always-therapy codes requiring a therapy discipline modifier; chart note confirms PT plan of care.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Add modifier GP to all five SV1 lines and resubmit as a new original claim (CLM05-3=1, no REF*F8). Do not use frequency 7 or appeal \u2014 CO-4/N822 is unprocessable with no appeal rights. Watch the 1-year filing clock from DOS 2026-06-01.\"},\"denial\":{\"group\":\"CO\",\"carc\":\"4\",\"rarc\":\"N822\",\"level\":\"line\"},\"denied_line_idxs\":[0,1,2,3,4],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All five SVC lines carry CAS*CO*4 + LQ*HE*N822; $0 paid on each.\",\"locator\":\"CAS*CO*4*43.13 \u2026 CAS*CO*4*83.04; LQ*HE*N822 on each\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"No GP/GO/GN modifier present on any SV1 segment for 97110, 97140, or 97530.\",\"locator\":\"SV1*HC:97110, SV1*HC:97140, SV1*HC:97530 \u2014 modifier field empty\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"Services are physical therapy under a PT plan of care \u2192 GP modifier required.\",\"locator\":\"PT treatment note 2026-06-01\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Filing indicator MB (Medicare Part B) \u2192 new original CLM05-3=1 required; frequency 7 not accepted on Part B.\",\"locator\":\"SBR*P*18*******MB\"}],\"citations\":[{\"source\":\"08-therapy-modifiers.md\",\"rule\":\"CO-4 + N822 on always-therapy CPTs = returned unprocessable; remedy is new original claim with GP/GO/GN appended, not appeal or frequency 7.\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Medicare Part B does not accept CLM05-3=7; use new original (1) for unprocessable/returned claims.\"}]}}",
+  "model": "us.anthropic.claude-sonnet-4-6"
+}

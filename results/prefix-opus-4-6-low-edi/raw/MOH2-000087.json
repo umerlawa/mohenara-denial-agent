@@ -1,0 +1,78 @@
+{
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5015,
+    "cache_read_input_tokens": 31983,
+    "output_tokens": 1249,
+    "output_tokens_details": {
+      "thinking_tokens": 613
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5015
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "rationale": "835 shows OA-22 on all three lines with MOA MA04. 271 confirms EB*R for Novitas Medicare Part B FFS with MSG \"PLAN IS PRIMARY PAYER FOR THIS MEMBER.\" Claim was filed to Keystone Commercial as primary (SBR*P, CI), but Medicare is primary. No primary adjudication exists to attach \u2014 must bill Medicare first, then rebill Keystone as secondary with Medicare's payment data.",
+    "resolution": {
+      "root_cause": {
+        "family": "cob_other_primary",
+        "explanation": "Claim billed Keystone Commercial as primary but 271 confirms Medicare Part B (Novitas) is primary payer for this member on DOS 2026-01-05. OA-22 denied all lines."
+      },
+      "next_action": {
+        "path": "resubmit_other_payer",
+        "detail": "Bill Medicare Part B (Novitas, payer ID 1846349352) as primary. Once adjudicated, rebill Keystone as secondary with SBR*S and Medicare's AMT/CAS/SVD data from the Medicare 835."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All lines denied OA-22 $0 paid, MOA MA04, CLP status 4 (denied)"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*R for NOVITAS SOLUTIONS MEDICARE PART B FFS with MSG 'PLAN IS PRIMARY PAYER FOR THIS MEMBER', DTP*356 20240101"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "SBR*P*18*******CI \u2014 filed as primary to Keystone Commercial Health"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*1 active coverage with Keystone confirmed \u2014 coverage exists but order is wrong"
+        }
+      ],
+      "denial": {
+        "group": "OA",
+        "carc": "22",
+        "rarc": "MA04",
+        "level": "claim"
+      },
+      "denied_line_idxs": [
+        1,
+        2,
+        3
+      ],
+      "citations": [
+        {
+          "source": "cob-and-eligibility.md",
+          "rule": "\u00a75.1\u20135.2: EB*R + MSG confirms another payer is primary; bill that payer first"
+        },
+        {
+          "source": "carc-rarc-remedies.md",
+          "rule": "\u00a77: CARC 22 \u2192 resubmit_other_payer; never appeal a disclaiming payer"
+        }
+      ]
+    },
+    "status": "resolved"
+  },
+  "result": "{\"rationale\":\"835 shows OA-22 on all three lines with MOA MA04. 271 confirms EB*R for Novitas Medicare Part B FFS with MSG \\\"PLAN IS PRIMARY PAYER FOR THIS MEMBER.\\\" Claim was filed to Keystone Commercial as primary (SBR*P, CI), but Medicare is primary. No primary adjudication exists to attach \u2014 must bill Medicare first, then rebill Keystone as secondary with Medicare's payment data.\",\"resolution\":{\"root_cause\":{\"family\":\"cob_other_primary\",\"explanation\":\"Claim billed Keystone Commercial as primary but 271 confirms Medicare Part B (Novitas) is primary payer for this member on DOS 2026-01-05. OA-22 denied all lines.\"},\"next_action\":{\"path\":\"resubmit_other_payer\",\"detail\":\"Bill Medicare Part B (Novitas, payer ID 1846349352) as primary. Once adjudicated, rebill Keystone as secondary with SBR*S and Medicare's AMT/CAS/SVD data from the Medicare 835.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All lines denied OA-22 $0 paid, MOA MA04, CLP status 4 (denied)\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*R for NOVITAS SOLUTIONS MEDICARE PART B FFS with MSG 'PLAN IS PRIMARY PAYER FOR THIS MEMBER', DTP*356 20240101\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"SBR*P*18*******CI \u2014 filed as primary to Keystone Commercial Health\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*1 active coverage with Keystone confirmed \u2014 coverage exists but order is wrong\"}],\"denial\":{\"group\":\"OA\",\"carc\":\"22\",\"rarc\":\"MA04\",\"level\":\"claim\"},\"denied_line_idxs\":[1,2,3],\"citations\":[{\"source\":\"cob-and-eligibility.md\",\"rule\":\"\u00a75.1\u20135.2: EB*R + MSG confirms another payer is primary; bill that payer first\"},{\"source\":\"carc-rarc-remedies.md\",\"rule\":\"\u00a77: CARC 22 \u2192 resubmit_other_payer; never appeal a disclaiming payer\"}]},\"status\":\"resolved\"}",
+  "model": "us.anthropic.claude-opus-4-6-v1"
+}

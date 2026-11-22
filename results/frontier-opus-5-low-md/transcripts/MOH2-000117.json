@@ -1,0 +1,106 @@
+{
+  "case_id": "MOH2-000117",
+  "run_id": "frontier-opus-5-low-md",
+  "model": "claude-opus-5",
+  "effort": "low",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 6295,
+  "usage": {
+    "input_tokens": 6,
+    "cache_creation_input_tokens": 8727,
+    "cache_read_input_tokens": 143496,
+    "output_tokens": 3051,
+    "output_tokens_details": {
+      "thinking_tokens": 264
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 8727,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 991,
+        "cache_read_input_tokens": 50792,
+        "cache_creation_input_tokens": 1047,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1047
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "cost_usd": 0.20259675,
+  "cache_hit_rate": 0.942632,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "CO-29 timely filing on a commercial (CI) remit. The 277CA shows the claim accepted for adjudication on 2025-01-27, eight days after the 2025-01-19 DOS \u2014 an acceptance report, the strongest proof of timely receipt. Proof of accepted submission inside the window routes to appeal disputing the receipt date, not a write-off. N211 bars appeal only on Medicare FFS; this is commercial.",
+    "resolution": {
+      "root_cause": {
+        "family": "timely_filing",
+        "explanation": "Both lines denied CO-29 as if received on the 2025-10-15 transmission, but the clearinghouse 277CA accepted the same claim (TRC75364521) for adjudication on 2025-01-27, 8 days after the 2025-01-19 DOS."
+      },
+      "next_action": {
+        "path": "appeal",
+        "detail": "Appeal to Liberty Bell disputing the receipt date. Attach the 277CA acceptance (A2 / status 20, received 2025-01-27, claim TRC75364521, $138.62) proving receipt 8 days post-DOS. Do not resubmit; do not bill the patient."
+      },
+      "denial": {
+        "group": "CO",
+        "carc": "29",
+        "rarc": "N211",
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        0,
+        1
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Both lines denied CO-29 (time limit for filing expired), $0 paid; MOA N211",
+          "locator": "claim PA24642236, lines 97110-GP / 97140-GP"
+        },
+        {
+          "artifact": "ack_277ca.edi",
+          "fact": "Status A2 accepted for adjudication, claim status 20, received date 2025-01-27, $138.62",
+          "locator": "D9 TRC75364521"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "DOS 2025-01-19; filing indicator CI (commercial), not Medicare FFS",
+          "locator": "CLM / DTP*472"
+        },
+        {
+          "artifact": "reference",
+          "fact": "Proof of an accepted submission inside the window \u2192 appeal with the clearinghouse acceptance report, disputing the receipt date; the N211 appeal bar is a Medicare FFS rule",
+          "locator": "03-timely-filing.md"
+        }
+      ],
+      "citations": [
+        {
+          "source": "03-timely-filing.md",
+          "rule": "CARC 29: acceptance report is strongest proof; dispute the receipt date by appeal"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "CO is provider liability \u2014 never bill the patient"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"CO-29 timely filing on a commercial (CI) remit. The 277CA shows the claim accepted for adjudication on 2025-01-27, eight days after the 2025-01-19 DOS \u2014 an acceptance report, the strongest proof of timely receipt. Proof of accepted submission inside the window routes to appeal disputing the receipt date, not a write-off. N211 bars appeal only on Medicare FFS; this is commercial.\",\"resolution\":{\"root_cause\":{\"family\":\"timely_filing\",\"explanation\":\"Both lines denied CO-29 as if received on the 2025-10-15 transmission, but the clearinghouse 277CA accepted the same claim (TRC75364521) for adjudication on 2025-01-27, 8 days after the 2025-01-19 DOS.\"},\"next_action\":{\"path\":\"appeal\",\"detail\":\"Appeal to Liberty Bell disputing the receipt date. Attach the 277CA acceptance (A2 / status 20, received 2025-01-27, claim TRC75364521, $138.62) proving receipt 8 days post-DOS. Do not resubmit; do not bill the patient.\"},\"denial\":{\"group\":\"CO\",\"carc\":\"29\",\"rarc\":\"N211\",\"level\":\"line\"},\"denied_line_idxs\":[0,1],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"Both lines denied CO-29 (time limit for filing expired), $0 paid; MOA N211\",\"locator\":\"claim PA24642236, lines 97110-GP / 97140-GP\"},{\"artifact\":\"ack_277ca.edi\",\"fact\":\"Status A2 accepted for adjudication, claim status 20, received date 2025-01-27, $138.62\",\"locator\":\"D9 TRC75364521\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"DOS 2025-01-19; filing indicator CI (commercial), not Medicare FFS\",\"locator\":\"CLM / DTP*472\"},{\"artifact\":\"reference\",\"fact\":\"Proof of an accepted submission inside the window \u2192 appeal with the clearinghouse acceptance report, disputing the receipt date; the N211 appeal bar is a Medicare FFS rule\",\"locator\":\"03-timely-filing.md\"}],\"citations\":[{\"source\":\"03-timely-filing.md\",\"rule\":\"CARC 29: acceptance report is strongest proof; dispute the receipt date by appeal\"},{\"source\":\"00-group-codes.md\",\"rule\":\"CO is provider liability \u2014 never bill the patient\"}]}}"
+}

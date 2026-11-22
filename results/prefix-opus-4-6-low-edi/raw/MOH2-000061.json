@@ -1,0 +1,79 @@
+{
+  "usage": {
+    "input_tokens": 3,
+    "cache_creation_input_tokens": 5888,
+    "cache_read_input_tokens": 69089,
+    "output_tokens": 1355,
+    "output_tokens_details": {
+      "thinking_tokens": 52
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5888
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "structured_output": {
+    "status": "resolved",
+    "rationale": "All four lines denied OA-18 (exact duplicate). Claim adjudicated with CLP07 2623576767957. Filed as CLM05-3=1 (original). Patient eligible (EB*1, active from 2024-01-01). Services are legitimate therapy with GP/KX. This is a true duplicate \u2014 the same claim was already adjudicated under the prior ICN. Disposition: do_not_resubmit; check the original claim's payment status.",
+    "resolution": {
+      "root_cause": {
+        "family": "exact_duplicate",
+        "explanation": "All lines denied OA-18. Payer already adjudicated this claim under ICN 2623576767957. Resubmission as CLM05-3=1 triggered the hard-coded duplicate edit."
+      },
+      "next_action": {
+        "path": "do_not_resubmit",
+        "detail": "Do not resubmit. Check status of original claim 2623576767957 via portal/IVR. If original paid, post payment and close. If original denied, address that denial on its own terms."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All four lines carry CAS*OA*18, $0 paid; CLP07=2623576767957 confirms prior adjudication"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "MOA***N111 at claim level"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "CLM*PA22957514*240.86***11:B:1 \u2014 frequency code 1 (original), no REF*F8"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*1*IND*30 active from 2024-01-01 \u2014 patient eligible on DOS 2026-07-05"
+        }
+      ],
+      "denial": {
+        "group": "OA",
+        "carc": "18",
+        "rarc": null,
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "citations": [
+        {
+          "source": "04-exact-duplicate.md",
+          "rule": "True duplicate \u2014 one service billed twice. Disposition do_not_resubmit. Hard-coded edit, MACs cannot override, no appeal rights."
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Every 837 with CLM05-3=1 is treated as brand-new; duplicate logic matches provider/member/DOS/procedure and fires the edit."
+        }
+      ]
+    }
+  },
+  "result": "{\"status\":\"resolved\",\"rationale\":\"All four lines denied OA-18 (exact duplicate). Claim adjudicated with CLP07 2623576767957. Filed as CLM05-3=1 (original). Patient eligible (EB*1, active from 2024-01-01). Services are legitimate therapy with GP/KX. This is a true duplicate \u2014 the same claim was already adjudicated under the prior ICN. Disposition: do_not_resubmit; check the original claim's payment status.\",\"resolution\":{\"root_cause\":{\"family\":\"exact_duplicate\",\"explanation\":\"All lines denied OA-18. Payer already adjudicated this claim under ICN 2623576767957. Resubmission as CLM05-3=1 triggered the hard-coded duplicate edit.\"},\"next_action\":{\"path\":\"do_not_resubmit\",\"detail\":\"Do not resubmit. Check status of original claim 2623576767957 via portal/IVR. If original paid, post payment and close. If original denied, address that denial on its own terms.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All four lines carry CAS*OA*18, $0 paid; CLP07=2623576767957 confirms prior adjudication\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"MOA***N111 at claim level\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"CLM*PA22957514*240.86***11:B:1 \u2014 frequency code 1 (original), no REF*F8\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*1*IND*30 active from 2024-01-01 \u2014 patient eligible on DOS 2026-07-05\"}],\"denial\":{\"group\":\"OA\",\"carc\":\"18\",\"rarc\":null,\"level\":\"line\"},\"denied_line_idxs\":[1,2,3,4],\"citations\":[{\"source\":\"04-exact-duplicate.md\",\"rule\":\"True duplicate \u2014 one service billed twice. Disposition do_not_resubmit. Hard-coded edit, MACs cannot override, no appeal rights.\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Every 837 with CLM05-3=1 is treated as brand-new; duplicate logic matches provider/member/DOS/procedure and fires the edit.\"}]}}",
+  "model": "us.anthropic.claude-opus-4-6-v1"
+}

@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000263",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "Claim adjudicated and paid ($97.80 of $206.46). Every adjustment is CO-45 (contractual write-off to fee schedule) plus PR-2 (patient coinsurance) on each line \u2014 routine cost-sharing, not a denial. No CARC signals a defect, unprocessed status, or coverage problem.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 901,
+    "cache_read_input_tokens": 48713,
+    "cache_creation_input_tokens": 6571,
+    "cost_usd": 0.035184099999999996,
+    "model": "claude-sonnet-5",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "none",
+      "explanation": "CLP02=1 (processed), $97.80 paid of $206.46 billed. All CAS adjustments are CO-45 (contractual, exceeds fee schedule) and PR-2 (coinsurance) per line \u2014 standard Medicare fee-schedule adjudication, not a denial."
+    },
+    "next_action": {
+      "path": "none",
+      "detail": "No rework needed; claim paid correctly. Bill patient the PR-2 coinsurance ($24.44 total) through normal AR, not as a denial remedy."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP*PA23903812*1*206.46*97.8*24.44*MB \u2014 claim processed as primary, paid $97.80, patient responsibility $24.44",
+        "locator": "CLP segment"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Each SVC line carries CAS*CO*45 (fee schedule write-off) and CAS*PR*2 (coinsurance), no other CARC codes",
+        "locator": "CAS segments, lines 1-3"
+      }
+    ],
+    "denied_line_idxs": [],
+    "citations": [
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO/PR group codes with no denial CARC = normal contractual processing, not a denial remedy path"
+      }
+    ]
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000263",
+  "input_format": "md",
+  "status": "resolved",
+  "rationale": "Claim paid correctly. All three lines carry CO-45 (charge exceeds fee schedule \u2014 contractual write-off, provider liable) and PR-2 (coinsurance \u2014 patient responsible). No denial, no defect. Routine AR: collect $24.44 coinsurance from patient. No rework warranted.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 692,
+    "cache_read_input_tokens": 31747,
+    "cache_creation_input_tokens": 5078,
+    "cost_usd": 0.04284786,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "none",
+      "explanation": "Claim adjudicated and paid as primary. CO-45 is a contractual write-off; PR-2 is standard Medicare coinsurance. No denial issued."
+    },
+    "next_action": {
+      "path": "none",
+      "detail": "Post $97.80 payment. Write off CO-45 amounts ($84.22 total). Bill patient $24.44 PR-2 coinsurance in normal AR cycle."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CLP status 1 (processed as primary, paid); $97.80 paid against $206.46 billed.",
+        "locator": "CLP*PA23903812*1"
+      },
+      {
+        "artifact": "remit_835.edi",
+        "fact": "All three lines: CO-45 contractual adjustment only, PR-2 coinsurance only \u2014 no denial CARC on any line.",
+        "locator": "SVC lines 1-3"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*1 active coverage, plan date 2026-02-06, eligibility begin 2024-01-01 \u2014 coverage confirmed for DOS.",
+        "locator": "EB segment"
+      }
+    ],
+    "denied_line_idxs": [],
+    "denial": null,
+    "citations": [
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO = contractual write-off, not billable to patient; PR-2 = coinsurance, routine patient responsibility"
+      },
+      {
+        "source": "01-carc-rarc-index.md",
+        "rule": "CARC 45: contractual write-off; 100% of charge would be a disguised denial \u2014 here partial, consistent with fee schedule reduction"
+      }
+    ]
+  }
+}

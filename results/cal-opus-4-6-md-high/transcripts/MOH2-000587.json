@@ -1,0 +1,95 @@
+{
+  "case_id": "MOH2-000587",
+  "run_id": "cal-opus-4-6-md-high",
+  "model": "us.anthropic.claude-opus-4-6-v1",
+  "effort": "high",
+  "input_format": "md",
+  "artifacts": [
+    "case.md"
+  ],
+  "human_answer": null,
+  "system_prompt_chars": 46450,
+  "user_prompt_chars": 6871,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5051,
+    "cache_read_input_tokens": 31983,
+    "output_tokens": 1875,
+    "output_tokens_details": {
+      "thinking_tokens": 1242
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5051
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.10388977499999999,
+  "cache_hit_rate": 0.863565,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "PR-27 on all lines, commercial (CI) filing indicator. 271 confirms EB*6 (inactive) with eligibility end (DTP*357) 2025-05-31\u201412 days before DOS 2025-06-12. No EB*R (other payer), no QMB, no ACA grace-period indicator, no successor coverage. PR group code = patient liability; no override applies. Bill the patient.",
+    "resolution": {
+      "root_cause": {
+        "family": "eligibility_terminated",
+        "explanation": "Coverage ended 2025-05-31 per 271 (EB*6, DTP*357). DOS 2025-06-12 falls after termination. Payer correctly denied PR-27 with N30."
+      },
+      "next_action": {
+        "path": "bill_patient",
+        "detail": "Issue patient statement for $181.22. Coverage verified inactive on DOS; no other payer identified. Collect from patient."
+      },
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "All 4 lines denied PR-27 (expenses after coverage terminated); MOA N30; filing indicator CI.",
+          "locator": "CAS segment lines 1-4; MOA"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "EB*6 (inactive), eligibility end DTP*357 = 2025-05-31, queried for DOS 2025-06-12.",
+          "locator": "EB segment, DTP*357"
+        },
+        {
+          "artifact": "eligibility_271.edi",
+          "fact": "No EB*R (other/additional payer) returned\u2014no successor or secondary coverage on file.",
+          "locator": "271 response full"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "Subscriber relationship 18 (self), payer responsibility P (primary), CI filing.",
+          "locator": "SBR segment"
+        }
+      ],
+      "denial": {
+        "group": "PR",
+        "carc": "27",
+        "rarc": null,
+        "level": "line"
+      },
+      "denied_line_idxs": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "citations": [
+        {
+          "source": "05-eligibility-terminated.md",
+          "rule": "CI, EB*6 + 357 before DOS, no successor: PR-27 \u2192 bill_patient"
+        },
+        {
+          "source": "00-group-codes.md",
+          "rule": "PR = patient liable, after QMB / 42 CFR 447.15 / NSA / ABN overrides cleared"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"PR-27 on all lines, commercial (CI) filing indicator. 271 confirms EB*6 (inactive) with eligibility end (DTP*357) 2025-05-31\u201412 days before DOS 2025-06-12. No EB*R (other payer), no QMB, no ACA grace-period indicator, no successor coverage. PR group code = patient liability; no override applies. Bill the patient.\",\"resolution\":{\"root_cause\":{\"family\":\"eligibility_terminated\",\"explanation\":\"Coverage ended 2025-05-31 per 271 (EB*6, DTP*357). DOS 2025-06-12 falls after termination. Payer correctly denied PR-27 with N30.\"},\"next_action\":{\"path\":\"bill_patient\",\"detail\":\"Issue patient statement for $181.22. Coverage verified inactive on DOS; no other payer identified. Collect from patient.\"},\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"All 4 lines denied PR-27 (expenses after coverage terminated); MOA N30; filing indicator CI.\",\"locator\":\"CAS segment lines 1-4; MOA\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"EB*6 (inactive), eligibility end DTP*357 = 2025-05-31, queried for DOS 2025-06-12.\",\"locator\":\"EB segment, DTP*357\"},{\"artifact\":\"eligibility_271.edi\",\"fact\":\"No EB*R (other/additional payer) returned\u2014no successor or secondary coverage on file.\",\"locator\":\"271 response full\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"Subscriber relationship 18 (self), payer responsibility P (primary), CI filing.\",\"locator\":\"SBR segment\"}],\"denial\":{\"group\":\"PR\",\"carc\":\"27\",\"rarc\":null,\"level\":\"line\"},\"denied_line_idxs\":[1,2,3,4],\"citations\":[{\"source\":\"05-eligibility-terminated.md\",\"rule\":\"CI, EB*6 + 357 before DOS, no successor: PR-27 \u2192 bill_patient\"},{\"source\":\"00-group-codes.md\",\"rule\":\"PR = patient liable, after QMB / 42 CFR 447.15 / NSA / ABN overrides cleared\"}]}}"
+}

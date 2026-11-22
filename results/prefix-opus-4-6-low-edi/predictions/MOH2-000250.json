@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000250",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "835 shows PR-27 on both lines with MOA N30. 271 confirms EB*6 (inactive) for health services, DTP*357=20250430 \u2014 coverage terminated before DOS 20250507. Filing indicator CI (commercial). No successor payer or EB*R in the 271. PR group code on a commercial plan with confirmed termination = patient responsibility after overrides check. No QMB, no Medicaid, no NSA indicator. Patient is billable.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 621,
+    "cache_read_input_tokens": 31983,
+    "cache_creation_input_tokens": 4821,
+    "cost_usd": 0.067823525,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "eligibility_terminated",
+      "explanation": "Patient's Keystone Commercial Health HMO coverage terminated 2025-04-30 per 271 EB*6/DTP*357. DOS 2025-05-07 is after termination. PR-27 assigns patient liability."
+    },
+    "next_action": {
+      "path": "bill_patient",
+      "detail": "Bill patient $137.52 for both lines. Coverage ended before DOS; no other payer on file. Confirm no successor coverage before sending statement."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "CAS*PR*27 on both lines, MOA N30, $0 paid, CLP status 4 (denied)"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "EB*6 (inactive) with DTP*357=20250430 confirms coverage terminated before DOS 20250507"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "SBR*P*18*******CI \u2014 commercial filing indicator, no Medicare"
+      },
+      {
+        "artifact": "reference",
+        "fact": "PR-27 + CI + EB*6 with 357 before DOS + no successor \u2192 bill_patient (05-eligibility-terminated.md)"
+      }
+    ],
+    "denial": {
+      "group": "PR",
+      "carc": "27",
+      "rarc": "N30",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      1,
+      2
+    ],
+    "citations": [
+      {
+        "source": "05-eligibility-terminated.md",
+        "rule": "CI, EB*6 + 357 before DOS, no successor: PR-27 \u2192 bill_patient"
+      }
+    ]
+  }
+}

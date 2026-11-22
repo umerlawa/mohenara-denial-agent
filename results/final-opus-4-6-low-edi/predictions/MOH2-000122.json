@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "case_id": "MOH2-000122",
+  "input_format": "edi",
+  "status": "resolved",
+  "rationale": "DOS 2/16/2025; claim submitted 6/7/2025 (~111 days later). Payer denied both lines CO-29 (timely filing expired) with N211 (no appeal right). Filing indicator CI (commercial). Only one submission on record (277CA accepted 6/9/2025). No evidence of earlier submission. CO = provider liability, not billable to patient.",
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1768,
+    "cache_read_input_tokens": 32421,
+    "cache_creation_input_tokens": 4819,
+    "cost_usd": 0.099593175,
+    "model": "us.anthropic.claude-opus-4-6-v1",
+    "effort": "low",
+    "calls": 1
+  },
+  "resolution": {
+    "root_cause": {
+      "family": "timely_filing",
+      "explanation": "Claim filed ~111 days post-DOS; Keystone Commercial denied CO-29 indicating the contractual filing limit was exceeded. No earlier submission evidence in the artifacts."
+    },
+    "next_action": {
+      "path": "do_not_resubmit",
+      "detail": "Write off. CO-29 is provider liability, not billable to patient. If an earlier clearinghouse acceptance report exists proving submission within the contract window, appeal disputing the receipt date \u2014 but no such proof is present in this case."
+    },
+    "evidence": [
+      {
+        "artifact": "remit_835.edi",
+        "fact": "Both lines denied CAS*CO*29 with MOA N211; $0 paid",
+        "locator": "CAS segments and MOA"
+      },
+      {
+        "artifact": "claim_837p.edi",
+        "fact": "DOS 2/16/2025; claim created 6/7/2025; filing indicator CI (commercial)",
+        "locator": "DTP*472, BHT, SBR*P*18*******CI"
+      },
+      {
+        "artifact": "ack_277ca.edi",
+        "fact": "Single submission accepted (A2:20) on 6/9/2025; no earlier submission on record",
+        "locator": "STC*A2:20*20250609"
+      },
+      {
+        "artifact": "eligibility_271.edi",
+        "fact": "Coverage active from 1/1/2024 (EB*1, DTP*356); patient was eligible on DOS \u2014 not an eligibility issue",
+        "locator": "EB*1*IND*30, DTP*356*D8*20240101"
+      }
+    ],
+    "denial": {
+      "group": "CO",
+      "carc": "29",
+      "rarc": "N211",
+      "level": "line"
+    },
+    "denied_line_idxs": [
+      0,
+      1
+    ],
+    "citations": [
+      {
+        "source": "03-timely-filing.md",
+        "rule": "Genuinely late, no exception \u2192 do_not_resubmit / write off (CO = provider liability, not billable)"
+      },
+      {
+        "source": "00-group-codes.md",
+        "rule": "CO on commercial is payer's assertion; CO-29 is never patient billable"
+      }
+    ]
+  }
+}

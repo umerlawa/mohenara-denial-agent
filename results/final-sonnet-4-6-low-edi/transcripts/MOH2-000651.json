@@ -1,0 +1,101 @@
+{
+  "case_id": "MOH2-000651",
+  "run_id": "final-sonnet-4-6-low-edi",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 4678,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 4983,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 1071,
+    "output_tokens_details": {
+      "thinking_tokens": 243
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 4983
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.048709485000000004,
+  "cache_hit_rate": 0.864287,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "All three therapy lines (97110, 97112, 97140) denied CO-4 + N822. None carry GP/GO/GN. Chart note confirms PT services under a PT plan of care. Medicare Part B (MB). Remedy: new original claim with GP on every line. Filing clock runs from DOS 2026-01-13; 1-year limit is 2027-01-13.",
+    "resolution": {
+      "root_cause": {
+        "family": "missing_therapy_modifier",
+        "explanation": "97110, 97112, 97140 billed with no GP/GO/GN modifier. Payer returned CO-4 + N822 (missing required modifier) on all three lines. Chart note confirms outpatient PT plan of care requiring GP."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "detail": "Submit a NEW original claim (CLM05-3=1, no REF*F8) appending modifier GP to each of the three therapy lines. Do not send frequency 7 \u2014 Medicare Part B does not accept it. Act before 2027-01-13.",
+        "resubmission_frequency_code": "7"
+      },
+      "denied_line_idxs": [
+        0,
+        1,
+        2
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "CAS*CO*4 + LQ*HE*N822 on all three SVC lines; $0 paid",
+          "locator": "SVC HC:97110, 97112, 97140 CAS segments"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "SV1 lines for 97110, 97112, 97140 carry no therapy discipline modifier (GP/GO/GN)",
+          "locator": "LX*1\u2013LX*3 SV1 segments"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "PT treatment note confirming physical therapy services; GP modifier required for PT plan of care",
+          "locator": "full note"
+        },
+        {
+          "artifact": "reference",
+          "fact": "CO-4 + N822 on always-therapy CPTs = missing_therapy_modifier; remedy is new original CLM05-3=1 with modifier appended; frequency 7 not accepted on Medicare Part B",
+          "locator": "08-therapy-modifiers.md \u00a7a; resubmission-and-frequency-codes.md \u00a76"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "4",
+        "rarc": "N822",
+        "level": "line"
+      },
+      "citations": [
+        {
+          "source": "08-therapy-modifiers.md",
+          "rule": "CO-4 + N822 on therapy CPTs = missing modifier; correct_and_resubmit as new original CLM05-3=1"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Frequency 7 not accepted on Medicare Part B; submit as CLM05-3=1"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"All three therapy lines (97110, 97112, 97140) denied CO-4 + N822. None carry GP/GO/GN. Chart note confirms PT services under a PT plan of care. Medicare Part B (MB). Remedy: new original claim with GP on every line. Filing clock runs from DOS 2026-01-13; 1-year limit is 2027-01-13.\",\"resolution\":{\"root_cause\":{\"family\":\"missing_therapy_modifier\",\"explanation\":\"97110, 97112, 97140 billed with no GP/GO/GN modifier. Payer returned CO-4 + N822 (missing required modifier) on all three lines. Chart note confirms outpatient PT plan of care requiring GP.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"detail\":\"Submit a NEW original claim (CLM05-3=1, no REF*F8) appending modifier GP to each of the three therapy lines. Do not send frequency 7 \u2014 Medicare Part B does not accept it. Act before 2027-01-13.\",\"resubmission_frequency_code\":\"7\"},\"denied_line_idxs\":[0,1,2],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"CAS*CO*4 + LQ*HE*N822 on all three SVC lines; $0 paid\",\"locator\":\"SVC HC:97110, 97112, 97140 CAS segments\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"SV1 lines for 97110, 97112, 97140 carry no therapy discipline modifier (GP/GO/GN)\",\"locator\":\"LX*1\u2013LX*3 SV1 segments\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"PT treatment note confirming physical therapy services; GP modifier required for PT plan of care\",\"locator\":\"full note\"},{\"artifact\":\"reference\",\"fact\":\"CO-4 + N822 on always-therapy CPTs = missing_therapy_modifier; remedy is new original CLM05-3=1 with modifier appended; frequency 7 not accepted on Medicare Part B\",\"locator\":\"08-therapy-modifiers.md \u00a7a; resubmission-and-frequency-codes.md \u00a76\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"4\",\"rarc\":\"N822\",\"level\":\"line\"},\"citations\":[{\"source\":\"08-therapy-modifiers.md\",\"rule\":\"CO-4 + N822 on therapy CPTs = missing modifier; correct_and_resubmit as new original CLM05-3=1\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Frequency 7 not accepted on Medicare Part B; submit as CLM05-3=1\"}]}}"
+}

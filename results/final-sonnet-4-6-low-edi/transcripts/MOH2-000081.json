@@ -1,0 +1,103 @@
+{
+  "case_id": "MOH2-000081",
+  "run_id": "final-sonnet-4-6-low-edi",
+  "model": "us.anthropic.claude-sonnet-4-6",
+  "effort": "low",
+  "input_format": "edi",
+  "artifacts": [
+    "claim_837p.edi",
+    "remit_835.edi",
+    "ack_277ca.edi",
+    "eligibility_270.edi",
+    "eligibility_271.edi",
+    "chart_note.txt"
+  ],
+  "thinking": "adaptive",
+  "human_answer": null,
+  "system_prompt_chars": 47896,
+  "user_prompt_chars": 5124,
+  "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 5199,
+    "cache_read_input_tokens": 31747,
+    "output_tokens": 4644,
+    "output_tokens_details": {
+      "thinking_tokens": 3659
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 5199
+    },
+    "inference_geo": "",
+    "iterations": [],
+    "speed": "standard"
+  },
+  "cost_usd": 0.108554985,
+  "cache_hit_rate": 0.859235,
+  "model_output": {
+    "status": "resolved",
+    "rationale": "Line 0 (97750:GP) denied CO-97 + N20 \u2014 payer bundled the physical performance test into the same-day 97140 manual therapy services. No separate-session modifier was billed. Chart note explicitly logs 97750 as a distinct session with its own timed interval, target region, and goal. CARC 97 notes \"modifier needs documented criteria\"; that documentation exists. Commercial plan (CI), so corrected claim frequency 7 + REF*F8 resolves it. Lines 1\u20133 (97140 x3) are paid; CO-45 and PR-2 are contractual write-off and coinsurance \u2014 routine AR, not denials.",
+    "resolution": {
+      "root_cause": {
+        "family": "ncci_ptp_no59",
+        "explanation": "97750 denied CO-97 + N20 alongside same-date 97140 services; no separate-session modifier (59/XS) was appended. Chart documents 97750 as a distinct session with separate timing, target region, and goal."
+      },
+      "next_action": {
+        "path": "correct_and_resubmit",
+        "resubmission_frequency_code": "7",
+        "detail": "Add modifier 59 (or XS) to the 97750:GP line only. Send replacement claim, CLM05-3=7, REF*F8=2419935721000 (CLP07). Include all four original lines. Retain chart note documenting the separate session as supporting documentation."
+      },
+      "denied_line_idxs": [
+        0
+      ],
+      "evidence": [
+        {
+          "artifact": "remit_835.edi",
+          "fact": "SVC HC:97750:GP $46.30 fully denied CAS*CO*97*46.30 with LQ*HE*N20 \u2014 bundled into same-date service.",
+          "locator": "CLP PA23733599 / first SVC segment"
+        },
+        {
+          "artifact": "claim_837p.edi",
+          "fact": "97750:GP billed on LX*1 with no separate-session modifier (only GP present).",
+          "locator": "LX*1 / SV1*HC:97750:GP"
+        },
+        {
+          "artifact": "chart_note.txt",
+          "fact": "97750 documented as separate session from 97140 with its own timed interval, distinct target region, and distinct goal.",
+          "locator": "Separate-session log entry"
+        },
+        {
+          "artifact": "remit_835.edi",
+          "fact": "Payer claim control number (CLP07) = 2419935721000; required for REF*F8 on the replacement claim.",
+          "locator": "CLP*PA23733599*1*255.24*110.88*27.72*CI*2419935721000"
+        }
+      ],
+      "denial": {
+        "group": "CO",
+        "carc": "97",
+        "rarc": "N20",
+        "level": "line"
+      },
+      "citations": [
+        {
+          "source": "01-carc-rarc-index.md",
+          "rule": "CARC 97: bundled; modifier needs documented criteria"
+        },
+        {
+          "source": "07-ncci-and-mue.md",
+          "rule": "CO-97 not PTP signature; diagnose first; modifier + documentation \u2192 correct_and_resubmit"
+        },
+        {
+          "source": "02-resubmission-frequency.md",
+          "rule": "Commercial adjudicated claim: CLM05-3=7 + REF*F8 with CLP07"
+        }
+      ]
+    }
+  },
+  "raw_text": "{\"status\":\"resolved\",\"rationale\":\"Line 0 (97750:GP) denied CO-97 + N20 \u2014 payer bundled the physical performance test into the same-day 97140 manual therapy services. No separate-session modifier was billed. Chart note explicitly logs 97750 as a distinct session with its own timed interval, target region, and goal. CARC 97 notes \\\"modifier needs documented criteria\\\"; that documentation exists. Commercial plan (CI), so corrected claim frequency 7 + REF*F8 resolves it. Lines 1\u20133 (97140 x3) are paid; CO-45 and PR-2 are contractual write-off and coinsurance \u2014 routine AR, not denials.\",\"resolution\":{\"root_cause\":{\"family\":\"ncci_ptp_no59\",\"explanation\":\"97750 denied CO-97 + N20 alongside same-date 97140 services; no separate-session modifier (59/XS) was appended. Chart documents 97750 as a distinct session with separate timing, target region, and goal.\"},\"next_action\":{\"path\":\"correct_and_resubmit\",\"resubmission_frequency_code\":\"7\",\"detail\":\"Add modifier 59 (or XS) to the 97750:GP line only. Send replacement claim, CLM05-3=7, REF*F8=2419935721000 (CLP07). Include all four original lines. Retain chart note documenting the separate session as supporting documentation.\"},\"denied_line_idxs\":[0],\"evidence\":[{\"artifact\":\"remit_835.edi\",\"fact\":\"SVC HC:97750:GP $46.30 fully denied CAS*CO*97*46.30 with LQ*HE*N20 \u2014 bundled into same-date service.\",\"locator\":\"CLP PA23733599 / first SVC segment\"},{\"artifact\":\"claim_837p.edi\",\"fact\":\"97750:GP billed on LX*1 with no separate-session modifier (only GP present).\",\"locator\":\"LX*1 / SV1*HC:97750:GP\"},{\"artifact\":\"chart_note.txt\",\"fact\":\"97750 documented as separate session from 97140 with its own timed interval, distinct target region, and distinct goal.\",\"locator\":\"Separate-session log entry\"},{\"artifact\":\"remit_835.edi\",\"fact\":\"Payer claim control number (CLP07) = 2419935721000; required for REF*F8 on the replacement claim.\",\"locator\":\"CLP*PA23733599*1*255.24*110.88*27.72*CI*2419935721000\"}],\"denial\":{\"group\":\"CO\",\"carc\":\"97\",\"rarc\":\"N20\",\"level\":\"line\"},\"citations\":[{\"source\":\"01-carc-rarc-index.md\",\"rule\":\"CARC 97: bundled; modifier needs documented criteria\"},{\"source\":\"07-ncci-and-mue.md\",\"rule\":\"CO-97 not PTP signature; diagnose first; modifier + documentation \u2192 correct_and_resubmit\"},{\"source\":\"02-resubmission-frequency.md\",\"rule\":\"Commercial adjudicated claim: CLM05-3=7 + REF*F8 with CLP07\"}]}}"
+}
